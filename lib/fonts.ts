@@ -25,7 +25,7 @@ export const fontOpenSans = Open_Sans({
 // Define OpenDyslexic font for accessibility
 // Note: This requires the font file to be in the public directory
 export const fontDyslexic = localFont({
-  src: "../public/fonts/OpenDyslexic-Regular.otf",
+  src: "/fonts/OpenDyslexic/OpenDyslexic-Regular.otf",
   variable: "--font-dyslexic",
   display: "swap",
 })
