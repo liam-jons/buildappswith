@@ -69,7 +69,7 @@ export function PortfolioShowcase({
                 Add Your First Project
               </Button>
             ) : (
-              <p className="text-muted-foreground">This builder hasn't added any projects yet.</p>
+              <p className="text-muted-foreground">This builder hasn&apos;t added any projects yet.</p>
             )}
           </div>
         )}
@@ -216,7 +216,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             className="w-full gap-2"
           >
             <a href={project.projectUrl} target="_blank" rel="noopener noreferrer">
-              View Project <ExternalLinkIcon className="h-3 w-3" />
+              View Project <ExternalLinkIcon className="h-3 w-4" />
             </a>
           </Button>
         )}

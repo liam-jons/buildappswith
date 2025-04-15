@@ -103,11 +103,11 @@ export default function HeadingDemoPage() {
         <div className="rounded-xl border p-6 bg-slate-50 dark:bg-slate-800">
           <h2 className="text-xl font-medium mb-4">Usage Instructions</h2>
           <div className="prose dark:prose-invert max-w-none">
-            <p>The <code>AnimatedHeading</code> component provides a dynamic heading with animated text rotation. Here's how to use it:</p>
+            <p>The <code>AnimatedHeading</code> component provides a dynamic heading with animated text rotation. Here&apos;s how to use it:</p>
             
             <h3>Props</h3>
             <ul>
-              <li><code>staticText</code>: The text that remains fixed (default: "Build Apps With")</li>
+              <li><code>staticText</code>: The text that remains fixed (default: &quot;Build Apps With&quot;)</li>
               <li><code>names</code>: Array of strings to rotate through</li>
               <li><code>interval</code>: Time in milliseconds between transitions (default: 3000)</li>
               <li><code>className</code>: Additional classes for the heading container</li>
