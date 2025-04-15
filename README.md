@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Buildappswith
+
+A platform democratizing AI application development through a marketplace connecting clients with validated builders and practical AI education.
+
+## Vision
+
+Buildappswith represents a transformative opportunity to bridge the gap between advanced AI capabilities and practical application for non-technical users. Our platform operates on a "race to the top" model where builders are validated based on concrete success metrics rather than subjective reviews.
+
+The core value proposition centers on three pillars:
+1. **Accessible AI Education**: Making practical AI skills attainable for anyone
+2. **Quality-Driven Marketplace**: Connecting clients with validated builders
+3. **Community-Powered Growth**: Creating a virtuous cycle of skill development
+
+## Project Structure
+
+- `app/` - Next.js app router pages and layouts
+- `components/` - Reusable UI components
+  - `auth/` - Authentication components
+  - `builders/` - Builder profile and marketplace components
+  - `landing/` - Landing page components
+  - `learning/` - Learning hub components
+  - `magicui/` - Enhanced visual components
+  - `marketplace/` - Marketplace components
+  - `shared/` - Shared layout components
+  - `ui/` - Base UI components
+- `config/` - Configuration files
+- `lib/` - Utility functions and shared logic
+- `providers/` - Context providers
+- `public/` - Static assets
+- `styles/` - Global styles and CSS modules
+
+## Core Platform Components
+
+1. **Builder Marketplace** - Find validated AI builders
+2. **AI Learning Hub** - Develop practical AI skills
+3. **"What AI Can/Can't Do" Timeline** - Explore AI capabilities
+4. **Builder Profiles & Validation System** - Transparency in expertise
+5. **Community Exchange** - Knowledge sharing and collaboration
+6. **Ecosystem Integration Hub** - Connect with existing tools
+7. **Skill Evolution Tracking System** - Visualize emerging skills
+8. **Sustainability Framework** - Promoting responsible development
+
+## Development Status
+
+Current Phase: **Foundation (Phase 1)** - Months 1-3
+- MVP launch with core functionality
+- Initial builder recruitment
+- Basic learning paths and skill validation
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Documentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Project Roadmap](docs/ROADMAP.md) - Development phases and milestones
+- [Component Status](docs/COMPONENT_STATUS.md) - Implementation status of platform components
+- [Decision Log](docs/DECISIONS.md) - Key technical and design decisions
+- [Contribution Guidelines](docs/CONTRIBUTING.md) - How to contribute to the project
 
-## Learn More
+## Technologies
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
+- [Shadcn UI](https://ui.shadcn.com/) - Reusable components
+- [Magic UI](https://magic-ui.design/) - Enhanced visual components
+- [Framer Motion](https://www.framer.com/motion/) - Animation library
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -1,26 +1,193 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    /* Brand colors */
+    --brand-blue: 220 100% 50%;
+    --brand-green: 142 76% 36%;
+    --brand-amber: 45 100% 50%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    /* Brand colors in dark mode */
+    --brand-blue: 220 100% 65%;
+    --brand-green: 142 76% 45%;
+    --brand-amber: 45 100% 60%;
+  }
+
+  /* High contrast theme for accessibility */
+  .high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 90%;
+
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+    --ring: 0 0% 100%;
+
+    /* Brand colors in high-contrast mode */
+    --brand-blue: 220 100% 70%;
+    --brand-green: 142 100% 50%;
+    --brand-amber: 45 100% 70%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  /* Utility for accessible animations */
+  .motion-safe {
+    @apply motion-reduce:transition-none motion-reduce:transform-none motion-reduce:animate-none;
+  }
+
+  /* Fluid typography */
+  .text-fluid-xs {
+    font-size: clamp(0.75rem, 0.7vw + 0.6rem, 0.875rem);
+  }
+  .text-fluid-sm {
+    font-size: clamp(0.875rem, 0.8vw + 0.7rem, 1rem);
+  }
+  .text-fluid-base {
+    font-size: clamp(1rem, 1vw + 0.75rem, 1.125rem);
+  }
+  .text-fluid-lg {
+    font-size: clamp(1.125rem, 1.2vw + 0.9rem, 1.25rem);
+  }
+  .text-fluid-xl {
+    font-size: clamp(1.25rem, 1.5vw + 1rem, 1.5rem);
+  }
+  .text-fluid-2xl {
+    font-size: clamp(1.5rem, 2vw + 1.1rem, 1.875rem);
+  }
+  .text-fluid-3xl {
+    font-size: clamp(1.875rem, 2.5vw + 1.3rem, 2.25rem);
+  }
+  .text-fluid-4xl {
+    font-size: clamp(2.25rem, 3vw + 1.5rem, 3rem);
+  }
+}
+
+/* Custom animations */
+@layer components {
+  /* Text Shimmer Effect */
+  .text-shimmer {
+    @apply bg-clip-text text-transparent bg-[linear-gradient(110deg,#e2e8f0,45%,#1e293b,55%,#e2e8f0)] bg-[length:250%_100%] dark:bg-[linear-gradient(110deg,#1e293b,45%,#e2e8f0,55%,#1e293b)] motion-safe:animate-text-shimmer;
+  }
+
+  /* Border beam effect */
+  .border-beam {
+    @apply absolute overflow-hidden border border-transparent [border-image:linear-gradient(to_right,transparent,hsl(var(--brand-blue)),transparent)_1_/1] [mask-image:linear-gradient(to_right,transparent,black,transparent)] before:absolute before:inset-0 before:[offset-path:ray(0deg)] before:w-32 before:h-full before:[background:linear-gradient(to_right,transparent,hsl(var(--brand-blue)))] motion-safe:before:animate-border-beam;
+    --duration: 5;
+  }
+
+  /* Responsive container paddings */
+  .container-padding {
+    @apply px-4 sm:px-6 lg:px-8 xl:px-10;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Font family for dyslexic users */
+.font-dyslexic * {
+  font-family: var(--font-dyslexic), sans-serif !important;
+  letter-spacing: 0.05em;
+  word-spacing: 0.1em;
+  line-height: 1.5;
 }
