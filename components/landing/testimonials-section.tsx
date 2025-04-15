@@ -35,7 +35,7 @@ const TestimonialsSection = () => {
               {/* Optional Avatar */}
               {/* <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full mx-auto mb-4" /> */}
               <blockquote className="text-muted-foreground italic mb-4">
-                "{testimonial.quote}"
+                &quot;{testimonial.quote}&quot;
               </blockquote>
               <p className="text-center font-semibold">{testimonial.name}</p>
               <p className="text-center text-sm text-muted-foreground">{testimonial.title}</p>

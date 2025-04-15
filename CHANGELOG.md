@@ -5,6 +5,18 @@ All notable changes to the Buildappswith platform will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.33] - 2025-04-16
+
+### Fixed
+- Fixed ESLint errors preventing Vercel deployment
+  - Properly escaped HTML entities in JSX content
+  - Updated single quotes to &apos; in edit-profile-form.tsx
+  - Updated double quotes to &quot; in testimonials-section.tsx
+  - Fixed quotes in heading-demo page and portfolio-showcase
+- Addressed critical deployment blockers
+  - Ensured proper handling of quotes in all components
+  - Maintained accessibility standards in updated files
+
 ## [0.1.32] - 2025-04-15
 
 ### Added

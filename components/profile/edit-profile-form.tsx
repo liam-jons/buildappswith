@@ -274,7 +274,7 @@ export function EditProfileForm({ profile, onSave, onCancel }: EditProfileFormPr
                   </SelectContent>
                 </Select>
                 <FormDescription>
-                  Let potential clients know if you're taking on new projects.
+                  Let potential clients know if you&apos;re taking on new projects.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
