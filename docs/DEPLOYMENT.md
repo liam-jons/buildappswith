@@ -1,4 +1,12 @@
-# Deployment Guide
+### Infrastructure Diagram
+
+```
+GitHub Repository
+│
+├── main branch ────────► Vercel Production Deployment ────► buildappswith.com
+│
+└── develop branch ─────► Vercel Preview Deployment ──────► develop.buildappswith.vercel.app
+```# Deployment Guide
 
 ## Vercel Deployment
 
@@ -153,6 +161,37 @@ Tailwind CSS v4 is relatively new and might cause build issues. Ensure you have 
 ##### Environment Variables
 
 Refer to the `docs/VERCEL_ENV_SETUP.md` file for a comprehensive guide on configuring environment variables in the Vercel dashboard.
+
+### Tailwind CSS v4 Deployment Considerations
+
+When deploying a Next.js application with Tailwind CSS v4, be aware of these specific requirements:
+
+1. Use JavaScript format for Next.js configuration:
+   - Use `next.config.js` instead of `next.config.ts`
+   - Remove outdated options like `swcMinify`
+
+2. Ensure correct PostCSS configuration:
+   ```javascript
+   // postcss.config.mjs
+   const config = {
+     plugins: [
+       "@tailwindcss/postcss",
+       "autoprefixer"
+     ],
+   };
+   
+   export default config;
+   ```
+
+3. Include required dependencies:
+   - `@tailwindcss/postcss` - The PostCSS plugin for Tailwind v4
+   - `autoprefixer` - Required for browser compatibility
+
+4. Follow Tailwind CSS v4 syntax in your CSS files:
+   - Add `@reference "tailwindcss"` at the top
+   - Use `@utility` for custom utilities
+   - Use direct HSL values instead of theme color references
+   - See `docs/TAILWIND_V4_GUIDE.md` for detailed guidance
 
 ### Infrastructure Diagram
 

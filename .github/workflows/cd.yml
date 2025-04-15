@@ -1,0 +1,88 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [ develop, main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+          
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
+      
+      - name: Pull Vercel Environment Information
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: vercel pull --yes --environment=${{ github.ref_name == 'main' && 'production' || 'preview' }} --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Build Project Artifacts
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }} ${{ github.ref_name == 'main' && '--prod' || '' }}
+      
+      - name: Deploy to Vercel
+        id: deploy
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} ${{ github.ref_name == 'main' && '--prod' || '' }})
+          echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+      
+      - name: Create Deployment Status Comment
+        uses: peter-evans/commit-comment@v2
+        with:
+          body: |
+            # Vercel Deployment Status
+            
+            **Environment:** ${{ github.ref_name == 'main' && '🚀 Production' || '🔍 Preview' }}
+            **Deployment URL:** [${{ steps.deploy.outputs.deployment_url }}](${{ steps.deploy.outputs.deployment_url }})
+            **Git Ref:** ${{ github.ref_name }}
+            **Commit:** ${{ github.sha }}
+            
+            Deployed at: `${{ github.event.repository.updated_at }}`
+
+      - name: Update CHANGELOG with deployment
+        if: github.ref_name == 'main'
+        run: |
+          echo "To update CHANGELOG manually:"
+          echo "[$(date +%Y-%m-%d)] - [$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')] - Deployed to production"
