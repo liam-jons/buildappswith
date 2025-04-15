@@ -1,63 +1,206 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { BorderBeam } from "@/components/magicui/border-beam"
-import { TextShimmer } from "@/components/magicui/text-shimmer"
-import { shouldReduceMotion } from "@/lib/utils"
+import Marquee from "@/components/magicui/marquee";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { motion, useAnimation, useInView } from "framer-motion";
+import {
+  BarChart,
+  ChevronRight,
+  File,
+  Globe,
+  HeartHandshake,
+  Rss,
+  Shield,
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useId, useRef, useState } from "react";
 
-export function CtaSection() {
-  const [reduceMotion, setReduceMotion] = useState(false)
-  
+const tiles = [
+  {
+    icon: <HeartHandshake className="size-full" />, // Collaboration
+    bg: (
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-full bg-gradient-to-r from-orange-600 via-rose-600 to-violet-600 opacity-70 blur-[20px] filter"></div>
+    ),
+  },
+  {
+    icon: <Globe className="size-full" />, // Global Access
+    bg: (
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 opacity-70 blur-[20px] filter"></div>
+    ),
+  },
+  {
+    icon: <File className="size-full" />, // Learning Resources
+    bg: (
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-full bg-gradient-to-r from-green-500 via-teal-500 to-emerald-600 opacity-70 blur-[20px] filter"></div>
+    ),
+  },
+  {
+    icon: <Shield className="size-full" />, // Trust & Validation
+    bg: (
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-600 opacity-70 blur-[20px] filter"></div>
+    ),
+  },
+  {
+    icon: <Rss className="size-full" />, // Knowledge Sharing
+    bg: (
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-full bg-gradient-to-r from-orange-600 via-rose-600 to-violet-600 opacity-70 blur-[20px] filter"></div>
+    ),
+  },
+  {
+    icon: <BarChart className="size-full" />, // Progress Tracking
+    bg: (
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-full bg-gradient-to-r from-gray-600 via-gray-500 to-gray-400 opacity-70 blur-[20px] filter"></div>
+    ),
+  },
+];
+
+const shuffleArray = (array: any[]) => {
+  let currentIndex = array.length,
+    randomIndex;
+  // While there remain elements to shuffle.
+  while (currentIndex !== 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+  return array;
+};
+
+const Card = (card: { icon: JSX.Element; bg: JSX.Element }) => {
+  const id = useId();
+  const controls = useAnimation();
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
+
   useEffect(() => {
-    setReduceMotion(shouldReduceMotion())
-  }, [])
+    if (inView) {
+      controls.start({
+        opacity: 1,
+        transition: { delay: Math.random() * 2, ease: "easeOut", duration: 1 },
+      });
+    }
+  }, [controls, inView]);
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-muted/30">
-      <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center text-center space-y-8 md:space-y-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold max-w-3xl text-balance">
-            Start Your AI Journey Today with{" "}
-            <TextShimmer
-              className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-500 to-amber-500"
-              disableAnimation={reduceMotion}
+    <motion.div
+      key={id}
+      ref={ref}
+      initial={{ opacity: 0 }}
+      animate={controls}
+      className={cn(
+        "relative size-20 cursor-pointer overflow-hidden rounded-2xl border p-4",
+        // light styles
+        "bg-white [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)]",
+        // dark styles
+        "transform-gpu dark:bg-transparent dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
+      )}
+    >
+      {card.icon}
+      {card.bg}
+    </motion.div>
+  );
+};
+
+export default function CallToActionSection() {
+  const [randomTiles1, setRandomTiles1] = useState<typeof tiles>([]);
+  const [randomTiles2, setRandomTiles2] = useState<typeof tiles>([]);
+  const [randomTiles3, setRandomTiles3] = useState<typeof tiles>([]);
+  const [randomTiles4, setRandomTiles4] = useState<typeof tiles>([]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Ensures this runs client-side
+      setRandomTiles1(shuffleArray([...tiles]));
+      setRandomTiles2(shuffleArray([...tiles]));
+      setRandomTiles3(shuffleArray([...tiles]));
+      setRandomTiles4(shuffleArray([...tiles]));
+    }
+  }, []);
+
+  return (
+    <section id="cta">
+      <div className="py-14">
+        <div className="flex w-full flex-col items-center justify-center">
+          <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+            <Marquee
+              reverse
+              className="-delay-[200ms] [--duration:10s]"
+              repeat={5}
             >
-              Buildappswith
-            </TextShimmer>
-          </h2>
-          
-          <p className="text-muted-foreground text-lg md:text-xl max-w-[42rem] text-balance leading-normal">
-            Whether you're looking to build an AI-powered app or develop valuable skills for the future, our platform provides the tools, community, and validation you need to succeed.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <BorderBeam
-              containerClassName="rounded-full"
-              className="rounded-full"
-              size="small"
-              shouldReduceMotion={reduceMotion}
+              {randomTiles1.map((review, idx) => (
+                <Card key={idx} {...review} />
+              ))}
+            </Marquee>
+            <Marquee reverse className="[--duration:25s]" repeat={5}>
+              {randomTiles2.map((review, idx) => (
+                <Card key={idx} {...review} />
+              ))}
+            </Marquee>
+            <Marquee
+              reverse
+              className="-delay-[200ms] [--duration:20s]"
+              repeat={5}
             >
-              <Link href="/register">
-                <Button size="lg" className="rounded-full px-8">
-                  Get Started For Free
-                </Button>
-              </Link>
-            </BorderBeam>
-            
-            <Link href="/about">
-              <Button variant="outline" size="lg" className="rounded-full px-8">
-                Learn More About Us
-              </Button>
-            </Link>
-          </div>
-          
-          <div className="text-sm text-muted-foreground mt-6">
-            <p>No credit card required. Start building or learning today.</p>
+              {randomTiles1.map((review, idx) => (
+                <Card key={idx} {...review} />
+              ))}
+            </Marquee>
+            <Marquee reverse className="[--duration:30s]" repeat={5}>
+              {randomTiles2.map((review, idx) => (
+                <Card key={idx} {...review} />
+              ))}
+            </Marquee>
+            <Marquee
+              reverse
+              className="-delay-[200ms] [--duration:20s]"
+              repeat={5}
+            >
+              {randomTiles3.map((review, idx) => (
+                <Card key={idx} {...review} />
+              ))}
+            </Marquee>
+            <Marquee reverse className="[--duration:30s]" repeat={5}>
+              {randomTiles4.map((review, idx) => (
+                <Card key={idx} {...review} />
+              ))}
+            </Marquee>
+            <div className="absolute z-10">
+              <div className="mx-auto size-24 rounded-[2rem] border bg-white/10 p-3 shadow-2xl backdrop-blur-md dark:bg-black/10 lg:size-32">
+                <HeartHandshake className="mx-auto size-16 text-black dark:text-white lg:size-24" />
+              </div>
+              <div className="z-10 mt-4 flex flex-col items-center text-center text-primary">
+                <h1 className="text-3xl font-bold lg:text-4xl">
+                  Democratize AI for Everyone
+                </h1>
+                <p className="mt-2">
+                  Learn, build, or find someone to build for you.
+                </p>
+                <Link
+                  href="#"
+                  className={cn(
+                    buttonVariants({
+                      size: "lg",
+                      variant: "outline",
+                    }),
+                    "group mt-4 rounded-[2rem] px-6"
+                  )}
+                >
+                  Get Started
+                  <ChevronRight className="ml-1 size-4 transition-all duration-300 ease-out group-hover:translate-x-1" />
+                </Link>
+              </div>
+              <div className="absolute inset-0 -z-10 rounded-full  bg-backtround opacity-40 blur-xl dark:bg-background" />
+            </div>
+            <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-b from-transparent to-background to-70% dark:to-background" />
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,84 +1,66 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { TextShimmer } from "@/components/magicui/text-shimmer"
-import { BorderBeam } from "@/components/magicui/border-beam"
-import { Particles } from "@/components/magicui/particles"
-import { shouldReduceMotion } from "@/lib/utils"
+import TextShimmer from "@/components/magicui/text-shimmer";
+import { Button } from "@/components/ui/button";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { useRef } from "react";
+import TwoLineAnimatedHeading from "@/components/custom/two-line-animated-heading";
+import HeroVisualization from "@/components/landing/hero-visualization";
 
-export function HeroSection() {
-  const [reduceMotion, setReduceMotion] = useState(false)
+export default function HeroSection() {
+  const ref = useRef(null);
   
-  useEffect(() => {
-    setReduceMotion(shouldReduceMotion())
-  }, [])
-
   return (
-    <section className="relative w-full py-12 md:py-24 lg:py-32 xl:py-48 overflow-hidden">
-      {/* Background particles */}
-      {!reduceMotion && (
-        <Particles
-          className="absolute inset-0 opacity-50"
-          quantity={50}
-          staticity={30}
-          color="hsl(var(--brand-blue) / 0.2)"
-          varyColor={true}
-        />
-      )}
-      
-      <div className="container px-4 md:px-6 space-y-12 md:space-y-16 relative z-10">
-        <div className="flex flex-col items-center gap-6 text-center">
-          {/* Main headline */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-balance max-w-3xl">
-            Democratizing AI App Development through{" "}
-            <TextShimmer
-              className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-green-500 to-amber-500"
-              disableAnimation={reduceMotion}
-            >
-              Validation & Education
-            </TextShimmer>
-          </h1>
-          
-          {/* Subheadline */}
-          <p className="text-muted-foreground text-base md:text-xl max-w-[42rem] text-balance leading-normal">
-            AI app development is too expensive and complex. Buildappswith connects you with verified experts to build affordable AI apps, or teaches you to build them yourself.
-          </p>
-          
-          {/* CTA buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-4">
-            <BorderBeam
-              containerClassName="rounded-full"
-              className="rounded-full"
-              size="small"
-              shouldReduceMotion={reduceMotion}
-            >
-              <Link href="/marketplace">
-                <Button size="lg" className="rounded-full px-8">
-                  Find an AI Builder
-                </Button>
-              </Link>
-            </BorderBeam>
-            
-            <Link href="/learning">
-              <Button variant="outline" size="lg" className="rounded-full px-8">
-                Learn to Build
-              </Button>
-            </Link>
-          </div>
-        </div>
-        
-        {/* Hero image or mockup */}
-        <div className="w-full flex justify-center">
-          <div className="relative w-full max-w-4xl aspect-video rounded-lg overflow-hidden border bg-background/50 shadow-xl">
-            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-              {/* Placeholder for actual platform screenshot/mockup */}
-              <p className="text-sm">Platform Preview</p>
-            </div>
-          </div>
-        </div>
+    <section
+      id="hero"
+      className="relative mx-auto mt-32 max-w-[80rem] px-6 text-center md:px-8"
+    >
+      <div className="backdrop-filter-[12px] inline-flex h-7 items-center justify-between rounded-full border border-white/5 bg-white/10 px-3 text-xs text-white dark:text-black transition-all ease-in hover:cursor-pointer hover:bg-white/20 group gap-1 translate-y-[-1rem] animate-fade-in opacity-0">
+        <TextShimmer className="inline-flex items-center justify-center">
+          <span>✨ Democratizing AI Application Development</span>{" "}
+          <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+        </TextShimmer>
       </div>
+      <TwoLineAnimatedHeading 
+        className="py-6 translate-y-[-1rem] animate-fade-in opacity-0 [--animation-delay:200ms]"
+        headingClassName="bg-gradient-to-br dark:from-white from-black from-30% dark:to-white/40 to-black/40 bg-clip-text text-transparent text-balance"
+        appsClassName="text-blue-500 dark:text-blue-400"
+        animatedTextClassName="text-[#9c40ff] dark:text-[#ffaa40]"
+        names={[
+          "Liam", 
+          "Kenny", 
+          "Jonathan", 
+          "Sheri", 
+          "Sarah", 
+          "Miguel", 
+          "Aisha",
+          "your team",
+          "your friends",
+          "your business",
+          "your customers",
+          "your community",
+          "your future",
+          "everyone"
+        ]}
+        interval={3000}
+        shimmerAnimatedText={false}
+      />
+      <p className="mb-12 text-lg tracking-tight text-gray-400 md:text-xl text-balance translate-y-[-1rem] animate-fade-in opacity-0 [--animation-delay:400ms]">
+        Transform your ideas into reality with the power of AI.
+        <br className="hidden md:block" /> Build your tomorrow, today. Do more with people you can trust.
+      </p>
+      <div className="flex justify-center space-x-4 translate-y-[-1rem] animate-fade-in opacity-0 [--animation-delay:600ms]">
+        <Button className="gap-1 rounded-lg text-white dark:text-black ease-in-out">
+          <span>Start Your Journey </span>
+          <ArrowRightIcon className="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-1" />
+        </Button>
+        <Button variant="outline" className="gap-1 rounded-lg ease-in-out">
+          <span>Learn How It Works</span>
+        </Button>
+      </div>
+      
+      {/* Hero Visualization Component */}
+      <HeroVisualization />
     </section>
-  )
+  );
 }

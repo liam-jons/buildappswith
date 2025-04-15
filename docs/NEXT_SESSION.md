@@ -1,81 +1,58 @@
-# Buildappswith Session: April 16, 2025
+# Next Session Focus
 
-## Project Status
+## Current Status
+- **Version**: 0.1.23
+- **Last Completed**: Navigation Enhancement & Best Practices Review
+- **Current Phase**: Phase 1: Foundation (Months 1-3)
 
-**Current Phase:** Phase 1 (Foundation) - MVP development
-
-**Version:** 0.1.2
-
-**Repository:** /Users/liamj/Documents/Development/buildappswith
-
-## Focus Component
-
-Today we're focusing on **Vercel Deployment and Builder Profile Creation** which are currently in **Planning** state.
+## Primary Focus for Next Session
+Component: **Builder Marketplace - Builder Discovery Component**
 
 ### Component Description
-We need to set up Vercel deployment to establish our preview and production environments, then implement the Builder Profile Creation system to allow you to showcase your expertise, schedule free sessions for unemployed users, and begin building the marketplace foundation.
+The Builder Discovery component is a critical part of the marketplace functionality, allowing clients to find and evaluate builders based on their validation metrics, specializations, and availability. This component needs to effectively showcase builder profiles with appropriate filtering and sorting capabilities.
 
-### Recent Progress
-- Completed landing page implementation
-- Set up comprehensive project documentation and structure
-- Established GitHub templates and project management docs
-- Created GitHub repository and resolved setup issues
+### Tasks
+1. Create the initial builder discovery interface with:
+   - Search functionality with filters for specialization, validation level, and availability
+   - Grid/list view of builder profile cards
+   - Sorting options based on different validation metrics
+   - Responsive design for all device sizes
 
-### Goals for This Session
-- [ ] Configure Vercel deployment
-  - Set up preview environments
-  - Configure environment variables
-  - Implement deployment workflow
-- [ ] Design builder profile data model
-  - Define schema for profile information
-  - Create validation tier structure
-  - Plan portfolio section requirements
-- [ ] Research and select scheduling integration
-  - Evaluate Calendly, Cal.com, and alternatives
-  - Determine embedding approach
-  - Plan authentication requirements
+2. Implement builder profile card component with:
+   - Profile photo/avatar
+   - Name and validation tier indicator
+   - Key specializations
+   - Success metrics visualization
+   - Availability status
 
-### Key Requirements
-- Must support all three validation tiers (Entry, Established, Expert)
-- Portfolio section for project showcases
-- Integration with scheduling systems for free sessions
-- Support for video conferencing links/embeds
-- Accessibility for all user abilities
-- Preview deployments for QA before production
+3. Design the detailed builder profile page accessible from the cards with:
+   - Comprehensive profile information
+   - Portfolio showcase
+   - Validation metrics dashboard
+   - Client testimonials section
+   - Session booking interface
 
-## Reference Information
+### Technical Considerations
+- Ensure all components follow accessibility best practices (WCAG 2.1 AA)
+- Implement reduced motion alternatives for any animations
+- Use Magic UI components for enhanced visual elements
+- Follow desktop-first approach with responsive adaptations
 
-### Related Components
-- Validation System - Not Started
-- Portfolio Gallery - Not Started
-- Scheduling Integration - Not Started
-- Authentication System - Not Started
+### Component Dependencies
+- Builder Profile data model (types/interfaces)
+- Validation system tiers and indicators
+- Portfolio showcase component
 
-### Relevant Decisions
-- DES-004 - "Race to top" validation visualization
-- FEAT-001 - Tiered builder validation system
-- FEAT-005 - Free educational sessions for unemployed
-- FEAT-006 - External scheduling integration
-- TECH-005 - External scheduling and video conferencing
-- DEPLOY-001 - Vercel for deployment
+## Resources Needed
+- UI designs for builder discovery interface
+- Example builder profile data for testing
+- Validation tier icon set
 
-### Accessibility Requirements
-- Form validation must be screen reader compatible
-- All interactive elements must support keyboard navigation
-- Color contrast must meet WCAG AA standards
-- Profile display must be compatible with assistive technologies
+## Documentation Updates
+- Update COMPONENT_STATUS.md to reflect Builder Marketplace progress
+- Document Builder Discovery component in technical documentation
+- Update CHANGELOG.md with new version details
 
-## Current Implementation Challenges
-
-1. Determining the best external scheduling service to integrate with (Calendly, Cal.com, etc.)
-2. Planning authentication flow that balances security with ease of use
-3. Designing a flexible portfolio showcase system that can grow with future requirements
-4. Implementing the validation tier visualization in a way that communicates trustworthiness without being complex
-
-## Next Up After This Component
-
-After completing the Vercel deployment and Builder Profile Creation:
-1. Implement basic authentication system to support profile creation
-2. Develop the "What AI Can/Can't Do" timeline for AI literacy
-3. Create Project Creation system for clients to define their requirements
-4. Integrate builder profiles into homepage to feature selected builders
+## Next Steps After Completion
+- Implement Project Creation component for clients to define their project needs
+- Enhance Builder Profile with additional validation metrics
