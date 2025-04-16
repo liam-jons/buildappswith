@@ -4,9 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { 
-  TextShimmer 
-} from "@/components/magicui/text-shimmer";
+import TextShimmer from "@/components/magicui/text-shimmer";
 import {
   Card,
   CardContent,

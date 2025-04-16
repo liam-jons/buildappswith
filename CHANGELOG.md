@@ -5,6 +5,14 @@ All notable changes to the Buildappswith platform will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.36] - 2025-04-16
+
+### Fixed
+- Fixed TextShimmer import error in portfolio-showcase.tsx
+  - Changed from named import to default import
+  - Updated import statement to match the component's export type
+  - Resolved the final build error preventing deployment
+
 ## [0.1.35] - 2025-04-16
 
 ### Fixed
