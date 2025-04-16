@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { 
   CalendarIcon, 
   ChatBubbleIcon, 
-  PencilIcon,
+  Pencil1Icon, // Fixed: Changed from PencilIcon to Pencil1Icon
   StarFilledIcon,
   CheckIcon,
   GlobeIcon,
@@ -108,7 +108,7 @@ export function BuilderProfile({
             className="absolute top-4 right-4 gap-1.5"
             onClick={onEditProfile}
           >
-            <PencilIcon className="h-3.5 w-3.5" />
+            <Pencil1Icon className="h-3.5 w-3.5" /> {/* Fixed: Changed from PencilIcon to Pencil1Icon */}
             Edit Profile
           </Button>
         )}

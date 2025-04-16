@@ -5,17 +5,23 @@ All notable changes to the Buildappswith platform will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.35] - 2025-04-16
+
+### Fixed
+- Fixed icon import in builder-profile.tsx
+  - Changed PencilIcon to Pencil1Icon to match available exports from @radix-ui/react-icons
+  - Resolved TypeScript type errors preventing successful build
+
 ## [0.1.34] - 2025-04-16
 
 ### Added
 - Missing Radix UI component dependencies:
   - Added @radix-ui/react-dialog package for dialog component
-  - Added @radix-ui/react-alert package for alert component
   - Added @radix-ui/react-select package for select component
 
 ### Fixed
 - Resolved dependency issues preventing successful Vercel deployment
-- Ensured all required UI component libraries are properly declared in package.json
+- Removed incorrect @radix-ui/react-alert dependency (doesn't exist)
 
 ## [0.1.33] - 2025-04-16
 
