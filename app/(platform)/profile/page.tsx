@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { BuilderProfile, BuilderProfileData } from "@/components/profile/builder-profile";
 import { ValidationTier } from "@/components/profile/validation-tier-badge";
 import { Button } from "@/components/ui/button";
 import { 
-  GearIcon,
   InfoCircledIcon
 } from "@radix-ui/react-icons";
 
@@ -208,6 +208,7 @@ const profileOptions = [
 ];
 
 export default function ProfileDemo() {
+  const router = useRouter();
   const [selectedProfile, setSelectedProfile] = useState(profileOptions[0]);
   const [isOwner, setIsOwner] = useState(false);
   
@@ -229,7 +230,7 @@ export default function ProfileDemo() {
   };
   
   const handleViewAllProjects = () => {
-    alert("View All Projects would navigate to a dedicated portfolio page");
+    router.push("/portfolio");
   };
   
   return (
