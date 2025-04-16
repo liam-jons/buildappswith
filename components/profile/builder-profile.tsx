@@ -9,16 +9,19 @@ import { Button } from "@/components/ui/button";
 import { 
   CalendarIcon, 
   ChatBubbleIcon, 
-  Pencil1Icon, // Fixed: Changed from PencilIcon to Pencil1Icon
+  Pencil1Icon,
   StarFilledIcon,
   CheckIcon,
   GlobeIcon,
   LinkedInLogoIcon,
   GitHubLogoIcon,
-  TwitterLogoIcon
+  TwitterLogoIcon,
+  BarChartIcon,
+  MixerHorizontalIcon
 } from "@radix-ui/react-icons";
 import { ValidationTierBadge, ValidationTier } from "./validation-tier-badge";
 import { PortfolioShowcase, PortfolioProject } from "./portfolio-showcase";
+import { SuccessMetricsDashboard, MetricsCategory } from "./success-metrics-dashboard";
 
 export interface BuilderProfileData {
   id: string;
@@ -44,6 +47,7 @@ export interface BuilderProfileData {
     twitter?: string;
   };
   portfolio: PortfolioProject[];
+  metrics?: MetricsCategory[];
 }
 
 interface BuilderProfileProps {
@@ -293,9 +297,35 @@ export function BuilderProfile({
         </div>
         
         {/* Portfolio */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-12">
+        {/* Success Metrics Dashboard */}
+        {profile.metrics && profile.metrics.length > 0 && (
+        <section>
+        <SuccessMetricsDashboard
+          validationTier={profile.validationTier}
+          metrics={profile.metrics}
+        />
+        </section>
+        )}
+        
+          {/* Portfolio Section */}
           <section>
-            <h3 className="text-lg font-medium mb-6">Portfolio</h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-medium">Portfolio</h3>
+              
+              {onViewAllProjects && profile.portfolio.length > 3 && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={onViewAllProjects}
+                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <MixerHorizontalIcon className="h-4 w-4" />
+                  View All
+                </Button>
+              )}
+            </div>
+            
             <PortfolioShowcase 
               projects={profile.portfolio}
               isOwner={isOwner}

@@ -8,6 +8,9 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useOnClickOutside } from "@/hooks/use-on-click-outside";
+import { LoginButton } from "@/components/auth/login-button";
+import { UserProfile } from "@/components/auth/user-profile";
+import { useSession } from "next-auth/react";
 
 // Core platform components
 const platformItems = [
@@ -321,18 +324,24 @@ export function SiteHeader() {
           </nav>
 
           <div className="ml-auto flex h-full items-center">
-            <Link className="mr-6 text-sm" href="/signin">
-              Log in
-            </Link>
-            <Link
-              className={cn(
-                buttonVariants({ variant: "secondary" }),
-                "mr-6 text-sm"
-              )}
-              href="/signup"
-            >
-              Sign up
-            </Link>
+            <div className="flex items-center gap-4">
+              {/* Authentication components */}
+              <div className="flex items-center gap-3">
+                {(() => {
+                  const { data: session, status } = useSession();
+                  return status === "loading" ? (
+                    <div className="h-8 w-8 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
+                  ) : session?.user ? (
+                    <UserProfile />
+                  ) : (
+                    <>
+                      <LoginButton variant="login" className="mr-2" />
+                      <LoginButton variant="signup" />
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
           </div>
           <button
             className="ml-6 md:hidden"
@@ -460,19 +469,25 @@ export function SiteHeader() {
             </div>
             
             {/* Authentication Section */}
-            <div className="mt-8 flex flex-col gap-2">
-              <Link 
-                href="/signin"
-                className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full justify-center")}
-              >
-                Log in
-              </Link>
-              <Link 
-                href="/signup"
-                className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full justify-center")}
-              >
-                Sign up
-              </Link>
+            <div className="mt-8 flex flex-col gap-4">
+              {/* Show user profile when logged in, otherwise show login/signup buttons */}
+              {(() => {
+                const { data: session, status } = useSession();
+                return status === "loading" ? (
+                  <div className="w-full flex justify-center">
+                    <div className="h-10 w-40 animate-pulse rounded-md bg-slate-200 dark:bg-slate-700" />
+                  </div>
+                ) : session?.user ? (
+                  <div className="w-full flex justify-center">
+                    <UserProfile />
+                  </div>
+                ) : (
+                  <div className="w-full flex flex-col gap-2">
+                    <LoginButton variant="login" className="w-full" />
+                    <LoginButton variant="signup" className="w-full" />
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </motion.nav>

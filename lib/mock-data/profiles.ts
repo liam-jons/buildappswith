@@ -1,6 +1,165 @@
 // /lib/mock-data/profiles.ts
 import { BuilderProfileData } from "@/components/profile/builder-profile";
 import { ValidationTier } from "@/components/profile/validation-tier-badge";
+import { MetricsCategory, MetricIcons } from "@/components/profile/success-metrics-dashboard";
+
+// Success metrics for entry tier profile
+const entryTierMetrics: MetricsCategory[] = [
+  {
+    id: "impact",
+    name: "Impact",
+    icon: MetricIcons.Impact,
+    metrics: [
+      {
+        label: "Avg. Conversion Rate",
+        value: "+15%",
+        description: "Average increase in conversion rates across e-commerce projects",
+        trend: "up"
+      },
+      {
+        label: "Customer Satisfaction",
+        value: "4.7/5",
+        description: "Average client satisfaction rating",
+        trend: "neutral"
+      }
+    ]
+  }
+];
+
+// Success metrics for established tier profile
+const establishedTierMetrics: MetricsCategory[] = [
+  {
+    id: "impact",
+    name: "Business Impact",
+    icon: MetricIcons.Impact,
+    metrics: [
+      {
+        label: "Revenue Increase",
+        value: "+32%",
+        description: "Average revenue increase for client businesses",
+        trend: "up",
+        isHighlighted: true
+      },
+      {
+        label: "Cost Reduction",
+        value: "-28%",
+        description: "Average operational cost reduction for clients",
+        trend: "down"
+      },
+      {
+        label: "Customer Satisfaction",
+        value: "4.9/5",
+        description: "Average client satisfaction rating",
+        trend: "up"
+      }
+    ]
+  },
+  {
+    id: "performance",
+    name: "Performance",
+    icon: MetricIcons.Performance,
+    metrics: [
+      {
+        label: "Response Time",
+        value: "-45%",
+        description: "Average improvement in application response time",
+        trend: "down"
+      },
+      {
+        label: "User Retention",
+        value: "+38%",
+        description: "Average increase in user retention for client apps",
+        trend: "up"
+      },
+      {
+        label: "Error Rates",
+        value: "-60%",
+        description: "Average reduction in application error rates",
+        trend: "down"
+      }
+    ]
+  }
+];
+
+// Success metrics for expert tier profile
+const expertTierMetrics: MetricsCategory[] = [
+  {
+    id: "impact",
+    name: "Business Impact",
+    icon: MetricIcons.Impact,
+    metrics: [
+      {
+        label: "Revenue Generated",
+        value: "$12.4M",
+        description: "Total revenue generated for client businesses",
+        trend: "up",
+        isHighlighted: true
+      },
+      {
+        label: "Cost Savings",
+        value: "$8.7M",
+        description: "Total cost savings delivered to clients",
+        trend: "down"
+      },
+      {
+        label: "ROI",
+        value: "480%",
+        description: "Average return on investment for client projects",
+        trend: "up"
+      }
+    ]
+  },
+  {
+    id: "efficiency",
+    name: "Efficiency",
+    icon: MetricIcons.Efficiency,
+    metrics: [
+      {
+        label: "Process Time",
+        value: "-68%",
+        description: "Average reduction in process completion time",
+        trend: "down"
+      },
+      {
+        label: "Resource Usage",
+        value: "-42%",
+        description: "Average reduction in computational resource usage",
+        trend: "down"
+      },
+      {
+        label: "Team Productivity",
+        value: "+75%",
+        description: "Average increase in team productivity",
+        trend: "up"
+      }
+    ]
+  },
+  {
+    id: "performance",
+    name: "Performance",
+    icon: MetricIcons.Performance,
+    metrics: [
+      {
+        label: "System Uptime",
+        value: "99.99%",
+        description: "Average system uptime for deployed applications",
+        trend: "neutral"
+      },
+      {
+        label: "Load Time",
+        value: "-72%",
+        description: "Average reduction in application load time",
+        trend: "down"
+      },
+      {
+        label: "User Engagement",
+        value: "+120%",
+        description: "Average increase in user engagement metrics",
+        trend: "up"
+      }
+    ]
+  }
+];
 
 export const mockEntryTierProfile: BuilderProfileData = {
   id: "builder-1",
@@ -50,7 +209,8 @@ export const mockEntryTierProfile: BuilderProfileData = {
       projectUrl: "https://example.com/project2",
       createdAt: new Date(2024, 11, 10)
     }
-  ]
+  ],
+  metrics: entryTierMetrics
 };
 
 export const mockEstablishedTierProfile: BuilderProfileData = {
@@ -118,7 +278,8 @@ export const mockEstablishedTierProfile: BuilderProfileData = {
       projectUrl: "https://example.com/legal-analysis",
       createdAt: new Date(2024, 10, 5)
     }
-  ]
+  ],
+  metrics: establishedTierMetrics
 };
 
 export const mockExpertTierProfile: BuilderProfileData = {
@@ -190,5 +351,6 @@ export const mockExpertTierProfile: BuilderProfileData = {
       projectUrl: "https://example.com/personalized-learning",
       createdAt: new Date(2024, 8, 5)
     }
-  ]
+  ],
+  metrics: expertTierMetrics
 };
