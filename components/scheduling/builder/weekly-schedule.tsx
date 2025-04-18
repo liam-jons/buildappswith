@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AvailabilityRule } from '@/lib/scheduling/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,14 +37,8 @@ export function WeeklySchedule({
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
   const [usingMockData, setUsingMockData] = useState(false);
   
-  // Fetch rules from API if needed (e.g., when component is mounted independently)
-  useEffect(() => {
-    if (availabilityRules.length === 0) {
-      fetchRules();
-    }
-  }, [builderId, availabilityRules.length]);
-
-  const fetchRules = async () => {
+  // Fetch rules from API if needed
+  const fetchRules = useCallback(async () => {
     setIsLoading(true);
     
     try {
@@ -58,7 +52,14 @@ export function WeeklySchedule({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [builderId, onUpdate]);
+
+  // Fetch rules if none provided
+  useEffect(() => {
+    if (availabilityRules.length === 0) {
+      fetchRules();
+    }
+  }, [builderId, availabilityRules.length, fetchRules]);
 
   const getRulesByDay = (dayOfWeek: number) => {
     return rules.filter(rule => rule.dayOfWeek === dayOfWeek);

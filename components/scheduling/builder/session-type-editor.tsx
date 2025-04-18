@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { SessionType } from '@/lib/scheduling/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { X, Plus, Clock, DollarSign, AlertTriangle } from 'lucide-react';
 import { TextShimmer } from '@/components/magicui/text-shimmer';
-import { getSessionTypes, createSessionType, deleteSessionType, updateSessionType } from '@/lib/api-client/scheduling';
+import { getSessionTypes, createSessionType, deleteSessionType } from '@/lib/api-client/scheduling';
 import { toast } from 'sonner';
 
 interface SessionTypeEditorProps {
@@ -43,13 +43,7 @@ export function SessionTypeEditor({
   const [usingMockData, setUsingMockData] = useState(false);
 
   // Fetch session types from API if needed
-  useEffect(() => {
-    if (sessionTypes.length === 0) {
-      fetchSessionTypes();
-    }
-  }, [builderId, sessionTypes.length]);
-
-  const fetchSessionTypes = async () => {
+  const fetchSessionTypes = useCallback(async () => {
     setIsLoading(true);
     
     try {
@@ -63,7 +57,13 @@ export function SessionTypeEditor({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [builderId, onUpdate]);
+
+  useEffect(() => {
+    if (sessionTypes.length === 0) {
+      fetchSessionTypes();
+    }
+  }, [sessionTypes.length, fetchSessionTypes]);
 
   const addSessionType = async () => {
     // Create a new session type with default values

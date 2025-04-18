@@ -1,7 +1,7 @@
 /**
  * @type {import('next').NextConfig}
  * Enhanced configuration for Buildappswith platform with security and performance optimizations
- * Version: 0.1.67
+ * Version: 0.1.78
  */
 
 // Import the BundleAnalyzerPlugin for webpack bundle analysis
@@ -15,7 +15,7 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://cdnjs.cloudflare.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org;
+  img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org https://cdn.magicui.design;
   font-src 'self' data: https://fonts.gstatic.com;
   frame-src 'self' https://js.stripe.com https://*.stripe.com;
   connect-src 'self' https://api.stripe.com https://*.vercel-insights.com http://localhost:* https://localhost:*;
@@ -67,7 +67,7 @@ const nextConfig = {
   // Configure image optimization
   images: {
     formats: ['image/avif', 'image/webp'],
-    domains: ['api.placeholder.org', 'localhost'],
+    domains: ['api.placeholder.org', 'localhost', 'cdn.magicui.design'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60, // Cache optimized images for at least 60 seconds
@@ -77,6 +77,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.stripe.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.magicui.design',
+      }
     ],
   },
   

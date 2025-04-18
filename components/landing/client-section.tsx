@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function ClientSection() {
   return (
     <section
@@ -12,20 +14,29 @@ export default function ClientSection() {
           <div className="mt-6">
             <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:gap-x-16 [&_path]:fill-white">
               <li>
-                <img
-                  src={`https://cdn.magicui.design/companies/Google.svg`}
+                <Image
+                  src="https://cdn.magicui.design/companies/Google.svg"
+                  alt="Google logo"
+                  width={112}
+                  height={32}
                   className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
                 />
               </li>
               <li>
-                <img
-                  src={`https://cdn.magicui.design/companies/Microsoft.svg`}
+                <Image
+                  src="https://cdn.magicui.design/companies/Microsoft.svg"
+                  alt="Microsoft logo"
+                  width={112}
+                  height={32}
                   className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
                 />
               </li>
               <li>
-                <img
-                  src={`https://cdn.magicui.design/companies/GitHub.svg`}
+                <Image
+                  src="https://cdn.magicui.design/companies/GitHub.svg"
+                  alt="GitHub logo"
+                  width={112}
+                  height={32}
                   className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
                 />
               </li>
