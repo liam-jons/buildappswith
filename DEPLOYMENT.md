@@ -1,63 +1,123 @@
-# Vercel Deployment Guide for Buildappswith
+# Buildappswith Deployment Guide
 
-## Current Issue
+This guide provides instructions for deploying the Buildappswith platform.
 
-We're facing an issue with UI component imports when deploying to Vercel. The specific errors are:
+## Prerequisites
 
-1. **Font Path Issue**: The path to OpenDyslexic font needs to use an absolute path from the public directory
-2. **UI Component Imports**: Imports using `@/components/ui/button` and similar are failing during build
+- Node.js v20+
+- PNPM package manager
+- Git
 
-## Solution
+## Deployment Steps
 
-We need to properly install the shadcn/Magic UI components using the CLI:
+### 1. Clone the repository (if not already done)
 
 ```bash
-# Install the Button component
-npx shadcn@latest add button
-
-# Install the Dropdown Menu component
-npx shadcn@latest add dropdown-menu
-
-# If you're using Magic UI specifically, you can use:
-npx shadcn@latest add "https://magicui.design/f/button.json"
-npx shadcn@latest add "https://magicui.design/f/dropdown-menu.json"
+git clone [repository-url]
+cd buildappswith
 ```
 
-This approach is more reliable than manually creating the component files because it:
-1. Ensures all dependencies are properly installed
-2. Configures the components correctly with your project's path aliases
-3. Matches the expected structure that your imports are using
+### 2. Install dependencies
 
-## Additional Configuration
+```bash
+pnpm install
+```
 
-1. **Font Path**: Use absolute paths for files in the public directory:
-   ```typescript
-   // In lib/fonts.ts
-   export const fontDyslexic = localFont({
-     src: "/fonts/OpenDyslexic/OpenDyslexic-Regular.otf", // No "../public" prefix
-     variable: "--font-dyslexic",
-     display: "swap",
-   })
+### 3. Ensure correct Tailwind CSS configuration
+
+The project uses Tailwind CSS v3.4.17. If you encounter styling issues, run the fix-tailwind script:
+
+```bash
+pnpm run fix-tailwind
+```
+
+This script will:
+- Ensure the correct Tailwind CSS version (v3.4.17) is installed
+- Update the postcss.config.js to use the correct configuration
+- Clean build artifacts to ensure a fresh build
+
+### 4. Build the application
+
+```bash
+pnpm build
+```
+
+### 5. Run the deployment script
+
+Make the deployment script executable:
+
+```bash
+chmod +x scripts/deploy.sh
+```
+
+Run the deployment script:
+
+```bash
+./scripts/deploy.sh
+```
+
+### 6. Verify deployment
+
+Start the application locally to verify everything is working:
+
+```bash
+pnpm start
+```
+
+## Troubleshooting
+
+### Styling Issues
+
+If you encounter styling issues after deployment:
+
+1. Verify that you're using Tailwind CSS v3.4.17 (not v4)
+2. Check that your `postcss.config.js` contains:
+   ```js
+   module.exports = {
+     plugins: {
+       tailwindcss: {},
+       autoprefixer: {},
+     },
+   };
+   ```
+3. Remove the `.next` directory and rebuild:
+   ```bash
+   pnpm run build:clean
    ```
 
-2. **Path Aliases**: Verify tsconfig.json has the correct configuration:
-   ```json
-   "paths": {
-     "@/*": ["./*"]
-   }
-   ```
+### Build Failures
 
-3. **Vercel Deployment Settings**:
-   - Ensure the working directory is set correctly
-   - Configure the Build Command (typically `next build`)
-   - Set up environment variables properly
+If the build fails:
 
-## After Deployment
+1. Check the error messages in the console
+2. Verify that all dependencies are correctly installed
+3. Check for any conflicting PostCSS configuration files in the project
+4. Ensure environment variables are properly configured
 
-After making these changes, clear the Vercel build cache and redeploy:
-1. Go to your project in the Vercel dashboard
-2. Navigate to Settings > General
-3. Scroll down to "Build & Development Settings"
-4. Click "Clear build cache and deploy"
+## Database Synchronization
 
-This should properly resolve the component import issues.
+Before deploying to production, synchronize the database:
+
+```bash
+pnpm run db:sync
+```
+
+This ensures your database schema matches your Prisma models.
+
+## Environment Variables
+
+Ensure all required environment variables are set in your environment:
+
+1. `DATABASE_URL`: Your database connection string
+2. `NEXTAUTH_URL`: Your application URL
+3. `NEXTAUTH_SECRET`: A secure random string
+4. OAuth provider keys (GitHub, Google, etc.)
+5. Any other service-specific environment variables
+
+## Maintenance
+
+After deployment, regularly:
+
+1. Update dependencies to their latest versions
+2. Test the application thoroughly after each update
+3. Monitor application performance and error logs
