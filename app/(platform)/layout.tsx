@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: {
@@ -15,9 +17,12 @@ export default function PlatformLayout({
 }) {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* We'll add the platform header later */}
-      <main className="flex-1">{children}</main>
-      {/* We'll add the platform footer later */}
+      <SiteHeader />
+      {/* Added pt-[3.5rem] to account for the fixed header height */}
+      <main className="flex-1 pt-[3.5rem]">
+        {children}
+      </main>
+      <SiteFooter />
     </div>
   );
 }

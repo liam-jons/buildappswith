@@ -6,6 +6,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.dyslexic-mode {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -80,6 +92,10 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
+  
+  .theme {
+    --animate-aurora: aurora 8s ease-in-out infinite alternate;
+  }
 }
 
 @layer base {
@@ -88,5 +104,28 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+    transform: rotate(-5deg) scale(0.9);
+  }
+  25% {
+    background-position: 50% 100%;
+    transform: rotate(5deg) scale(1.1);
+  }
+  50% {
+    background-position: 100% 50%;
+    transform: rotate(-3deg) scale(0.95);
+  }
+  75% {
+    background-position: 50% 0%;
+    transform: rotate(3deg) scale(1.05);
+  }
+  100% {
+    background-position: 0% 50%;
+    transform: rotate(-5deg) scale(0.9);
   }
 }

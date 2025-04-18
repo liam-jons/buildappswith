@@ -1,29 +1,17 @@
 {
   "version": 2,
-  "framework": "nextjs",
   "buildCommand": "pnpm run build",
   "devCommand": "pnpm run dev",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "regions": ["sfo1"],
-  "github": {
-    "enabled": true,
-    "silent": false,
-    "autoAlias": true
-  },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ],
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "regions": ["dub1"],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "headers": [
         {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
+          "key": "X-DNS-Prefetch-Control",
+          "value": "on"
         },
         {
           "key": "X-XSS-Protection",
@@ -32,50 +20,30 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        },
-        {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=63072000; includeSubDomains; preload"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https:; frame-src 'none'; object-src 'none';"
-        }
-      ]
-    },
-    {
-      "source": "/fonts/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/images/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=604800, stale-while-revalidate=86400"
-        }
-      ]
-    },
-    {
-      "source": "/_next/static/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
         }
       ]
     }
   ],
   "env": {
-    "NEXT_PUBLIC_APP_URL": "https://buildappswith.vercel.app"
-  }
+    "NODE_ENV": "production",
+    "NEXT_PUBLIC_APP_URL": "https://buildappswith.vercel.app",
+    "NEXTAUTH_URL": "https://buildappswith.vercel.app"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_VERCEL_ENV": "production"
+    }
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "develop": false
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/system/cleanup",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
