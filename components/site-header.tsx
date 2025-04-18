@@ -192,6 +192,7 @@ export function SiteHeader() {
   const shouldReduceMotion = useReducedMotion();
   const { user, isAuthenticated, signOut } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
   
   // Use state to store navigation items
   const [navigationItems, setNavigationItems] = useState({
@@ -278,10 +279,10 @@ export function SiteHeader() {
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   
-  // Click outside handlers for dropdowns
-  useOnClickOutside(rolesDropdownRef, () => setRolesDropdownOpen(false));
-  useOnClickOutside(aboutDropdownRef, () => setAboutDropdownOpen(false));
-  useOnClickOutside(userDropdownRef, () => setUserDropdownOpen(false));
+  // Click outside handlers for dropdowns - Fix TypeScript errors by casting refs
+  useOnClickOutside(rolesDropdownRef as React.RefObject<HTMLElement>, () => setRolesDropdownOpen(false));
+  useOnClickOutside(aboutDropdownRef as React.RefObject<HTMLElement>, () => setAboutDropdownOpen(false));
+  useOnClickOutside(userDropdownRef as React.RefObject<HTMLElement>, () => setUserDropdownOpen(false));
   
   // Handle keyboard navigation for accessibility
   const handleKeyDown = (e: React.KeyboardEvent, setDropdown: React.Dispatch<React.SetStateAction<boolean>>) => {
@@ -702,8 +703,8 @@ export function SiteHeader() {
             </div>
             
             {/* About Section */}
-            <div className="mb-6">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 px-2">About us</h2>
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 px-2">About</h2>
               <motion.ul
                 className={`flex flex-col ease-in rounded-lg overflow-hidden bg-slate-100/50 dark:bg-slate-800/50`}
                 variants={containerVariants}
@@ -729,57 +730,23 @@ export function SiteHeader() {
             </div>
             
             {/* Accessibility Settings in Mobile Menu */}
-            <div className="mb-6">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 px-2">Accessibility</h2>
-              <div className="rounded-lg bg-slate-100/50 dark:bg-slate-800/50 p-4">
-                <div className="grid gap-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <MoonIcon className="h-4 w-4" />
-                      <span className="text-sm font-medium">Dark Mode</span>
-                    </div>
-                    <Switch
-                      checked={useTheme().theme === "dark"}
-                      onCheckedChange={(checked) => useTheme().setTheme(checked ? "dark" : "light")}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <svg width="15" height="15" className="h-4 w-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.60007 2.09998C3.60007 2.70003 4.08235 3.17897 4.72275 3.24449L5.00007 3.26904V2.09998H3.60007ZM5.00007 1.09998V0.0999756H3.50007V1.09998H5.00007ZM6.00007 0.0999756V1.09998L6.60007 1.09998C7.25259 1.09998 7.92308 1.20847 8.54182 1.41333L5.54064 10.4123L6.00007 11.8H8.00007V10.8H6.53384L9.45444 2.09998H10.8001V0.0999756H6.00007ZM11.8001 0.0999756V1.09998H13.8001V2.09998H11.8001V3.09998H13.8001V4.09997H11.8001V5.09997H13.8001V6.09997H11.8001V7.09997H13.8001V8.09997H11.8001V9.09997H13.8001V10.1H11.8001V11.1H13.8001V12.1H11.8001V13.1H13.8001V14.1H11.8001V14.9H14.7001V0.0999756H11.8001ZM0.900024 2.09998V14.9H3.80002V4.09997H1.90002V2.09998H0.900024Z" fill="currentColor"/></svg>
-                      <span className="text-sm font-medium">Dyslexic friendly</span>
-                    </div>
-                    <Switch
-                      id="dyslexic-mode-mobile"
-                      checked={mounted && document.documentElement.classList.contains('dyslexic-mode')}
-                      onCheckedChange={(checked) => {
-                        if (!mounted) return;
-                        
-                        if (checked) {
-                          document.body.classList.add('dyslexic-mode');
-                          document.documentElement.classList.add('dyslexic-mode');
-                        } else {
-                          document.body.classList.remove('dyslexic-mode');
-                          document.documentElement.classList.remove('dyslexic-mode');
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Authentication Section (if not authenticated) */}
             {!isAuthenticated && (
-              <div className="mt-8 flex flex-col gap-2">
-                <Link 
+              <div className="mt-6 flex flex-col space-y-4">
+                <Link
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "w-full"
+                  )}
                   href="/login"
-                  className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full justify-center")}
                 >
                   Log in
                 </Link>
-                <Link 
+                <Link
+                  className={cn(
+                    buttonVariants({ variant: "default" }),
+                    "w-full bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
+                  )}
                   href="/signup"
-                  className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full justify-center bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90")}
                 >
                   Sign up
                 </Link>

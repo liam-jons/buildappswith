@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2025-04-22
+
+### Fixed
+- Fixed import errors in landing page components
+  - Created working AI capabilities marquee component with both named and default exports
+  - Fixed Tailwind CSS warnings by improving CSS variable usage in Marquee component
+  - Updated component exports for better compatibility
+
 ## [1.0.0] - 2025-04-18
 
 ### Fixed

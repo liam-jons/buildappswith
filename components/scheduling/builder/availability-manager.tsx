@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,15 +35,8 @@ export function AvailabilityManager({
   const shouldReduceMotion = useReducedMotion();
   const [usingMockData, setUsingMockData] = useState(false);
 
-  // Fetch profile data if not provided
-  useEffect(() => {
-    if (!initialProfile) {
-      fetchProfile();
-    }
-  }, [builderId, initialProfile]);
-
   // Fetch profile data from API
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
@@ -63,7 +56,14 @@ export function AvailabilityManager({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [builderId]);
+
+  // Fetch profile data if not provided
+  useEffect(() => {
+    if (!initialProfile) {
+      fetchProfile();
+    }
+  }, [initialProfile, fetchProfile]);
 
   // Handle save profile changes
   const saveChanges = async () => {

@@ -32,6 +32,32 @@ export function TimelineContainer() {
     showModelImprovements: true,
   });
   
+  // Load more capabilities
+  const loadMoreCapabilities = useCallback(async () => {
+    if (!hasMore || isLoading) return;
+    
+    try {
+      setIsLoading(true);
+      const nextPage = page + 1;
+      
+      const result = await fetchCapabilities(nextPage, 5, {
+        domains: filters.domains,
+        showModelImprovements: filters.showModelImprovements,
+        dateRange: filters.dateRange
+      });
+      
+      setCapabilities(prev => [...prev, ...result.data]);
+      setPage(nextPage);
+      setHasMore(result.pagination.hasMore);
+      
+    } catch (err) {
+      setError('Failed to load more capabilities. Please try again later.');
+      console.error('Error loading more capabilities:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [hasMore, isLoading, page, filters]);
+  
   const observer = useRef<IntersectionObserver | null>(null);
   const lastCapabilityRef = useCallback((node: HTMLDivElement) => {
     if (isLoading) return;
@@ -44,7 +70,7 @@ export function TimelineContainer() {
     });
     
     if (node) observer.current.observe(node);
-  }, [isLoading, hasMore]);
+  }, [isLoading, hasMore, loadMoreCapabilities]);
   
   // Initial data fetch
   useEffect(() => {
@@ -106,32 +132,6 @@ export function TimelineContainer() {
     
     applyFilters();
   }, [filters]);
-  
-  // Load more capabilities
-  const loadMoreCapabilities = async () => {
-    if (!hasMore || isLoading) return;
-    
-    try {
-      setIsLoading(true);
-      const nextPage = page + 1;
-      
-      const result = await fetchCapabilities(nextPage, 5, {
-        domains: filters.domains,
-        showModelImprovements: filters.showModelImprovements,
-        dateRange: filters.dateRange
-      });
-      
-      setCapabilities(prev => [...prev, ...result.data]);
-      setPage(nextPage);
-      setHasMore(result.pagination.hasMore);
-      
-    } catch (err) {
-      setError('Failed to load more capabilities. Please try again later.');
-      console.error('Error loading more capabilities:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
   
   // Handle filter changes
   const handleFilterChange = (newFilters: Partial<TimelineFilters>) => {

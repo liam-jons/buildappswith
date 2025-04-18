@@ -1,162 +1,121 @@
-import React from 'react';
-import Marquee from "@/components/magicui/marquee";
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
+import { Marquee } from "@/components/magicui/marquee";
 import { cn } from "@/lib/utils";
+import TextShimmer from "@/components/magicui/text-shimmer";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 
-// AI capabilities - real, practical use cases
-const aiCanDo = [
-  {
-    title: "Generate Images",
-    description: "Create custom illustrations and visuals from text descriptions",
-  },
-  {
-    title: "Summarize Documents",
-    description: "Extract key points from long-form content quickly",
-  },
-  {
-    title: "Write First Drafts",
-    description: "Produce initial versions of articles, emails, and reports",
-  },
-  {
-    title: "Translate Languages",
-    description: "Convert text between multiple languages with high accuracy",
-  },
-  {
-    title: "Analyze Data",
-    description: "Identify patterns and insights from structured information",
-  },
-  {
-    title: "Generate Code",
-    description: "Create working code snippets from natural language instructions",
-  },
-  {
-    title: "Answer Questions",
-    description: "Respond to queries with factual information from learned data",
-  },
-  {
-    title: "Enhance Images",
-    description: "Upscale, restore, and modify existing visuals",
-  },
+// AI capabilities data
+const aiCapabilities = [
+  "Natural Language Processing",
+  "Image Generation",
+  "Code Assistance",
+  "Data Analysis",
+  "Language Translation",
+  "Speech Recognition",
+  "Content Summarization",
+  "Sentiment Analysis",
+  "Recommendation Systems",
+  "Process Automation"
 ];
 
-// AI limitations - dispelling myths
-const aiCannotDo = [
-  {
-    title: "Replace Human Judgment",
-    description: "AI cannot substitute for ethical decision-making or wisdom",
-  },
-  {
-    title: "Guarantee Complete Accuracy",
-    description: "AI can make mistakes and produce incorrect information",
-  },
-  {
-    title: "Feel Emotions",
-    description: "AI doesn't actually experience feelings or consciousness",
-  },
-  {
-    title: "Understand Context Perfectly",
-    description: "AI may miss subtle cultural or contextual nuances",
-  },
-  {
-    title: "Replace Domain Experts",
-    description: "AI complements but doesn't replace specialized human knowledge",
-  },
-  {
-    title: "Solve Every Problem",
-    description: "Some challenges still require human creativity and insight",
-  },
-  {
-    title: "Learn Without Data",
-    description: "AI relies on existing information and patterns to function",
-  },
-  {
-    title: "Make Your Business Successful",
-    description: "AI is a tool, not a substitute for good business strategy",
-  },
+// AI limitations data
+const aiLimitations = [
+  "Truly understand context",
+  "Have real-world experience",
+  "Feel emotions",
+  "Make ethical judgments",
+  "Exercise common sense",
+  "Adapt to novel situations",
+  "Be accountable for decisions",
+  "Have consciousness",
+  "Replace human creativity",
+  "Possess general intelligence"
 ];
 
-const CapabilityCard = ({
-  title,
-  description,
-  className,
-}: {
-  title: string;
-  description: string;
-  className?: string;
-}) => {
+export function AiCapabilitiesMarquee() {
   return (
-    <div
-      className={cn(
-        "relative h-full w-80 cursor-pointer overflow-hidden rounded-xl border p-6",
-        // light styles
-        "border-green-600/20 bg-green-600/5 hover:bg-green-600/10",
-        // dark styles
-        "dark:border-green-400/20 dark:bg-green-400/10 dark:hover:bg-green-400/15",
-        className
-      )}
-    >
-      <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{description}</p>
-    </div>
-  );
-};
-
-const LimitationCard = ({
-  title,
-  description,
-  className,
-}: {
-  title: string;
-  description: string;
-  className?: string;
-}) => {
-  return (
-    <div
-      className={cn(
-        "relative h-full w-80 cursor-pointer overflow-hidden rounded-xl border p-6",
-        // light styles
-        "border-red-600/20 bg-red-600/5 hover:bg-red-600/10",
-        // dark styles
-        "dark:border-red-400/20 dark:bg-red-400/10 dark:hover:bg-red-400/15",
-        className
-      )}
-    >
-      <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{description}</p>
-    </div>
-  );
-};
-
-export default function AiCapabilitiesMarquee() {
-  return (
-    <section id="ai-capabilities" className="py-14 relative">
-      <div className="container mx-auto text-center">
-        {/* Main heading removed as requested */}
-      </div>
-      
-      <div className="relative flex w-full flex-col items-center justify-center overflow-hidden gap-12">
-        {/* First Marquee - Capabilities */}
-        <div className="container">
-          <h3 className="text-2xl md:text-3xl font-bold mb-4 text-center">How can AI help you today</h3>
-        </div>
-        <Marquee className="[--duration:60s]" pauseOnHover>
-          {aiCanDo.map((capability, idx) => (
-            <CapabilityCard key={idx} {...capability} />
-          ))}
-        </Marquee>
+    <section className="py-20 overflow-hidden">
+      <div className="container px-4 mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <TextShimmer className="text-3xl md:text-4xl font-bold mb-6">
+            The Power of AI
+          </TextShimmer>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            AI is rapidly evolving, transforming how we build applications and solve problems.
+            Understanding its capabilities and limitations is key to using it effectively.
+          </p>
+        </motion.div>
         
-        {/* Second Marquee - Limitations */}
-        <div className="container mt-4">
-          <h3 className="text-2xl md:text-3xl font-bold mb-4 text-center">What can't AI do (yet)?</h3>
+        {/* What AI Can Do */}
+        <div className="mb-16">
+          <h3 className="text-2xl md:text-3xl font-bold mb-4 text-center">What can AI do today?</h3>
+          <div className="relative">
+            <Marquee
+              pauseOnHover
+              className="py-4"
+              reverse
+            >
+              {aiCapabilities.map((capability, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "mx-4 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-6 py-3",
+                    "transition-all hover:border-gray-300 dark:hover:border-gray-700"
+                  )}
+                >
+                  <span className="font-medium">{capability}</span>
+                </div>
+              ))}
+            </Marquee>
+          </div>
         </div>
-        <Marquee reverse className="[--duration:55s]" pauseOnHover>
-          {aiCannotDo.map((limitation, idx) => (
-            <LimitationCard key={idx} {...limitation} />
-          ))}
-        </Marquee>
         
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-background"></div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-background"></div>
+        {/* What AI Can't Do */}
+        <div className="mb-16">
+          <h3 className="text-2xl md:text-3xl font-bold mb-4 text-center">What can&apos;t AI do (yet)?</h3>
+          <div className="relative">
+            <Marquee
+              pauseOnHover
+              className="py-4"
+            >
+              {aiLimitations.map((limitation, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "mx-4 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-6 py-3",
+                    "transition-all hover:border-gray-300 dark:hover:border-gray-700"
+                  )}
+                >
+                  <span className="font-medium">{limitation}</span>
+                </div>
+              ))}
+            </Marquee>
+          </div>
+        </div>
+        
+        {/* CTA */}
+        <div className="text-center mt-10">
+          <Button variant="outline" className="gap-1 rounded-lg ease-in-out" asChild>
+            <Link href="/timeline">
+              <span>Explore AI Timeline</span>
+              <ArrowRightIcon className="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-1" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );
 }
+
+export default AiCapabilitiesMarquee;
