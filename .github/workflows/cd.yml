@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -81,8 +81,21 @@ jobs:
             
             Deployed at: `${{ github.event.repository.updated_at }}`
 
+      - name: Database Synchronization
+        if: github.ref_name == 'main'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "Synchronizing database schema..."
+          pnpm run prisma:generate
+          pnpm run db:sync
+          echo "Database synchronization completed."
+          
       - name: Update CHANGELOG with deployment
         if: github.ref_name == 'main'
         run: |
-          echo "To update CHANGELOG manually:"
-          echo "[$(date +%Y-%m-%d)] - [$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')] - Deployed to production"
+          VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/["\,]//g' | tr -d '[[:space:]]')
+          DATE=$(date +%Y-%m-%d)
+          CHANGELOG_ENTRY="[$DATE] - [$VERSION] - Deployed to production"
+          echo "$CHANGELOG_ENTRY" >> CHANGELOG.md
+          echo "Added to CHANGELOG.md: $CHANGELOG_ENTRY"
