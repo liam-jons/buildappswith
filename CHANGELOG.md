@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
   - Created proper auth module exports in `/lib/auth/index.ts`
   - Fixed missing `authOptions` export required by API routes
   - Resolved build failures in Vercel deployment
+- Fixed metadata errors in client components
+  - Moved metadata from profile-settings page to layout component
+  - Removed client-side metadata exports to fix Vercel deployment errors
 
 ## [1.0.1] - 2025-04-22
 
