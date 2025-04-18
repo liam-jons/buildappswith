@@ -13,13 +13,17 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useSearchParams, useRouter } from "next/navigation";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
 export const userAuthSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
   password: z.string().optional(),
 });
 type FormData = z.infer<typeof userAuthSchema>;
@@ -35,32 +39,62 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
 
   async function onSubmit(data: FormData) {
     setIsLoading(true);
 
-    // TODO: Add signin using preferred provider
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const result = await signIn("email", {
+        email: data.email,
+        redirect: false,
+        callbackUrl,
+      });
 
-    const signInResult = { ok: true };
-    setIsLoading(false);
+      if (!result?.ok) {
+        return toast.error("Something went wrong.", {
+          description: "Your sign in request failed. Please try again.",
+        });
+      }
 
-    if (!signInResult?.ok) {
-      return toast.error("Something went wrong.", {
+      toast.success("Check your email", {
+        description: "We sent you a login link. Be sure to check your spam too.",
+      });
+    } catch (error) {
+      toast.error("Something went wrong.", {
         description: "Your sign in request failed. Please try again.",
       });
+    } finally {
+      setIsLoading(false);
     }
-
-    return toast.success("Check your email", {
-      description: "We sent you a login link. Be sure to check your spam too.",
-    });
   }
 
   async function onSignInGithub() {
     setIsGitHubLoading(true);
-    // TODO: Add signin using preferred provider
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsGitHubLoading(false);
+
+    try {
+      const result = await signIn("github", {
+        callbackUrl,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+
+      if (result?.url) {
+        router.push(result.url);
+        return;
+      }
+    } catch (error) {
+      toast.error("Authentication Error", {
+        description: "There was a problem signing in with GitHub. Please try again.",
+      });
+    } finally {
+      setIsGitHubLoading(false);
+    }
   }
 
   return (
@@ -73,7 +107,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Email</FormLabel> */}
                   <FormControl>
                     <Input
                       id="email"
@@ -86,7 +119,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                       {...field}
                     />
                   </FormControl>
-                  {/* <FormDescription>This is your email address.</FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -96,9 +128,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               type="submit"
               className={cn(buttonVariants())}
               disabled={isLoading || isGitHubLoading}
-              onClick={() => {
-                // onSignIn();
-              }}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign In with Email
@@ -119,9 +148,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       <button
         type="button"
         className={cn(buttonVariants({ variant: "outline" }))}
-        onClick={() => {
-          onSignInGithub();
-        }}
+        onClick={onSignInGithub}
         disabled={isLoading || isGitHubLoading}
       >
         {isGitHubLoading ? (
@@ -129,7 +156,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         ) : (
           <GitHubLogoIcon className="mr-2 h-4 w-4" />
         )}{" "}
-        Github
+        GitHub
       </button>
     </div>
   );

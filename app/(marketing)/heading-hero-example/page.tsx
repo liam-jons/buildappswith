@@ -8,6 +8,7 @@ import { useRef } from "react";
 import AnimatedHeading from "@/components/custom/animated-heading";
 import TextShimmer from "@/components/magicui/text-shimmer";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HeadingHeroExample() {
   const ref = useRef(null);
@@ -84,16 +85,24 @@ export default function HeadingHeroExample() {
               colorTo="var(--color-two)"
             />
 
-            <img
-              src="/hero-dark.png"
-              alt="Hero Image"
-              className="hidden relative w-full h-full rounded-[inherit] border object-contain dark:block"
-            />
-            <img
-              src="/hero-light.png"
-              alt="Hero Image"
-              className="block relative w-full h-full  rounded-[inherit] border object-contain dark:hidden"
-            />
+            <div className="hidden relative w-full h-full rounded-[inherit] border object-contain dark:block">
+              <Image
+                src="/hero-dark.png"
+                alt="Hero Image"
+                width={1920}
+                height={1080}
+                className="w-full h-auto rounded-[inherit]"
+              />
+            </div>
+            <div className="block relative w-full h-full rounded-[inherit] border object-contain dark:hidden">
+              <Image
+                src="/hero-light.png"
+                alt="Hero Image"
+                width={1920}
+                height={1080}
+                className="w-full h-auto rounded-[inherit]"
+              />
+            </div>
           </div>
         </div>
       </section>

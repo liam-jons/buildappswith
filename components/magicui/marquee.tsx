@@ -10,7 +10,7 @@ interface MarqueeProps {
   [key: string]: any;
 }
 
-export default function Marquee({
+export function Marquee({
   className,
   reverse,
   pauseOnHover = false,
@@ -23,13 +23,20 @@ export default function Marquee({
     <div
       {...props}
       className={cn(
-        "group flex overflow-hidden p-2 [--duration:40s] [--gap:1rem] [gap:var(--gap)]",
+        "group flex overflow-hidden p-2",
+        // Fix TailwindCSS warnings by using inline styles instead of utility classes with variables
+        "[--duration:40s] [--gap:1rem]",
+        "[gap:var(--gap)]",
         {
           "flex-row": !vertical,
           "flex-col": vertical,
         },
         className
       )}
+      style={{
+        '--duration': '40s',
+        '--gap': '1rem'
+      } as React.CSSProperties}
     >
       {Array(repeat)
         .fill(0)
@@ -49,3 +56,6 @@ export default function Marquee({
     </div>
   );
 }
+
+// Export as named export and default export for compatibility
+export default Marquee;

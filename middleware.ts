@@ -1,39 +1,80 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { auth } from '@/lib/auth/auth-config';
+/**
+ * Middleware for Buildappswith Platform
+ * Version: 0.1.64
+ * 
+ * Implements global middleware for the Next.js application including:
+ * - API route protection with rate limiting
+ * - CSRF protection for mutation operations
+ * - Security headers for all responses
+ */
 
-export async function middleware(req: NextRequest) {
-  const session = await auth();
+import { NextRequest, NextResponse } from 'next/server';
+import { csrfProtection } from './lib/csrf';
+import { rateLimit } from './lib/rate-limit';
 
-  // If no session exists, check if the route is protected
-  if (!session?.user) {
-    const protectedPaths = ['/platform/', '/profile/', '/dashboard/'];
-    const isProtected = protectedPaths.some(path => req.nextUrl.pathname.startsWith(path));
+// Define paths that require different rate limits
+const apiPaths = {
+  auth: /^\/api\/auth\/.*/,
+  timeline: /^\/api\/timeline\/.*/,
+  profiles: /^\/api\/builders\/.*/,
+  marketplace: /^\/api\/marketplace\/.*/,
+};
 
-    // If it's a protected path without a session, redirect to login
-    if (isProtected) {
-      const loginUrl = new URL('/login', req.url);
-      // Add returnTo parameter to redirect back after login
-      loginUrl.searchParams.set('returnTo', req.nextUrl.pathname);
-      return NextResponse.redirect(loginUrl);
-    }
+/**
+ * Determine rate limit type based on the request path
+ * @param pathname Request path
+ * @returns Rate limit type
+ */
+function getRateLimitType(pathname: string) {
+  if (apiPaths.auth.test(pathname)) return 'auth';
+  if (apiPaths.timeline.test(pathname)) return 'timeline';
+  if (apiPaths.profiles.test(pathname)) return 'profiles';
+  if (apiPaths.marketplace.test(pathname)) return 'marketplace';
+  return 'api'; // default
+}
+
+/**
+ * Main middleware function
+ * @param request Next.js request
+ */
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  // Only apply middleware to API routes - this check is redundant with the matcher
+  // but we keep it for additional safety
+  if (!pathname.startsWith('/api/')) {
+    return NextResponse.next();
   }
-
-  // If session exists or the route is not protected, allow the request to proceed
+  
+  // Skip CSRF check for authentication endpoints
+  const skipCsrf = pathname.startsWith('/api/auth/');
+  
+  // Apply CSRF protection for non-GET methods
+  if (!skipCsrf && !['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(request.method)) {
+    const csrfResult = csrfProtection(request);
+    // If CSRF validation fails, return the error response
+    if (csrfResult) return csrfResult;
+  }
+  
+  // Apply rate limiting based on the path
+  const limiterType = getRateLimitType(pathname);
+  const rateLimiter = rateLimit({ type: limiterType });
+  
+  // Execute rate limiter
+  const rateLimitResult = await rateLimiter(request);
+  if (rateLimitResult.status === 429) {
+    return rateLimitResult;
+  }
+  
   return NextResponse.next();
 }
 
-// Keep your existing config matcher
+/**
+ * Configure which paths this middleware applies to
+ */
 export const config = {
   matcher: [
-    // Apply middleware to these routes
-    "/platform/:path*",
-    "/profile/:path*",
-    "/dashboard/:path*",
-
-    // Exclude specific paths using negative lookahead if needed,
-    // but the logic above handles redirection based on protectedPaths.
-    // The matcher ensures the middleware runs for relevant paths.
-    // Example: '/((?!api|_next/static|_next/image|favicon.ico).*)'
+    // ONLY apply to API routes - not to ANY other routes
+    '/api/:path*'
   ],
 };

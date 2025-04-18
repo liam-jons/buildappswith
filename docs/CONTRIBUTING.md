@@ -52,6 +52,18 @@ Enhancement suggestions are welcome! When suggesting an enhancement:
 2. Install dependencies with `npm install`
 3. Start the development server with `npm run dev`
 
+### Project Structure
+
+The Buildappswith project is organized with the following directory structure:
+
+- `/app` - Next.js application files (pages, routes, etc.)
+- `/components` - Reusable React components
+- `/lib` - Utility functions and shared code
+- `/public` - Static assets
+- `/tests` - Testing infrastructure
+  - `/tests/stagehand-tests` - Stagehand automated testing
+- `/docs` - Project documentation
+
 ### Coding Standards
 
 - **TypeScript**: Use TypeScript for all new code
@@ -106,9 +118,40 @@ export function ComponentName({
 
 ### Testing
 
+#### Component and Unit Testing
+
 - Write unit tests for utility functions
 - Write component tests for UI components
 - Ensure all tests pass before submitting a pull request
+
+#### Automated UI Testing with Stagehand
+
+We use Stagehand for automated browser testing. The tests are located in the `/tests/stagehand-tests` directory.
+
+To run Stagehand tests:
+
+1. Navigate to the Stagehand tests directory:
+   ```bash
+   cd tests/stagehand-tests
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys
+   ```
+
+4. Run the tests:
+   ```bash
+   npm start
+   ```
+
+For more information, see the README.md in the `/tests/stagehand-tests` directory.
 
 ### Documentation
 

@@ -24,21 +24,21 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section id="testimonials" className="py-16 md:py-24 bg-secondary"> {/* Added background */}
+    <section id="testimonials" className="py-16 md:py-24 bg-[hsl(var(--secondary))]"> {/* Updated for Tailwind v4 */}
       <div className="container mx-auto px-6 md:px-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-          Community Wins
+          Take a look at what others are doing with AI
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-card p-6 rounded-lg shadow-md">
+            <div key={index} className="bg-[hsl(var(--card))] p-6 rounded-lg shadow-md">
               {/* Optional Avatar */}
               {/* <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full mx-auto mb-4" /> */}
-              <blockquote className="text-muted-foreground italic mb-4">
+              <blockquote className="text-[hsl(var(--muted-foreground))] italic mb-4">
                 &quot;{testimonial.quote}&quot;
               </blockquote>
               <p className="text-center font-semibold">{testimonial.name}</p>
-              <p className="text-center text-sm text-muted-foreground">{testimonial.title}</p>
+              <p className="text-center text-sm text-[hsl(var(--muted-foreground))]">{testimonial.title}</p>
             </div>
           ))}
         </div>

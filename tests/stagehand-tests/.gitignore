@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Stagehand specific
+cache.json
