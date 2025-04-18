@@ -17,17 +17,11 @@ import { useAuth } from "@/lib/auth/hooks";
 import { UserRole } from "@/lib/auth/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-
-export const metadata: Metadata = {
-  title: "Profile | Buildappswith",
-  description: "Manage your profile",
-};
 
 const profileSchema = z.object({
   name: z.string().min(2, {
