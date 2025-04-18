@@ -27,7 +27,7 @@ const TestimonialsSection = () => {
     <section id="testimonials" className="py-16 md:py-24 bg-secondary"> {/* Added background */}
       <div className="container mx-auto px-6 md:px-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-          Community Wins
+          Take a look at what others are doing with AI
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (

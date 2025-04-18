@@ -176,13 +176,10 @@ export default function CallToActionSection() {
               </div>
               <div className="z-10 mt-4 flex flex-col items-center text-center text-primary">
                 <h1 className="text-3xl font-bold lg:text-4xl">
-                  Democratize AI for Everyone
+                  The future starts with a more efficient you
                 </h1>
-                <p className="mt-2">
-                  Learn, build, or find someone to build for you.
-                </p>
                 <Link
-                  href="#"
+                  href="/marketplace"
                   className={cn(
                     buttonVariants({
                       size: "lg",
@@ -191,7 +188,7 @@ export default function CallToActionSection() {
                     "group mt-4 rounded-[2rem] px-6"
                   )}
                 >
-                  Get Started
+                  Explore Marketplace
                   <ChevronRight className="ml-1 size-4 transition-all duration-300 ease-out group-hover:translate-x-1" />
                 </Link>
               </div>

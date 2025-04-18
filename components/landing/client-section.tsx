@@ -6,7 +6,7 @@ export default function ClientSection() {
     >
       <div className="py-14">
         <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-          <h2 className="text-center text-sm font-semibold text-gray-600">
+          <h2 className="text-center text-lg font-semibold text-gray-600">
           BUILDING A TRUSTED ECOSYSTEM FOR AI LITERACY
           </h2>
           <div className="mt-6">
@@ -37,6 +37,26 @@ export default function ClientSection() {
               <li>
                 <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
                   <span className="font-bold">Loveable</span>
+                </div>
+              </li>
+              <li>
+                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
+                  <span className="font-bold">Perplexity</span>
+                </div>
+              </li>
+              <li>
+                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
+                  <span className="font-bold">Vercel</span>
+                </div>
+              </li>
+              <li>
+                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
+                  <span className="font-bold">Supabase</span>
+                </div>
+              </li>
+              <li>
+                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
+                  <span className="font-bold">Neon</span>
                 </div>
               </li>
             </ul>
