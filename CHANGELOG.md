@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2025-04-23
+
+### Fixed
+- Fixed authentication module issues preventing successful build
+  - Created proper auth module exports in `/lib/auth/index.ts`
+  - Fixed missing `authOptions` export required by API routes
+  - Resolved build failures in Vercel deployment
+
 ## [1.0.1] - 2025-04-22
 
 ### Fixed
