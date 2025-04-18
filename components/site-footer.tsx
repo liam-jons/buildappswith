@@ -1,3 +1,5 @@
+"use client";
+
 import { DiscordLogoIcon, TwitterLogoIcon, GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -12,16 +14,16 @@ const footerNavs = [
         name: "Builder Marketplace",
       },
       {
-        href: "/learning",
-        name: "AI Learning Hub",
+        href: "/how-it-works",
+        name: "How It Works",
       },
       {
-        href: "/ai-timeline",
-        name: "What AI Can/Can't Do",
+        href: "/ai-capabilities",
+        name: "AI Capabilities",
       },
       {
-        href: "/community",
-        name: "Community Exchange",
+        href: "/toolkit",
+        name: "Toolkit",
       },
     ],
   },
@@ -46,16 +48,16 @@ const footerNavs = [
     label: "Resources",
     items: [
       {
-        href: "/blog",
-        name: "Blog",
-      },
-      {
         href: "/weekly-sessions",
         name: "Weekly Sessions",
       },
       {
         href: "/faq",
         name: "FAQ",
+      },
+      {
+        href: "/community",
+        name: "Community",
       },
     ],
   },
@@ -105,6 +107,8 @@ const footerSocials = [
   },
 ];
 
+
+
 export function SiteFooter() {
   return (
     <footer>
@@ -113,10 +117,10 @@ export function SiteFooter() {
           <div className="mb-12 flex-col flex gap-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                Buildappswith
+                BW
               </span>
             </Link>
-            <p className="max-w-xs">Democratizing AI application development through accessible education and transparent validation</p>
+            <p className="max-w-xs">Democratising AI application development through accessible education and transparent validation</p>
             <div className="mt-4">
               <Link href="/for-clients" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mr-2")}>
                 For Clients
@@ -164,11 +168,12 @@ export function SiteFooter() {
                 <span className="sr-only">{social.name}</span>
               </Link>
             ))}
+
           </div>
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
             Copyright © {new Date().getFullYear()}{" "}
             <Link href="/" className="cursor-pointer">
-              Buildappswith
+              BW
             </Link>
             . All Rights Reserved.
           </span>

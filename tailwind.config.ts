@@ -113,6 +113,10 @@ const config = {
           from: { transform: "translateY(0)" },
           to: { transform: "translateY(calc(-100% - var(--gap)))" },
         },
+        aurora: {
+          from: { backgroundPosition: "0% 50%" },
+          to: { backgroundPosition: "100% 50%" },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -124,6 +128,7 @@ const config = {
         shimmer: "shimmer 8s infinite",
         marquee: "marquee var(--duration) infinite linear",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+        aurora: "aurora 10s ease infinite alternate"
       },
     },
   },
