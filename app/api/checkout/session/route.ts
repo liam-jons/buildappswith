@@ -3,7 +3,26 @@ import { createBookingCheckoutSession } from "@/lib/stripe/stripe-server";
 import { NextRequest, NextResponse } from "next/server";
 
 // Mock builder data - In a real implementation, this would come from a database
-const builders = {
+type SessionType = {
+  name: string;
+  description: string;
+  duration: number; // minutes
+  price: number; // USD
+};
+
+type Builder = {
+  id: string;
+  name: string;
+  sessionTypes: {
+    [key: string]: SessionType;
+  };
+};
+
+type BuildersDirectory = {
+  [key: string]: Builder;
+};
+
+const builders: BuildersDirectory = {
   "builder-id": {
     id: "builder-id",
     name: "Aisha Builder",
@@ -37,7 +56,20 @@ export async function POST(req: NextRequest) {
     }
     
     // Get the user from the session
-    const user = session.user;
+    const user: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      stripeCustomerId?: string;
+    } = session.user;
+    
+    // Ensure user has an ID
+    if (!user.id) {
+      return NextResponse.json(
+        { error: "User ID not found" },
+        { status: 400 }
+      );
+    }
     
     // Get the request body
     const {
@@ -46,6 +78,12 @@ export async function POST(req: NextRequest) {
       startTime,
       endTime,
       timeZone,
+    }: {
+      builderId: string;
+      sessionType: string;
+      startTime: string;
+      endTime: string;
+      timeZone: string;
     } = await req.json();
     
     // Validate required fields
@@ -84,11 +122,11 @@ export async function POST(req: NextRequest) {
       endTime,
       timeZone,
       customerId: user.stripeCustomerId,
-      userId: user.id,
+      userId: user.id, // We've already checked user.id is defined above
       userEmail: user.email || "",
       userName: user.name,
-      successUrl: `${req.nextUrl.origin}/bookings/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${req.nextUrl.origin}/bookings/cancel`,
+      successUrl: `${req.nextUrl.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${req.nextUrl.origin}/payment/cancel`,
     });
     
     // Return the checkout session ID

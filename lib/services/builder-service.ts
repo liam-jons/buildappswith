@@ -1,6 +1,10 @@
 import { db } from '@/lib/db';
 import { UserRole } from '@/lib/auth/types';
-import { mapValidationTierNumber } from './builder-profile-service';
+import { mapValidationTierNumber } from '@/lib/services/builder-profile-service';
+import { portfolioItemsToPrisma, socialLinksToPrisma } from '@/lib/types/builder';
+import { getSocialLinks } from '@/lib/prisma-types';
+import PrismaExtensions from '@/lib/prisma-extensions';
+import '@/lib/prisma-types';
 
 /**
  * Create a new prototype builder profile for Liam Jones
@@ -40,7 +44,7 @@ export async function createPrototypeBuilderProfile() {
         validationTier: 3, // Expert level
         featuredBuilder: true,
         availableForHire: true,
-        portfolioItems: [
+        portfolioItems: portfolioItemsToPrisma([
           {
             id: '1',
             title: 'AI-Powered Learning Platform',
@@ -119,13 +123,13 @@ export async function createPrototypeBuilderProfile() {
             projectUrl: 'https://example.com/content-ai',
             createdAt: new Date('2024-03-05')
           }
-        ],
-        socialLinks: {
+        ]),
+        socialLinks: socialLinksToPrisma({
           website: 'https://buildappswith.com',
           linkedin: 'https://linkedin.com/in/liamjones',
           github: 'https://github.com/liamjones',
           twitter: 'https://twitter.com/liamjones'
-        }
+        })
       }
     });
 
@@ -205,7 +209,7 @@ export async function createPrototypeBuilderProfile() {
       validationTier: 3, // Expert level
       featuredBuilder: true,
       availableForHire: true,
-      portfolioItems: [
+      portfolioItems: portfolioItemsToPrisma([
         {
           id: '1',
           title: 'AI-Powered Learning Platform',
@@ -284,13 +288,13 @@ export async function createPrototypeBuilderProfile() {
           projectUrl: 'https://example.com/content-ai',
           createdAt: new Date('2024-03-05')
         }
-      ],
-      socialLinks: {
+      ]),
+      socialLinks: socialLinksToPrisma({
         website: 'https://buildappswith.com',
         linkedin: 'https://linkedin.com/in/liamjones',
         github: 'https://github.com/liamjones',
         twitter: 'https://twitter.com/liamjones'
-      }
+      })
     }
   });
 
@@ -349,8 +353,8 @@ export async function getAllBuilderProfiles() {
     availability: {
       status: builder.availableForHire ? 'available' : 'unavailable'
     },
-    portfolio: builder.portfolioItems,
-    socialLinks: builder.socialLinks || {}
+    portfolio: builder.portfolioItems || [],
+    socialLinks: getSocialLinks(builder) || {}
   }));
 }
 
@@ -398,7 +402,7 @@ export async function getBuildersByValidationTier(tier: number) {
     availability: {
       status: builder.availableForHire ? 'available' : 'unavailable'
     },
-    portfolio: builder.portfolioItems,
-    socialLinks: builder.socialLinks || {}
+    portfolio: builder.portfolioItems || [],
+    socialLinks: getSocialLinks(builder) || {}
   }));
 }

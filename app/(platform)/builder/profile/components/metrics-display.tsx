@@ -2,17 +2,7 @@
 
 import { BuilderMetrics } from '@/lib/types/builder';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Particles } from '@/components/magicui/particles';
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from 'recharts';
+import Particles from '@/components/magicui/particles';
 import { ArrowDown, ArrowUp, Star } from 'lucide-react';
 
 type MetricsDisplayProps = {
@@ -20,34 +10,6 @@ type MetricsDisplayProps = {
 };
 
 export function MetricsDisplay({ metrics }: MetricsDisplayProps) {
-  // Format the metrics into chart data
-  const chartData = [
-    {
-      name: 'Success Rate',
-      value: metrics.successRate,
-      average: 85, // Platform average (could be fetched from API)
-      fill: '#4f46e5', // primary color
-    },
-    {
-      name: 'On-Time Delivery',
-      value: metrics.onTimeDelivery,
-      average: 80,
-      fill: '#8b5cf6', // purple
-    },
-    {
-      name: 'Client Satisfaction',
-      value: metrics.clientSatisfaction * 20, // Convert 1-5 to percentage
-      average: 75,
-      fill: '#ec4899', // pink
-    },
-    {
-      name: 'Business Impact',
-      value: metrics.businessImpact,
-      average: 70,
-      fill: '#f59e0b', // amber
-    }
-  ];
-
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -92,7 +54,7 @@ export function MetricsDisplay({ metrics }: MetricsDisplayProps) {
         />
       </div>
       
-      {/* Comparative Chart */}
+      {/* Simplified Performance Comparison */}
       <Card>
         <CardHeader>
           <CardTitle>Performance vs. Platform Average</CardTitle>
@@ -101,35 +63,31 @@ export function MetricsDisplay({ metrics }: MetricsDisplayProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.1} />
-                <XAxis 
-                  dataKey="name" 
-                  tick={{ fill: 'var(--foreground)' }}
-                />
-                <YAxis 
-                  domain={[0, 100]} 
-                  tick={{ fill: 'var(--foreground)' }}
-                  tickFormatter={(value) => `${value}%`}
-                />
-                <Tooltip 
-                  formatter={(value) => [`${value}%`, undefined]}
-                  contentStyle={{ 
-                    backgroundColor: 'var(--background)',
-                    borderColor: 'var(--border)',
-                    borderRadius: '0.5rem'
-                  }}
-                />
-                <Legend />
-                <Bar dataKey="value" name="Builder" fill="var(--primary)" />
-                <Bar dataKey="average" name="Platform Average" fill="var(--muted-foreground)" />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="space-y-6">
+            <ProgressBar 
+              label="Success Rate" 
+              value={metrics.successRate} 
+              average={85} 
+              color="bg-indigo-500" 
+            />
+            <ProgressBar 
+              label="On-Time Delivery" 
+              value={metrics.onTimeDelivery} 
+              average={80} 
+              color="bg-purple-500" 
+            />
+            <ProgressBar 
+              label="Client Satisfaction" 
+              value={metrics.clientSatisfaction * 20} 
+              average={75} 
+              color="bg-pink-500" 
+            />
+            <ProgressBar 
+              label="Business Impact" 
+              value={metrics.businessImpact} 
+              average={70} 
+              color="bg-amber-500" 
+            />
           </div>
         </CardContent>
       </Card>
@@ -179,5 +137,44 @@ function MetricCard({ title, value, description, trend, color, icon }: MetricCar
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+type ProgressBarProps = {
+  label: string;
+  value: number;
+  average: number;
+  color: string;
+};
+
+function ProgressBar({ label, value, average, color }: ProgressBarProps) {
+  return (
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <div className="text-sm font-medium">{label}</div>
+        <div className="flex space-x-4">
+          <div className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-muted-foreground mr-2"></div>
+            <span className="text-sm">Avg: {average}%</span>
+          </div>
+          <div className="flex items-center">
+            <div className={`w-3 h-3 rounded-full ${color} mr-2`}></div>
+            <span className="text-sm font-medium">{value}%</span>
+          </div>
+        </div>
+      </div>
+      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+        <div className="relative w-full h-full">
+          <div 
+            className="absolute h-full bg-muted-foreground" 
+            style={{ width: `${average}%` }}
+          ></div>
+          <div 
+            className={`absolute h-full ${color}`} 
+            style={{ width: `${value}%` }}
+          ></div>
+        </div>
+      </div>
+    </div>
   );
 }

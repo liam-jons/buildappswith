@@ -104,6 +104,38 @@ pnpm run db:sync
 
 This ensures your database schema matches your Prisma models.
 
+## Stripe Payment Integration
+
+The platform uses Stripe for processing payments. Follow these steps to set up Stripe:
+
+1. **Create a Stripe Account**:
+   - Sign up at [stripe.com](https://stripe.com) if you don't have an account
+   - Switch to test mode for development/staging environments
+
+2. **Get API Keys**:
+   - Navigate to Developers > API keys in your Stripe dashboard
+   - Copy your publishable key and secret key
+   - Add these to your environment variables
+
+3. **Set Up Webhook Endpoint**:
+   - In the Stripe dashboard, go to Developers > Webhooks
+   - Add an endpoint with URL: `https://your-domain.com/api/stripe/webhook`
+   - Subscribe to these events:
+     - `checkout.session.completed`
+     - `payment_intent.succeeded`
+     - `payment_intent.payment_failed`
+   - Copy the webhook signing secret and add it to your environment variables
+
+4. **Test the Integration**:
+   - In development, use Stripe's test cards (e.g., `4242 4242 4242 4242`)
+   - Test the entire booking flow from selecting a session to payment confirmation
+   - Check for webhook event processing by monitoring your application logs
+
+5. **Go Live**:
+   - When ready for production, switch Stripe to live mode
+   - Update your environment variables with live API keys
+   - Update the webhook endpoint to use your production URL
+
 ## Environment Variables
 
 Ensure all required environment variables are set in your environment:
@@ -112,7 +144,11 @@ Ensure all required environment variables are set in your environment:
 2. `NEXTAUTH_URL`: Your application URL
 3. `NEXTAUTH_SECRET`: A secure random string
 4. OAuth provider keys (GitHub, Google, etc.)
-5. Any other service-specific environment variables
+5. Stripe payment integration keys:
+   - `STRIPE_SECRET_KEY`: Your Stripe secret key
+   - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Your Stripe publishable key
+   - `STRIPE_WEBHOOK_SECRET`: Your Stripe webhook secret
+6. Any other service-specific environment variables
 
 ## Maintenance
 

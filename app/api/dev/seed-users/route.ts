@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
 import crypto from 'crypto';
 
 /**
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
           data: {
             name: userData.name,
             email: userData.email,
-            role: userData.role as Prisma.UserRole, // Cast to Prisma.UserRole
+            role: userData.role as UserRole, // Cast to UserRole enum
             verified: true,
             emailVerified: new Date(),
           },

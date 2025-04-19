@@ -1,28 +1,32 @@
+/**
+ * API utilities for Builder profiles
+ * Version: 0.1.66
+ */
+
 import { Builder } from '../types/builder';
-import { getMockBuilderById, getMockBuilderByUsername } from '../data/mockBuilders';
 
 /**
- * Get a builder by ID - uses mock data for now, will be replaced with API calls
+ * Get a builder by ID - placeholder for API implementation
  */
 export async function getBuilderById(id: string): Promise<Builder | null> {
   // Simulate API latency
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Get mock data
-  const builder = getMockBuilderById(id);
-  return builder || null;
+  // This is a placeholder - will be replaced with real API call
+  console.log(`[API] Getting builder by ID: ${id}`);
+  return null; // Returning null until real implementation
 }
 
 /**
- * Get a builder by username - uses mock data for now, will be replaced with API calls
+ * Get a builder by username - placeholder for API implementation
  */
 export async function getBuilderByUsername(username: string): Promise<Builder | null> {
   // Simulate API latency
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Get mock data
-  const builder = getMockBuilderByUsername(username);
-  return builder || null;
+  // This is a placeholder - will be replaced with real API call
+  console.log(`[API] Getting builder by username: ${username}`);
+  return null; // Returning null until real implementation
 }
 
 /**
@@ -41,6 +45,7 @@ export async function updateBuilder(builder: Partial<Builder> & { id: string }):
   return {
     ...existingBuilder,
     ...builder,
+    // Adding updatedAt field to match expected structure
     updatedAt: new Date().toISOString()
   };
 }

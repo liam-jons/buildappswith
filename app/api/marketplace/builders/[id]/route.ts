@@ -3,12 +3,15 @@ import { fetchBuilderById } from '@/lib/marketplace/real-data/marketplace-servic
 
 /**
  * GET handler for fetching a single builder by ID
+ * Updated to use Next.js 15 promise-based params
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await the params to get the id
+    const params = await context.params;
     const builderId = params.id;
     
     if (!builderId) {

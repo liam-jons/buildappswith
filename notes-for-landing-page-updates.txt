@@ -1,17 +1,0 @@
-Moving down the page in order:  In the site header we will eventually use a logo, but for now, please change "Buildappswith" to "BW", which will also give us some more space to work with.
-
-Let's also update BW Toolkit to Toolkit.
-
-Update "Log in" to be the same button type as "Sign up", but the opposite of the sign up button (black text, border, white background)
-
-For the section starting "Benefit from AI today. Become more..." Please update to "Start benefiting from AI today. Become more efficient, and transform your ideas into reality."
-
-The loading animation is currently off centre, compared to, for example, the heading "A more efficient you". Also, the loading text is currently just slightly too small, and is appearing above the loading circle, rather than below.
- For the "Trusted Ecosystem" section, please increase the heading size so that it is larger, but still smaller than the headings for other sections. We previously had logo/brand icons, for Google etc. Currently three items are appearing as blank boxes. The images that should appearing here for the respective brands will be in one of the Magic UI template folders that can be found in the project root folder. 
-Please make each of the "AI for Everyone" items to be in different colours, to differentiate the three headings. Please also update the heading to use the Magic UI component "Line Shadow Text".
-
-For the what AI can/can't do section, please remove the main heading "What AI Can/Can't Do"
-
-For the section starting with "Take a look..." Add "with AI" to the end of the heading.  Update the footer to reflect the new site layout.
-
-Add a way for users to change accessibility settings e.g., dark mode, Dyslexic friendly - which will use the Open Dyslexic font, that I have placed at /public/fonts.

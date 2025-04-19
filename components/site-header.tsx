@@ -280,9 +280,9 @@ export function SiteHeader() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   
   // Click outside handlers for dropdowns - Fix TypeScript errors by casting refs
-  useOnClickOutside(rolesDropdownRef as React.RefObject<HTMLElement>, () => setRolesDropdownOpen(false));
-  useOnClickOutside(aboutDropdownRef as React.RefObject<HTMLElement>, () => setAboutDropdownOpen(false));
-  useOnClickOutside(userDropdownRef as React.RefObject<HTMLElement>, () => setUserDropdownOpen(false));
+  useOnClickOutside(rolesDropdownRef, () => setRolesDropdownOpen(false));
+  useOnClickOutside(aboutDropdownRef, () => setAboutDropdownOpen(false));
+  useOnClickOutside(userDropdownRef, () => setUserDropdownOpen(false));
   
   // Handle keyboard navigation for accessibility
   const handleKeyDown = (e: React.KeyboardEvent, setDropdown: React.Dispatch<React.SetStateAction<boolean>>) => {

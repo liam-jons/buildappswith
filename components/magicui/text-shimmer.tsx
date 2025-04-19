@@ -13,27 +13,24 @@ const TextShimmer: FC<TextShimmerProps> = ({
   shimmerWidth = 100,
 }) => {
   return (
-    <p
+    <div
       style={
         {
           "--shimmer-width": `${shimmerWidth}px`,
         } as CSSProperties
       }
       className={cn(
-        "mx-auto max-w-md text-neutral-600/50 dark:text-neutral-400/50",
-
-        // Shimmer effect
-        "animate-shimmer bg-clip-text bg-no-repeat [background-position:0_0] [background-size:var(--shimmer-width)_100%] [transition:background-position_1s_cubic-bezier(.6,.6,0,1)_infinite]",
-
-        // Shimmer gradient
-        "bg-gradient-to-r from-neutral-100 via-black/80 via-50% to-neutral-100 dark:from-neutral-900 dark:via-white/80 dark:to-neutral-900",
-
+        "inline-block text-transparent bg-clip-text",
+        "animate-shimmer bg-[linear-gradient(to_right,theme(colors.neutral.100)_0%,theme(colors.black/80)_50%,theme(colors.neutral.100)_100%)] dark:bg-[linear-gradient(to_right,theme(colors.neutral.900)_0%,theme(colors.white/80)_50%,theme(colors.neutral.900)_100%)]",
+        "[background-size:var(--shimmer-width)_100%] [background-position:0_0] [background-repeat:no-repeat] [transition:background-position_1s_cubic-bezier(.6,.6,0,1)_infinite]",
         className
       )}
     >
       {children}
-    </p>
+    </div>
   );
 };
 
+// Export both as named export and default export
+export { TextShimmer };
 export default TextShimmer;

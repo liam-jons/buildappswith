@@ -2,6 +2,79 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.11] - 2025-04-19
+
+### Fixed
+- Fixed type errors to improve deployment compatibility:
+  - Added optional chaining for builder.skills.length in marketplace page
+  - Added proper type assertions for DOM Element click events
+  - Updated Stripe API version to '2025-03-31.basil' for compatibility
+  - Fixed BorderBeam component usage to properly handle children
+  - Added missing Stripe utility functions (createCheckoutSession, getCheckoutSession)
+  - Removed timeline component references as it's no longer required
+  - Updated package version to 1.0.11
+
+## [1.0.7] - 2025-04-18
+
+### Fixed
+- Final compatibility fixes for Next.js 15.3.1:
+  - Fixed Stripe API integration by using proper type assertions for apiVersion
+  - Added ref type conversion utility in animated-beam-section.tsx
+  - Properly handled async CSRF token generation functions
+  - Improved type definitions in auth module by extending Session user type
+  - Fixed remaining type errors in critical components
+
+## [1.0.6] - 2025-04-18
+
+### Fixed
+- Further TypeScript compatibility fixes for Next.js 15.3.1:
+  - Updated Stripe imports to use named imports `import { Stripe } from 'stripe'`
+  - Added proper NextAuthConfig type and exported authConfig from auth modules
+  - Added missing strokeWidth prop to AnimatedCircularProgressBar
+  - Fixed theme provider imports with proper type imports
+  - Added proper type imports in auth modules
+  - Reorganized auth configuration to use explicit typing
+
+## [1.0.5] - 2025-04-18
+
+### Fixed
+- Fixed TypeScript errors to ensure compatibility with Next.js 15.3.1:
+  - Updated Auth0 imports in protected-route.tsx to use NextAuth
+  - Fixed React.RefObject type issues in AnimatedBeam component
+  - Added missing size prop to AnimatedCircularProgressBar component
+  - Resolved JSX namespace issues in cta-section.tsx by using React.ReactNode
+  - Updated cookies API to use async/await for Next.js 15 compatibility
+  - Fixed request.ip usage in rate-limit.ts to handle potential undefined values
+
+## [1.0.4] - 2025-04-18
+
+### Fixed
+- Fixed BorderBeam component errors in validation-tier.tsx
+  - Changed size prop from string "small" to numeric value 50
+  - Restructured component usage to not include children (not supported by BorderBeam)
+  - Removed invalid containerClassName prop
+  - Fixed TextShimmer usage to remove unsupported gradient prop
+  - Fixed build compatibility with Next.js 15.3.1
+- Fixed TextShimmer component usage in payment success page
+  - Removed unsupported delay and shimmerDuration props
+  - Added className and shimmerWidth props instead
+- Fixed TypeScript errors in checkout session API route
+  - Added proper type definitions for builders directory
+  - Added explicit type annotations for request parameters
+- Added Edge Runtime compatibility warning to CSRF module
+  - Added explicit documentation about Node.js module usage in Edge Runtime
+
+## [1.0.3] - 2025-04-18
+
+### Fixed
+- Fixed build errors identified during deployment
+  - Updated TextShimmer component to use proper structure and exports
+  - Fixed date-fns-tz imports in scheduling utils to use formatInTimeZone
+  - Updated NextAuth implementation in API routes to use the new auth() function
+  - Removed deprecated toZonedTime usage from scheduling utilities
+  - Fixed special apostrophe characters in mockBuilders.ts causing parsing errors
+  - Updated ManageSchedulePage component to use correct Next.js App Router types
+
 ## [1.0.2] - 2025-04-23
 
 ### Fixed
@@ -11,7 +84,11 @@ All notable changes to this project will be documented in this file.
   - Resolved build failures in Vercel deployment
 - Fixed metadata errors in client components
   - Moved metadata from profile-settings page to layout component
+  - Moved metadata from onboarding page to layout component
   - Removed client-side metadata exports to fix Vercel deployment errors
+- Fixed RadioGroup compatibility issues
+  - Replaced Radix UI Radio Group with custom implementation
+  - Removed external dependency to fix React 19 compatibility issues
 
 ## [1.0.1] - 2025-04-22
 
@@ -154,8 +231,4 @@ All notable changes to this project will be documented in this file.
 - Increased "Trusted Ecosystem" heading size
 - Updated "AI for Everyone" section with TextShimmer and different colors
 - Removed "What AI Can/Can't Do" main heading
-- Changed testimonials heading to "Take a look at what others are doing with AI"
-
-### Added
-- Accessibility settings panel with dark mode and OpenDyslexic font options
-- Added OpenDyslexic font support with CSS implementation
+- Changed testimon

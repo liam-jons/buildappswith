@@ -45,14 +45,15 @@ export function FeaturedBuilderCard({ builder, className }: FeaturedBuilderCardP
     : builder.bio;
   
   return (
-    <BorderBeam
-      className="relative rounded-lg"
-      size={shouldReduceMotion ? "none" : "small"}
-      colorFrom="from-amber-400/40"
-      colorTo="to-purple-400/40"
-      delay={1}
-      duration={4}
-    >
+    <div className="relative rounded-lg">
+      <BorderBeam
+        className="absolute inset-0 rounded-lg"
+        size={shouldReduceMotion ? 0 : 50}
+        colorFrom="from-amber-400/40"
+        colorTo="to-purple-400/40"
+        delay={1}
+        duration={4}
+      />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -78,13 +79,15 @@ export function FeaturedBuilderCard({ builder, className }: FeaturedBuilderCardP
             <div className="relative h-16 w-16 rounded-full border-2 border-amber-200 dark:border-amber-700 overflow-hidden flex-shrink-0">
               <div className="absolute inset-0 bg-gradient-to-br from-amber-100 to-purple-100 dark:from-amber-900 dark:to-purple-900">
                 {!shouldReduceMotion && (
-                  <BorderBeam 
-                    className="opacity-70" 
-                    size={80} 
-                    duration={3}
-                    colorFrom="from-amber-400/60" 
-                    colorTo="to-purple-400/0" 
-                  />
+                  <div className="relative w-full h-full">
+                    <BorderBeam 
+                      className="absolute inset-0 opacity-70" 
+                      size={80} 
+                      duration={3}
+                      colorFrom="from-amber-400/60" 
+                      colorTo="to-purple-400/0" 
+                    />
+                  </div>
                 )}
               </div>
               {builder.avatarUrl && (
@@ -171,6 +174,6 @@ export function FeaturedBuilderCard({ builder, className }: FeaturedBuilderCardP
           </div>
         </div>
       </motion.div>
-    </BorderBeam>
+    </div>
   );
 }

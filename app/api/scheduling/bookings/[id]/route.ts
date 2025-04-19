@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getBookingById, updateBookingStatus, updateBookingPayment } from '@/lib/scheduling/real-data/scheduling-service';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 
 // Validation schema for updating booking status
 const updateStatusSchema = z.object({
@@ -17,16 +16,19 @@ const updatePaymentSchema = z.object({
 
 /**
  * GET handler for fetching a specific booking by ID
+ * Updated to use Next.js 15 promise-based params
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await the params to get the id
+    const params = await context.params;
     const { id } = params;
     
     // Get session for auth check
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     
     if (!session?.user) {
       return NextResponse.json(
@@ -70,16 +72,19 @@ export async function GET(
 
 /**
  * PATCH handler for updating a booking's status
+ * Updated to use Next.js 15 promise-based params
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await the params to get the id
+    const params = await context.params;
     const { id } = params;
     
     // Get session for auth check
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     
     if (!session?.user) {
       return NextResponse.json(

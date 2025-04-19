@@ -1,20 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getClientSchedulingProfile } from '@/lib/scheduling/real-data/scheduling-service';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 
 /**
  * GET handler for fetching a client's scheduling profile
+ * Updated to use Next.js 15 promise-based params
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await the params to get the id
+    const params = await context.params;
     const { id } = params;
     
     // Get session for auth check
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     
     if (!session?.user) {
       return NextResponse.json(

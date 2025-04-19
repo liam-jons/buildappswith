@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getAvailableTimeSlots } from '@/lib/scheduling/real-data/scheduling-service';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 import { addDays, subDays, format, parseISO, isValid } from 'date-fns';
 
 // Validation schema for query parameters
@@ -68,7 +67,7 @@ export async function GET(request: NextRequest) {
       // If the service is not fully implemented, generate mock data
       if (error.message === 'TimeSlot generation implementation required') {
         // Generate mock time slots for the date range
-        const mockTimeSlots = generateMockTimeSlots(builderId, startDate, endDate);
+        const mockTimeSlots: TimeSlot[] = generateMockTimeSlots(builderId, startDate, endDate);
         
         return NextResponse.json({ 
           timeSlots: mockTimeSlots,
@@ -87,28 +86,46 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Define types for the mock availability data
+type MockAvailabilityRule = {
+  builderId: string;
+  dayOfWeek: number; // 0-6 for Sunday-Saturday
+  startTime: string; // Format: HH:MM
+  endTime: string; // Format: HH:MM
+};
+
+// Define a type for time slots
+type TimeSlot = {
+  id: string;
+  startTime: string;
+  endTime: string;
+  isBooked: boolean;
+};
+
 /**
  * Helper function to generate mock time slots
  */
-function generateMockTimeSlots(builderId: string, startDate: string, endDate: string) {
+function generateMockTimeSlots(builderId: string, startDate: string, endDate: string): TimeSlot[] {
   const start = parseISO(startDate);
   const end = parseISO(endDate);
   
-  const timeSlots = [];
+  const timeSlots: TimeSlot[] = [];
   let currentDate = start;
   
   // Import mock rules to determine which days have availability
-  const { mockAvailabilityRules } = require('@/lib/scheduling/mock-data');
+  const { mockAvailabilityRules } = require('@/lib/scheduling/mock-data') as { 
+    mockAvailabilityRules: MockAvailabilityRule[] 
+  };
   
   // Get rules for this builder
-  const builderRules = mockAvailabilityRules.filter(rule => rule.builderId === builderId);
+  const builderRules = mockAvailabilityRules.filter((rule: MockAvailabilityRule) => rule.builderId === builderId);
   
   // Generate time slots for each day in the range
   while (currentDate <= end) {
     const dayOfWeek = currentDate.getDay(); // 0 = Sunday, 6 = Saturday
     
     // Check if this day of week has any availability rules
-    const rulesForThisDay = builderRules.filter(rule => rule.dayOfWeek === dayOfWeek);
+    const rulesForThisDay = builderRules.filter((rule: MockAvailabilityRule) => rule.dayOfWeek === dayOfWeek);
     
     if (rulesForThisDay.length > 0) {
       // Generate slots for each rule period

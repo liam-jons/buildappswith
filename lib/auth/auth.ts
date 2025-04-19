@@ -1,17 +1,14 @@
 import { UserRole } from "@/lib/auth/types";
 import { NextRequest } from "next/server";
 import NextAuth from "next-auth";
+import type { NextAuthConfig } from "next-auth";
 import GitHub from "next-auth/providers/github";
 import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 
-export const {
-  handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
-} = NextAuth({
+// Define auth config as a proper variable with type annotation
+const authConfig: NextAuthConfig = {
   pages: {
     signIn: "/login",
     signOut: "/",
@@ -19,6 +16,7 @@ export const {
     verifyRequest: "/verify",
     newUser: "/onboarding",
   },
+  // @ts-ignore: Temporary fix for adapter type incompatibility between versions
   adapter: PrismaAdapter(db),
   providers: [
     GitHub({
@@ -26,8 +24,8 @@ export const {
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "placeholder-client-secret",
     }),
     // Only use EmailProvider in server contexts, not in middleware
-    process.env.NODE_ENV !== "production" || (typeof process.env.NEXT_RUNTIME === 'undefined' || process.env.NEXT_RUNTIME !== 'edge')
-      ? EmailProvider({
+    ...(process.env.NODE_ENV !== "production" || (typeof process.env.NEXT_RUNTIME === 'undefined' || process.env.NEXT_RUNTIME !== 'edge')
+      ? [EmailProvider({
           server: {
             host: process.env.EMAIL_SERVER_HOST || "localhost",
             port: process.env.EMAIL_SERVER_PORT ? parseInt(process.env.EMAIL_SERVER_PORT) : 25,
@@ -37,18 +35,18 @@ export const {
             },
           },
           from: process.env.EMAIL_FROM || "noreply@buildappswith.dev",
-        })
-      : null,
-  ].filter(Boolean), // Filter out null values
+        })]
+      : []),
+  ],
   callbacks: {
     // Include user.id and user.role in the JWT token
     async jwt({ token, user }) {
       // First time JWT is created after sign in
       if (user) {
-        token.id = user.id;
-        token.role = user.role || UserRole.CLIENT;
-        token.stripeCustomerId = user.stripeCustomerId;
-        token.verified = user.verified || false;
+        token.id = user.id as string;
+        token.role = user.role as UserRole || UserRole.CLIENT;
+        token.stripeCustomerId = user.stripeCustomerId as string | undefined;
+        token.verified = user.verified as boolean || false;
       }
       
       return token;
@@ -57,10 +55,10 @@ export const {
     // Include user info in the session
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
-        session.user.stripeCustomerId = token.stripeCustomerId;
-        session.user.verified = token.verified;
+        session.user.id = token.id as string;
+        session.user.role = token.role as UserRole;
+        session.user.stripeCustomerId = token.stripeCustomerId as string | undefined;
+        session.user.verified = token.verified as boolean;
       }
       return session;
     },
@@ -92,4 +90,15 @@ export const {
       return true;
     },
   },
-});
+};
+
+// Initialize NextAuth with the configuration
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth(authConfig);
+
+// Export the config for potential reuse
+export { authConfig };

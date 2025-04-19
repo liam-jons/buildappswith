@@ -1,12 +1,14 @@
 import { cn } from "@/lib/utils";
 
 interface AnimatedCircularProgressBarProps {
-  max: number;
-  value: number;
-  min: number;
+  max?: number;
+  value?: number;
+  min?: number;
   gaugePrimaryColor: string;
   gaugeSecondaryColor: string;
   className?: string;
+  size?: number; // Size prop
+  strokeWidth?: number; // Add strokeWidth prop
 }
 
 export function AnimatedCircularProgressBar({
@@ -16,6 +18,8 @@ export function AnimatedCircularProgressBar({
   gaugePrimaryColor,
   gaugeSecondaryColor,
   className,
+  size = 40, // Default size value
+  strokeWidth = 10, // Default strokeWidth
 }: AnimatedCircularProgressBarProps) {
   const circumference = 2 * Math.PI * 45;
   const percentPx = circumference / 100;
@@ -23,7 +27,7 @@ export function AnimatedCircularProgressBar({
 
   return (
     <div
-      className={cn("relative size-40 text-2xl font-semibold", className)}
+      className={cn(`relative size-${size} text-2xl font-semibold`, className)}
       style={
         {
           "--circle-size": "100px",
@@ -36,6 +40,8 @@ export function AnimatedCircularProgressBar({
           "--delay": "0s",
           "--percent-to-deg": "3.6deg",
           transform: "translateZ(0)",
+          width: `${size}px`,
+          height: `${size}px`,
         } as React.CSSProperties
       }
     >
@@ -50,7 +56,7 @@ export function AnimatedCircularProgressBar({
             cx="50"
             cy="50"
             r="45"
-            strokeWidth="10"
+            strokeWidth={strokeWidth}
             strokeDashoffset="0"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -75,7 +81,7 @@ export function AnimatedCircularProgressBar({
           cx="50"
           cy="50"
           r="45"
-          strokeWidth="10"
+          strokeWidth={strokeWidth}
           strokeDashoffset="0"
           strokeLinecap="round"
           strokeLinejoin="round"

@@ -4,6 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import { z } from "zod";
+import { UserRole } from "./types";
 
 // Define a schema for credentials validation
 const credentialsSchema = z.object({
@@ -34,7 +35,14 @@ export const authConfig = {
     // Add role to the session
     session({ session, token }) {
       if (token && session.user) {
-        session.user.role = token.role as string;
+        // @ts-ignore - We're adding custom properties
+        session.user.role = token.role;
+        // @ts-ignore - We're adding custom properties
+        session.user.id = token.id as string;
+        // @ts-ignore - We're adding custom properties
+        session.user.verified = token.verified as boolean;
+        // @ts-ignore - We're adding custom properties
+        session.user.stripeCustomerId = token.stripeCustomerId as string | undefined;
       }
       return session;
     },
@@ -60,7 +68,7 @@ export const authConfig = {
       },
       
       // Authorize callback - validate credentials and return user data
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         // Validate credentials using Zod schema
         const validatedCredentials = credentialsSchema.safeParse(credentials);
         
@@ -89,8 +97,9 @@ export const authConfig = {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role,
+          role: user.role as UserRole,
           image: null, // No images for demo users
+          verified: true,
         };
       },
     }),

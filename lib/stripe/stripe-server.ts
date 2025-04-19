@@ -3,12 +3,15 @@
  * This file contains utilities for working with Stripe on the server
  */
 
-import Stripe from "stripe";
+import { Stripe } from "stripe";
 
-// Initialize Stripe
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2023-10-16",
+// Initialize Stripe with proper typing
+const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+  apiVersion: '2025-03-31.basil' as const, // Updated to match expected version format
 });
+
+// Export the typed instance
+export const stripe = stripeInstance;
 
 /**
  * Get or create a Stripe customer

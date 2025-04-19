@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth'; // Updated import
 import { createPrototypeBuilderProfile } from '@/lib/services/builder-service';
 import { UserRole } from '@/lib/auth/types';
 
@@ -11,7 +10,7 @@ import { UserRole } from '@/lib/auth/types';
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth(); // Updated to use auth() instead of getServerSession
     
     // In development, allow access without authentication to simplify testing
     if (process.env.NODE_ENV === 'production') {
