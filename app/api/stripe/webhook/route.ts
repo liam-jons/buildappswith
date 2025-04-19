@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
+import { Stripe } from 'stripe';
 
 // Initialize Stripe with the secret key from environment variables
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-04-10', // Use the latest API version
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+  apiVersion: '2025-03-31.basil' as const, // Updated to match expected version format
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;

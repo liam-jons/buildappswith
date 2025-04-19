@@ -1,6 +1,9 @@
 'use client';
 
+// Version: 0.1.65
+
 import { useState } from 'react';
+import Image from 'next/image';
 import { Project } from '@/lib/types/builder';
 import { 
   Card, 
@@ -30,17 +33,19 @@ export function PortfolioGallery({ projects }: PortfolioGalleryProps) {
   // Extract unique categories from projects for filters
   const technologies = ['all'];
   projects.forEach(project => {
-    project.technologies.forEach(tech => {
-      if (!technologies.includes(tech)) {
-        technologies.push(tech);
-      }
-    });
+    if (project.technologies && Array.isArray(project.technologies)) {
+      project.technologies.forEach(tech => {
+        if (!technologies.includes(tech)) {
+          technologies.push(tech);
+        }
+      });
+    }
   });
   
   // Filter projects based on selected technology
   const filteredProjects = filter === 'all' 
     ? projects 
-    : projects.filter(p => p.technologies.includes(filter));
+    : projects.filter(p => p.technologies && Array.isArray(p.technologies) && p.technologies.includes(filter));
   
   return (
     <div className="space-y-6">
@@ -83,28 +88,35 @@ function ProjectGrid({ projects }: { projects: Project[] }) {
 
 function ProjectCard({ project }: { project: Project }) {
   // Find the most significant outcome to feature
-  const featuredOutcome = project.outcomes.sort((a, b) => {
-    // Prioritize verified outcomes
-    if (a.verified && !b.verified) return -1;
-    if (!a.verified && b.verified) return 1;
-    return 0;
-  })[0];
+  const featuredOutcome = project.outcomes && Array.isArray(project.outcomes) 
+    ? project.outcomes.sort((a, b) => {
+        // Prioritize verified outcomes (using isVerified or verified property)
+        const aVerified = a.isVerified || a.verified;
+        const bVerified = b.isVerified || b.verified;
+        if (aVerified && !bVerified) return -1;
+        if (!aVerified && bVerified) return 1;
+        return 0;
+      })[0]
+    : undefined;
   
   // Format the date
-  const formattedDate = new Date(project.date).toLocaleDateString('en-US', {
+  const formattedDate = project.date ? new Date(project.date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short'
-  });
+  }) : '';
   
   return (
     <Card className="h-full flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg">
       <div className="relative h-48 overflow-hidden">
-        <img 
-          src={project.images[0] || '/placeholder-project.png'} 
+        <Image 
+          src={(project.images && project.images[0]) || '/placeholder-project.png'} 
           alt={project.title}
+          width={400}
+          height={300}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          priority={false}
         />
-        {featuredOutcome?.verified && (
+        {(featuredOutcome?.verified || featuredOutcome?.isVerified) && (
           <Badge 
             className="absolute top-2 right-2 bg-green-500 hover:bg-green-600"
             variant="secondary"
@@ -134,10 +146,9 @@ function ProjectCard({ project }: { project: Project }) {
         
         {featuredOutcome && (
           <div className="mt-4 p-3 bg-muted rounded-md">
-            <p className="text-sm font-medium">{featuredOutcome.type}:</p>
+            <p className="text-sm font-medium">{featuredOutcome.type || featuredOutcome.label || 'Outcome'}:</p>
             <TextShimmer
-              className="text-lg font-bold mt-1"
-              gradient="from-indigo-500 to-violet-500 dark:from-indigo-400 dark:to-violet-400"
+              className="text-lg font-bold mt-1 bg-gradient-to-r from-indigo-500 to-violet-500 dark:from-indigo-400 dark:to-violet-400"
             >
               {featuredOutcome.value}
             </TextShimmer>
@@ -145,12 +156,12 @@ function ProjectCard({ project }: { project: Project }) {
         )}
         
         <div className="flex flex-wrap gap-2 mt-4">
-          {project.technologies.slice(0, 3).map(tech => (
+          {project.technologies && Array.isArray(project.technologies) && project.technologies.slice(0, 3).map(tech => (
             <Badge key={tech} variant="outline" className="capitalize">
               {tech}
             </Badge>
           ))}
-          {project.technologies.length > 3 && (
+          {project.technologies && Array.isArray(project.technologies) && project.technologies.length > 3 && (
             <Badge variant="outline">+{project.technologies.length - 3}</Badge>
           )}
         </div>

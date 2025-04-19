@@ -1,6 +1,6 @@
 {
   "name": "buildappswith",
-  "version": "1.0.2",
+  "version": "1.0.17",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -56,6 +56,7 @@
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.55.0",
+    "recharts": "^2.15.3",
     "sonner": "^2.0.3",
     "stripe": "^18.0.0",
     "tailwind-merge": "^3.2.0",
@@ -65,6 +66,7 @@
     "@types/node": "^22.14.1",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/recharts": "^2.0.1",
     "@typescript-eslint/parser": "^8.30.1",
     "autoprefixer": "^10.4.21",
     "beasties": "^0.3.2",

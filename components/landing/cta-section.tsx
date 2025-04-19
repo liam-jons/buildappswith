@@ -14,7 +14,7 @@ import {
   Shield,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 
 const tiles = [
   {
@@ -72,7 +72,7 @@ const shuffleArray = (array: any[]) => {
   return array;
 };
 
-const Card = (card: { icon: JSX.Element; bg: JSX.Element }) => {
+const Card = (card: { icon: React.ReactNode; bg: React.ReactNode }) => {
   const id = useId();
   const controls = useAnimation();
   const ref = useRef(null);

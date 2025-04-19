@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -9,13 +9,16 @@ export function ProtectedRoute({
 }: { 
   children: React.ReactNode 
 }) {
-  const { user, isLoading, error } = useUser();
+  const { data: session, status } = useSession();
+  const isLoading = status === "loading";
+  const user = session?.user;
+  const error = !session && !isLoading;
   const router = useRouter();
 
   useEffect(() => {
     // If not loading and no user or error, redirect to login
     if (!isLoading && (!user || error)) {
-      router.push('/api/auth/login');
+      router.push('/login');
     }
   }, [user, isLoading, error, router]);
 
@@ -38,7 +41,7 @@ export function ProtectedRoute({
         <div className="flex flex-col items-center gap-2">
           <p className="text-destructive">Authentication error</p>
           <button 
-            onClick={() => router.push('/api/auth/login')}
+            onClick={() => router.push('/login')}
             className="rounded bg-primary px-4 py-2 text-primary-foreground"
           >
             Log in

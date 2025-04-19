@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getBuilderSchedulingProfile } from '@/lib/scheduling/real-data/scheduling-service';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 
 /**
  * GET handler for fetching a builder's complete scheduling profile
+ * Updated to use Next.js 15 promise-based params
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await the params to get the id
+    const params = await context.params;
     const { id } = params;
     
     // Fetch the builder scheduling profile

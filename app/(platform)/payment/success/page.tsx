@@ -99,7 +99,7 @@ export default function PaymentSuccessPage() {
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
           <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-2" />
-          <TextShimmer delay={0.5} shimmerDuration={1.5}>
+          <TextShimmer className="mb-1" shimmerWidth={150}>
             <CardTitle className="text-2xl">Payment Successful!</CardTitle>
           </TextShimmer>
           <CardDescription>

@@ -25,15 +25,50 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
+interface Builder {
+  id: string;
+  name: string;
+  title?: string;
+  bio?: string;
+  avatarUrl?: string;
+  validationTier: 'entry' | 'established' | 'expert';
+  skills?: string[];
+}
+
+interface ApiResponse {
+  data: Builder[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
+}
+
+interface Filters {
+  validationTiers: string[];
+  skills: string[];
+  availability: string[];
+}
+
+interface AvailableFilters {
+  skills: Array<{value: string; label: string}>;
+  validationTiers: Array<{value: string; label: string}>;
+  availability: Array<{value: string; label: string}>;
+  sortOptions: Array<{value: string; label: string}>;
+}
+
 export default function MarketplacePage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [builders, setBuilders] = useState<any[]>([]);
-  const [filters, setFilters] = useState<any>({
+
+  const [builders, setBuilders] = useState<Builder[]>([]);
+  const [filters, setFilters] = useState<Filters>({
     validationTiers: [],
     skills: [],
     availability: []
   });
-  const [availableFilters, setAvailableFilters] = useState<any>({
+  const [availableFilters, setAvailableFilters] = useState<AvailableFilters>({
     skills: [],
     validationTiers: [],
     availability: [],
@@ -56,7 +91,7 @@ export default function MarketplacePage() {
         // Fetch builders
         const buildersResponse = await fetch("/api/marketplace/builders?page=1&limit=9&sortBy=rating");
         if (buildersResponse.ok) {
-          const buildersData = await buildersResponse.json();
+          const buildersData: ApiResponse = await buildersResponse.json();
           setBuilders(buildersData.data || []);
         }
       } catch (error) {
@@ -276,7 +311,7 @@ export default function MarketplacePage() {
 }
 
 // Builder Card Component
-function BuilderCard({ builder }: { builder: any }) {
+function BuilderCard({ builder }: { builder: Builder }) {
   return (
     <Card className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow duration-200">
       <CardHeader className="pb-3">
@@ -323,13 +358,17 @@ function BuilderCard({ builder }: { builder: any }) {
           ))}
           {(builder.skills?.length || 0) > 5 && (
             <span className="px-2 py-0.5 bg-muted text-xs rounded-full">
-              +{builder.skills.length - 5} more
+              +{(builder.skills?.length || 0) - 5} more
             </span>
           )}
         </div>
       </CardContent>
       <CardFooter className="pt-0">
-        <Button variant="default" className="w-full">
+        <Button 
+          variant="default" 
+          className="w-full"
+          onClick={() => window.location.href = `/profile/${builder.id}`}
+        >
           View Profile
         </Button>
       </CardFooter>

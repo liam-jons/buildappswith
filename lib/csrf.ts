@@ -1,9 +1,13 @@
 /**
  * CSRF Protection Utility for Buildappswith Platform
- * Version: 0.1.64
+ * Version: 0.1.65
  * 
  * Implements Cross-Site Request Forgery protection using double submit cookie pattern
  * with cryptographically secure tokens
+ * 
+ * NOTE: This module uses Node.js 'crypto' which is not compatible with Edge Runtime.
+ * Only use this in Server Components or API Routes that don't use the Edge Runtime.
+ * See: https://nextjs.org/docs/messages/node-module-in-edge-runtime
  */
 
 import { randomBytes } from 'crypto';
@@ -19,9 +23,9 @@ const TOKEN_EXPIRY = 60 * 60 * 2; // 2 hours in seconds
 
 /**
  * Generate a cryptographically secure random token
- * @returns {string} Base64 encoded random token
+ * @returns {Promise<string>} Base64 encoded random token
  */
-export function generateCsrfToken(): string {
+export async function generateCsrfToken(): Promise<string> {
   return randomBytes(TOKEN_BYTE_SIZE).toString('base64');
 }
 
@@ -31,8 +35,10 @@ export function generateCsrfToken(): string {
  * @param {number} maxAge - Cookie expiration time in seconds
  * @returns {void}
  */
-export function setCsrfCookie(token: string, maxAge: number = TOKEN_EXPIRY): void {
-  cookies().set({
+export async function setCsrfCookie(token: string, maxAge: number = TOKEN_EXPIRY): Promise<void> {
+  const cookiesStore = await cookies();
+  // Set the cookie
+  cookiesStore.set({
     name: CSRF_SECRET_COOKIE,
     value: token,
     httpOnly: true,
@@ -47,17 +53,20 @@ export function setCsrfCookie(token: string, maxAge: number = TOKEN_EXPIRY): voi
  * Gets the current CSRF token from cookies
  * @returns {string|undefined} The current CSRF token or undefined if not set
  */
-export function getCsrfCookie(): string | undefined {
-  return cookies().get(CSRF_SECRET_COOKIE)?.value;
+export async function getCsrfCookie(): Promise<string | undefined> {
+  const cookiesStore = await cookies();
+  // Get the cookie
+  const cookie = cookiesStore.get(CSRF_SECRET_COOKIE);
+  return cookie?.value;
 }
 
 /**
  * Creates a new CSRF token and sets it as a cookie
- * @returns {string} The newly generated CSRF token
+ * @returns {Promise<string>} The newly generated CSRF token
  */
-export function createCsrfToken(): string {
-  const token = generateCsrfToken();
-  setCsrfCookie(token);
+export async function createCsrfToken(): Promise<string> {
+  const token = await generateCsrfToken();
+  await setCsrfCookie(token);
   return token;
 }
 
@@ -66,8 +75,8 @@ export function createCsrfToken(): string {
  * @param {string} token - The token to validate
  * @returns {boolean} True if the token is valid
  */
-export function validateCsrfToken(token: string): boolean {
-  const cookieToken = getCsrfCookie();
+export async function validateCsrfToken(token: string): Promise<boolean> {
+  const cookieToken = await getCsrfCookie();
   
   // If cookie doesn't exist or tokens don't match, validation fails
   if (!cookieToken || cookieToken !== token) {
@@ -81,7 +90,7 @@ export function validateCsrfToken(token: string): boolean {
  * Middleware function to validate CSRF token in API routes
  * Checks for token in headers or form body
  */
-export function csrfProtection(req: NextRequest): NextResponse | null {
+export async function csrfProtection(req: NextRequest): Promise<NextResponse | null> {
   // Skip for non-mutation methods
   if (['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(req.method)) {
     return null;
@@ -110,7 +119,7 @@ export function csrfProtection(req: NextRequest): NextResponse | null {
   // Use header token if available, fallback to body token
   const token = headerToken || bodyToken;
   
-  if (!token || !validateCsrfToken(token)) {
+  if (!token || !(await validateCsrfToken(token))) {
     return NextResponse.json(
       { error: 'Invalid CSRF token' },
       { status: 403 }

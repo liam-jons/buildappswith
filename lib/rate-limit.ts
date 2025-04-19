@@ -97,7 +97,8 @@ const memoryStore = new MemoryStore();
  */
 async function getIdentifier(req: NextRequest): Promise<string> {
   // Get real IP, considering forwarded headers
-  let ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+  // In Next.js 15+, req.ip might be undefined, so we need to use headers
+  let ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
   
   // Clean up IP address format (get first IP if multiple are present)
   ip = ip.split(',')[0].trim();

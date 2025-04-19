@@ -13,12 +13,42 @@ export interface BuilderFilters {
   searchQuery?: string;
 }
 
+export interface BuilderProfileData {
+  id: string;
+  name: string;
+  title: string;
+  bio: string;
+  avatarUrl: string | null;
+  coverImageUrl: string | null;
+  validationTier: ValidationTier;
+  joinDate: Date;
+  completedProjects: number;
+  rating: number;
+  responseRate: number;
+  skills: string[];
+  availability: {
+    status: 'available' | 'limited' | 'unavailable';
+  };
+  portfolio: any[];
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
+}
+
 /**
  * Transform Prisma BuilderProfile data to match frontend BuilderProfileData interface
  */
 function transformBuilderProfile(
   builder: any
-): any {
+): BuilderProfileData {
   return {
     id: builder.id,
     name: builder.user.name || '',
@@ -83,7 +113,7 @@ export async function fetchBuilders(
   page: number = 1,
   limit: number = 9,
   filters?: BuilderFilters
-) {
+): Promise<PaginatedResponse<BuilderProfileData>> {
   try {
     // Check if there are any builder profiles
     const builderCount = await db.builderProfile.count();
@@ -220,7 +250,7 @@ export async function fetchBuilders(
  * @param builderId The ID of the builder to fetch
  * @returns Builder profile or null if not found
  */
-export async function fetchBuilderById(builderId: string) {
+export async function fetchBuilderById(builderId: string): Promise<BuilderProfileData | null> {
   try {
     const builder = await db.builderProfile.findUnique({
       where: {
@@ -266,7 +296,7 @@ export async function fetchBuilderById(builderId: string) {
  * @param limit Maximum number of featured builders to return
  * @returns Array of featured builder profiles
  */
-export async function fetchFeaturedBuilders(limit: number = 3) {
+export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderProfileData[]> {
   try {
     const builders = await db.builderProfile.findMany({
       where: {

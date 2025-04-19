@@ -136,13 +136,14 @@ export function AvailabilityManager({
   if (!profile) return null;
 
   return (
-    <BorderBeam
-      className="relative rounded-lg"
-      size={shouldReduceMotion ? "none" : "small"}
-      delay={1}
-      duration={3}
-    >
-      <Card className="w-full">
+    <div className="relative rounded-lg">
+      <BorderBeam
+        className="absolute inset-0 rounded-lg"
+        size={shouldReduceMotion ? 0 : 50}
+        delay={1}
+        duration={3}
+      />
+      <Card className="w-full relative z-10">
         <CardHeader>
           <CardTitle>
             <TextShimmer>Availability Management</TextShimmer>
@@ -292,6 +293,6 @@ export function AvailabilityManager({
           </Button>
         </CardFooter>
       </Card>
-    </BorderBeam>
+    </div>
   );
 }

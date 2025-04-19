@@ -1,8 +1,6 @@
-import { auth } from "@/lib/auth/auth-config";
+import { auth } from "@/lib/auth/auth";
 import { redirect } from "next/navigation";
-
-// Types
-export type UserRole = "client" | "builder" | "learner" | "admin";
+import { UserRole } from "./types";
 
 export interface AuthUser {
   id: string;
@@ -10,6 +8,8 @@ export interface AuthUser {
   email?: string | null;
   image?: string | null;
   role?: UserRole;
+  stripeCustomerId?: string;
+  verified?: boolean;
 }
 
 /**

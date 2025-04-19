@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 interface AnimatedBeamProps {
-  containerRef: React.RefObject<HTMLElement>;
-  fromRef: React.RefObject<HTMLElement>;
-  toRef: React.RefObject<HTMLElement>;
+  containerRef: React.RefObject<HTMLDivElement | HTMLElement>;
+  fromRef: React.RefObject<HTMLDivElement | HTMLElement>;
+  toRef: React.RefObject<HTMLDivElement | HTMLElement>;
   curvature?: number;
   duration?: number;
   delay?: number;

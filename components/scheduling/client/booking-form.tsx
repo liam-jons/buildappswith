@@ -114,13 +114,14 @@ export function BookingForm({
   };
   
   return (
-    <BorderBeam
-      className="relative rounded-lg"
-      size={shouldReduceMotion ? "none" : "small"}
-      delay={1}
-      duration={3}
-    >
-      <Card className="w-full max-w-2xl mx-auto">
+    <div className="relative rounded-lg">
+      <BorderBeam
+        className="absolute inset-0 rounded-lg"
+        size={shouldReduceMotion ? 0 : 50}
+        delay={1}
+        duration={3}
+      />
+      <Card className="w-full max-w-2xl mx-auto relative z-10">
         {isComplete ? (
           <div className="p-8 text-center">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
@@ -240,6 +241,6 @@ export function BookingForm({
           </>
         )}
       </Card>
-    </BorderBeam>
+    </div>
   );
 }

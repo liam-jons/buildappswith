@@ -1,4 +1,4 @@
-import { TimelineContainer } from '@/components/timeline/timeline-container';
+// Timeline component removed as it's no longer required
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -21,7 +21,9 @@ export default function TimelinePage() {
           A living timeline of AI capabilities, their practical applications, and limitations.
         </p>
         
-        <TimelineContainer />
+        <div className="p-8 border rounded-lg bg-muted/30">
+          <p className="text-center text-muted-foreground">Timeline component has been removed as it's no longer required.</p>
+        </div>
       </div>
     </div>
   );

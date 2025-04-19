@@ -1,8 +1,10 @@
-import { auth } from "@/lib/auth/auth";
+// Import the handlers directly from the auth module
+import { GET, POST } from "@/lib/auth/auth";
 import { AuthError } from "next-auth";
+import { auth } from "@/lib/auth/auth";
 
-export const GET = auth;
-export const POST = auth;
+// Export the handlers directly
+export { GET, POST };
 
 // Handle auth request errors
 export async function HEAD() {

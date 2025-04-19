@@ -1,4 +1,4 @@
-import { DefaultSession } from "next-auth";
+import type { DefaultSession } from "next-auth";
 
 /**
  * User roles for role-based access control - use the same values as in Prisma schema
@@ -12,12 +12,11 @@ export enum UserRole {
 /**
  * Extended user type with role and other custom fields
  */
-export type User = {
-  id: string;
+export type User = DefaultSession["user"] & {
   role: UserRole;
   stripeCustomerId?: string;
   verified: boolean;
-} & DefaultSession["user"];
+};
 
 /**
  * Extend next-auth session type to include custom user fields
@@ -28,6 +27,12 @@ declare module "next-auth" {
   }
   
   interface User {
+    role: UserRole;
+    stripeCustomerId?: string;
+    verified: boolean;
+  }
+
+  interface JWT {
     id: string;
     role: UserRole;
     stripeCustomerId?: string;
@@ -38,7 +43,7 @@ declare module "next-auth" {
 /**
  * Extended JWT type for next-auth
  */
-declare module "next-auth/jwt" {
+declare module "next-auth" {
   interface JWT {
     id: string;
     role: UserRole;

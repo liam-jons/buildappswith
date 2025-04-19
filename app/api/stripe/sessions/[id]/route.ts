@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
+import { Stripe } from 'stripe';
 
 // Initialize Stripe with the secret key from environment variables
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-04-10', // Use the latest API version
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+  apiVersion: '2025-03-31.basil' as const, // Updated to match expected version format
 });
 
+/**
+ * GET handler for retrieving a Stripe session
+ * Updated to use Next.js 15 promise-based params
+ */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  // Await the params to get the id
+  const params = await context.params;
   const sessionId = params.id;
 
   if (!sessionId) {

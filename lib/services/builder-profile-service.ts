@@ -1,10 +1,38 @@
 import { db } from '@/lib/db';
 import { Prisma } from '@prisma/client';
 import { ValidationTier } from '@/components/profile/validation-tier-badge';
+import { portfolioItemsToPrisma, socialLinksToPrisma } from '@/lib/types/builder';
+import { getSocialLinks } from '@/lib/prisma-types';
+import PrismaExtensions from '@/lib/prisma-extensions';
+import '@/lib/prisma-types';
 
 /**
  * Interfaces for builder profile service
  */
+export interface SocialLinks {
+  website?: string;
+  linkedin?: string;
+  github?: string;
+  twitter?: string;
+}
+
+export interface OutcomeMetric {
+  label: string;
+  value: string;
+  trend: 'up' | 'down' | 'neutral';
+}
+
+export interface PortfolioItem {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  outcomes?: OutcomeMetric[];
+  tags?: string[];
+  projectUrl?: string;
+  createdAt: Date;
+}
+
 export interface CreateBuilderProfileData {
   userId: string;
   bio?: string;
@@ -13,13 +41,8 @@ export interface CreateBuilderProfileData {
   domains?: string[];
   badges?: string[];
   availableForHire?: boolean;
-  portfolioItems?: any[];
-  socialLinks?: {
-    website?: string;
-    linkedin?: string;
-    github?: string;
-    twitter?: string;
-  };
+  portfolioItems?: PortfolioItem[];
+  socialLinks?: SocialLinks;
 }
 
 export interface UpdateBuilderProfileData {
@@ -29,13 +52,8 @@ export interface UpdateBuilderProfileData {
   domains?: string[];
   badges?: string[];
   availableForHire?: boolean;
-  portfolioItems?: any[];
-  socialLinks?: {
-    website?: string;
-    linkedin?: string;
-    github?: string;
-    twitter?: string;
-  };
+  portfolioItems?: PortfolioItem[];
+  socialLinks?: SocialLinks;
 }
 
 export interface BuilderSkillData {
@@ -100,8 +118,8 @@ export async function createBuilderProfile(data: CreateBuilderProfileData) {
         domains: data.domains || [],
         badges: data.badges || [],
         availableForHire: data.availableForHire ?? true,
-        portfolioItems: data.portfolioItems || [],
-        socialLinks: data.socialLinks || {},
+        portfolioItems: portfolioItemsToPrisma(data.portfolioItems || []),
+        socialLinks: socialLinksToPrisma(data.socialLinks || {}),
         validationTier: 1 // Start at Entry level
       }
     });
@@ -143,8 +161,8 @@ export async function updateBuilderProfile(userId: string, data: UpdateBuilderPr
         domains: data.domains !== undefined ? data.domains : undefined,
         badges: data.badges !== undefined ? data.badges : undefined,
         availableForHire: data.availableForHire !== undefined ? data.availableForHire : undefined,
-        portfolioItems: data.portfolioItems !== undefined ? data.portfolioItems : undefined,
-        socialLinks: data.socialLinks !== undefined ? data.socialLinks : undefined
+        portfolioItems: data.portfolioItems !== undefined ? portfolioItemsToPrisma(data.portfolioItems) : undefined,
+        socialLinks: data.socialLinks !== undefined ? socialLinksToPrisma(data.socialLinks) : undefined
       }
     });
     
@@ -275,12 +293,12 @@ export async function updateValidationTier(builderId: string, tier: ValidationTi
 /**
  * Update portfolio items for a builder
  */
-export async function updatePortfolioItems(builderId: string, portfolioItems: any[]) {
+export async function updatePortfolioItems(builderId: string, portfolioItems: PortfolioItem[]) {
   try {
     const profile = await db.builderProfile.update({
       where: { id: builderId },
       data: {
-        portfolioItems
+        portfolioItems: portfolioItemsToPrisma(portfolioItems)
       }
     });
     

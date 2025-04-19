@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth'; // Updated import
 import { z } from 'zod';
 
 // Create/update schema validation
@@ -40,16 +39,19 @@ const builderProfileSchema = z.object({
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth(); // Updated to use auth()
     
-    if (!session || !session.user) {
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
+    
+    // At this point we've verified session.user.id exists
+    const userId = session.user.id as string;
     
     // Check if profile exists
     const profile = await db.builderProfile.findUnique({
       where: {
-        userId: session.user.id
+        userId
       },
       include: {
         user: {
@@ -90,9 +92,9 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth(); // Updated to use auth()
     
-    if (!session || !session.user) {
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
     
@@ -109,20 +111,23 @@ export async function POST(request: NextRequest) {
     
     const data = result.data;
     
+    // At this point we've verified session.user.id exists
+    const userId = session.user.id as string;
+    
     // Check if user already has a builder profile
     const existingProfile = await db.builderProfile.findUnique({
       where: {
-        userId: session.user.id
+        userId
       }
     });
     
     // Create or update builder profile
     const profile = await db.builderProfile.upsert({
       where: {
-        userId: session.user.id
+        userId
       },
       create: {
-        userId: session.user.id,
+        userId,
         bio: data.bio,
         headline: data.headline,
         hourlyRate: data.hourlyRate,
@@ -146,7 +151,7 @@ export async function POST(request: NextRequest) {
     if (!existingProfile) {
       await db.user.update({
         where: {
-          id: session.user.id
+          id: userId
         },
         data: {
           role: 'BUILDER'

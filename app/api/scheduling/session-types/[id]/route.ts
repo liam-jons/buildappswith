@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { updateSessionType, deleteSessionType } from '@/lib/scheduling/real-data/scheduling-service';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 
 // Validation schema for updating a session type
 const updateSessionTypeSchema = z.object({
@@ -18,16 +17,19 @@ const updateSessionTypeSchema = z.object({
 
 /**
  * PATCH handler for updating a session type
+ * Updated to use Next.js 15 promise-based params
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await the params to get the id
+    const params = await context.params;
     const { id } = params;
     
     // Get session for auth check
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     
     if (!session?.user) {
       return NextResponse.json(
@@ -98,16 +100,19 @@ export async function PATCH(
 
 /**
  * DELETE handler for removing a session type
+ * Updated to use Next.js 15 promise-based params
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await the params to get the id
+    const params = await context.params;
     const { id } = params;
     
     // Get session for auth check
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     
     if (!session?.user) {
       return NextResponse.json(
