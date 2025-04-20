@@ -21,7 +21,13 @@
     "type-check": "tsc --noEmit",
     "fix-tailwind": "bash scripts/fix-tailwind.sh",
     "production:setup": "node scripts/setup-production-db.js",
-    "production:check": "node scripts/production-checklist.js"
+    "production:check": "node scripts/production-checklist.js",
+    "fix:drift": "node scripts/fix-social-links-drift.js",
+    "check:migrations": "node scripts/check-migration-status.js",
+    "fix:migrations": "node scripts/fix-migration-sync.js",
+    "reconcile:migrations": "node scripts/reconcile-migrations.js",
+    "baseline:migration": "node scripts/create-baseline-migration.js",
+    "debug:migrations": "node scripts/debug-migration-check.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.8.0",
