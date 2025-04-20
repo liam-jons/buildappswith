@@ -108,7 +108,7 @@ export default function ConfirmationPage({ params }: { params: { id: string } })
           ) : (
             <div className="text-center">
               <p className="mb-4">Your booking has been confirmed!</p>
-              <p className="text-muted-foreground">You'll receive a confirmation email with all the details.</p>
+              <p className="text-muted-foreground">You&apos;ll receive a confirmation email with all the details.</p>
             </div>
           )}
         </CardContent>

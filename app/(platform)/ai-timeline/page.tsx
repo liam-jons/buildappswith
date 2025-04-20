@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'What AI Can/Can\'t Do Timeline | Buildappswith',
+  title: 'What AI Can/Can&apos;t Do Timeline | Buildappswith',
   description: 'Explore the evolution of AI capabilities, their practical applications, and limitations in our interactive timeline.',
 };
 
@@ -22,7 +22,7 @@ export default function TimelinePage() {
         </p>
         
         <div className="p-8 border rounded-lg bg-muted/30">
-          <p className="text-center text-muted-foreground">Timeline component has been removed as it's no longer required.</p>
+          <p className="text-center text-muted-foreground">Timeline component has been removed as it&apos;s no longer required.</p>
         </div>
       </div>
     </div>
