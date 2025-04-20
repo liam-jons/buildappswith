@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, XCircle } from "lucide-react";
 import Link from "next/link";
 
-export default function ConfirmationPage({ params }: { params: { id: string } }) {
+export default function ConfirmationPage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const status = searchParams.get("status") || "success";
-  
+
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
