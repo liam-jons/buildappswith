@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -49,7 +49,8 @@ const availableSlots = [
   { date: "2025-04-26", times: ["09:00", "13:00", "15:00"] }
 ];
 
-export default function BookingPage({ params }: { params: { id: string } }) {
+export default function BookingPage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const router = useRouter();
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
