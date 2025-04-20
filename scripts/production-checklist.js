@@ -32,6 +32,7 @@ console.log(`${colors.bright}${colors.cyan}=== Buildappswith Production Deployme
 // Load environment files
 require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.production' });
+require('dotenv').config({ path: '.env.production.local' });
 
 let checksPassed = true;
 
@@ -72,17 +73,31 @@ requiredVars.forEach(varName => {
 
 // Check 3: Database state
 try {
-  execSync('npx prisma migrate status', { stdio: 'ignore' });
-  checkItem(
-    'Database migrations are in sync',
-    true,
-    'Run npx prisma migrate dev to sync migrations'
-  );
+  // Use PRODUCTION_DATABASE_URL for production checks
+  const prodDatabaseUrl = process.env.PRODUCTION_DATABASE_URL;
+  if (prodDatabaseUrl) {
+    // Prisma expects DATABASE_URL, so we pass it in the env
+    execSync(`npx prisma migrate status`, { 
+      stdio: 'ignore',
+      env: { ...process.env, DATABASE_URL: prodDatabaseUrl }
+    });
+    checkItem(
+      'Database migrations are in sync',
+      true,
+      'Run npx prisma migrate dev to sync migrations'
+    );
+  } else {
+    checkItem(
+      'Database migrations are in sync',
+      false,
+      'PRODUCTION_DATABASE_URL not found. Run vercel env pull --environment=production .env.production.local to get production variables'
+    );
+  }
 } catch (error) {
   checkItem(
     'Database migrations are in sync',
     false,
-    'Run script/setup-production-db.js to resolve migration issues'
+    'Run scripts/production-database-check.js to view details and resolve migration issues'
   );
 }
 
@@ -124,7 +139,7 @@ console.log(`\n${colors.bright}Summary:${colors.reset}`);
 if (checksPassed) {
   console.log(`${colors.green}All checks passed! Ready for production deployment.${colors.reset}`);
   console.log(`\nNext steps:`);
-  console.log(`1. Ensure production DATABASE_URL is set in Vercel`);
+  console.log(`1. Ensure PRODUCTION_DATABASE_URL is set in Vercel`);
   console.log(`2. Update all production environment variables in Vercel`);
   console.log(`3. Deploy to production through Vercel dashboard or CLI`);
   console.log(`4. Monitor deployment logs for any issues`);
