@@ -19,6 +19,8 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { Suspense } from "react";
+import { SearchParamsFallback } from "./search-params-fallback";
 
 export const userAuthSchema = z.object({
   email: z.string().email({
@@ -30,7 +32,7 @@ type FormData = z.infer<typeof userAuthSchema>;
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+function AuthFormWithSearchParams({ className, ...props }: UserAuthFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(userAuthSchema),
     defaultValues: {
@@ -159,5 +161,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         GitHub
       </button>
     </div>
+  );
+}
+
+export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  return (
+    <Suspense fallback={<SearchParamsFallback />}>
+      <AuthFormWithSearchParams className={className} {...props} />
+    </Suspense>
   );
 }
