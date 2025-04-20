@@ -19,7 +19,9 @@
     "db:sync": "node scripts/sync-database.js",
     "db:seed": "node prisma/seed/seed.js",
     "type-check": "tsc --noEmit",
-    "fix-tailwind": "bash scripts/fix-tailwind.sh"
+    "fix-tailwind": "bash scripts/fix-tailwind.sh",
+    "production:setup": "node scripts/setup-production-db.js",
+    "production:check": "node scripts/production-checklist.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.8.0",
