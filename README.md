@@ -1,16 +1,19 @@
 # Buildappswith Platform
 
-The Buildappswith platform democratizes AI application development through an innovative marketplace connecting clients with validated builders, combined with practical AI education resources.
+Buildappswith represents a transformative platform designed to democratize AI application development through a human-centered approach. This MVP focuses on connecting users with trusted AI builders for guidance and education.
 
 ## Project Overview
 
-Buildappswith is a platform designed to bridge the gap between AI's advanced capabilities and practical implementation. It offers:
+The platform creates a marketplace where users can connect with verified builders for affordable custom solutions, while also providing accessible education resources that empower anyone to understand and leverage AI effectively in their daily lives.
 
-1. **Builder Marketplace** - Connect with validated AI app developers
-2. **AI Learning Hub** - Learn practical AI skills through gamified paths
-3. **"What AI Can/Can't Do" Timeline** - Explore AI capabilities and limitations
-4. **Builder Profiles** - Transparent metrics for builder selection
-5. **Community Exchange** - Knowledge sharing among users
+## MVP Features
+
+1. **Landing Page** - Dynamic builder showcase with clear value proposition
+2. **Simplified Marketplace** - Featuring Liam Jons' profile with booking functionality
+3. **Liam Jons Profile** - Comprehensive profile with session booking capabilities
+4. **"How It Works" Page** - Educational content explaining the platform
+5. **Toolkit Page** - Curated collection of recommended AI tools
+6. **User Registration** - Basic community building with email collection
 
 ## Getting Started
 
@@ -24,7 +27,21 @@ yarn install
 pnpm install
 ```
 
-Then, run the development server:
+Then, set up your environment variables:
+
+```bash
+cp .env.example .env.local
+# Edit .env.local with your database and Stripe credentials
+```
+
+Run database migrations:
+
+```bash
+pnpm prisma:generate
+pnpm prisma:migrate:dev
+```
+
+Finally, run the development server:
 
 ```bash
 npm run dev
@@ -36,149 +53,77 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the platform.
 
-## Project Structure
+## Technology Stack
 
-The Buildappswith project is organized with the following directory structure:
+- **Frontend**: Next.js 15.3.1 with App Router, React, TypeScript, Tailwind CSS
+- **Database**: PostgreSQL with Prisma ORM (v6.6.0)
+- **Authentication**: NextAuth.js with database adapter
+- **Components**: Shadcn/ui components enhanced with Magic UI
+- **Accessibility**: WCAG 2.1 AA compliance
+- **Payment Processing**: Stripe integration
+- **Deployment**: Vercel with GitHub integration
+
+## Project Structure
 
 - `/app` - Next.js application files (pages, routes, etc.)
 - `/components` - Reusable React components
 - `/lib` - Utility functions and shared code
 - `/public` - Static assets
 - `/prisma` - Database schema and migrations
-- `/tests` - Testing infrastructure
-  - `/tests/stagehand-tests` - Stagehand automated testing
 - `/docs` - Project documentation
-- `/scripts` - Utility scripts for environment setup and database management
 
-For a comprehensive guide to the project structure, see [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md).
+## Environment Variables
+
+Required environment variables:
+
+```env
+DATABASE_URL=postgresql://...
+PRODUCTION_DATABASE_URL=postgresql://...
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=...
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+```
+
+See [docs/ENVIRONMENT_MANAGEMENT.md](docs/ENVIRONMENT_MANAGEMENT.md) for complete details.
 
 ## Key Documentation
 
-### Project Overview and Structure
-- [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) - Comprehensive codebase organization
-- [COMPONENT_STATUS.md](COMPONENT_STATUS.md) - Implementation status of platform components
-- [DECISIONS.md](DECISIONS.md) - Architecture and design decisions with rationales
-
-### Development Guidelines
-- [CONTRIBUTING.md](docs/CONTRIBUTING.md) - Guidelines for contributing to the project
-- [ROADMAP.md](docs/ROADMAP.md) - Planned features and development timeline
-- [CHANGELOG.md](CHANGELOG.md) - Version history and changes
+### MVP Documentation
+- [MVP_COMPONENT_STATUS.md](docs/MVP_COMPONENT_STATUS.md) - Implementation status for PRD 2.0 features
+- [PRD_2.0_FEATURES.md](docs/PRD_2.0_FEATURES.md) - Detailed PRD 2.0 feature specifications
+- [IMPLEMENTATION_DEVIATIONS.md](docs/IMPLEMENTATION_DEVIATIONS.md) - Features implemented beyond PRD 2.0 scope
 
 ### Technical Resources
 - [DATABASE_SETUP.md](docs/DATABASE_SETUP.md) - Database setup and migration guide
 - [ENVIRONMENT_MANAGEMENT.md](docs/ENVIRONMENT_MANAGEMENT.md) - Environment variable management
-- [MAGIC_UI_TEMPLATES.md](docs/MAGIC_UI_TEMPLATES.md) - Documentation for Magic UI reference templates
-- [REPOMIX_XML.md](docs/REPOMIX_XML.md) - Information about the repomix-output.xml context file
-- [MAGIC_UI_TESTING_PLAN.md](docs/MAGIC_UI_TESTING_PLAN.md) - Testing plan for Magic UI components
+- [STRIPE_INTEGRATION.md](docs/STRIPE_INTEGRATION.md) - Payment integration documentation
 
 ### Deployment
 - [DEPLOYMENT.md](docs/DEPLOYMENT.md) - General deployment instructions
 - [VERCEL_DEPLOYMENT.md](docs/VERCEL_DEPLOYMENT.md) - Vercel-specific deployment guidelines
-- [VERCEL_ENV_SETUP.md](docs/VERCEL_ENV_SETUP.md) - Environment setup for Vercel deployments
 
-## Technology Stack
+## Development Status
 
-- **Frontend**: Next.js with App Router, React, TypeScript, Tailwind CSS
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: NextAuth.js with database adapter
-- **Components**: Shadcn/ui components enhanced with Magic UI for improved visuals
-- **Accessibility**: Full WCAG 2.1 AA compliance with dark mode, high contrast, reduced motion options
-- **Animation**: Framer Motion with accessibility considerations
-- **Payment Processing**: Stripe integration
-- **Deployment**: GitHub-based workflow with Vercel integration
+The platform is currently live in production with MVP features complete. Key achievements:
 
-## Database Setup
+- ✅ Landing page with builder showcase
+- ✅ Booking system integration with Stripe
+- ✅ Builder profile with appointment scheduling
+- ✅ Authentication system with user roles
+- ✅ Basic marketplace functionality
 
-The platform uses PostgreSQL with Prisma ORM. To set up the database:
+See [MVP_COMPONENT_STATUS.md](docs/MVP_COMPONENT_STATUS.md) for detailed status of PRD 2.0 components.
 
-1. Configure your database connection in `.env.local`:
-   ```
-   DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
-   ```
+## Future Development
 
-2. Generate the Prisma client:
-   ```bash
-   pnpm prisma:generate
-   ```
+Beyond the MVP, the platform aims to expand with:
+- Additional verified builders
+- Enhanced community features
+- Expanded educational resources
+- Advanced marketplace capabilities
 
-3. Run migrations:
-   ```bash
-   pnpm prisma:migrate:dev
-   ```
-
-4. Seed the database:
-   ```bash
-   pnpm db:seed
-   ```
-
-For complete details, see [docs/DATABASE_SETUP.md](docs/DATABASE_SETUP.md).
-
-## Environment Management
-
-Buildappswith uses a hierarchical environment variable system. You can check your environment configuration with:
-
-```bash
-pnpm env:check
-```
-
-For complete details, see [docs/ENVIRONMENT_MANAGEMENT.md](docs/ENVIRONMENT_MANAGEMENT.md).
-
-## Magic UI Templates
-
-The project includes several Magic UI template directories that serve as reference implementations:
-
-- `magicuidesign-devtool-template-*` - Developer tools and utilities
-- `magicuidesign-dillionverma-startup-template-*` - Startup landing page components
-- `magicuidesign-mobile-template-*` - Mobile-responsive design patterns
-- `magicuidesign-saas-template-*` - SaaS application UI components
-
-These are not part of the main application code. See [docs/MAGIC_UI_TEMPLATES.md](docs/MAGIC_UI_TEMPLATES.md) for detailed information.
-
-## AI Context Retention
-
-For AI assistants working on the project, we maintain a special file:
-
-- `repomix-output.xml` - Structured repository content for AI context retention
-
-This file should never be manually edited. See [docs/REPOMIX_XML.md](docs/REPOMIX_XML.md) for details.
-
-## Testing
-
-### Running Automated Tests
-
-We use Stagehand for automated browser testing. To run these tests:
-
-1. Navigate to the Stagehand tests directory:
-   ```bash
-   cd tests/stagehand-tests
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Configure environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your API keys
-   ```
-
-4. Run the tests:
-   ```bash
-   npm start
-   ```
-
-## Development Workflow
-
-1. All feature development happens in the `develop` branch
-2. Production deployments are made from the `main` branch
-3. Documentation is updated alongside code changes
-4. Version numbers are incremented with each change (current: 0.1.62)
-
-## Project Status
-
-Buildappswith is currently in Phase 1 (Foundation) of development. See the `COMPONENT_STATUS.md` file for details on the implementation status of specific components.
+See the archived original vision documentation for long-term plans.
 
 ## License
 

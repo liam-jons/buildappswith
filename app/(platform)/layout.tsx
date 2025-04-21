@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ProfileProvider } from "@/lib/contexts/profile-context";
 
 export const metadata: Metadata = {
   title: {
@@ -16,13 +17,15 @@ export default function PlatformLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <SiteHeader />
-      {/* Added pt-[3.5rem] to account for the fixed header height */}
-      <main className="flex-1 pt-[3.5rem]">
-        {children}
-      </main>
-      <SiteFooter />
-    </div>
+    <ProfileProvider>
+      <div className="min-h-screen flex flex-col">
+        <SiteHeader />
+        {/* Added pt-[3.5rem] to account for the fixed header height */}
+        <main className="flex-1 pt-[3.5rem]">
+          {children}
+        </main>
+        <SiteFooter />
+      </div>
+    </ProfileProvider>
   );
 }
