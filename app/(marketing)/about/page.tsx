@@ -21,26 +21,30 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <BorderBeam className="p-8 rounded-lg mb-12">
-          <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
-          <p className="text-lg mb-6">
-            We envision a world where AI technologies serve humans, not the other way around. 
-            A world where everyone, regardless of technical background, can harness the power 
-            of AI to solve problems, create opportunities, and have more time for what truly matters – 
-            human connection.
-          </p>
-          <p className="text-lg">
-            Buildappswith is working to make this vision a reality by creating a platform that 
-            bridges the gap between advanced AI capabilities and practical application for 
-            non-technical users.
-          </p>
-        </BorderBeam>
+        {/* BorderBeam wrapper div */}
+        <div className="relative p-8 rounded-lg mb-12 bg-slate-50 dark:bg-slate-800/50">
+          <BorderBeam className="rounded-lg" />
+          <div className="relative z-10">
+            <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
+            <p className="text-lg mb-6">
+              We envision a world where AI technologies serve humans, not the other way around. 
+              A world where everyone, regardless of technical background, can harness the power 
+              of AI to solve problems, create opportunities, and have more time for what truly matters &ndash; 
+              human connection.
+            </p>
+            <p className="text-lg">
+              Buildappswith is working to make this vision a reality by creating a platform that 
+              bridges the gap between advanced AI capabilities and practical application for 
+              non-technical users.
+            </p>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-lg">
             <h2 className="text-2xl font-bold mb-4">Our Purpose</h2>
             <p className="mb-4">
-              To create a trusted ecosystem where anyone can benefit from AI's potential to enhance 
+              To create a trusted ecosystem where anyone can benefit from AI&apos;s potential to enhance 
               efficiency and human connection.
             </p>
             <p>
@@ -53,7 +57,7 @@ export default function AboutPage() {
           <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-lg">
             <h2 className="text-2xl font-bold mb-4">Our Approach</h2>
             <p className="mb-4">
-              We operate on a "race to the top" model that incentivizes quality, knowledge-sharing, 
+              We operate on a &quot;race to the top&quot; model that incentivizes quality, knowledge-sharing, 
               and tangible outcomes rather than competing on price.
             </p>
             <p>
@@ -79,7 +83,7 @@ export default function AboutPage() {
             </div>
             
             <div className="p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-              <h3 className="text-xl font-bold mb-3">Trust & Authenticity</h3>
+              <h3 className="text-xl font-bold mb-3">Trust &amp; Authenticity</h3>
               <p>
                 We create a safe space where people can learn about AI without fear or hype, 
                 with transparent validation of builder capabilities and honest education about 
@@ -98,7 +102,7 @@ export default function AboutPage() {
             <div className="p-6 rounded-lg border border-slate-200 dark:border-slate-700">
               <h3 className="text-xl font-bold mb-3">Community Growth</h3>
               <p>
-                Our "race to the top" model encourages builders to compete on quality and value, 
+                Our &quot;race to the top&quot; model encourages builders to compete on quality and value, 
                 not price, creating a community that continuously raises standards and shares knowledge.
               </p>
             </div>
@@ -106,7 +110,7 @@ export default function AboutPage() {
             <div className="p-6 rounded-lg border border-slate-200 dark:border-slate-700">
               <h3 className="text-xl font-bold mb-3">Efficiency for Connection</h3>
               <p>
-                We use AI to make people more efficient so they have more time for what matters most – 
+                We use AI to make people more efficient so they have more time for what matters most &ndash; 
                 human connection, creativity, and meaningful work.
               </p>
             </div>
@@ -124,7 +128,7 @@ export default function AboutPage() {
         <div className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-lg text-center">
           <h2 className="text-2xl font-bold mb-4">Join Our Mission</h2>
           <p className="text-lg mb-6">
-            Whether you're looking to build an app, learn practical AI skills, or share your expertise, 
+            Whether you&apos;re looking to build an app, learn practical AI skills, or share your expertise, 
             Buildappswith offers a path forward. Together, we can democratize AI and ensure its benefits 
             are accessible to all.
           </p>
