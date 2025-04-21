@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.68] - 2025-04-21
+
+### Added
+- Implemented production-ready builder image solution:
+  - Created `BuilderImage` component with robust error handling and fallbacks
+  - Added directory structure for locally hosted builder images
+  - Created documentation for managing builder profile images
+  - Separated BuilderCard into its own reusable component
+
+### Changed
+- Updated Next.js image configuration to use `remotePatterns` instead of deprecated `domains`
+- Improved security by limiting image sources to specific patterns
+- Created path to transition away from external image hosting
+
+## [0.1.67] - 2025-04-21
+
+### Fixed
+- Fixed marketplace image loading issues:
+  - Added 'randomuser.me' and 'placehold.co' to allowed image domains in next.config.mjs
+  - Updated Content Security Policy to allow images from randomuser.me and placehold.co
+  - Fixed Next.js Image component configuration for external domain access
+  - Resolved "unconfigured host" error when loading builder profile images
+
 ## [0.1.66] - 2025-04-21
 
 ### Added
@@ -11,6 +34,12 @@ All notable changes to this project will be documented in this file.
   - Implemented Magic UI components (TextShimmer, BorderBeam) for visual appeal
   - Ensured WCAG 2.1 AA compliance with proper heading hierarchy and semantic HTML
   - Added dummy social media links and contact emails
+
+### Fixed
+- Fixed Client Component error in Contact page:
+  - Created a separate `ContactForm` client component for interactive form elements
+  - Moved form event handling logic to the client component
+  - Improved page architecture by separating server and client components
 
 ## [1.0.11] - 2025-04-19
 
