@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { ValidationTierBadge } from "@/components/profile/validation-tier-badge";
+import { BuilderCard } from "@/components/marketplace/builder-card";
 import { motion } from "framer-motion";
 import { TextShimmer } from "@/components/magicui/text-shimmer";
 import { Button } from "@/components/ui/button";
@@ -310,68 +310,3 @@ export default function MarketplacePage() {
   );
 }
 
-// Builder Card Component
-function BuilderCard({ builder }: { builder: Builder }) {
-  return (
-    <Card className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow duration-200">
-      <CardHeader className="pb-3">
-        <div className="flex items-center space-x-4">
-          <div className="relative h-16 w-16 rounded-full border border-muted overflow-hidden bg-muted">
-            {builder.avatarUrl ? (
-              <Image
-                src={builder.avatarUrl}
-                alt={builder.name}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
-                <span className="text-xl font-semibold text-primary">
-                  {builder.name?.charAt(0) || "B"}
-                </span>
-              </div>
-            )}
-          </div>
-          <div>
-            <div className="flex items-center">
-              <h3 className="text-lg font-semibold mr-2">{builder.name}</h3>
-              <ValidationTierBadge tier={builder.validationTier} size="sm" />
-            </div>
-            <p className="text-sm text-muted-foreground">{builder.title}</p>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-sm line-clamp-3 mb-3">
-          {builder.bio || "This builder hasn't added a bio yet."}
-        </p>
-        
-        {/* Skills */}
-        <div className="flex flex-wrap gap-1.5 mt-2">
-          {builder.skills?.slice(0, 5).map((skill: string) => (
-            <span
-              key={skill}
-              className="px-2 py-0.5 bg-muted text-xs rounded-full"
-            >
-              {skill}
-            </span>
-          ))}
-          {(builder.skills?.length || 0) > 5 && (
-            <span className="px-2 py-0.5 bg-muted text-xs rounded-full">
-              +{(builder.skills?.length || 0) - 5} more
-            </span>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="pt-0">
-        <Button 
-          variant="default" 
-          className="w-full"
-          onClick={() => window.location.href = `/profile/${builder.id}`}
-        >
-          View Profile
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-}

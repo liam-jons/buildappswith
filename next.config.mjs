@@ -15,7 +15,7 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://cdnjs.cloudflare.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org https://cdn.magicui.design;
+  img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org https://cdn.magicui.design https://randomuser.me https://placehold.co;
   font-src 'self' data: https://fonts.gstatic.com;
   frame-src 'self' https://js.stripe.com https://*.stripe.com;
   connect-src 'self' https://api.stripe.com https://*.vercel-insights.com http://localhost:* https://localhost:*;
@@ -67,7 +67,7 @@ const nextConfig = {
   // Configure image optimization
   images: {
     formats: ['image/avif', 'image/webp'],
-    domains: ['api.placeholder.org', 'localhost', 'cdn.magicui.design'],
+    domains: [], // Deprecated but keeping empty array for backward compatibility
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60, // Cache optimized images for at least 60 seconds
@@ -80,6 +80,22 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'cdn.magicui.design',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.placeholder.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'localhost',
       }
     ],
   },
