@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.22] - 2025-04-21
+
+### Fixed
+- Fixed useSearchParams Suspense boundary error in the /login page
+- Updated all instances of UserAuthForm to use SuspenseUserAuthForm wrapper
+
 ## [1.0.21] - 2025-04-21
 
 ### Fixed
