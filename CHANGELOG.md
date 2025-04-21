@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.66] - 2025-04-21
+
+### Added
+- Created About Us pages in the marketing route group:
+  - Added "Our Mission" page (`/about`) with company vision, values, and mission statement
+  - Added "Contact" page (`/contact`) with placeholder contact form and company information
+  - Implemented Magic UI components (TextShimmer, BorderBeam) for visual appeal
+  - Ensured WCAG 2.1 AA compliance with proper heading hierarchy and semantic HTML
+  - Added dummy social media links and contact emails
+
 ## [1.0.11] - 2025-04-19
 
 ### Fixed
