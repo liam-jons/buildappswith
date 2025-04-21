@@ -16,7 +16,7 @@ export default function ContactPage() {
             <TextShimmer>Contact Us</TextShimmer>
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300">
-            We'd love to hear from you
+            We&apos;d love to hear from you
           </p>
         </div>
 
@@ -25,7 +25,7 @@ export default function ContactPage() {
             <h2 className="text-2xl font-bold mb-6">Get In Touch</h2>
             <p className="mb-6">
               Have questions about Buildappswith or want to learn more about how we can help you 
-              leverage AI effectively? We're here to help.
+              leverage AI effectively? We&apos;re here to help.
             </p>
             
             <div className="space-y-6">
