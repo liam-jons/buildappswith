@@ -39,7 +39,7 @@ export default function HowItWorksPage() {
               <CardContent>
                 <p>
                   Start by browsing our curated toolkit of recommended AI applications or explore the marketplace 
-                  to see what kinds of solutions our builders can create. Understand what's possible with today's AI technology.
+                  to see what kinds of solutions our builders can create. Understand what&apos;s possible with today&apos;s AI technology.
                 </p>
               </CardContent>
             </Card>
@@ -56,7 +56,7 @@ export default function HowItWorksPage() {
               </CardHeader>
               <CardContent>
                 <p>
-                  Whether you're looking to learn or to have something built, we connect you with verified experts who can help.
+                  Whether you&apos;re looking to learn or to have something built, we connect you with verified experts who can help.
                   Our marketplace features transparent validation metrics so you can choose with confidence.
                 </p>
               </CardContent>
@@ -103,7 +103,7 @@ export default function HowItWorksPage() {
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-6">Joining the AI Marketplace</h2>
           <p className="text-lg mb-6">
-            Our marketplace operates on a "race to the top" model, where builders compete based on quality and outcomes 
+            Our marketplace operates on a &quot;race to the top&quot; model, where builders compete based on quality and outcomes 
             rather than price. This ensures that clients receive high-quality solutions while builders are fairly compensated 
             for their expertise.
           </p>
@@ -130,13 +130,13 @@ export default function HowItWorksPage() {
           <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6">
             <h3 className="text-xl font-medium mb-3">For Clients</h3>
             <p className="mb-4">
-              If you're looking for custom AI solutions for your business or personal needs, our marketplace provides:
+              If you&apos;re looking for custom AI solutions for your business or personal needs, our marketplace provides:
             </p>
             <ul className="list-disc pl-6 mb-4 space-y-2">
               <li>Access to verified AI application builders</li>
               <li>Transparent success metrics to guide your selection</li>
               <li>Fair pricing with clear value proposition</li>
-              <li>Educational resources to help you understand what you're buying</li>
+              <li>Educational resources to help you understand what you&apos;re buying</li>
             </ul>
             <Button className="mt-2" asChild>
               <Link href="/marketplace">
@@ -149,7 +149,7 @@ export default function HowItWorksPage() {
         <section>
           <h2 className="text-2xl font-semibold mb-4">AI Literacy Resources</h2>
           <p className="text-lg mb-6">
-            Stay current with our "What AI Can and Can't Do" timeline, helping you understand the rapidly changing landscape 
+            Stay current with our &quot;What AI Can and Can&apos;t Do&quot; timeline, helping you understand the rapidly changing landscape 
             of AI capabilities and limitations.
           </p>
           <p className="text-lg mb-6">

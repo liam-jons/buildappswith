@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.26] - 2025-04-22
+
+### Fixed
+- Fixed additional ESLint error in How it works page by escaping the last remaining apostrophe
+
+## [1.0.25] - 2025-04-22
+
+### Fixed
+- Fixed ESLint errors in How it works page by properly escaping apostrophes and quotes
+
 ## [1.0.24] - 2025-04-22
 
 ### Added
