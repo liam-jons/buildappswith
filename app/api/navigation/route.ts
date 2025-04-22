@@ -11,13 +11,13 @@ export async function GET(request: NextRequest) {
       {
         id: 1,
         label: "Learn how to benefit instantly from AI",
-        href: "/for-clients",
+        href: "/toolkit",
         description: "Practical guidance for immediate AI adoption"
       },
       {
         id: 2,
         label: "Learn to build a business with AI",
-        href: "/for-learners",
+        href: "/marketplace",
         description: "Turn AI skills into entrepreneurial opportunities"
       },
       {
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       {
         id: 4,
         label: "Teach others how to benefit from AI",
-        href: "/become-builder",
+        href: "/how-it-works",
         description: "Share your expertise and help others grow"
       }
     ];

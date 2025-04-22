@@ -14,6 +14,14 @@ STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
 
 These variables are already configured in the `.env.local` file for development.
 
+### Important Note About Deployment
+
+When deploying to any environment (development, staging, or production), you **must** ensure that the `STRIPE_SECRET_KEY` is properly configured in your environment variables. Without this key, the Stripe client will fail to initialize with the error: `Neither apiKey nor config.authenticator provided`.
+
+#### Deployment Environment Variables
+
+In Vercel or other deployment platforms, ensure these variables are set in the project settings:
+
 ## Testing the Integration
 
 ### Local Development Testing

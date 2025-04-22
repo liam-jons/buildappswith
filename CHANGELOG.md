@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.24] - 2025-04-22
+
+### Added
+- Created new "Toolkit" page with comprehensive AI tools recommendations organized by category
+- Added detailed sections to "How it works" page including content about joining the AI marketplace
+
+### Changed
+- Updated navigation links in site-header.tsx to direct users to appropriate pages:
+  - "Learn how to benefit instantly from AI" now directs to the Toolkit page
+  - "Learn to build a business with AI" now directs to the Marketplace page
+  - "Teach others how to benefit from AI" now directs to the How it works page
+- Enhanced "How it works" page with a structured layout including mission, process, and marketplace sections
+- Improved navigation flow for better user experience
+
+## [1.0.23] - 2025-04-22
+
+### Fixed
+- Updated the API navigation endpoint to match the updated navigation links
+- Fixed 404 errors when clicking on navigation items by ensuring consistent paths between the frontend and API
+
 ## [1.0.22] - 2025-04-21
 
 ### Fixed
