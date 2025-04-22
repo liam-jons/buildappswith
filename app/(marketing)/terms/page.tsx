@@ -23,7 +23,7 @@ export default function TermsPage() {
         <h2 className="text-2xl font-semibold mt-8">1. Introduction</h2>
         <p>
           Welcome to Buildappswith. These Terms of Service govern your use of our platform,
-          including any related services, features, content, or applications (collectively, the "Service").
+          including any related services, features, content, or applications (collectively, the &quot;Service&quot;).
         </p>
 
         <h2 className="text-2xl font-semibold mt-8">2. Acceptance of Terms</h2>
