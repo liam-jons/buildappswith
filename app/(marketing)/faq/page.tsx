@@ -51,7 +51,7 @@ export default function FAQPage() {
             <p>
               Our builder validation system focuses on tangible outcomes rather than subjective reviews. Builders are
               rated based on factors like project completion success, client business impacts, technical quality, and
-              knowledge contributions. This creates a "race to the top" environment where the most skilled and
+              knowledge contributions. This creates a &quot;race to the top&quot; environment where the most skilled and
               helpful builders gain recognition.
             </p>
           ),
@@ -66,7 +66,7 @@ export default function FAQPage() {
                 <li>Weekly AI 101 sessions (free for unemployed individuals)</li>
                 <li>A comprehensive AI toolkit with recommendations</li>
                 <li>Basic learning resources about practical AI applications</li>
-                <li>"What AI Can/Can't Do" guides to understand capabilities</li>
+                <li>&quot;What AI Can/Can&apos;t Do&quot; guides to understand capabilities</li>
               </ul>
             </div>
           ),
@@ -76,7 +76,7 @@ export default function FAQPage() {
           question: "How much does it cost to have an app built?",
           answer: (
             <p>
-              App development costs vary based on complexity, features, and the builder's expertise level. Our platform
+              App development costs vary based on complexity, features, and the builder&apos;s expertise level. Our platform
               offers transparent pricing, and you can get custom quotes from builders based on your specific requirements.
               The marketplace model helps keep costs affordable while maintaining high quality standards.
             </p>
@@ -87,9 +87,9 @@ export default function FAQPage() {
           question: "How can I become a builder on the platform?",
           answer: (
             <p>
-              To become a builder, you'll need to create a profile and demonstrate your skills through our validation
-              process. We're currently in the early stages with a selective onboarding process. You can express interest
-              by visiting the "Teach someone to build" section of our platform, and we'll guide you through the next steps.
+              To become a builder, you&apos;ll need to create a profile and demonstrate your skills through our validation
+              process. We&apos;re currently in the early stages with a selective onboarding process. You can express interest
+              by visiting the &quot;Teach someone to build&quot; section of our platform, and we&apos;ll guide you through the next steps.
             </p>
           ),
         },
@@ -115,7 +115,7 @@ export default function FAQPage() {
           question: "How do I get started with learning AI skills?",
           answer: (
             <p>
-              The best way to start is by visiting our "Learn how to build" section, where you'll find structured
+              The best way to start is by visiting our &quot;Learn how to build&quot; section, where you&apos;ll find structured
               learning paths tailored to different skill levels. We recommend beginning with our AI literacy fundamentals
               and gradually progressing to more specialized topics. You can also attend our weekly sessions for guided
               learning experiences.

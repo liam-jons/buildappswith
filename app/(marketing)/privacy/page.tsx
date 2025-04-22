@@ -86,7 +86,7 @@ export default function PrivacyPage() {
           when a cookie is being sent.
         </p>
 
-        <h2 className="text-2xl font-semibold mt-8">8. Children's Privacy</h2>
+        <h2 className="text-2xl font-semibold mt-8">8. Children&apos;s Privacy</h2>
         <p>
           Our platform is not intended for children under the age of 18. We do not knowingly collect
           personal information from children under 18.

@@ -99,7 +99,7 @@ export default function WeeklySessionsPage() {
             </li>
           </ul>
           <p className="font-medium mt-4">
-            All sessions marked as "Free for unemployed" are available at no cost to anyone currently without employment.
+            All sessions marked as &quot;Free for unemployed&quot; are available at no cost to anyone currently without employment.
             Simply contact us before registering to receive your access code.
           </p>
         </div>
