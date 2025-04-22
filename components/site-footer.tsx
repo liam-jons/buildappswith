@@ -10,20 +10,12 @@ const footerNavs = [
     label: "Platform",
     items: [
       {
-        href: "/marketplace",
-        name: "Builder Marketplace",
-      },
-      {
         href: "/how-it-works",
         name: "How It Works",
       },
       {
-        href: "/ai-capabilities",
-        name: "AI Capabilities",
-      },
-      {
-        href: "/toolkit",
-        name: "Toolkit",
+        href: "/marketplace",
+        name: "Marketplace",
       },
     ],
   },
@@ -32,21 +24,29 @@ const footerNavs = [
     items: [
       {
         href: "/for-clients",
-        name: "For Clients",
+        name: "Learn how to benefit",
       },
       {
         href: "/for-learners",
-        name: "For Learners",
+        name: "Learn how to build",
+      },
+      {
+        href: "/marketplace",
+        name: "Pay someone to build",
       },
       {
         href: "/for-builders",
-        name: "For Builders",
+        name: "Teach someone to build",
       },
     ],
   },
   {
     label: "Resources",
     items: [
+      {
+        href: "/toolkit",
+        name: "Toolkit",
+      },
       {
         href: "/weekly-sessions",
         name: "Weekly Sessions",
@@ -55,10 +55,6 @@ const footerNavs = [
         href: "/faq",
         name: "FAQ",
       },
-      {
-        href: "/community",
-        name: "Community",
-      },
     ],
   },
   {
@@ -66,7 +62,7 @@ const footerNavs = [
     items: [
       {
         href: "/about",
-        name: "About Us",
+        name: "Our Mission",
       },
       {
         href: "/contact",

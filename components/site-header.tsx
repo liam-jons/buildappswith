@@ -15,7 +15,7 @@ import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 import { useAuth } from "@/lib/auth/hooks";
 import { UserRole } from "@/lib/auth/types";
 
-function AccessibilitySettings() {
+function ViewingPreferences() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [dyslexicMode, setDyslexicMode] = useState(false);
@@ -42,18 +42,21 @@ function AccessibilitySettings() {
     <Popover>
       <PopoverTrigger asChild>
         <button
-          className="flex items-center justify-center h-8 w-8 ml-2 rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm font-bold"
-          aria-label="Toggle accessibility settings"
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "ml-4 h-8 text-sm md:flex hidden bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
+          )}
+          aria-label="Toggle viewing preferences"
         >
-          A
+          Viewing Preferences
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-72">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium leading-none">Accessibility Settings</h4>
+            <h4 className="font-medium leading-none">Viewing Preferences</h4>
             <p className="text-sm text-muted-foreground">
-              Customize your experience with these accessibility options.
+              Customise your viewing experience with these options.
             </p>
           </div>
           <div className="grid gap-2">
@@ -86,18 +89,90 @@ function AccessibilitySettings() {
   );
 }
 
+// Mobile version of the viewing preferences button
+function MobileViewingPreferences() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [dyslexicMode, setDyslexicMode] = useState(false);
+
+  // After mounting, we have access to the theme
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    // Apply OpenDyslexic font if dyslexicMode is enabled
+    if (!mounted) return;
+    
+    if (dyslexicMode) {
+      document.body.classList.add('dyslexic-mode');
+      document.documentElement.classList.add('dyslexic-mode');
+    } else {
+      document.body.classList.remove('dyslexic-mode');
+      document.documentElement.classList.remove('dyslexic-mode');
+    }
+  }, [dyslexicMode, mounted]);
+
+  if (!mounted) return null;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          className="flex items-center justify-center h-8 w-8 ml-4 rounded-full border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-bold md:hidden"
+          aria-label="Toggle viewing preferences"
+        >
+          VP
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-72">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">Viewing Preferences</h4>
+            <p className="text-sm text-muted-foreground">
+              Customise your viewing experience with these options.
+            </p>
+          </div>
+          <div className="grid gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                {theme === "dark" ? <MoonIcon className="h-4 w-4" /> : <SunIcon className="h-4 w-4" />}
+                <Label htmlFor="mobile-theme-mode">Dark Mode</Label>
+              </div>
+              <Switch
+                id="mobile-theme-mode"
+                checked={theme === "dark"}
+                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.60007 2.09998C3.60007 2.70003 4.08235 3.17897 4.72275 3.24449L5.00007 3.26904V2.09998H3.60007ZM5.00007 1.09998V0.0999756H3.50007V1.09998H5.00007ZM6.00007 0.0999756V1.09998L6.60007 1.09998C7.25259 1.09998 7.92308 1.20847 8.54182 1.41333L5.54064 10.4123L6.00007 11.8H8.00007V10.8H6.53384L9.45444 2.09998H10.8001V0.0999756H6.00007ZM11.8001 0.0999756V1.09998H13.8001V2.09998H11.8001V3.09998H13.8001V4.09997H11.8001V5.09997H13.8001V6.09997H11.8001V7.09997H13.8001V8.09997H11.8001V9.09997H13.8001V10.1H11.8001V11.1H13.8001V12.1H11.8001V13.1H13.8001V14.1H11.8001V14.9H14.7001V0.0999756H11.8001ZM0.900024 2.09998V14.9H3.80002V4.09997H1.90002V2.09998H0.900024Z" fill="currentColor"/></svg>
+                <Label htmlFor="mobile-dyslexic-mode">Dyslexic friendly</Label>
+              </div>
+              <Switch
+                id="mobile-dyslexic-mode"
+                checked={dyslexicMode}
+                onCheckedChange={setDyslexicMode}
+              />
+            </div>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 // Role-based navigation paths
 const defaultRoleBasedItems = [
   {
     id: 1,
     label: "Learn how to benefit instantly from AI",
-    href: "/for-clients",
+    href: "/toolkit",
     description: "Practical guidance for immediate AI adoption"
   },
   {
     id: 2,
     label: "Learn to build a business with AI",
-    href: "/for-learners",
+    href: "/marketplace",
     description: "Turn AI skills into entrepreneurial opportunities"
   },
   {
@@ -109,7 +184,7 @@ const defaultRoleBasedItems = [
   {
     id: 4,
     label: "Teach others how to benefit from AI",
-    href: "/become-builder",
+    href: "/how-it-works",
     description: "Share your expertise and help others grow"
   }
 ];
@@ -334,7 +409,7 @@ export function SiteHeader() {
                 pathname === "/how-it-works" ? "bg-slate-100 dark:bg-slate-800" : ""
               )}
             >
-              How it works
+              How It Works
             </Link>
             
             {/* I would like to... dropdown */}
@@ -423,7 +498,7 @@ export function SiteHeader() {
                 aria-expanded={aboutDropdownOpen}
                 aria-haspopup="true"
               >
-                About us
+                About Us
                 <ChevronDown size={16} className={cn("transition-transform", aboutDropdownOpen ? "rotate-180" : "")} />
               </button>
               <AnimatePresence>
@@ -457,8 +532,9 @@ export function SiteHeader() {
           </nav>
 
           <div className="ml-auto flex h-full items-center">
-            {/* Accessibility Settings Button */}
-            <AccessibilitySettings />
+            {/* Viewing Preferences Buttons */}
+            <ViewingPreferences />
+            <MobileViewingPreferences />
             
             {isAuthenticated ? (
               <div ref={userDropdownRef} className="relative ml-2">
@@ -529,7 +605,7 @@ export function SiteHeader() {
                   )}
                   href="/login"
                 >
-                  Log in
+                  Log In
                 </Link>
                 <Link
                   className={cn(
@@ -538,7 +614,7 @@ export function SiteHeader() {
                   )}
                   href="/signup"
                 >
-                  Sign up
+                  Sign Up
                 </Link>
               </>
             )}
@@ -739,7 +815,7 @@ export function SiteHeader() {
                   )}
                   href="/login"
                 >
-                  Log in
+                  Log In
                 </Link>
                 <Link
                   className={cn(
@@ -748,7 +824,7 @@ export function SiteHeader() {
                   )}
                   href="/signup"
                 >
-                  Sign up
+                  Sign Up
                 </Link>
               </div>
             )}

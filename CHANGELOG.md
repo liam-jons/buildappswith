@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.27] - 2025-04-22
+
+### Added
+- Created Privacy Policy page with GDPR-compliant placeholder content
+- Created Terms of Service page with UK-compliant placeholder content
+- Created FAQ page with common questions and answers
+- Created Weekly Sessions page showcasing regular learning events
+
+## [1.0.26] - 2025-04-22
+
+### Added
+- Created new "Toolkit" page with comprehensive AI tools organized by category
+- Enhanced "How it Works" page with detailed sections on joining the AI marketplace
+
+### Fixed
+- Updated navigation links to direct users to appropriate pages
+- Fixed ESLint errors related to unescaped entities
+
+## [1.0.25] - 2025-04-22
+
+### Changed
+- Updated UI components to enhance accessibility
+- Improved mobile navigation experience
+
+## [1.0.24] - 2025-04-22
+
+### Fixed
+- Resolved server-side rendering issues with authentication components
+- Fixed layout issues in marketplace preview cards
+
+## [1.0.23] - 2025-04-22
+
+### Added
+- Implemented initial builder profile structure
+- Added session booking functionality framework
+
 ## [1.0.22] - 2025-04-21
 
 ### Fixed
