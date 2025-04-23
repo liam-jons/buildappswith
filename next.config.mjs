@@ -111,6 +111,29 @@ const nextConfig = {
     ];
   },
   
+  // Configure redirects for profile consolidation
+  async redirects() {
+    return [
+      {
+        source: '/liam',
+        destination: '/builder-profile/liam-jons',
+        permanent: true,
+      },
+      // Ensure URLs with trailing slashes also work
+      {
+        source: '/liam/',
+        destination: '/builder-profile/liam-jons',
+        permanent: true,
+      },
+      // Redirect book/liam to book/liam-jons for consistency
+      {
+        source: '/book/liam',
+        destination: '/book/liam-jons',
+        permanent: true,
+      },
+    ];
+  },
+  
   // Optimize bundles
   compiler: {
     // Remove console logs in production

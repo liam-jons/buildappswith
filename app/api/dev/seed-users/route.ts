@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
           data: {
             name: userData.name,
             email: userData.email,
-            role: userData.role as UserRole, // Cast to UserRole enum
+            roles: [userData.role as UserRole], // Changed from role to roles array
             verified: true,
             emailVerified: new Date(),
           },

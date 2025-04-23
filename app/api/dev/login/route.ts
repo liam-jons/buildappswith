@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role,
+          roles: user.roles,
         },
         loginUrl: signInUrl,
         instructions: 'Click on the loginUrl to automatically sign in as this user',

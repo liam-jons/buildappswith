@@ -1,6 +1,6 @@
 {
   "name": "buildappswith",
-  "version": "1.0.31",
+  "version": "1.0.39",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -59,7 +59,7 @@
     "@radix-ui/react-switch": "^1.1.4",
     "@radix-ui/react-tabs": "^1.1.4",
     "@radix-ui/react-toast": "^1.2.7",
-    "@radix-ui/react-tooltip": "^1.2.0",
+    "@radix-ui/react-tooltip": "^1.1.4",
     "@stripe/stripe-js": "^7.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

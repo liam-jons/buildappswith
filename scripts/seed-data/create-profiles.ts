@@ -27,7 +27,7 @@ async function createBuilderProfiles() {
           name: 'Liam Jones',
           email: 'liam.jones@buildappswith.com',
           emailVerified: new Date(),
-          role: UserRole.BUILDER,
+          roles: [UserRole.BUILDER],
           image: 'https://randomuser.me/api/portraits/men/22.jpg',
           verified: true
         }
@@ -227,7 +227,7 @@ async function createBuilderProfiles() {
             name: builder.name,
             email: builder.email,
             emailVerified: new Date(),
-            role: UserRole.BUILDER,
+            roles: [UserRole.BUILDER],
             image: builder.image,
             verified: true
           }

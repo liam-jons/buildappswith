@@ -2,6 +2,67 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.38] - 2025-04-23
+
+### Fixed
+- Updated Prisma schema references from `role` to `roles` throughout the codebase
+- Fixed type errors in user role fields in multiple files:
+  - app/api/dev/seed-users/route.ts
+  - app/api/profiles/builder/route.ts
+  - lib/services/builder-profile-service.ts
+  - lib/services/builder-service.ts
+  - scripts/seed-data/create-dummy-profiles.ts
+  - scripts/seed-data/create-profiles.ts
+- Improved compatibility with Prisma 6.6.0 schema updates
+- Fixed build errors caused by schema changes
+
+## [1.0.33] - 2025-04-23
+
+### Added
+- Created comprehensive App Showcase component for displaying builder-created applications
+- Developed API endpoints for app management (fetch, create, update, delete)
+- Added Role Badges component to display multiple user roles and founder status
+- Implemented dedicated Liam Jons profile page with ADHD focus content
+- Added tabbed interface to builder profiles for better content organization
+
+### Changed
+- Enhanced BuilderProfile component to display multi-role badges
+- Updated profile data structure to include apps and role information
+- Improved profile client component to fetch both profile and app data
+- Fixed Particles component type error (ease property)
+
+### Fixed
+- Fixed type error in Particles component by updating ease property type
+- Enhanced error handling for missing app data or profile images
+- Implemented proper loading states for all profile components
+
+## [1.0.32] - 2025-04-23
+
+### Added
+- Enhanced profile system to support multi-role functionality (Admin + Builder)
+- Created comprehensive builder profile page for Liam Jons as founder
+- Added App Showcase component for displaying builder-created applications
+- Implemented tabbed interface to show both builder and founder information
+- Added ADHD specialization focus flag to builder profiles
+- Created database migration for supporting multi-role users and app showcase
+
+### Changed
+- Updated Prisma schema to support multiple roles per user
+- Added founder flag to User model for identifying platform founders
+- Enhanced BuilderProfile model with ADHD specialization flag
+- Implemented graceful fallbacks for missing profile images
+
+## [1.0.31] - 2025-04-22
+
+### Fixed
+- Resolved all ESLint errors related to unescaped entities in marketing and legal pages:
+  - Fixed 14 unescaped quotes and apostrophes in FAQ page
+  - Fixed unescaped apostrophe in Privacy Policy page
+  - Fixed unescaped quotes in Terms of Service page
+  - Fixed unescaped quotes in Weekly Sessions page
+- Improved overall code quality and compliance with React JSX standards
+- Ensured consistent entity escaping across all newly created pages
+
 ## [1.0.27] - 2025-04-22
 
 ### Added
@@ -70,5 +131,3 @@ All notable changes to this project will be documented in this file.
 - Fixed ProfileProvider context error in portfolio page by implementing ProfileProvider at the platform layout level for better scalability
 - Fixed useSearchParams Suspense boundary error in user-auth-form component by wrapping it with React Suspense
 - Created SearchParamsFallback component to handle loading states for useSearchParams
-
-

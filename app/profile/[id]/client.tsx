@@ -1,13 +1,74 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { BuilderProfile, BuilderProfileData } from "@/components/profile/builder-profile";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { fetchBuilderById } from "@/lib/marketplace/data-service";
-import TextShimmer from "@/components/magicui/text-shimmer";
+import { fetchAppsByBuilderId } from "@/lib/marketplace/app-service";
+import { TextShimmer } from "@/components/magicui/text-shimmer";
+import { AppItem } from "@/components/profile/app-showcase";
+
+// Define our state shape
+interface ProfileState {
+  builder: BuilderProfileData | null;
+  apps: AppItem[];
+  loading: boolean;
+  error: string | null;
+}
+
+// Define the actions for our reducer
+type ProfileAction = 
+  | { type: 'FETCH_START' }
+  | { type: 'FETCH_BUILDER_SUCCESS'; payload: BuilderProfileData }
+  | { type: 'FETCH_APPS_SUCCESS'; payload: AppItem[] }
+  | { type: 'FETCH_ERROR'; payload: string }
+  | { type: 'MERGE_DATA' };
+
+// Initial state
+const initialState: ProfileState = {
+  builder: null,
+  apps: [],
+  loading: true,
+  error: null
+};
+
+// Reducer function to handle state updates
+function profileReducer(state: ProfileState, action: ProfileAction): ProfileState {
+  switch (action.type) {
+    case 'FETCH_START':
+      return { ...state, loading: true, error: null };
+    case 'FETCH_BUILDER_SUCCESS':
+      return { 
+        ...state, 
+        builder: action.payload,
+        loading: false
+      };
+    case 'FETCH_APPS_SUCCESS':
+      return { 
+        ...state, 
+        apps: action.payload 
+      };
+    case 'FETCH_ERROR':
+      return { 
+        ...state, 
+        error: action.payload, 
+        loading: false 
+      };
+    case 'MERGE_DATA':
+      return {
+        ...state,
+        builder: state.builder ? {
+          ...state.builder,
+          apps: state.apps
+        } : null
+      };
+    default:
+      return state;
+  }
+}
 
 interface BuilderProfileClientProps {
   builderId: string;
@@ -15,30 +76,57 @@ interface BuilderProfileClientProps {
 
 export default function BuilderProfileClient({ builderId }: BuilderProfileClientProps) {
   const router = useRouter();
-  const [builder, setBuilder] = useState<BuilderProfileData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [state, dispatch] = useReducer(profileReducer, initialState);
+  const { builder, apps, loading, error } = state;
   
+  // Fetch builder profile data
   useEffect(() => {
-    const loadBuilder = async () => {
-      setLoading(true);
+    async function loadBuilderData() {
+      dispatch({ type: 'FETCH_START' });
+      
       try {
-        const data = await fetchBuilderById(builderId);
-        if (data) {
-          setBuilder(data);
-        } else {
-          setError("Builder not found");
+        const builderData = await fetchBuilderById(builderId);
+        
+        if (!builderData) {
+          dispatch({ type: 'FETCH_ERROR', payload: "Builder not found" });
+          return;
         }
+        
+        dispatch({ type: 'FETCH_BUILDER_SUCCESS', payload: builderData });
       } catch (err) {
         console.error("Error loading builder profile:", err);
-        setError("Failed to load builder profile");
-      } finally {
-        setLoading(false);
+        dispatch({ type: 'FETCH_ERROR', payload: "Failed to load builder profile" });
       }
-    };
+    }
     
-    loadBuilder();
+    loadBuilderData();
   }, [builderId]);
+  
+  // Fetch apps separately
+  useEffect(() => {
+    async function loadAppsData() {
+      try {
+        const appsData = await fetchAppsByBuilderId(builderId);
+        if (appsData && appsData.length > 0) {
+          dispatch({ type: 'FETCH_APPS_SUCCESS', payload: appsData });
+        }
+      } catch (appError) {
+        console.error("Error loading apps:", appError);
+        // Don't fail the whole page if apps can't be loaded
+      }
+    }
+    
+    if (!loading && !error) {
+      loadAppsData();
+    }
+  }, [builderId, loading, error]);
+  
+  // Merge apps data into builder profile when apps data is loaded
+  useEffect(() => {
+    if (builder && apps.length > 0) {
+      dispatch({ type: 'MERGE_DATA' });
+    }
+  }, [builder, apps]);
   
   const handleScheduleSession = () => {
     if (builder) {
@@ -49,6 +137,30 @@ export default function BuilderProfileClient({ builderId }: BuilderProfileClient
   const handleSendMessage = () => {
     if (builder) {
       router.push(`/messages?builder=${builder.id}`);
+    }
+  };
+  
+  const handleAddApp = () => {
+    if (builder) {
+      router.push(`/profile/apps/create?builderId=${builder.id}`);
+    }
+  };
+  
+  const handleViewAllApps = () => {
+    if (builder) {
+      router.push(`/profile/apps?builderId=${builder.id}`);
+    }
+  };
+  
+  const handleAddProject = () => {
+    if (builder) {
+      router.push(`/profile/portfolio/create?builderId=${builder.id}`);
+    }
+  };
+  
+  const handleViewAllProjects = () => {
+    if (builder) {
+      router.push(`/profile/portfolio?builderId=${builder.id}`);
     }
   };
   
@@ -98,6 +210,10 @@ export default function BuilderProfileClient({ builderId }: BuilderProfileClient
               profile={builder}
               onScheduleSession={handleScheduleSession}
               onSendMessage={handleSendMessage}
+              onAddApp={handleAddApp}
+              onViewAllApps={handleViewAllApps}
+              onAddProject={handleAddProject}
+              onViewAllProjects={handleViewAllProjects}
             />
           </motion.div>
         ) : null}
