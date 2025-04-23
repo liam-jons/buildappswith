@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
+import { getBuilderSessionTypes, mapMarketingSessionId } from "@/lib/session-types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,37 +9,10 @@ import { CalendarIcon, Clock } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// Session types with pricing
-const sessionTypes = [
-  {
-    id: "individual-1-to-1",
-    title: "Individuals - 1-to-1",
-    description: "Personal one-to-one session to discuss your specific AI needs",
-    price: 99,
-    duration: 60
-  },
-  {
-    id: "individual-group",
-    title: "Individuals - Group",
-    description: "Join a small group session with other individuals interested in AI",
-    price: 49,
-    duration: 90
-  },
-  {
-    id: "business-1-to-1",
-    title: "Businesses - 1-to-1",
-    description: "Focused session for businesses to discuss AI implementation strategies",
-    price: 199,
-    duration: 60
-  },
-  {
-    id: "business-group",
-    title: "Businesses - Group",
-    description: "Group session for businesses to learn about AI applications",
-    price: 99,
-    duration: 90
-  }
-];
+// Fetch session types from the server
+async function getSessionTypes(builderId: string) {
+  return await getBuilderSessionTypes(builderId);
+}
 
 // Available time slots (demo data)
 const availableSlots = [
@@ -57,6 +31,9 @@ export default function BookingPage(props: { params: Promise<{ id: string }> }) 
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Fetch session types for the builder
+  const sessionTypes = use(getSessionTypes(params.id));
+  
   // Handle pre-selected session type from URL parameters
   useEffect(() => {
     // Check if we have a session parameter in the URL
@@ -64,14 +41,28 @@ export default function BookingPage(props: { params: Promise<{ id: string }> }) 
     const sessionParam = url.searchParams.get('session');
     
     if (sessionParam) {
-      // Match the session from our marketing page with available session types
-      if (sessionParam === 'session1') {
-        setSelectedSession('individual-1-to-1');
-      } else if (sessionParam === 'session2') {
-        // This is the ADHD-focused session
-        setSelectedSession('individual-1-to-1'); // We'll customize this later
-      } else if (sessionParam === 'session3' || sessionParam === 'session4') {
-        setSelectedSession('individual-group');
+      // Check if the session ID matches directly (for formatted session types)
+      const matchingSession = sessionTypes.find(s => s.id === sessionParam);
+      
+      if (matchingSession) {
+        setSelectedSession(matchingSession.id);
+      } else {
+        // If not a direct match, try to map from marketing session ID
+        // For example, map 'session1' to actual session ID
+        const mapSessionId = async () => {
+          try {
+            const mappedId = await mapMarketingSessionId(sessionParam, params.id);
+            setSelectedSession(mappedId);
+          } catch (error) {
+            console.error('Error mapping session ID:', error);
+            // Fallback to first session type
+            if (sessionTypes.length > 0) {
+              setSelectedSession(sessionTypes[0].id);
+            }
+          }
+        };
+        
+        mapSessionId();
       }
       
       // Automatically advance to the datetime tab
@@ -80,7 +71,7 @@ export default function BookingPage(props: { params: Promise<{ id: string }> }) 
         if (datetimeTab) datetimeTab.click();
       }, 100);
     }
-  }, []);
+  }, [sessionTypes, params.id]);
 
   const handleCheckout = async () => {
     if (!selectedSession || !selectedDate || !selectedTime) {
@@ -100,7 +91,7 @@ export default function BookingPage(props: { params: Promise<{ id: string }> }) 
 
       // Calculate start and end times
       const startTime = new Date(`${selectedDate}T${selectedTime}`);
-      const endTime = new Date(startTime.getTime() + session.duration * 60000);
+      const endTime = new Date(startTime.getTime() + session.durationMinutes * 60000);
 
       // Prepare booking data
       const bookingData = {
@@ -178,9 +169,11 @@ export default function BookingPage(props: { params: Promise<{ id: string }> }) 
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
-                      <span className="text-sm">{session.duration} minutes</span>
+                      <span className="text-sm">{session.durationMinutes} minutes</span>
                     </div>
-                    <p className="font-bold">${session.price}</p>
+                    <p className="font-bold">
+                      {session.price === 0 ? 'Free' : `${session.currency} ${session.price}`}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -280,13 +273,16 @@ export default function BookingPage(props: { params: Promise<{ id: string }> }) 
                 <div className="space-y-1">
                   <p className="font-medium">Duration</p>
                   <p className="text-muted-foreground">
-                    {sessionTypes.find(s => s.id === selectedSession)?.duration} minutes
+                    {sessionTypes.find(s => s.id === selectedSession)?.durationMinutes} minutes
                   </p>
                 </div>
                 <div className="space-y-1">
                   <p className="font-medium">Price</p>
                   <p className="text-xl font-bold">
-                    ${sessionTypes.find(s => s.id === selectedSession)?.price}
+                    {sessionTypes.find(s => s.id === selectedSession)?.price === 0 ? 
+                      'Free' : 
+                      `${sessionTypes.find(s => s.id === selectedSession)?.currency} ${sessionTypes.find(s => s.id === selectedSession)?.price}`
+                    }
                   </p>
                 </div>
               </CardContent>

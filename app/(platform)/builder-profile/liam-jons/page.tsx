@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
+// Import the builder profile utilities
+import { getBuilderProfileBySlug, getBuilderSessionTypes } from "@/lib/builders/profile";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -40,143 +42,61 @@ import {
 } from "@radix-ui/react-icons";
 
 // Session types with details for booking
-const sessionTypes = [
-  {
-    id: "session1",
-    title: "1:1 AI Discovery Session",
-    description: "Personalized exploration of how AI can be applied to your unique situation, with tailored recommendations and guidance.",
-    duration: "60 minutes",
-    price: "£150",
-    icon: <PersonIcon className="h-5 w-5" />
-  },
-  {
-    id: "session2",
-    title: "ADHD-Focused AI Strategy",
-    description: "Specialized session for those with ADHD to develop an AI tool stack that works with your brain's strengths and supports your challenges.",
-    duration: "75 minutes",
-    price: "£185",
-    icon: <HeartFilledIcon className="h-5 w-5" />
-  },
-  {
-    id: "session3",
-    title: "AI Literacy Fundamentals",
-    description: "Group workshop covering the essentials of AI: what it can/can't do, how to use it effectively, and ethical considerations.",
-    duration: "90 minutes",
-    price: "£45 per person",
-    participantLimit: "10-15 participants",
-    icon: <LightningBoltIcon className="h-5 w-5" />
-  },
-  {
-    id: "session4",
-    title: "Free Weekly Session for Unemployed",
-    description: "Supporting those between jobs with free AI literacy sessions to build valuable skills.",
-    duration: "60 minutes",
-    price: "Free",
-    eligibility: "Currently unemployed individuals",
-    icon: <RocketIcon className="h-5 w-5" />
+// Map the session types from the database to the format expected by the UI
+const formattedSessionTypes = sessionTypes.map(session => {
+  let icon;
+  switch(session.id) {
+    case 'session1':
+      icon = <PersonIcon className="h-5 w-5" />;
+      break;
+    case 'session2':
+      icon = <HeartFilledIcon className="h-5 w-5" />;
+      break;
+    case 'session3':
+      icon = <LightningBoltIcon className="h-5 w-5" />;
+      break;
+    case 'session4':
+      icon = <RocketIcon className="h-5 w-5" />;
+      break;
+    default:
+      icon = <PersonIcon className="h-5 w-5" />;
   }
-];
+  
+  return {
+    id: session.id,
+    title: session.title,
+    description: session.description,
+    duration: `${session.durationMinutes} minutes`,
+    price: session.price === 0 ? 'Free' : `${session.currency} ${session.price}`,
+    participantLimit: session.maxParticipants ? `${session.maxParticipants} participants` : undefined,
+    eligibility: session.id === 'session4' ? 'Currently unemployed individuals' : undefined,
+    icon
+  };
+});
 
-// Mock data for Liam Jons profile
-const liamJonsProfile = {
-  id: "builder-liam",
-  name: "Liam Jons",
-  title: "Founder & AI Application Builder",
-  bio: "I&apos;m passionate about democratizing AI technology and making it accessible to everyone. With a background in technology and a special focus on helping people with ADHD, I founded Buildappswith to create a platform where people can learn to leverage AI effectively in their daily lives and businesses. My mission is to empower individuals to use technology to save time on mundane tasks so they can focus on what truly matters - human connection and creativity.",
+// Add missing fields that are in the mock but not in the database profile
+const enhancedProfile = {
+  ...liamJonsProfile,
+  name: liamJonsProfile.user?.name || 'Liam Jons',
+  title: liamJonsProfile.headline || 'Founder & AI Application Builder',
+  // Use fallback bio if not available
   founderBio: "As the founder of Buildappswith, I created this platform with a clear mission: to help people understand and leverage AI in practical ways. I believe that AI should serve humans, not the other way around, and that technology is at its best when it enhances our human connections rather than replacing them. My focus is especially on helping those who have been traditionally underserved by technology - including people with ADHD and neurodivergent traits - to benefit from the efficiency and personalization AI can provide.",
-  avatarUrl: "/assets/liam-profile.jpg", // This would need to be added to the public directory
+  avatarUrl: liamJonsProfile.user?.image || "/assets/liam-profile.jpg",
   coverImageUrl: "/assets/liam-cover.jpg", // This would need to be added to the public directory
-  validationTier: "expert" as const,
-  adhd_focus: true,
-  joinDate: new Date(2024, 2, 15), // March 15, 2024
-  completedProjects: 12,
-  rating: 5.0,
-  responseRate: 98,
-  skills: [
-    "AI Application Design", 
-    "ADHD Productivity Tools", 
-    "Human-Centered AI", 
-    "Next.js Development",
-    "AI Literacy",
-    "Tailwind CSS",
-    "TypeScript",
-    "Practical AI Implementation"
-  ],
+  validationTier: "expert", // Map from numeric tier to string
+  adhd_focus: liamJonsProfile.adhd_focus || false,
+  joinDate: new Date(liamJonsProfile.createdAt) || new Date(2024, 2, 15),
+  completedProjects: 12, // Hardcoded for now, could be calculated from completed bookings
+  rating: liamJonsProfile.rating || 5.0,
+  responseRate: 98, // Hardcoded for now
+  skills: liamJonsProfile.skills ? 
+    liamJonsProfile.skills.map(s => s.skill.name) : 
+    ["AI Application Design", "ADHD Productivity Tools", "Human-Centered AI", "Next.js Development"],
   availability: {
     status: "limited",
     nextAvailable: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
   },
-  socialLinks: {
-    website: "https://buildappswith.ai",
-    linkedin: "https://linkedin.com/in/liamjons",
-    github: "https://github.com/liamjons",
-    twitter: "https://twitter.com/buildappswith"
-  },
-  // Sample apps for showcase
-  apps: [
-    {
-      id: "app-1",
-      title: "ADHD Task Manager",
-      description: "AI-powered task management app designed specifically for people with ADHD, featuring intuitive prioritization and time-blocking.",
-      imageUrl: "/assets/apps/adhd-task-app.jpg",
-      technologies: ["Next.js", "OpenAI", "Tailwind CSS", "TypeScript"],
-      status: AppStatus.LIVE,
-      appUrl: "https://adhd-tasks.buildappswith.ai",
-      adhd_focused: true,
-      createdAt: new Date(2024, 4, 10)
-    },
-    {
-      id: "app-2",
-      title: "Focus Flow",
-      description: "A distraction-free writing environment that adapts to your focus levels and helps maintain attention through personalized AI interventions.",
-      imageUrl: "/assets/apps/focus-flow.jpg",
-      technologies: ["React", "Anthropic", "CSS Modules"],
-      status: AppStatus.DEMO,
-      appUrl: "https://focus-demo.buildappswith.ai",
-      adhd_focused: true,
-      createdAt: new Date(2024, 5, 22)
-    },
-    {
-      id: "app-3",
-      title: "Memory Assistant",
-      description: "A personal memory augmentation tool that helps users recall information contextually, designed for people with working memory challenges.",
-      imageUrl: "/assets/apps/memory-assistant.jpg",
-      technologies: ["Next.js", "Supabase", "Claude API"],
-      status: AppStatus.CONCEPT,
-      adhd_focused: true,
-      createdAt: new Date(2024, 6, 5)
-    }
-  ],
-  // Sample client success stories
-  portfolio: [
-    {
-      id: "success-1",
-      title: "Small Business Transformation",
-      description: "Helped a local retail business implement AI for inventory management and customer recommendations, resulting in significant efficiency gains.",
-      imageUrl: "/assets/portfolio/retail-business.jpg",
-      outcomes: [
-        { label: "Time Saved", value: "15 hrs/week", trend: "down" as const },
-        { label: "Revenue", value: "+22%", trend: "up" as const },
-        { label: "Customer Satisfaction", value: "+35%", trend: "up" as const }
-      ],
-      tags: ["Small Business", "Retail", "AI Implementation"],
-      createdAt: new Date(2024, 3, 15)
-    },
-    {
-      id: "success-2",
-      title: "Freelancer Productivity System",
-      description: "Designed a custom AI workflow for a freelance designer with ADHD, helping them manage clients and deadlines more effectively.",
-      imageUrl: "/assets/portfolio/freelancer.jpg",
-      outcomes: [
-        { label: "Missed Deadlines", value: "-80%", trend: "down" as const },
-        { label: "Client Capacity", value: "+40%", trend: "up" as const },
-        { label: "Stress Level", value: "-65%", trend: "down" as const }
-      ],
-      tags: ["Freelancer", "ADHD", "Productivity"],
-      createdAt: new Date(2024, 4, 28)
-    },
-  ],
-  // Testimonials from people helped
+  // Fallback testimonials from people helped
   testimonials: [
     {
       id: "testimonial-1",
@@ -199,8 +119,44 @@ const liamJonsProfile = {
       content: "I went from being intimidated by AI to leveraging it daily in my startup. Liam has a gift for making complex technology accessible and human-centered.",
       imageUrl: "/assets/testimonials/jennifer.jpg"
     }
+  ],
+  // Extract portfolio from the portfolioItems JSON field
+  portfolio: liamJonsProfile.portfolioItems || [
+    {
+      id: "success-1",
+      title: "Small Business Transformation",
+      description: "Helped a local retail business implement AI for inventory management and customer recommendations, resulting in significant efficiency gains.",
+      imageUrl: "/assets/portfolio/retail-business.jpg",
+      outcomes: [
+        { label: "Time Saved", value: "15 hrs/week", trend: "down" },
+        { label: "Revenue", value: "+22%", trend: "up" },
+        { label: "Customer Satisfaction", value: "+35%", trend: "up" }
+      ],
+      tags: ["Small Business", "Retail", "AI Implementation"],
+      createdAt: new Date(2024, 3, 15)
+    },
+    {
+      id: "success-2",
+      title: "Freelancer Productivity System",
+      description: "Designed a custom AI workflow for a freelance designer with ADHD, helping them manage clients and deadlines more effectively.",
+      imageUrl: "/assets/portfolio/freelancer.jpg",
+      outcomes: [
+        { label: "Missed Deadlines", value: "-80%", trend: "down" },
+        { label: "Client Capacity", value: "+40%", trend: "up" },
+        { label: "Stress Level", value: "-65%", trend: "down" }
+      ],
+      tags: ["Freelancer", "ADHD", "Productivity"],
+      createdAt: new Date(2024, 4, 28)
+    },
   ]
 };
+
+// Server component to fetch profile data
+async function getProfileData() {
+  const profile = await getBuilderProfileBySlug('liam-jons');
+  const sessionTypes = await getBuilderSessionTypes('liam-jons');
+  return { profile, sessionTypes };
+}
 
 export default function LiamJonsProfile() {
   const router = useRouter();
@@ -208,22 +164,25 @@ export default function LiamJonsProfile() {
   const [showFullBio, setShowFullBio] = useState(false);
   const [activeTab, setActiveTab] = useState("builder");
   
+  // Get profile data from server component
+  const { profile: liamJonsProfile, sessionTypes } = use(getProfileData());
+  
   // Format bio with show more/less if longer than 280 characters
-  const bioIsTruncated = liamJonsProfile.bio.length > 280;
-  const displayBio = showFullBio ? liamJonsProfile.bio : bioIsTruncated ? liamJonsProfile.bio.slice(0, 280) + "..." : liamJonsProfile.bio;
+  const bioIsTruncated = enhancedProfile.bio && enhancedProfile.bio.length > 280;
+  const displayBio = showFullBio ? enhancedProfile.bio : bioIsTruncated ? enhancedProfile.bio.slice(0, 280) + "..." : enhancedProfile.bio;
   
   // Get appropriate availability label and styling
-  const availabilityLabel = liamJonsProfile.availability ? {
+  const availabilityLabel = enhancedProfile.availability ? {
     available: "Available Now",
     limited: "Limited Availability",
     unavailable: "Unavailable"
-  }[liamJonsProfile.availability.status] : "Availability Unknown";
+  }[enhancedProfile.availability.status] : "Availability Unknown";
   
-  const availabilityStyle = liamJonsProfile.availability ? {
+  const availabilityStyle = enhancedProfile.availability ? {
     available: "text-green-600 dark:text-green-500 bg-green-50 dark:bg-green-950/30",
     limited: "text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/30",
     unavailable: "text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-950/30"
-  }[liamJonsProfile.availability.status] : "text-muted-foreground bg-muted";
+  }[enhancedProfile.availability.status] : "text-muted-foreground bg-muted";
   
   // Handle booking of specific session types
   const handleBookSession = (sessionId?: string) => {
@@ -255,7 +214,7 @@ export default function LiamJonsProfile() {
                 <div className="flex flex-wrap gap-3 mb-2">
                   <MultiRoleBadge 
                     roles={[UserRole.BUILDER, UserRole.ADMIN]} 
-                    isFounder={true}
+                    isFounder={enhancedProfile.user?.isFounder || true}
                     size="md"
                   />
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-purple-100 text-purple-800 dark:bg-purple-950/50 dark:text-purple-400 rounded-md text-sm font-medium">
@@ -265,7 +224,7 @@ export default function LiamJonsProfile() {
                 </div>
                 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                  <TextShimmer>{liamJonsProfile.name}</TextShimmer>
+                  <TextShimmer>{enhancedProfile.name}</TextShimmer>
                 </h1>
                 
                 <h2 className="text-xl md:text-2xl text-muted-foreground">
@@ -502,7 +461,7 @@ export default function LiamJonsProfile() {
                 <section>
                   <h3 className="text-xl font-medium mb-6">Applications I&apos;ve Built</h3>
                   <AppShowcase 
-                    apps={liamJonsProfile.apps}
+                    apps={enhancedProfile.apps}
                     maxDisplay={3}
                   />
                 </section>
@@ -511,7 +470,7 @@ export default function LiamJonsProfile() {
                 <section>
                   <h3 className="text-xl font-medium mb-6">Client Success Stories</h3>
                   <PortfolioShowcase
-                    projects={liamJonsProfile.portfolio}
+                    projects={enhancedProfile.portfolio}
                     maxDisplay={2}
                   />
                 </section>
@@ -521,7 +480,7 @@ export default function LiamJonsProfile() {
                   <section>
                     <h3 className="text-xl font-medium mb-6">What People Say</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {liamJonsProfile.testimonials.map((testimonial) => (
+                      {enhancedProfile.testimonials.map((testimonial) => (
                         <Card key={testimonial.id} className="h-full">
                           <CardHeader className="pb-2">
                             <div className="flex items-center gap-3">
@@ -650,7 +609,7 @@ export default function LiamJonsProfile() {
               <div>
                 <h3 className="text-2xl font-bold mb-6">ADHD-Optimized Applications</h3>
                 <AppShowcase 
-                  apps={liamJonsProfile.apps.filter(app => app.adhd_focused)}
+                  apps={enhancedProfile.apps.filter(app => app.adhd_focused)}
                   maxDisplay={6}
                 />
               </div>
@@ -684,7 +643,7 @@ export default function LiamJonsProfile() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {sessionTypes.map((session, index) => (
+                {formattedSessionTypes.map((session, index) => (
                   <motion.div
                     key={session.id}
                     initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
@@ -783,7 +742,7 @@ export default function LiamJonsProfile() {
                   
                   <div className="prose dark:prose-invert max-w-none">
                     <p className="text-lg leading-relaxed">
-                      {liamJonsProfile.founderBio}
+                      {enhancedProfile.founderBio}
                     </p>
                     
                     <h3 className="text-xl font-medium mt-8 mb-4">Why I Started Buildappswith</h3>
