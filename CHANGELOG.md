@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.40] - 2025-04-23
+
+### Added
+- Created database seeding script for Liam Jons profile with ADHD focus
+- Implemented session type management system with JSON storage
+- Added builder profile utility for consistent profile loading
+- Created data directory for storing session type definitions
+
+### Changed
+- Enhanced builder profile page to load data from database
+- Updated booking page to use dynamic session types
+- Improved error handling for missing database records
+- Implemented fallback data for profile when database records are not found
+
+### Fixed
+- Resolved profile data inconsistency between frontend and database
+- Fixed session type mapping in booking system
+- Implemented proper error handling for database queries
+
+## [1.0.39] - 2025-04-23
+
+### Added
+- Implemented permanent redirects from /liam to /builder-profile/liam-jons
+- Added session parameter handling for improved booking flow
+
+### Changed
+- Consolidated Liam Jons profile by merging marketing and platform implementations
+- Enhanced profile with four-tab navigation: Builder Profile, ADHD Focus, Sessions, and Founder Story
+
 ## [1.0.38] - 2025-04-23
 
 ### Fixed
