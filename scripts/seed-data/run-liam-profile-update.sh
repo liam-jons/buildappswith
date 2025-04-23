@@ -1,35 +1,35 @@
 #!/bin/bash
 
-# Run Liam Jons profile update script
-# This script updates the database with Liam Jons profile data
+# Run the Liam Jons profile update script
+# This script updates Liam's profile with ADHD focus and imports session types
 
-# Get the directory where this script is running from
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+# Navigate to the project root directory
+cd "$(dirname "$0")/../.." || exit
 
-# Go to project root folder
-cd "$SCRIPT_DIR/../.."
+# Ensure the data directory exists
+if [ ! -d "./data" ]; then
+  echo "Creating data directory..."
+  mkdir -p ./data
+fi
 
-# Ensure data directory exists
-mkdir -p data
-
-# Ensure script is executable
-chmod +x ./scripts/seed-data/update-liam-profile.js
-
-# Run the script
-echo "Running Liam Jons profile update script..."
-node ./scripts/seed-data/update-liam-profile.js
-
-# Check for errors
-if [ $? -eq 0 ]; then
-  echo "Liam Jons profile update completed successfully!"
-else
-  echo "Error: Liam Jons profile update failed."
+# Check if the Liam session types JSON file exists
+if [ ! -f "./data/liam-session-types.json" ]; then
+  echo "Error: liam-session-types.json not found in the data directory"
+  echo "Please ensure the file exists before running this script"
   exit 1
 fi
 
-# Create script to just run the updater for Liam's profile (for convenience)
-echo "#!/bin/bash
-node ./scripts/seed-data/update-liam-profile.js" > ./scripts/update-liam-profile.sh
-chmod +x ./scripts/update-liam-profile.sh
+# Run the database migration if needed
+echo "Running database migration..."
+npx prisma migrate dev --name add_session_types
 
-echo "You can now run './scripts/update-liam-profile.sh' to update Liam's profile at any time."
+# Run the Liam profile update script
+echo "Running Liam Jons profile update script..."
+node scripts/seed-data/update-liam-profile.js
+
+# Output completion message
+echo ""
+echo "=================================================="
+echo "Liam Jons profile update complete!"
+echo "Session types have been imported to the database."
+echo "=================================================="
