@@ -41,112 +41,9 @@ import {
   ArrowRightIcon
 } from "@radix-ui/react-icons";
 
-// Session types with details for booking
-// Map the session types from the database to the format expected by the UI
-const formattedSessionTypes = sessionTypes.map(session => {
-  let icon;
-  // For Liam Jons, we have specific mapping for the icons based on session type
-  if (session.color === '#3B82F6' || session.title.includes('1:1 AI Discovery')) { // Blue - 1:1 session
-    icon = <PersonIcon className="h-5 w-5" />;
-  } else if (session.color === '#8B5CF6' || session.title.includes('ADHD')) { // Purple - ADHD session
-    icon = <HeartFilledIcon className="h-5 w-5" />;
-  } else if (session.color === '#F59E0B' || session.title.includes('Fundamentals') || session.title.includes('Literacy')) { // Amber - group learning
-    icon = <LightningBoltIcon className="h-5 w-5" />;
-  } else if (session.color === '#10B981' || session.price === 0 || session.title.includes('Unemployed') || session.title.includes('Free')) { // Green - free sessions
-    icon = <RocketIcon className="h-5 w-5" />;
-  } else {
-    // Fallback icon
-    icon = <PersonIcon className="h-5 w-5" />;
-  }
-  
-  return {
-    id: session.id,
-    title: session.title,
-    description: session.description,
-    duration: `${session.durationMinutes} minutes`,
-    price: session.price === 0 ? 'Free' : `${session.currency} ${session.price}`,
-    participantLimit: session.maxParticipants ? `${session.maxParticipants} participants` : undefined,
-    eligibility: session.price === 0 ? 'Currently unemployed individuals' : undefined,
-    icon
-  };
-});
+// Session types with details for booking will be formatted inside the component
 
-// Add missing fields that are in the mock but not in the database profile
-const enhancedProfile = {
-  ...liamJonsProfile,
-  name: liamJonsProfile.user?.name || 'Liam Jons',
-  title: liamJonsProfile.headline || 'Founder & AI Application Builder',
-  // Use fallback bio if not available
-  founderBio: "As the founder of Buildappswith, I created this platform with a clear mission: to help people understand and leverage AI in practical ways. I believe that AI should serve humans, not the other way around, and that technology is at its best when it enhances our human connections rather than replacing them. My focus is especially on helping those who have been traditionally underserved by technology - including people with ADHD and neurodivergent traits - to benefit from the efficiency and personalization AI can provide.",
-  avatarUrl: liamJonsProfile.user?.image || "/assets/liam-profile.jpg",
-  coverImageUrl: "/assets/liam-cover.jpg", // This would need to be added to the public directory
-  validationTier: "expert", // Map from numeric tier to string
-  adhd_focus: liamJonsProfile.adhd_focus || false,
-  joinDate: new Date(liamJonsProfile.createdAt) || new Date(2024, 2, 15),
-  completedProjects: 12, // Hardcoded for now, could be calculated from completed bookings
-  rating: liamJonsProfile.rating || 5.0,
-  responseRate: 98, // Hardcoded for now
-  skills: liamJonsProfile.skills ? 
-    liamJonsProfile.skills.map(s => s.skill.name) : 
-    ["AI Application Design", "ADHD Productivity Tools", "Human-Centered AI", "Next.js Development"],
-  availability: {
-    status: "limited",
-    nextAvailable: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
-  },
-  // Fallback testimonials from people helped
-  testimonials: [
-    {
-      id: "testimonial-1",
-      name: "Sarah K.",
-      title: "Small Business Owner",
-      content: "Liam helped me understand how to use AI in my business in a way that actually made sense. No technical jargon, just practical applications that saved me time and money.",
-      imageUrl: "/assets/testimonials/sarah.jpg"
-    },
-    {
-      id: "testimonial-2",
-      name: "Marcus T.",
-      title: "Marketing Professional with ADHD",
-      content: "As someone with ADHD, I&apos;ve always struggled with organization and focus. Liam&apos;s approach to AI implementation has literally changed my life. I now have systems that work with my brain, not against it.",
-      imageUrl: "/assets/testimonials/marcus.jpg"
-    },
-    {
-      id: "testimonial-3",
-      name: "Jennifer P.",
-      title: "Entrepreneur",
-      content: "I went from being intimidated by AI to leveraging it daily in my startup. Liam has a gift for making complex technology accessible and human-centered.",
-      imageUrl: "/assets/testimonials/jennifer.jpg"
-    }
-  ],
-  // Extract portfolio from the portfolioItems JSON field
-  portfolio: liamJonsProfile.portfolioItems || [
-    {
-      id: "success-1",
-      title: "Small Business Transformation",
-      description: "Helped a local retail business implement AI for inventory management and customer recommendations, resulting in significant efficiency gains.",
-      imageUrl: "/assets/portfolio/retail-business.jpg",
-      outcomes: [
-        { label: "Time Saved", value: "15 hrs/week", trend: "down" },
-        { label: "Revenue", value: "+22%", trend: "up" },
-        { label: "Customer Satisfaction", value: "+35%", trend: "up" }
-      ],
-      tags: ["Small Business", "Retail", "AI Implementation"],
-      createdAt: new Date(2024, 3, 15)
-    },
-    {
-      id: "success-2",
-      title: "Freelancer Productivity System",
-      description: "Designed a custom AI workflow for a freelance designer with ADHD, helping them manage clients and deadlines more effectively.",
-      imageUrl: "/assets/portfolio/freelancer.jpg",
-      outcomes: [
-        { label: "Missed Deadlines", value: "-80%", trend: "down" },
-        { label: "Client Capacity", value: "+40%", trend: "up" },
-        { label: "Stress Level", value: "-65%", trend: "down" }
-      ],
-      tags: ["Freelancer", "ADHD", "Productivity"],
-      createdAt: new Date(2024, 4, 28)
-    },
-  ]
-};
+// Placeholder for the enhanced profile that will be created inside the component
 
 // Server component to fetch profile data
 async function getProfileData() {
@@ -163,6 +60,120 @@ export default function LiamJonsProfile() {
   
   // Get profile data from server component
   const { profile: liamJonsProfile, sessionTypes } = use(getProfileData());
+  
+  // Map the session types from the database to the format expected by the UI
+  const formattedSessionTypes = sessionTypes.map(session => {
+    let icon;
+    // For Liam Jons, we have specific mapping for the icons based on session type
+    if (session.color === '#3B82F6' || session.title.includes('1:1 AI Discovery')) { // Blue - 1:1 session
+      icon = <PersonIcon className="h-5 w-5" />;
+    } else if (session.color === '#8B5CF6' || session.title.includes('ADHD')) { // Purple - ADHD session
+      icon = <HeartFilledIcon className="h-5 w-5" />;
+    } else if (session.color === '#F59E0B' || session.title.includes('Fundamentals') || session.title.includes('Literacy')) { // Amber - group learning
+      icon = <LightningBoltIcon className="h-5 w-5" />;
+    } else if (session.color === '#10B981' || session.price === 0 || session.title.includes('Unemployed') || session.title.includes('Free')) { // Green - free sessions
+      icon = <RocketIcon className="h-5 w-5" />;
+    } else {
+      // Fallback icon
+      icon = <PersonIcon className="h-5 w-5" />;
+    }
+    
+    return {
+      id: session.id,
+      title: session.title,
+      description: session.description,
+      duration: `${session.durationMinutes} minutes`,
+      price: session.price === 0 ? 'Free' : `${session.currency} ${session.price}`,
+      participantLimit: session.maxParticipants ? `${session.maxParticipants} participants` : undefined,
+      eligibility: session.price === 0 ? 'Currently unemployed individuals' : undefined,
+      icon
+    };
+  });
+  
+  // Add missing fields that are in the mock but not in the database profile
+  const enhancedProfile = {
+    ...(liamJonsProfile || {}),
+    name: liamJonsProfile?.user?.name || 'Liam Jons',
+    title: liamJonsProfile?.headline || 'Founder & AI Application Builder',
+    // Use fallback bio if not available
+    bio: liamJonsProfile?.bio || "I'm passionate about democratizing AI technology and making it accessible to everyone. With a background in technology and a special focus on helping people with ADHD, I founded Buildappswith to create a platform where people can learn to leverage AI effectively in their daily lives and businesses. My mission is to empower individuals to use technology to save time on mundane tasks so they can focus on what truly matters - human connection and creativity.",
+    // Add social links with proper typing
+    socialLinks: liamJonsProfile?.socialLinks || {
+      website: "https://buildappswith.ai",
+      linkedin: "https://linkedin.com/in/liamjons",
+      github: "https://github.com/liamjons",
+      twitter: "https://twitter.com/buildappswith"
+    },
+    founderBio: "As the founder of Buildappswith, I created this platform with a clear mission: to help people understand and leverage AI in practical ways. I believe that AI should serve humans, not the other way around, and that technology is at its best when it enhances our human connections rather than replacing them. My focus is especially on helping those who have been traditionally underserved by technology - including people with ADHD and neurodivergent traits - to benefit from the efficiency and personalization AI can provide.",
+    avatarUrl: liamJonsProfile?.user?.image || "/assets/liam-profile.jpg",
+    coverImageUrl: "/assets/liam-cover.jpg", // This would need to be added to the public directory
+    validationTier: "expert" as "entry" | "established" | "expert", // Map from numeric tier to string
+    adhd_focus: liamJonsProfile?.adhd_focus || false,
+    joinDate: liamJonsProfile?.createdAt ? new Date(liamJonsProfile.createdAt) : new Date(2024, 2, 15),
+    completedProjects: 12, // Hardcoded for now, could be calculated from completed bookings
+    rating: liamJonsProfile?.rating || 5.0,
+    responseRate: 98, // Hardcoded for now
+    skills: liamJonsProfile?.skills ? 
+      liamJonsProfile?.skills.map(s => s.skill.name) : 
+      ["AI Application Design", "ADHD Productivity Tools", "Human-Centered AI", "Next.js Development"],
+    availability: {
+      status: "limited",
+      nextAvailable: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
+    },
+    // Fallback testimonials from people helped
+    testimonials: [
+      {
+        id: "testimonial-1",
+        name: "Sarah K.",
+        title: "Small Business Owner",
+        content: "Liam helped me understand how to use AI in my business in a way that actually made sense. No technical jargon, just practical applications that saved me time and money.",
+        imageUrl: "/assets/testimonials/sarah.jpg"
+      },
+      {
+        id: "testimonial-2",
+        name: "Marcus T.",
+        title: "Marketing Professional with ADHD",
+        content: "As someone with ADHD, I&apos;ve always struggled with organization and focus. Liam&apos;s approach to AI implementation has literally changed my life. I now have systems that work with my brain, not against it.",
+        imageUrl: "/assets/testimonials/marcus.jpg"
+      },
+      {
+        id: "testimonial-3",
+        name: "Jennifer P.",
+        title: "Entrepreneur",
+        content: "I went from being intimidated by AI to leveraging it daily in my startup. Liam has a gift for making complex technology accessible and human-centered.",
+        imageUrl: "/assets/testimonials/jennifer.jpg"
+      }
+    ],
+    // Extract portfolio from the portfolioItems JSON field
+    portfolio: liamJonsProfile?.portfolioItems || [
+      {
+        id: "success-1",
+        title: "Small Business Transformation",
+        description: "Helped a local retail business implement AI for inventory management and customer recommendations, resulting in significant efficiency gains.",
+        imageUrl: "/assets/portfolio/retail-business.jpg",
+        outcomes: [
+          { label: "Time Saved", value: "15 hrs/week", trend: "down" },
+          { label: "Revenue", value: "+22%", trend: "up" },
+          { label: "Customer Satisfaction", value: "+35%", trend: "up" }
+        ],
+        tags: ["Small Business", "Retail", "AI Implementation"],
+        createdAt: new Date(2024, 3, 15)
+      },
+      {
+        id: "success-2",
+        title: "Freelancer Productivity System",
+        description: "Designed a custom AI workflow for a freelance designer with ADHD, helping them manage clients and deadlines more effectively.",
+        imageUrl: "/assets/portfolio/freelancer.jpg",
+        outcomes: [
+          { label: "Missed Deadlines", value: "-80%", trend: "down" },
+          { label: "Client Capacity", value: "+40%", trend: "up" },
+          { label: "Stress Level", value: "-65%", trend: "down" }
+        ],
+        tags: ["Freelancer", "ADHD", "Productivity"],
+        createdAt: new Date(2024, 4, 28)
+      },
+    ]
+  };
   
   // Format bio with show more/less if longer than 280 characters
   const bioIsTruncated = enhancedProfile.bio && enhancedProfile.bio.length > 280;
@@ -183,9 +194,11 @@ export default function LiamJonsProfile() {
   
   // Handle booking of specific session types
   const handleBookSession = (sessionId?: string) => {
+    // Use the ID from the profile or fallback to a default ID
+    const builderId = liamJonsProfile?.id || 'liam-jons';
     const url = sessionId 
-      ? `/book/${liamJonsProfile.id}?session=${sessionId}` 
-      : `/book/${liamJonsProfile.id}`;
+      ? `/book/${builderId}?session=${sessionId}` 
+      : `/book/${builderId}`;
     router.push(url);
   };
   
@@ -272,14 +285,14 @@ export default function LiamJonsProfile() {
                   
                   {/* Fallback for avatar image */}
                   <div className="absolute inset-0 flex items-center justify-center text-white text-6xl font-bold">
-                    {liamJonsProfile.name.split(' ').map(n => n[0]).join('')}
+                    {enhancedProfile.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   
                   {/* Only try to load image if it exists */}
-                  {liamJonsProfile.avatarUrl && (
+                  {enhancedProfile.avatarUrl && (
                     <Image
-                      src={liamJonsProfile.avatarUrl}
-                      alt={liamJonsProfile.name}
+                      src={enhancedProfile.avatarUrl}
+                      alt={enhancedProfile.name}
                       fill
                       className="object-cover"
                       priority
@@ -294,7 +307,7 @@ export default function LiamJonsProfile() {
                 </div>
                 
                 <div className="absolute -bottom-2 -right-2 bg-background rounded-full p-2 shadow-md">
-                  <ValidationTierBadge tier={liamJonsProfile.validationTier} size="lg" />
+                  <ValidationTierBadge tier={enhancedProfile.validationTier} size="lg" />
                 </div>
               </div>
             </div>
@@ -352,7 +365,7 @@ export default function LiamJonsProfile() {
                   <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${availabilityStyle}`}>
                     {availabilityLabel}
                   </div>
-                  {liamJonsProfile.availability?.status === "limited" && (
+                  {enhancedProfile.availability?.status === "limited" && (
                     <div className="mt-2">
                       <Button variant="outline" size="sm" asChild>
                         <Link href="/weekly-sessions">
@@ -364,7 +377,7 @@ export default function LiamJonsProfile() {
                 </section>
                 
                 {/* ADHD Specialization note */}
-                {liamJonsProfile.adhd_focus && (
+                {enhancedProfile.adhd_focus && (
                   <section>
                     <h3 className="text-lg font-medium mb-3">ADHD Specialization</h3>
                     <Card>
@@ -387,7 +400,7 @@ export default function LiamJonsProfile() {
                 <section>
                   <h3 className="text-lg font-medium mb-3">Skills</h3>
                   <div className="flex flex-wrap gap-2">
-                    {liamJonsProfile.skills.map((skill) => (
+                    {enhancedProfile.skills.map((skill) => (
                       <span
                         key={skill}
                         className="px-2.5 py-1 bg-muted rounded-full text-sm"
@@ -399,13 +412,13 @@ export default function LiamJonsProfile() {
                 </section>
                 
                 {/* Social links */}
-                {liamJonsProfile.socialLinks && Object.values(liamJonsProfile.socialLinks).some(Boolean) && (
+                {enhancedProfile.socialLinks && Object.values(enhancedProfile.socialLinks).some(Boolean) && (
                   <section>
                     <h3 className="text-lg font-medium mb-3">Connect</h3>
                     <div className="flex flex-wrap gap-3">
-                      {liamJonsProfile.socialLinks.website && (
+                      {enhancedProfile.socialLinks.website && (
                         <a 
-                          href={liamJonsProfile.socialLinks.website}
+                          href={enhancedProfile.socialLinks.website}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
@@ -414,9 +427,9 @@ export default function LiamJonsProfile() {
                           <GlobeIcon className="h-5 w-5" />
                         </a>
                       )}
-                      {liamJonsProfile.socialLinks.linkedin && (
+                      {enhancedProfile.socialLinks.linkedin && (
                         <a 
-                          href={liamJonsProfile.socialLinks.linkedin}
+                          href={enhancedProfile.socialLinks.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
@@ -425,9 +438,9 @@ export default function LiamJonsProfile() {
                           <LinkedInLogoIcon className="h-5 w-5" />
                         </a>
                       )}
-                      {liamJonsProfile.socialLinks.github && (
+                      {enhancedProfile.socialLinks.github && (
                         <a 
-                          href={liamJonsProfile.socialLinks.github}
+                          href={enhancedProfile.socialLinks.github}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
@@ -436,9 +449,9 @@ export default function LiamJonsProfile() {
                           <GitHubLogoIcon className="h-5 w-5" />
                         </a>
                       )}
-                      {liamJonsProfile.socialLinks.twitter && (
+                      {enhancedProfile.socialLinks.twitter && (
                         <a 
-                          href={liamJonsProfile.socialLinks.twitter}
+                          href={enhancedProfile.socialLinks.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"

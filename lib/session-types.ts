@@ -2,7 +2,7 @@
  * Session Types Module
  * 
  * Handles loading and managing session types for builders
- * Version: 1.0.42
+ * Version: 1.0.43
  */
 
 import { PrismaClient } from '@prisma/client';
