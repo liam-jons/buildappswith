@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { type RouteParams } from "@/app/api/route-types";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth/auth";
 import { z } from "zod";
@@ -20,7 +21,7 @@ const sessionTypeUpdateSchema = z.object({
 // GET /api/admin/session-types/[id] - Get a specific session type
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams<{ id: string }>
 ) {
   try {
     // Check authentication and admin status
@@ -72,7 +73,7 @@ export async function GET(
 // PUT /api/admin/session-types/[id] - Update a session type
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams<{ id: string }>
 ) {
   try {
     // Check authentication and admin status
@@ -155,7 +156,7 @@ export async function PUT(
 // DELETE /api/admin/session-types/[id] - Delete a session type
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams<{ id: string }>
 ) {
   try {
     // Check authentication and admin status

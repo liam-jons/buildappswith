@@ -219,3 +219,6 @@ export async function mapMarketingSessionId(marketingId: string, builderId: stri
       return sessionTypes[0]?.id || 'individual-1-to-1';
   }
 }
+
+// Add alias for backward compatibility
+export const getBuilderSessionTypes = getSessionTypes;
