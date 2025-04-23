@@ -124,10 +124,10 @@ export async function createBuilderProfile(data: CreateBuilderProfileData) {
       }
     });
     
-    // Update user role
+    // Update user roles
     await db.user.update({
       where: { id: data.userId },
-      data: { role: 'BUILDER' }
+      data: { roles: ['BUILDER'] }
     });
     
     return profile;

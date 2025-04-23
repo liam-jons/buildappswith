@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   CalendarIcon, 
   ChatBubbleIcon, 
@@ -17,11 +18,17 @@ import {
   GitHubLogoIcon,
   TwitterLogoIcon,
   BarChartIcon,
-  MixerHorizontalIcon
+  MixerHorizontalIcon,
+  RocketIcon,
+  StackIcon,
+  HeartFilledIcon
 } from "@radix-ui/react-icons";
 import { ValidationTierBadge, ValidationTier } from "./validation-tier-badge";
 import { PortfolioShowcase, PortfolioProject } from "./portfolio-showcase";
+import { AppShowcase, AppItem } from "./app-showcase";
 import { SuccessMetricsDashboard, MetricsCategory } from "./success-metrics-dashboard";
+import { MultiRoleBadge } from "./role-badges";
+import { UserRole } from "@prisma/client";
 
 export interface BuilderProfileData {
   id: string;
@@ -36,6 +43,9 @@ export interface BuilderProfileData {
   rating: number;
   responseRate: number;
   skills: string[];
+  roles?: UserRole[];
+  isFounder?: boolean;
+  adhdFocus?: boolean;
   availability?: {
     status: "available" | "limited" | "unavailable";
     nextAvailable?: Date;
@@ -47,6 +57,7 @@ export interface BuilderProfileData {
     twitter?: string;
   };
   portfolio: PortfolioProject[];
+  apps?: AppItem[];
   metrics?: MetricsCategory[];
 }
 
@@ -59,6 +70,8 @@ interface BuilderProfileProps {
   onSendMessage?: () => void;
   onAddProject?: () => void;
   onViewAllProjects?: () => void;
+  onAddApp?: () => void;
+  onViewAllApps?: () => void;
 }
 
 export function BuilderProfile({
@@ -69,10 +82,13 @@ export function BuilderProfile({
   onScheduleSession,
   onSendMessage,
   onAddProject,
-  onViewAllProjects
+  onViewAllProjects,
+  onAddApp,
+  onViewAllApps
 }: BuilderProfileProps) {
   const shouldReduceMotion = useReducedMotion();
   const [showFullBio, setShowFullBio] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("portfolio");
   
   // Format bio with show more/less if longer than 280 characters
   const bioIsTruncated = profile.bio.length > 280;
@@ -90,6 +106,10 @@ export function BuilderProfile({
     limited: "text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/30",
     unavailable: "text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-950/30"
   }[profile.availability.status] : "text-muted-foreground bg-muted";
+  
+  // Determine tabs to show
+  const showAppsTab = !!profile.apps && (profile.apps.length > 0 || isOwner);
+  const showMetricsTab = !!profile.metrics && profile.metrics.length > 0;
   
   return (
     <div className={cn("w-full", className)}>
@@ -112,7 +132,7 @@ export function BuilderProfile({
             className="absolute top-4 right-4 gap-1.5"
             onClick={onEditProfile}
           >
-            <Pencil1Icon className="h-3.5 w-3.5" /> {/* Fixed: Changed from PencilIcon to Pencil1Icon */}
+            <Pencil1Icon className="h-3.5 w-3.5" />
             Edit Profile
           </Button>
         )}
@@ -149,7 +169,27 @@ export function BuilderProfile({
             <div className="flex flex-wrap items-center gap-3 mb-1">
               <h1 className="text-2xl md:text-3xl font-bold">{profile.name}</h1>
               <ValidationTierBadge tier={profile.validationTier} />
+              
+              {/* ADHD Focus Badge */}
+              {profile.adhdFocus && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-800 dark:bg-purple-950/50 dark:text-purple-400 rounded-full text-xs font-medium">
+                  <HeartFilledIcon className="h-3 w-3" />
+                  ADHD Focus
+                </span>
+              )}
             </div>
+            
+            {/* Role badges if available */}
+            {profile.roles && profile.roles.length > 0 && (
+              <div className="mb-2">
+                <MultiRoleBadge 
+                  roles={profile.roles} 
+                  isFounder={profile.isFounder}
+                  size="sm"
+                />
+              </div>
+            )}
+            
             <h2 className="text-lg text-muted-foreground mb-2">{profile.title}</h2>
             
             {/* Key stats */}
@@ -296,44 +336,119 @@ export function BuilderProfile({
           )}
         </div>
         
-        {/* Portfolio */}
-        <div className="lg:col-span-2 space-y-12">
-        {/* Success Metrics Dashboard */}
-        {profile.metrics && profile.metrics.length > 0 && (
-        <section>
-        <SuccessMetricsDashboard
-          validationTier={profile.validationTier}
-          metrics={profile.metrics}
-        />
-        </section>
-        )}
-        
-          {/* Portfolio Section */}
-          <section>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-medium">Portfolio</h3>
+        {/* Content Tabs */}
+        <div className="lg:col-span-2 space-y-6">
+          <Tabs 
+            value={activeTab} 
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="w-full mb-6">
+              <TabsTrigger 
+                value="portfolio" 
+                className="flex items-center gap-1.5"
+              >
+                <StackIcon className="h-4 w-4" />
+                Portfolio
+              </TabsTrigger>
               
-              {onViewAllProjects && profile.portfolio.length > 3 && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={onViewAllProjects}
-                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+              {showAppsTab && (
+                <TabsTrigger 
+                  value="apps" 
+                  className="flex items-center gap-1.5"
                 >
-                  <MixerHorizontalIcon className="h-4 w-4" />
-                  View All
-                </Button>
+                  <RocketIcon className="h-4 w-4" />
+                  Apps
+                </TabsTrigger>
               )}
-            </div>
+              
+              {showMetricsTab && (
+                <TabsTrigger 
+                  value="metrics" 
+                  className="flex items-center gap-1.5"
+                >
+                  <BarChartIcon className="h-4 w-4" />
+                  Metrics
+                </TabsTrigger>
+              )}
+            </TabsList>
             
-            <PortfolioShowcase 
-              projects={profile.portfolio}
-              isOwner={isOwner}
-              onAddProject={onAddProject}
-              onViewAllProjects={onViewAllProjects}
-              maxDisplay={3}
-            />
-          </section>
+            {/* Portfolio Tab */}
+            <TabsContent value="portfolio" className="mt-0">
+              <section>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-medium">Portfolio Projects</h3>
+                  
+                  {onViewAllProjects && profile.portfolio.length > 3 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={onViewAllProjects}
+                      className="gap-1.5 text-muted-foreground hover:text-foreground"
+                    >
+                      <MixerHorizontalIcon className="h-4 w-4" />
+                      View All
+                    </Button>
+                  )}
+                </div>
+                
+                <PortfolioShowcase 
+                  projects={profile.portfolio}
+                  isOwner={isOwner}
+                  onAddProject={onAddProject}
+                  onViewAllProjects={onViewAllProjects}
+                  maxDisplay={6}
+                />
+              </section>
+            </TabsContent>
+            
+            {/* Apps Tab */}
+            {showAppsTab && (
+              <TabsContent value="apps" className="mt-0">
+                <section>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-medium">
+                      {profile.adhdFocus 
+                        ? "AI Applications for ADHD" 
+                        : "AI Applications"}
+                    </h3>
+                    
+                    {onViewAllApps && profile.apps && profile.apps.length > 3 && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={onViewAllApps}
+                        className="gap-1.5 text-muted-foreground hover:text-foreground"
+                      >
+                        <MixerHorizontalIcon className="h-4 w-4" />
+                        View All
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <AppShowcase 
+                    apps={profile.apps || []}
+                    isOwner={isOwner}
+                    onAddApp={onAddApp}
+                    onViewAllApps={onViewAllApps}
+                    maxDisplay={6}
+                  />
+                </section>
+              </TabsContent>
+            )}
+            
+            {/* Metrics Tab */}
+            {showMetricsTab && (
+              <TabsContent value="metrics" className="mt-0">
+                <section>
+                  <SuccessMetricsDashboard
+                    validationTier={profile.validationTier}
+                    metrics={profile.metrics || []}
+                  />
+                </section>
+              </TabsContent>
+            )}
+          </Tabs>
         </div>
       </div>
     </div>

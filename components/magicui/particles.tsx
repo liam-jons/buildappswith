@@ -32,13 +32,14 @@ interface ParticlesProps {
   className?: string;
   quantity?: number;
   staticity?: number;
-  ease?: number;
+  ease?: number; // Changed from boolean | number to just number
   size?: number;
   refresh?: boolean;
   color?: string;
   vx?: number;
   vy?: number;
 }
+
 function hexToRgb(hex: string): number[] {
   hex = hex.replace("#", "");
   const hexInt = parseInt(hex, 16);
@@ -52,7 +53,7 @@ const Particles: React.FC<ParticlesProps> = ({
   className = "",
   quantity = 100,
   staticity = 50,
-  ease = 50,
+  ease = 50, // Default value is 50, not true
   size = 0.4,
   refresh = false,
   color = "#ffffff",

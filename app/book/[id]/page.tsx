@@ -56,6 +56,31 @@ export default function BookingPage(props: { params: Promise<{ id: string }> }) 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Handle pre-selected session type from URL parameters
+  useEffect(() => {
+    // Check if we have a session parameter in the URL
+    const url = new URL(window.location.href);
+    const sessionParam = url.searchParams.get('session');
+    
+    if (sessionParam) {
+      // Match the session from our marketing page with available session types
+      if (sessionParam === 'session1') {
+        setSelectedSession('individual-1-to-1');
+      } else if (sessionParam === 'session2') {
+        // This is the ADHD-focused session
+        setSelectedSession('individual-1-to-1'); // We'll customize this later
+      } else if (sessionParam === 'session3' || sessionParam === 'session4') {
+        setSelectedSession('individual-group');
+      }
+      
+      // Automatically advance to the datetime tab
+      setTimeout(() => {
+        const datetimeTab = document.querySelector('[data-value="datetime"]') as HTMLElement;
+        if (datetimeTab) datetimeTab.click();
+      }, 100);
+    }
+  }, []);
 
   const handleCheckout = async () => {
     if (!selectedSession || !selectedDate || !selectedTime) {

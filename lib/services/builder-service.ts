@@ -25,7 +25,7 @@ export async function createPrototypeBuilderProfile() {
         name: 'Liam Jones',
         email: 'liam.jones@buildappswith.com',
         emailVerified: new Date(),
-        role: UserRole.BUILDER,
+        roles: [UserRole.BUILDER],
         image: 'https://randomuser.me/api/portraits/men/22.jpg',
         verified: true
       }
@@ -298,11 +298,11 @@ export async function createPrototypeBuilderProfile() {
     }
   });
 
-  // Update user role if needed
-  if (user.role !== UserRole.BUILDER) {
+  // Update user roles if needed
+  if (!user.roles || !user.roles.includes(UserRole.BUILDER)) {
     await db.user.update({
       where: { id: user.id },
-      data: { role: UserRole.BUILDER }
+      data: { roles: [UserRole.BUILDER] }
     });
   }
 

@@ -21,7 +21,8 @@ model User {
   email           String    @unique
   emailVerified   DateTime?
   image           String?
-  role            UserRole  @default(CLIENT)
+  roles           UserRole[] @default([CLIENT]) // Changed from single role to array
+  isFounder       Boolean   @default(false)     // Flag for identifying founder status
   stripeCustomerId String?
   verified        Boolean   @default(false)
   createdAt       DateTime  @default(now())
@@ -101,6 +102,7 @@ model BuilderProfile {
   portfolioItems   Json[]   // Array of portfolio items
   validationTier   Int      @default(1) // 1, 2, or 3 based on validation level
   availableForHire Boolean  @default(true)
+  adhd_focus       Boolean  @default(false) // Special flag for ADHD specialization
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   socialLinks       Json?     // Social media links and contact information
@@ -109,6 +111,7 @@ model BuilderProfile {
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   skills           BuilderSkill[]
   bookings         Booking[]
+  apps             App[]    // Relation to apps built by this builder
 }
 
 model ClientProfile {
@@ -123,6 +126,30 @@ model ClientProfile {
   // Relations
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   projects         Project[]
+}
+
+// App showcase model
+model App {
+  id               String    @id @default(cuid())
+  title            String
+  description      String    @db.Text
+  imageUrl         String?
+  technologies     String[]  // Array of technologies used
+  status           AppStatus @default(CONCEPT)
+  appUrl           String?   // URL to the deployed app
+  builderId        String    // Reference to the builder who created it
+  adhd_focused     Boolean   @default(false) // Whether app is focused on ADHD users
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  builder          BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
+}
+
+enum AppStatus {
+  LIVE     // Fully deployed and functional
+  DEMO     // Demo/prototype version available
+  CONCEPT  // Conceptual mockup or design
 }
 
 // =========================================

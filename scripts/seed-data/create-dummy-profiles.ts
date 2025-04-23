@@ -74,7 +74,7 @@ async function createDummyProfiles() {
           name: builder.name,
           email: builder.email,
           emailVerified: new Date(),
-          role: UserRole.BUILDER,
+          roles: [UserRole.BUILDER],
           image: builder.image,
           verified: true
         }

@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
           id: userId
         },
         data: {
-          role: 'BUILDER'
+          roles: ['BUILDER']
         }
       });
     }

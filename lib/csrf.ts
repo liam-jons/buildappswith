@@ -1,16 +1,13 @@
 /**
  * CSRF Protection Utility for Buildappswith Platform
- * Version: 0.1.65
+ * Version: 0.1.66
  * 
  * Implements Cross-Site Request Forgery protection using double submit cookie pattern
  * with cryptographically secure tokens
  * 
- * NOTE: This module uses Node.js 'crypto' which is not compatible with Edge Runtime.
- * Only use this in Server Components or API Routes that don't use the Edge Runtime.
- * See: https://nextjs.org/docs/messages/node-module-in-edge-runtime
+ * Uses Web Crypto API which is compatible with both Server and Edge Runtimes
  */
 
-import { randomBytes } from 'crypto';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -22,11 +19,16 @@ const TOKEN_BYTE_SIZE = 32; // 256 bits
 const TOKEN_EXPIRY = 60 * 60 * 2; // 2 hours in seconds
 
 /**
- * Generate a cryptographically secure random token
+ * Generate a cryptographically secure random token using Web Crypto API
  * @returns {Promise<string>} Base64 encoded random token
  */
 export async function generateCsrfToken(): Promise<string> {
-  return randomBytes(TOKEN_BYTE_SIZE).toString('base64');
+  // Create a new array of random bytes using Web Crypto API
+  const buffer = new Uint8Array(TOKEN_BYTE_SIZE);
+  crypto.getRandomValues(buffer);
+  
+  // Convert the random bytes to base64 string
+  return btoa(String.fromCharCode(...buffer));
 }
 
 /**
