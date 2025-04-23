@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { type RouteParams } from "@/app/api/route-types";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth/auth";
 import { z } from "zod";
@@ -13,7 +14,7 @@ const statusUpdateSchema = z.object({
 // PATCH /api/admin/session-types/[id]/status - Update session type status
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams<{ id: string }>
 ) {
   try {
     // Check authentication and admin status
