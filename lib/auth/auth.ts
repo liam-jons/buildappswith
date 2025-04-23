@@ -44,7 +44,7 @@ const authConfig: NextAuthConfig = {
       // First time JWT is created after sign in
       if (user) {
         token.id = user.id as string;
-        token.role = user.role as UserRole || UserRole.CLIENT;
+        token.roles = user.roles as UserRole[] || [UserRole.CLIENT];
         token.stripeCustomerId = user.stripeCustomerId as string | undefined;
         token.verified = user.verified as boolean || false;
       }
@@ -56,7 +56,7 @@ const authConfig: NextAuthConfig = {
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as UserRole;
+        session.user.roles = token.roles as UserRole[];
         session.user.stripeCustomerId = token.stripeCustomerId as string | undefined;
         session.user.verified = token.verified as boolean;
       }

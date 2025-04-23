@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth/auth";
+import { UserRole } from "@/lib/auth/types";
 
 const prisma = new PrismaClient();
 
@@ -16,7 +17,8 @@ export async function GET(req: NextRequest) {
       );
     }
     
-    if (!session.user.roles.includes("ADMIN")) {
+    // Check if user has admin role
+    if (!session.user.roles.includes(UserRole.ADMIN)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }

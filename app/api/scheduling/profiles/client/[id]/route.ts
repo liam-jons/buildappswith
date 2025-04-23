@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getClientSchedulingProfile } from '@/lib/scheduling/real-data/scheduling-service';
 import { auth } from '@/lib/auth/auth';
+import { UserRole } from '@/lib/auth/types';
 
 /**
  * GET handler for fetching a client's scheduling profile
@@ -26,7 +27,7 @@ export async function GET(
     }
     
     // Authorization check - only the client or an admin can view their profile
-    const isAdminUser = session.user.role === 'ADMIN';
+    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
     const isOwnProfile = session.user.id === id;
     
     if (!isAdminUser && !isOwnProfile) {

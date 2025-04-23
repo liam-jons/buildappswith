@@ -29,8 +29,8 @@ export function UserProfile() {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.name}</p>
             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-            {user.role && (
-              <p className="text-xs leading-none text-muted-foreground capitalize">Role: {user.role}</p>
+            {user.roles && user.roles.length > 0 && (
+              <p className="text-xs leading-none text-muted-foreground capitalize">Roles: {user.roles.join(', ')}</p>
             )}
           </div>
         </div>

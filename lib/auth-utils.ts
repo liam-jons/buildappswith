@@ -21,6 +21,12 @@ export async function getCurrentUser() {
 
 // Helper function to check if a user has a specific role
 export function hasRole(user: any, role: UserRole) {
-  if (!user) return false;
-  return user.role === role;
+  if (!user || !user.roles) return false;
+  return user.roles.includes(role);
+}
+
+// Helper function to check if a user has any of the specified roles
+export function hasAnyRole(user: any, roles: UserRole[]) {
+  if (!user || !user.roles) return false;
+  return user.roles.some((role: UserRole) => roles.includes(role));
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth/auth";
+import { UserRole } from "@/lib/auth/types";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
       );
     }
     
-    if (!session.user.roles.includes("ADMIN")) {
+    if (!session.user.roles.includes(UserRole.ADMIN)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
       );
     }
     
-    if (!session.user.roles.includes("ADMIN")) {
+    if (!session.user.roles.includes(UserRole.ADMIN)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }

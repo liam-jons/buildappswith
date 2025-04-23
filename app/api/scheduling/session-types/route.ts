@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getSessionTypes, createSessionType } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth'; // Updated import
+import { auth } from '@/lib/auth/auth';
+import { UserRole } from '@/lib/auth/types';
 
 // Validation schema for query parameters
 const querySchema = z.object({
@@ -78,7 +79,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Get session for auth check
-    const session = await auth(); // Updated to use auth()
+    const session = await auth();
     
     if (!session?.user) {
       return NextResponse.json(
@@ -102,7 +103,7 @@ export async function POST(request: NextRequest) {
     
     // Authorization check - only allow creating session types for own profile
     // or if user is an admin
-    const isAdminUser = session.user.role === 'ADMIN';
+    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
     const isOwnProfile = session.user.id === result.data.builderId;
     
     if (!isAdminUser && !isOwnProfile) {

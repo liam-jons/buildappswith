@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import ProtectedRoute from "@/components/auth/protected-route";
+import { UserRole } from "@/lib/auth/types";
 
 export const metadata: Metadata = {
   title: "Client Dashboard",
@@ -12,7 +13,7 @@ export default function ClientDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ProtectedRoute requiredRoles={['CLIENT', 'ADMIN']}>
+    <ProtectedRoute requiredRoles={[UserRole.CLIENT, UserRole.ADMIN]}>
       <div className="container mx-auto py-6">
         <h1 className="text-3xl font-bold mb-6">Client Dashboard</h1>
         {children}

@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { UserRole } from '@/lib/auth/types';
 
-// Using Prisma enum values directly
-type UserRole = 'CLIENT' | 'BUILDER' | 'ADMIN';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,7 +16,7 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [userRole, setUserRole] = useState<UserRole | null>(null);
+  const [userRoles, setUserRoles] = useState<UserRole[] | null>(null);
 
   useEffect(() => {
     // Check authentication status when component mounts
@@ -33,12 +32,14 @@ export default function ProtectedRoute({
         }
 
         setIsAuthenticated(true);
-        setUserRole(session.user.role as UserRole);
+        setUserRoles(session.user.roles as UserRole[] || []);
 
         // Check if user has required role
         if (requiredRoles && requiredRoles.length > 0) {
-          const hasRequiredRole = requiredRoles.includes(session.user.role as UserRole);
-          
+        const hasRequiredRole = session.user.roles && session.user.roles.some((userRole: UserRole) => 
+        requiredRoles.includes(userRole)
+        );
+        
           if (!hasRequiredRole) {
             router.push('/dashboard'); // Redirect to dashboard if user doesn't have required role
           }
@@ -66,7 +67,7 @@ export default function ProtectedRoute({
   if (isAuthenticated && 
     (!requiredRoles || 
      requiredRoles.length === 0 || 
-     (userRole && requiredRoles.includes(userRole)))) {
+     (userRoles && userRoles.some(role => requiredRoles.includes(role))))) {
     return <>{children}</>;
   }
 
