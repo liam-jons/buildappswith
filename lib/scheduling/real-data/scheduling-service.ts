@@ -42,27 +42,30 @@ function transformBooking(booking: any): Booking {
  */
 export async function getSessionTypes(builderId: string): Promise<SessionType[]> {
   try {
-    // Currently we don't have SessionType table in schema, so we'll need to implement it
-    // This is a placeholder for the real implementation
-    throw new Error('SessionType database implementation required');
+    // Get session types from the database
+    const sessionTypes = await db.sessionType.findMany({
+      where: {
+        builderId,
+        isActive: true
+      },
+      orderBy: {
+        price: 'asc'
+      }
+    });
     
-    // Future implementation will be similar to:
-    // const sessionTypes = await db.sessionType.findMany({
-    //   where: { builderId }
-    // });
-    // 
-    // return sessionTypes.map(st => ({
-    //   id: st.id,
-    //   builderId: st.builderId,
-    //   title: st.title,
-    //   description: st.description,
-    //   durationMinutes: st.durationMinutes,
-    //   price: st.price,
-    //   currency: st.currency,
-    //   isActive: st.isActive,
-    //   color: st.color,
-    //   maxParticipants: st.maxParticipants
-    // }));
+    // Transform them to the interface expected by the application
+    return sessionTypes.map(st => ({
+      id: st.id,
+      builderId: st.builderId,
+      title: st.title,
+      description: st.description,
+      durationMinutes: st.durationMinutes,
+      price: Number(st.price), // Convert Decimal to number
+      currency: st.currency,
+      isActive: st.isActive,
+      color: st.color || undefined,
+      maxParticipants: st.maxParticipants || undefined
+    }));
   } catch (error) {
     console.error(`Error fetching session types for builder ${builderId}:`, error);
     throw new Error('Failed to fetch session types');
@@ -77,29 +80,34 @@ export async function getSessionTypes(builderId: string): Promise<SessionType[]>
  */
 export async function createSessionType(sessionType: Omit<SessionType, 'id'>): Promise<SessionType> {
   try {
-    // This is a placeholder for the real implementation
-    throw new Error('SessionType database implementation required');
+    // Create the session type in the database
+    const newSessionType = await db.sessionType.create({
+      data: {
+        builderId: sessionType.builderId,
+        title: sessionType.title,
+        description: sessionType.description,
+        durationMinutes: sessionType.durationMinutes,
+        price: sessionType.price as unknown as Prisma.Decimal, // Convert to Prisma.Decimal
+        currency: sessionType.currency,
+        isActive: sessionType.isActive,
+        color: sessionType.color,
+        maxParticipants: sessionType.maxParticipants
+      }
+    });
     
-    // Future implementation will be similar to:
-    // const newSessionType = await db.sessionType.create({
-    //   data: {
-    //     builderId: sessionType.builderId,
-    //     title: sessionType.title,
-    //     description: sessionType.description,
-    //     durationMinutes: sessionType.durationMinutes,
-    //     price: sessionType.price,
-    //     currency: sessionType.currency,
-    //     isActive: sessionType.isActive,
-    //     color: sessionType.color,
-    //     maxParticipants: sessionType.maxParticipants
-    //   }
-    // });
-    // 
-    // return {
-    //   id: newSessionType.id,
-    //   builderId: newSessionType.builderId,
-    //   ...sessionType
-    // };
+    // Return the created session type with the interface expected by the application
+    return {
+      id: newSessionType.id,
+      builderId: newSessionType.builderId,
+      title: newSessionType.title,
+      description: newSessionType.description,
+      durationMinutes: newSessionType.durationMinutes,
+      price: Number(newSessionType.price), // Convert Decimal to number
+      currency: newSessionType.currency,
+      isActive: newSessionType.isActive,
+      color: newSessionType.color || undefined,
+      maxParticipants: newSessionType.maxParticipants || undefined
+    };
   } catch (error) {
     console.error('Error creating session type:', error);
     throw new Error('Failed to create session type');
@@ -118,27 +126,31 @@ export async function updateSessionType(
   sessionType: Partial<Omit<SessionType, 'id'>>
 ): Promise<SessionType> {
   try {
-    // This is a placeholder for the real implementation
-    throw new Error('SessionType database implementation required');
+    // Prepare the data - handle price conversion if provided
+    const data: any = { ...sessionType };
+    if (data.price !== undefined && typeof data.price === 'number') {
+      data.price = data.price as unknown as Prisma.Decimal;
+    }
     
-    // Future implementation will be similar to:
-    // const updatedSessionType = await db.sessionType.update({
-    //   where: { id },
-    //   data: sessionType
-    // });
-    // 
-    // return {
-    //   id: updatedSessionType.id,
-    //   builderId: updatedSessionType.builderId,
-    //   title: updatedSessionType.title,
-    //   description: updatedSessionType.description,
-    //   durationMinutes: updatedSessionType.durationMinutes,
-    //   price: updatedSessionType.price,
-    //   currency: updatedSessionType.currency,
-    //   isActive: updatedSessionType.isActive,
-    //   color: updatedSessionType.color || undefined,
-    //   maxParticipants: updatedSessionType.maxParticipants || undefined
-    // };
+    // Update the session type in the database
+    const updatedSessionType = await db.sessionType.update({
+      where: { id },
+      data: data
+    });
+    
+    // Return the updated session type with the interface expected by the application
+    return {
+      id: updatedSessionType.id,
+      builderId: updatedSessionType.builderId,
+      title: updatedSessionType.title,
+      description: updatedSessionType.description,
+      durationMinutes: updatedSessionType.durationMinutes,
+      price: Number(updatedSessionType.price), // Convert Decimal to number
+      currency: updatedSessionType.currency,
+      isActive: updatedSessionType.isActive,
+      color: updatedSessionType.color || undefined,
+      maxParticipants: updatedSessionType.maxParticipants || undefined
+    };
   } catch (error) {
     console.error(`Error updating session type ${id}:`, error);
     throw new Error('Failed to update session type');
@@ -153,15 +165,12 @@ export async function updateSessionType(
  */
 export async function deleteSessionType(id: string): Promise<boolean> {
   try {
-    // This is a placeholder for the real implementation
-    throw new Error('SessionType database implementation required');
+    // Delete the session type from the database
+    await db.sessionType.delete({
+      where: { id }
+    });
     
-    // Future implementation will be similar to:
-    // await db.sessionType.delete({
-    //   where: { id }
-    // });
-    // 
-    // return true;
+    return true;
   } catch (error) {
     console.error(`Error deleting session type ${id}:`, error);
     throw new Error('Failed to delete session type');

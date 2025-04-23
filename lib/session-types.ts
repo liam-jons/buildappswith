@@ -2,15 +2,14 @@
  * Session Types Module
  * 
  * Handles loading and managing session types for builders
- * Version: 1.0.40
+ * Version: 1.0.42
  */
 
-import fs from 'fs';
-import path from 'path';
+import { PrismaClient } from '@prisma/client';
 import { SessionType } from './scheduling/types';
 
-// Directory where session type data is stored
-const DATA_DIR = path.join(process.cwd(), 'data');
+// Initialize PrismaClient
+const prisma = new PrismaClient();
 
 /**
  * Load session types for a specific builder
@@ -19,23 +18,40 @@ const DATA_DIR = path.join(process.cwd(), 'data');
  */
 export async function getSessionTypes(builderId: string): Promise<SessionType[]> {
   try {
-    // For Liam Jons, use the special file
-    if (builderId === 'liam-jons') {
-      const filePath = path.join(DATA_DIR, 'liam-session-types.json');
-      
-      // Check if file exists
-      if (fs.existsSync(filePath)) {
-        const data = fs.readFileSync(filePath, 'utf8');
-        return JSON.parse(data);
-      }
+    // Fetch from database instead of the filesystem
+    const dbSessionTypes = await prisma.sessionType.findMany({
+      where: {
+        builderId,
+        isActive: true,
+      },
+      orderBy: {
+        price: 'asc',
+      },
+    });
+
+    // If there are session types in the database, return them
+    if (dbSessionTypes.length > 0) {
+      return dbSessionTypes.map(st => ({
+        id: st.id,
+        builderId: st.builderId,
+        title: st.title,
+        description: st.description,
+        durationMinutes: st.durationMinutes,
+        price: Number(st.price), // Convert Decimal to number
+        currency: st.currency,
+        isActive: st.isActive,
+        color: st.color || undefined,
+        maxParticipants: st.maxParticipants || undefined
+      }));
     }
     
-    // In the future, this would fetch from the database
-    // For now, return default session types if builder-specific ones aren't found
+    // If nothing found, return default session types
     return getDefaultSessionTypes(builderId);
   } catch (error) {
     console.error(`Error loading session types for builder ${builderId}:`, error);
     return getDefaultSessionTypes(builderId);
+  } finally {
+    // No need to disconnect as PrismaClient manages its own connections
   }
 }
 
@@ -98,8 +114,41 @@ function getDefaultSessionTypes(builderId: string): SessionType[] {
  * @returns The session type or null if not found
  */
 export async function getSessionTypeById(builderId: string, sessionTypeId: string): Promise<SessionType | null> {
-  const sessionTypes = await getSessionTypes(builderId);
-  return sessionTypes.find(session => session.id === sessionTypeId) || null;
+  try {
+    // Query the database for the specific session type
+    const sessionType = await prisma.sessionType.findFirst({
+      where: {
+        id: sessionTypeId,
+        builderId,
+        isActive: true,
+      },
+    });
+
+    // If found, return it
+    if (sessionType) {
+      return {
+        id: sessionType.id,
+        builderId: sessionType.builderId,
+        title: sessionType.title,
+        description: sessionType.description,
+        durationMinutes: sessionType.durationMinutes,
+        price: Number(sessionType.price), // Convert Decimal to number
+        currency: sessionType.currency,
+        isActive: sessionType.isActive,
+        color: sessionType.color || undefined,
+        maxParticipants: sessionType.maxParticipants || undefined
+      };
+    }
+
+    // If not found in database, fall back to all session types
+    const sessionTypes = await getSessionTypes(builderId);
+    return sessionTypes.find(session => session.id === sessionTypeId) || null;
+  } catch (error) {
+    console.error(`Error fetching session type by ID ${sessionTypeId}:`, error);
+    // Fallback to all session types
+    const sessionTypes = await getSessionTypes(builderId);
+    return sessionTypes.find(session => session.id === sessionTypeId) || null;
+  }
 }
 
 /**
@@ -112,13 +161,52 @@ export async function mapMarketingSessionId(marketingId: string, builderId: stri
   // Get all session types
   const sessionTypes = await getSessionTypes(builderId);
   
-  // For Liam Jons, the marketing IDs match the actual IDs
-  if (builderId === 'liam-jons') {
-    return marketingId;
+  // For Liam Jons, try to match by specific marketing IDs first
+  if (builderId === 'liam-jons' || builderId === 'cm9neoier00029kxo8b1pme9x') {
+    try {
+      // Try to find a session type with the exact marketing ID 
+      // This requires the sessionType ID to be set to the marketing ID
+      const exactMatch = await prisma.sessionType.findFirst({
+        where: {
+          id: marketingId,
+          builderId,
+          isActive: true,
+        },
+      });
+
+      if (exactMatch) {
+        return exactMatch.id;
+      }
+
+      // If no exact match, use our mapping logic
+      switch (marketingId) {
+        case 'session1':
+          return sessionTypes.find(st => st.title.includes('1:1 AI Discovery'))?.id || 
+                 sessionTypes.find(st => st.title.includes('1-to-1'))?.id || 
+                 'individual-1-to-1';
+        case 'session2':
+          return sessionTypes.find(st => st.title.includes('ADHD'))?.id || 
+                 sessionTypes.find(st => st.title.includes('1-to-1'))?.id || 
+                 'individual-1-to-1';
+        case 'session3':
+          return sessionTypes.find(st => st.title.includes('Fundamentals') || st.title.includes('Literacy'))?.id || 
+                 sessionTypes.find(st => st.title.includes('Group'))?.id || 
+                 'individual-group';
+        case 'session4':
+          return sessionTypes.find(st => st.title.includes('Unemployed') || st.title.includes('Free'))?.id || 
+                 sessionTypes.find(st => st.title.includes('Group'))?.id || 
+                 'individual-group';
+        default:
+          return sessionTypes[0]?.id || 'individual-1-to-1';
+      }
+    } catch (error) {
+      console.error(`Error mapping marketing session ID ${marketingId}:`, error);
+      // Return the first session type ID as fallback
+      return sessionTypes[0]?.id || 'individual-1-to-1';
+    }
   }
   
   // For other builders, implement mapping logic
-  // This is a placeholder and should be replaced with actual logic
   switch (marketingId) {
     case 'session1':
       return 'individual-1-to-1';

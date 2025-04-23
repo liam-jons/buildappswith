@@ -1,0 +1,50 @@
+[
+  {
+    "id": "session1",
+    "builderId": "cm9neoier00029kxo8b1pme9x",
+    "title": "1:1 AI Discovery Session",
+    "description": "Personalized exploration of how AI can be applied to your unique situation, with tailored recommendations and guidance.",
+    "durationMinutes": 60,
+    "price": 150,
+    "currency": "GBP",
+    "isActive": true,
+    "color": "#3B82F6",
+    "maxParticipants": 1
+  },
+  {
+    "id": "session2",
+    "builderId": "cm9neoier00029kxo8b1pme9x",
+    "title": "ADHD-Focused AI Strategy",
+    "description": "Specialized session for those with ADHD to develop an AI tool stack that works with your brain's strengths and supports your challenges.",
+    "durationMinutes": 75,
+    "price": 185,
+    "currency": "GBP",
+    "isActive": true,
+    "color": "#8B5CF6",
+    "maxParticipants": 1
+  },
+  {
+    "id": "session3",
+    "builderId": "cm9neoier00029kxo8b1pme9x",
+    "title": "AI Literacy Fundamentals",
+    "description": "Group workshop covering the essentials of AI: what it can/can't do, how to use it effectively, and ethical considerations.",
+    "durationMinutes": 90,
+    "price": 45,
+    "currency": "GBP",
+    "isActive": true,
+    "color": "#F59E0B",
+    "maxParticipants": 15
+  },
+  {
+    "id": "session4",
+    "builderId": "cm9neoier00029kxo8b1pme9x",
+    "title": "Free Weekly Session for Unemployed",
+    "description": "Supporting those between jobs with free AI literacy sessions to build valuable skills.",
+    "durationMinutes": 60,
+    "price": 0,
+    "currency": "GBP",
+    "isActive": true,
+    "color": "#10B981",
+    "maxParticipants": 20
+  }
+]

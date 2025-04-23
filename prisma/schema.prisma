@@ -112,6 +112,7 @@ model BuilderProfile {
   skills           BuilderSkill[]
   bookings         Booking[]
   apps             App[]    // Relation to apps built by this builder
+  sessionTypes     SessionType[] // Relation to session types offered by this builder
 }
 
 model ClientProfile {
@@ -269,6 +270,7 @@ model Booking {
   id            String   @id @default(cuid())
   builderId     String
   clientId      String   // Client who booked
+  sessionTypeId String?  // Reference to the session type
   title         String
   description   String?  @db.Text
   startTime     DateTime
@@ -277,12 +279,15 @@ model Booking {
   paymentStatus PaymentStatus @default(UNPAID)
   amount        Decimal? @db.Decimal(10, 2)
   stripeSessionId String?
+  clientTimezone String?  // IANA timezone name
+  builderTimezone String?  // IANA timezone name
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   // Relations
   builder       BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
   client        User           @relation("BookingsAsClient", fields: [clientId], references: [id], onDelete: Cascade)
+  sessionType   SessionType?   @relation(fields: [sessionTypeId], references: [id], onDelete: SetNull)
 }
 
 enum BookingStatus {
@@ -296,6 +301,29 @@ enum PaymentStatus {
   UNPAID
   PAID
   REFUNDED
+}
+
+// =========================================
+// Scheduling Models
+// =========================================
+
+model SessionType {
+  id               String   @id @default(cuid())
+  builderId        String
+  title            String
+  description      String   @db.Text
+  durationMinutes  Int
+  price            Decimal  @db.Decimal(10, 2)
+  currency         String
+  isActive         Boolean  @default(true)
+  color            String?
+  maxParticipants  Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  builder          BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  bookings         Booking[]
 }
 
 // =========================================

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use, useEffect } from "react";
+import { useState, use } from "react";
 // Import the builder profile utilities
 import { getBuilderProfileBySlug, getBuilderSessionTypes } from "@/lib/builders/profile";
 import Image from "next/image";
@@ -45,21 +45,18 @@ import {
 // Map the session types from the database to the format expected by the UI
 const formattedSessionTypes = sessionTypes.map(session => {
   let icon;
-  switch(session.id) {
-    case 'session1':
-      icon = <PersonIcon className="h-5 w-5" />;
-      break;
-    case 'session2':
-      icon = <HeartFilledIcon className="h-5 w-5" />;
-      break;
-    case 'session3':
-      icon = <LightningBoltIcon className="h-5 w-5" />;
-      break;
-    case 'session4':
-      icon = <RocketIcon className="h-5 w-5" />;
-      break;
-    default:
-      icon = <PersonIcon className="h-5 w-5" />;
+  // For Liam Jons, we have specific mapping for the icons based on session type
+  if (session.color === '#3B82F6' || session.title.includes('1:1 AI Discovery')) { // Blue - 1:1 session
+    icon = <PersonIcon className="h-5 w-5" />;
+  } else if (session.color === '#8B5CF6' || session.title.includes('ADHD')) { // Purple - ADHD session
+    icon = <HeartFilledIcon className="h-5 w-5" />;
+  } else if (session.color === '#F59E0B' || session.title.includes('Fundamentals') || session.title.includes('Literacy')) { // Amber - group learning
+    icon = <LightningBoltIcon className="h-5 w-5" />;
+  } else if (session.color === '#10B981' || session.price === 0 || session.title.includes('Unemployed') || session.title.includes('Free')) { // Green - free sessions
+    icon = <RocketIcon className="h-5 w-5" />;
+  } else {
+    // Fallback icon
+    icon = <PersonIcon className="h-5 w-5" />;
   }
   
   return {
@@ -69,7 +66,7 @@ const formattedSessionTypes = sessionTypes.map(session => {
     duration: `${session.durationMinutes} minutes`,
     price: session.price === 0 ? 'Free' : `${session.currency} ${session.price}`,
     participantLimit: session.maxParticipants ? `${session.maxParticipants} participants` : undefined,
-    eligibility: session.id === 'session4' ? 'Currently unemployed individuals' : undefined,
+    eligibility: session.price === 0 ? 'Currently unemployed individuals' : undefined,
     icon
   };
 });
@@ -187,8 +184,8 @@ export default function LiamJonsProfile() {
   // Handle booking of specific session types
   const handleBookSession = (sessionId?: string) => {
     const url = sessionId 
-      ? `/book/liam-jons?session=${sessionId}` 
-      : "/book/liam-jons";
+      ? `/book/${liamJonsProfile.id}?session=${sessionId}` 
+      : `/book/${liamJonsProfile.id}`;
     router.push(url);
   };
   
