@@ -12,7 +12,7 @@ export default function ClientSection() {
           BUILDING A TRUSTED ECOSYSTEM FOR AI LITERACY
           </h2>
           <div className="mt-6">
-            <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:gap-x-16 [&_path]:fill-white">
+            <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:gap-x-16 [&_path]:fill-current dark:[&_path]:fill-white">
               <li>
                 <Image
                   src="https://cdn.magicui.design/companies/Google.svg"
@@ -41,34 +41,58 @@ export default function ClientSection() {
                 />
               </li>
               <li>
-                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
-                  <span className="font-bold">Anthropic</span>
-                </div>
+                <Image
+                  src="/logos/anthropic-logo.svg"
+                  alt="Anthropic logo"
+                  width={112}
+                  height={32}
+                  className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
+                />
               </li>
               <li>
-                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
-                  <span className="font-bold">Loveable</span>
-                </div>
+                <Image
+                  src="/logos/lovable-logo.svg"
+                  alt="Lovable logo"
+                  width={112}
+                  height={32}
+                  className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
+                />
               </li>
               <li>
-                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
-                  <span className="font-bold">Perplexity</span>
-                </div>
+                <Image
+                  src="/logos/perplexity-logo.svg"
+                  alt="Perplexity logo"
+                  width={112}
+                  height={32}
+                  className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
+                />
               </li>
               <li>
-                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
-                  <span className="font-bold">Vercel</span>
-                </div>
+                <Image
+                  src="/logos/vercel-logo.svg"
+                  alt="Vercel logo"
+                  width={112}
+                  height={32}
+                  className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
+                />
               </li>
               <li>
-                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
-                  <span className="font-bold">Supabase</span>
-                </div>
+                <Image
+                  src="/logos/supabase-logo.svg"
+                  alt="Supabase logo"
+                  width={112}
+                  height={32}
+                  className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
+                />
               </li>
               <li>
-                <div className="h-8 w-28 px-2 flex items-center justify-center dark:brightness-0 dark:invert">
-                  <span className="font-bold">Neon</span>
-                </div>
+                <Image
+                  src="/logos/neon-logo.svg"
+                  alt="Neon logo"
+                  width={112}
+                  height={32}
+                  className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
+                />
               </li>
             </ul>
           </div>
