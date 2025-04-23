@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.55] - 2025-04-23
+
+### Added
+- Added SVG logos for all partner companies in the "Trusted By" section of the landing page
+- Created logos directory in public folder for storing SVG assets
+- Implemented consistent styling for all partner logos
+- Replaced text placeholders with proper SVG logos for Anthropic, Lovable, Perplexity, Vercel, Supabase, and Neon
+
 ## [1.0.54] - 2025-04-23
 
 ### Fixed
