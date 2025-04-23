@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import { UserRole } from "@/lib/auth/types";
 
 // UI Components
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,7 @@ export default function AdminBuildersPage() {
     }
     
     // In production, this would check for admin role
-    if (process.env.NODE_ENV === 'production' && session.user.role !== 'ADMIN') {
+    if (process.env.NODE_ENV === 'production' && !session.user.roles.includes(UserRole.ADMIN)) {
       router.push("/");
       return;
     }

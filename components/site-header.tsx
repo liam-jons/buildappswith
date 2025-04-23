@@ -206,7 +206,7 @@ const defaultAboutItems = [
 ];
 
 // User menu items based on role
-const getUserMenuItems = (role: UserRole | undefined) => {
+const getUserMenuItems = (roles: UserRole[] | undefined) => {
   const commonItems = [
     {
       id: 1,
@@ -224,7 +224,7 @@ const getUserMenuItems = (role: UserRole | undefined) => {
 
   const roleSpecificItems = [];
 
-  if (role === UserRole.CLIENT) {
+  if (roles?.includes(UserRole.CLIENT)) {
     roleSpecificItems.push({
       id: 3,
       label: "My Projects",
@@ -237,7 +237,9 @@ const getUserMenuItems = (role: UserRole | undefined) => {
       href: "/builder-profile",
       description: "Create your builder profile to help others",
     });
-  } else if (role === UserRole.BUILDER) {
+  }
+  
+  if (roles?.includes(UserRole.BUILDER)) {
     roleSpecificItems.push({
       id: 3,
       label: "Builder Profile",
@@ -250,7 +252,9 @@ const getUserMenuItems = (role: UserRole | undefined) => {
       href: "/builder-dashboard",
       description: "Manage your services and clients",
     });
-  } else if (role === UserRole.ADMIN) {
+  }
+  
+  if (roles?.includes(UserRole.ADMIN)) {
     roleSpecificItems.push({
       id: 3,
       label: "Admin Dashboard",
@@ -389,7 +393,7 @@ export function SiteHeader() {
   };
 
   // Get user menu items based on role
-  const userMenuItems = getUserMenuItems(user?.role);
+  const userMenuItems = getUserMenuItems(user?.roles);
 
   return (
     <>

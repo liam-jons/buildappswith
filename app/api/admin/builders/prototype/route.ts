@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       }
       
       // In production, restrict to ADMIN role
-      if (session.user.role !== UserRole.ADMIN) {
+      if (!session.user.roles.includes(UserRole.ADMIN)) {
         return NextResponse.json({ error: 'Not authorized' }, { status: 403 });
       }
     }

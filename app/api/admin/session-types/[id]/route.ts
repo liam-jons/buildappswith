@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { type RouteParams } from "@/app/api/route-types";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth/auth";
+import { UserRole } from "@/lib/auth/types";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
@@ -21,7 +22,7 @@ const sessionTypeUpdateSchema = z.object({
 // GET /api/admin/session-types/[id] - Get a specific session type
 export async function GET(
   req: NextRequest,
-  { params }: RouteParams<{ id: string }>
+  context: RouteParams<{ id: string }>
 ) {
   try {
     // Check authentication and admin status
@@ -33,13 +34,16 @@ export async function GET(
       );
     }
     
-    if (!session.user.roles.includes("ADMIN")) {
+    // Check if user has admin role
+    if (!session.user.roles.includes(UserRole.ADMIN)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       );
     }
     
+    // Await the params to get the id
+    const params = await context.params;
     const id = params.id;
     
     // Fetch the session type
@@ -73,7 +77,7 @@ export async function GET(
 // PUT /api/admin/session-types/[id] - Update a session type
 export async function PUT(
   req: NextRequest,
-  { params }: RouteParams<{ id: string }>
+  context: RouteParams<{ id: string }>
 ) {
   try {
     // Check authentication and admin status
@@ -85,13 +89,16 @@ export async function PUT(
       );
     }
     
-    if (!session.user.roles.includes("ADMIN")) {
+    // Check if user has admin role
+    if (!session.user.roles.includes(UserRole.ADMIN)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       );
     }
     
+    // Await the params to get the id
+    const params = await context.params;
     const id = params.id;
     
     // Check if session type exists
@@ -156,7 +163,7 @@ export async function PUT(
 // DELETE /api/admin/session-types/[id] - Delete a session type
 export async function DELETE(
   req: NextRequest,
-  { params }: RouteParams<{ id: string }>
+  context: RouteParams<{ id: string }>
 ) {
   try {
     // Check authentication and admin status
@@ -168,13 +175,16 @@ export async function DELETE(
       );
     }
     
-    if (!session.user.roles.includes("ADMIN")) {
+    // Check if user has admin role
+    if (!session.user.roles.includes(UserRole.ADMIN)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       );
     }
     
+    // Await the params to get the id
+    const params = await context.params;
     const id = params.id;
     
     // Check if session type exists
@@ -189,22 +199,19 @@ export async function DELETE(
       );
     }
     
-    // Check if this session type is used in any bookings
-    const bookingCount = await prisma.booking.count({
+    // Check if session type has any bookings
+    const bookingsCount = await prisma.booking.count({
       where: { sessionTypeId: id },
     });
     
-    if (bookingCount > 0) {
+    if (bookingsCount > 0) {
       return NextResponse.json(
-        { 
-          error: "Cannot delete session type that is used in bookings",
-          bookingCount
-        },
-        { status: 409 }
+        { error: "Cannot delete session type with existing bookings" },
+        { status: 400 }
       );
     }
     
-    // Delete the session type
+    // Delete session type
     await prisma.sessionType.delete({
       where: { id },
     });

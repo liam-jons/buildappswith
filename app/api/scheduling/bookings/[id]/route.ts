@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getBookingById, updateBookingStatus, updateBookingPayment } from '@/lib/scheduling/real-data/scheduling-service';
 import { auth } from '@/lib/auth/auth';
+import { UserRole } from '@/lib/auth/types';
 
 // Validation schema for updating booking status
 const updateStatusSchema = z.object({
@@ -49,7 +50,7 @@ export async function GET(
     
     // Authorization check - only allow access to own bookings
     // unless the user is an admin
-    const isAdminUser = session.user.role === 'ADMIN';
+    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
     const isBuilder = session.user.id === booking.builderId;
     const isClient = session.user.id === booking.clientId;
     
@@ -104,7 +105,7 @@ export async function PATCH(
     }
     
     // Authorization check
-    const isAdminUser = session.user.role === 'ADMIN';
+    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
     const isBuilder = session.user.id === existingBooking.builderId;
     const isClient = session.user.id === existingBooking.clientId;
     

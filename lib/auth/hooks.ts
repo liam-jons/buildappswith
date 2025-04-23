@@ -13,9 +13,9 @@ export const useAuth = () => {
     user,
     isLoading: status === "loading",
     isAuthenticated: !!user,
-    isClient: user?.role === UserRole.CLIENT,
-    isBuilder: user?.role === UserRole.BUILDER,
-    isAdmin: user?.role === UserRole.ADMIN,
+    isClient: user?.roles?.includes(UserRole.CLIENT) || false,
+    isBuilder: user?.roles?.includes(UserRole.BUILDER) || false,
+    isAdmin: user?.roles?.includes(UserRole.ADMIN) || false,
     status,
     signIn,
     signOut,
@@ -25,15 +25,15 @@ export const useAuth = () => {
 
 /**
  * Hook to check if the current user has a specific role
- * @param roles - Array of allowed roles
+ * @param allowedRoles - Array of allowed roles
  * @returns Boolean indicating if the user has one of the specified roles
  */
-export const useHasRole = (roles: UserRole[]) => {
+export const useHasRole = (allowedRoles: UserRole[]) => {
   const { user, isAuthenticated } = useAuth();
   
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated || !user || !user.roles) {
     return false;
   }
   
-  return roles.includes(user.role);
+  return user.roles.some(role => allowedRoles.includes(role));
 };

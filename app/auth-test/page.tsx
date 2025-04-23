@@ -36,8 +36,8 @@ export default function AuthTestPage() {
                 <div>
                   <p className="font-medium">Logged in as {session.user.name}</p>
                   <p className="text-sm text-muted-foreground">{session.user.email}</p>
-                  {session.user.role && (
-                    <p className="text-sm text-muted-foreground capitalize">Role: {session.user.role}</p>
+                  {session.user.roles && (
+                    <p className="text-sm text-muted-foreground capitalize">Roles: {session.user.roles.join(', ')}</p>
                   )}
                 </div>
               </div>

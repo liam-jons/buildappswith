@@ -27,7 +27,7 @@ export const authConfig = {
     // Add role to the JWT token
     jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        token.roles = user.roles;
       }
       return token;
     },
@@ -36,7 +36,7 @@ export const authConfig = {
     session({ session, token }) {
       if (token && session.user) {
         // @ts-ignore - We're adding custom properties
-        session.user.role = token.role;
+        session.user.roles = token.roles;
         // @ts-ignore - We're adding custom properties
         session.user.id = token.id as string;
         // @ts-ignore - We're adding custom properties
@@ -82,9 +82,9 @@ export const authConfig = {
         
         // Demo users for testing - REPLACE THIS WITH REAL DATABASE LOOKUP
         const users = [
-          { id: "1", name: "Sarah", email: "client@example.com", password: "password123", role: "client" },
-          { id: "2", name: "Miguel", email: "learner@example.com", password: "password123", role: "learner" },
-          { id: "3", name: "Aisha", email: "builder@example.com", password: "password123", role: "builder" },
+          { id: "1", name: "Sarah", email: "client@example.com", password: "password123", roles: ["CLIENT"] },
+          { id: "2", name: "Miguel", email: "learner@example.com", password: "password123", roles: ["CLIENT"] },
+          { id: "3", name: "Aisha", email: "builder@example.com", password: "password123", roles: ["BUILDER"] },
         ];
         
         const user = users.find((user) => user.email === email);
@@ -97,7 +97,7 @@ export const authConfig = {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role as UserRole,
+          roles: user.roles as UserRole[],
           image: null, // No images for demo users
           verified: true,
         };

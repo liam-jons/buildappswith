@@ -1,8 +1,8 @@
-import React from 'react'
-import * as rtl from '@testing-library/react'
-import { ThemeProvider } from '@/components/theme-provider'
-import { SessionProvider } from 'next-auth/react'
-import { Toaster } from '@/components/ui/toaster'
+import React from 'react';
+import * as rtl from '@testing-library/react';
+import { ThemeProvider } from '@/components/theme-provider';
+import { SessionProvider } from 'next-auth/react';
+import { Toaster } from '@/components/ui/sonner';
 
 // Mock user data for testing
 export const mockUser = {
@@ -10,13 +10,14 @@ export const mockUser = {
   name: 'Test User',
   email: 'test@example.com',
   image: null,
-}
+  roles: ['CLIENT'],
+};
 
 // Mock session data for testing
 export const mockSession = {
   user: mockUser,
   expires: '2025-12-31',
-}
+};
 
 // Wrapper component that provides all necessary providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
@@ -32,29 +33,25 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
         <Toaster />
       </ThemeProvider>
     </SessionProvider>
-  )
-}
+  );
+};
 
 // Custom render method that wraps components with providers
 function customRender(
   ui: React.ReactElement,
   options?: Omit<rtl.RenderOptions, 'wrapper'>
 ) {
-  return rtl.render(ui, { wrapper: AllTheProviders, ...options })
+  return rtl.render(ui, { wrapper: AllTheProviders, ...options });
 }
 
 // Re-export everything from testing library
-const { screen, fireEvent, waitFor, ...otherExports } = rtl
+export const { screen, fireEvent, waitFor } = rtl;
 
 // Export the customized render and testing library utilities
 export {
   customRender as render,
-  screen,
-  fireEvent,
-  waitFor,
   rtl,
-  otherExports
-}
+};
 
 // Mock functions for common operations
 export const mockFetch = jest.fn().mockImplementation(() =>
@@ -62,7 +59,7 @@ export const mockFetch = jest.fn().mockImplementation(() =>
     ok: true,
     json: () => Promise.resolve({ success: true }),
   })
-)
+);
 
 // Helper to create mock API routes
 export const mockApi = (path: string, response: any, options = {}) => {
@@ -70,12 +67,12 @@ export const mockApi = (path: string, response: any, options = {}) => {
     ok: true,
     json: () => Promise.resolve(response),
     ...options,
-  }))
-}
+  }));
+};
 
 // Helper for accessibility testing
 export const runAccessibilityTests = async (container: HTMLElement) => {
-  const { axe } = require('jest-axe')
-  const results = await axe(container)
-  expect(results).toHaveNoViolations()
-}
+  const { axe } = require('jest-axe');
+  const results = await axe(container);
+  expect(results).toHaveNoViolations();
+};

@@ -55,7 +55,7 @@ export default function ProfilePage() {
       form.reset({
         name: user.name || "",
         email: user.email || "",
-        role: user.role,
+        role: user.roles && user.roles.length > 0 ? user.roles[0] as UserRole : UserRole.CLIENT,
       });
     }
   }, [user, form]);
@@ -80,7 +80,7 @@ export default function ProfilePage() {
       await updateSession({
         ...user,
         name: data.name,
-        role: data.role,
+        roles: [data.role],
       });
 
       toast.success("Profile updated", {
@@ -175,7 +175,7 @@ export default function ProfilePage() {
                               Builder - I want to build apps for clients
                             </FormLabel>
                           </FormItem>
-                          {user?.role === UserRole.ADMIN && (
+                          {user?.roles?.includes(UserRole.ADMIN) && (
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
                                 <RadioGroupItem value={UserRole.ADMIN} />

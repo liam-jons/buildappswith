@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.54] - 2025-04-23
+
+### Fixed
+- Fixed build-time prerendering errors in `/builder-profile/liam-jons` page
+- Properly converted builder profile page to server component for better SEO
+- Implemented correct static generation pattern with `generateStaticParams` for builder profiles
+- Created comprehensive build-time fallback data to prevent "undefined" errors
+- Added proper Suspense boundaries and error handling for improved user experience
+- Separated client-side interactive elements for better React architecture
+- Leveraged existing BuilderProfile component for more consistent UI
+
+## [1.0.45] - 2025-04-23
+
+### Fixed
+- Fixed type error in session-type-form.tsx component with Zod validation schema
+- Updated form resolver configuration to ensure consistent types between schema and form values
+- Added proper type casting to fix zodResolver compatibility issues
+
+## [1.0.44] - 2025-04-23
+
+### Fixed
+- Updated RouteParams interface to support Next.js 15.3.1 API routes with Promise-based params
+- Fixed type error in session-types API routes regarding incorrect params type
+- Improved compatibility with Next.js 15.3.1 route handler type expectations
+
+
 ## [1.0.40] - 2025-04-23
 
 ### Added

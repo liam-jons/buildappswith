@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Resolver } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -27,12 +27,22 @@ const sessionTypeSchema = z.object({
   durationMinutes: z.coerce.number().min(15, "Duration must be at least 15 minutes"),
   price: z.coerce.number().min(0, "Price must be a positive number"),
   currency: z.string().min(3, "Currency code must be 3 characters").max(3, "Currency code must be 3 characters"),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean().default(true), // Required boolean with default value
   color: z.string().optional(),
   maxParticipants: z.coerce.number().optional(),
 });
 
-type SessionTypeFormValues = z.infer<typeof sessionTypeSchema>;
+// Define our exact form values type to match the SessionType interface
+type SessionTypeFormValues = {
+  title: string;
+  description: string;
+  durationMinutes: number;
+  price: number;
+  currency: string;
+  isActive: boolean;
+  color?: string;
+  maxParticipants?: number;
+};
 
 interface SessionTypeFormProps {
   initialData?: SessionType;
@@ -47,7 +57,7 @@ export function SessionTypeForm({
   
   // Initialize the form with default values or existing data
   const form = useForm<SessionTypeFormValues>({
-    resolver: zodResolver(sessionTypeSchema),
+    resolver: zodResolver(sessionTypeSchema) as Resolver<SessionTypeFormValues>, // Type cast to fix compatibility
     defaultValues: initialData ? {
       title: initialData.title,
       description: initialData.description,

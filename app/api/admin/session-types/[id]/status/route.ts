@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { type RouteParams } from "@/app/api/route-types";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth/auth";
+import { UserRole } from "@/lib/auth/types";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
@@ -14,7 +15,7 @@ const statusUpdateSchema = z.object({
 // PATCH /api/admin/session-types/[id]/status - Update session type status
 export async function PATCH(
   req: NextRequest,
-  { params }: RouteParams<{ id: string }>
+  context: RouteParams<{ id: string }>
 ) {
   try {
     // Check authentication and admin status
@@ -26,13 +27,16 @@ export async function PATCH(
       );
     }
     
-    if (!session.user.roles.includes("ADMIN")) {
+    // Check if user has admin role
+    if (!session.user.roles.includes(UserRole.ADMIN)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       );
     }
     
+    // Await the params to get the id
+    const params = await context.params;
     const id = params.id;
     
     // Check if session type exists

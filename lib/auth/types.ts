@@ -10,10 +10,10 @@ export enum UserRole {
 }
 
 /**
- * Extended user type with role and other custom fields
+ * Extended user type with roles and other custom fields
  */
 export type User = DefaultSession["user"] & {
-  role: UserRole;
+  roles: UserRole[];
   stripeCustomerId?: string;
   verified: boolean;
 };
@@ -27,14 +27,14 @@ declare module "next-auth" {
   }
   
   interface User {
-    role: UserRole;
+    roles: UserRole[];
     stripeCustomerId?: string;
     verified: boolean;
   }
 
   interface JWT {
     id: string;
-    role: UserRole;
+    roles: UserRole[];
     stripeCustomerId?: string;
     verified: boolean;
   }
@@ -46,7 +46,7 @@ declare module "next-auth" {
 declare module "next-auth" {
   interface JWT {
     id: string;
-    role: UserRole;
+    roles: UserRole[];
     stripeCustomerId?: string;
     verified: boolean;
   }
