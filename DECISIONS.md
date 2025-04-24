@@ -2,6 +2,50 @@
 
 This document tracks significant technical decisions made during the development of the Buildappswith platform.
 
+## Authentication Migration (v1.0.65) - 2025-04-24
+
+**Decision**: Use a clean database approach for Clerk authentication migration
+
+**Context**: The migration from NextAuth to Clerk presented challenges with duplicate migrations trying to add the same `clerkId` field. We considered several approaches including complex migration scripts or schema merging.
+
+**Options Considered**:
+1. Traditional migration with user data preservation
+2. Schema merging with manual data migration
+3. Clean database approach with new user creation
+
+**Decision**: We chose a clean database approach to simplify the migration process. This approach involves:
+- Creating a direct SQL script to reset the database schema
+- Bypassing Prisma migrations to avoid conflicts
+- Implementing webhook handlers to create users as they authenticate
+
+**Consequences**:
+- Simplified migration process without complex data transformation
+- Fresh start with clean data structures
+- Users will need to re-authenticate, creating new database records
+- No need for complex migration scripts or rollback procedures
+
+**Related Decisions**:
+
+1. **Direct SQL Schema Creation**
+   - Using direct SQL commands rather than Prisma migrations
+   - Bypassing migration history tracking for initial setup
+   - Creating minimal schema before expanding with normal operations
+
+2. **Dynamic Dependency Loading**
+   - Using dynamic imports for svix to improve build compatibility
+   - Implementing fallback mechanisms for development environments
+   - Providing graceful degradation when dependencies aren't available
+
+3. **Structured Logging System**
+   - Implementing a consistent logging framework throughout the app
+   - Supporting different log levels (debug, info, warn, error)
+   - Integrating context information and payload data in logs
+
+4. **Legacy Route Handling**
+   - Converting legacy NextAuth routes to redirects instead of removal
+   - Logging attempted access to track usage and aid debugging
+   - Graceful transition for any outdated client implementations
+
 ## Authentication Migration (2025-04-24)
 
 ### Decision: Migrate from NextAuth.js to Clerk

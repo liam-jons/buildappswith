@@ -8,6 +8,34 @@ All notable changes to this project will be documented in this file.
 - Admin dashboard capabilities for user management
 - Enhanced multi-tenant support through Clerk's organization features
 
+## [1.0.66] - 2025-04-24
+
+### Changed
+- Completed Clerk authentication migration with full cleanup of NextAuth references
+- Enhanced legacy NextAuth route handler with improved logging
+- Updated legacy auth stubs with better error messages and documentation
+
+### Removed
+- Removed redundant middleware.nextauth.ts file
+- Marked remaining legacy auth files for removal in future releases
+
+## [1.0.65] - 2025-04-24
+
+### Added
+- Added robust logger module implementation for consistent logging
+- Created installation script for Clerk dependencies (scripts/install-clerk-dependencies.sh)
+
+### Fixed
+- Resolved build-time dependency issues with svix module by using dynamic imports
+- Fixed NextAuth route type errors by implementing proper route handlers
+- Enhanced webhook handler with fallback mechanisms for development
+- Improved error handling for Clerk webhook signature verification
+
+### Changed
+- Updated package.json version from 1.0.64 to 1.0.65
+- Enhanced database reset script to use direct SQL commands instead of migrations
+- Modified Clerk webhook handler to support environments without svix dependency
+
 ## [1.0.64] - 2025-04-24
 
 ### Added

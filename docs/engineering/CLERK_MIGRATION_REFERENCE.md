@@ -2,7 +2,7 @@
 
 This document serves as a comprehensive reference for the Clerk authentication migration, including all context and decisions made during the migration process.
 
-**Current Version: 1.0.64**  
+**Current Version: 1.0.65**  
 **Last Updated: April 24, 2025**
 
 ## Migration Status

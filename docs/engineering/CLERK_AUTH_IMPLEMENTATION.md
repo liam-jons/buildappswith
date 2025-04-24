@@ -2,7 +2,7 @@
 
 This document describes the implementation of Clerk authentication in the Buildappswith platform. It serves as a comprehensive guide for developers working with the authentication system.
 
-**Current Version: 1.0.64**  
+**Current Version: 1.0.65**  
 **Last Updated: April 24, 2025**
 
 ## Overview
@@ -28,6 +28,28 @@ Server-side authentication is implemented through:
 3. **Role-based access control**: Validates user permissions based on roles
 4. **Webhooks**: Synchronizes Clerk user events with our database
 
+## Supporting Infrastructure
+
+### Logging
+
+A structured logging system has been implemented to support authentication operations:
+
+```ts
+// /lib/logger/index.ts
+export const logger = {
+  debug: (message: string, payload?: LogPayload) => log('debug', message, payload),
+  info: (message: string, payload?: LogPayload) => log('info', message, payload),
+  warn: (message: string, payload?: LogPayload) => log('warn', message, payload),
+  error: (message: string, payload?: LogPayload) => log('error', message, payload),
+};
+```
+
+The logger provides:
+- Consistent logging format across the application
+- Different log levels (debug, info, warn, error)
+- Support for structured metadata
+- Environment-specific behavior (debug logs suppressed in production)
+
 ### Webhook Handler
 
 The platform uses Clerk webhooks to keep the database in sync with authentication events:
@@ -48,6 +70,7 @@ The webhook handler:
 - Updates user information when changes occur in Clerk
 - Preserves role information from Clerk's publicMetadata
 - Handles proper error logging and recovery
+- Uses dynamic imports for svix to support environments without the dependency
 
 ## User Roles
 
