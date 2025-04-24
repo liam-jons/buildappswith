@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { useSignIn } from "@clerk/nextjs";
 import { useSearchParams, useRouter } from "next/navigation";
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -30,6 +30,9 @@ type FormData = z.infer<typeof userAuthSchema>;
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/**
+ * User authentication form component migrated to use Clerk directly
+ */
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(userAuthSchema),
@@ -42,29 +45,39 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
+  const { isLoaded, signIn } = useSignIn();
+
+  // If Clerk isn't loaded yet, don't render the form
+  if (!isLoaded) {
+    return <div className="w-full h-[150px] flex justify-center items-center">
+      <Loader2 className="h-6 w-6 animate-spin" />
+    </div>;
+  }
 
   async function onSubmit(data: FormData) {
     setIsLoading(true);
 
     try {
-      const result = await signIn("email", {
-        email: data.email,
-        redirect: false,
-        callbackUrl,
+      // Start the email sign-in process using Clerk
+      const result = await signIn.create({
+        identifier: data.email,
+        strategy: "email_code",
+        redirectUrl: callbackUrl
       });
 
-      if (!result?.ok) {
+      // Handle verification (email code)
+      if (result.status === "needs_first_factor") {
+        toast.success("Check your email", {
+          description: "We sent you a login link. Be sure to check your spam too.",
+        });
+      } else {
         return toast.error("Something went wrong.", {
           description: "Your sign in request failed. Please try again.",
         });
       }
-
-      toast.success("Check your email", {
-        description: "We sent you a login link. Be sure to check your spam too.",
-      });
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Something went wrong.", {
-        description: "Your sign in request failed. Please try again.",
+        description: error.errors?.[0]?.message || "Your sign in request failed. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -75,24 +88,16 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setIsGitHubLoading(true);
 
     try {
-      const result = await signIn("github", {
-        callbackUrl,
-        redirect: false,
+      // Start the GitHub OAuth flow with Clerk
+      await signIn.authenticateWithRedirect({
+        strategy: "oauth_github",
+        redirectUrl: `/sso-callback`,
+        redirectUrlComplete: callbackUrl,
       });
-
-      if (result?.error) {
-        throw new Error(result.error);
-      }
-
-      if (result?.url) {
-        router.push(result.url);
-        return;
-      }
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Authentication Error", {
-        description: "There was a problem signing in with GitHub. Please try again.",
+        description: error.errors?.[0]?.message || "There was a problem signing in with GitHub. Please try again.",
       });
-    } finally {
       setIsGitHubLoading(false);
     }
   }

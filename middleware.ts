@@ -1,6 +1,6 @@
 /**
  * Combined Middleware for Buildappswith Platform
- * Version: 1.0.58
+ * Version: 1.0.64
  * 
  * Implements global middleware for the Next.js application including:
  * - Authentication via Clerk
@@ -43,7 +43,7 @@ async function apiMiddleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   // Skip CSRF check for authentication endpoints
-  const skipCsrf = pathname.startsWith('/api/auth/');
+  const skipCsrf = pathname.startsWith('/api/auth/') || pathname.startsWith('/api/webhooks/clerk');
   
   // Apply CSRF protection for non-GET methods
   if (!skipCsrf && !['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(request.method)) {
@@ -62,7 +62,17 @@ async function apiMiddleware(request: NextRequest) {
     return rateLimitResult;
   }
   
-  return NextResponse.next();
+  // Add security headers, including Content Security Policy
+  const response = NextResponse.next();
+  
+  // Add CSP headers for Clerk
+  response.headers.append('Content-Security-Policy', `
+    frame-src 'self' clerk.buildappswith.dev *.clerk.accounts.dev;
+    img-src 'self' img.clerk.com images.clerk.dev data:;
+    connect-src 'self' clerk.buildappswith.dev *.clerk.accounts.dev;
+  `);
+  
+  return response;
 }
 
 /**

@@ -1,269 +1,276 @@
-# Clerk Authentication Implementation Guide
+# Clerk Authentication Implementation
+
+This document describes the implementation of Clerk authentication in the Buildappswith platform. It serves as a comprehensive guide for developers working with the authentication system.
+
+**Current Version: 1.0.64**  
+**Last Updated: April 24, 2025**
 
 ## Overview
 
-This document details the implementation of Clerk authentication in the Buildappswith platform, replacing NextAuth.js. It provides all necessary information for developers working with the new authentication system.
-
-**Version: 1.0.59**  
-**Last Updated: April 24, 2025**
+Buildappswith uses [Clerk](https://clerk.com/) for authentication and user management. Clerk provides a secure, scalable solution with built-in features for multi-factor authentication, social login, and user management.
 
 ## Architecture
 
-### Key Components
-
-1. **Data Access Layer**
-   - Location: `/lib/auth/data-access.ts`
-   - Purpose: Abstracts all database operations related to users and authentication
-   - Design: Repository pattern with clear method signatures
-
-2. **Auth Helpers**
-   - Location: `/lib/auth/clerk/helpers.ts`
-   - Purpose: Provides utilities for working with Clerk users and sessions
-   - Key features: User fetching, role verification, session handling
-
-3. **API Middleware**
-   - Location: `/lib/auth/clerk/api-auth.ts`
-   - Purpose: Protects API routes and provides authenticated user data
-   - Variants: `withAuth`, `withRole`, `withAdmin`, `withBuilder`
-
-4. **UI Components**
-   - Location: `/components/auth/*`
-   - Purpose: User-facing authentication interfaces
-   - Components: ClerkAuthForm, AuthErrorBoundary, LoadingState
-
-### Authentication Flow
-
-1. **Sign Up Flow**
-   - User registers through Clerk UI
-   - On successful registration, Clerk creates a user record
-   - User data is synchronized to our database (User table)
-   - Initial roles are assigned (default: CLIENT)
-
-2. **Sign In Flow**
-   - User authenticates through Clerk UI
-   - Clerk validates credentials and creates a session
-   - Session data is made available through Clerk's hooks and middleware
-   - API requests include the session token automatically
-
-3. **Session Management**
-   - Clerk handles session persistence and renewal
-   - Active sessions can be managed through Clerk Dashboard
-   - Sessions can be revoked programmatically or through the dashboard
-
-## Implementation Details
-
-### Data Models
-
-The integration syncs between Clerk users and our database:
-
-```typescript
-// User in our database
-interface User {
-  id: string;            // Database primary key
-  clerkId: string;       // Reference to Clerk user ID
-  name: string | null;
-  email: string;
-  image: string | null;
-  roles: UserRole[];     // Array of assigned roles
-  verified: boolean;     // Email verification status
-  stripeCustomerId?: string | null;
-}
-
-// AuthUser (combined Clerk + database data)
-interface AuthUser {
-  id: string;            // Database user ID
-  clerkId: string;       // Clerk user ID
-  name: string | null;
-  email: string;
-  image: string | null;
-  roles: UserRole[];
-  verified: boolean;
-  stripeCustomerId?: string | null;
-}
-```
-
-### API Route Protection
-
-All API routes should use the middleware helpers for authentication:
-
-```typescript
-// For routes requiring any authenticated user
-export const GET = withAuth(async (request, user) => {
-  // Implementation with authenticated user
-});
-
-// For admin-only routes
-export const POST = withAdmin(async (request, user) => {
-  // Implementation with admin user
-});
-
-// For builder-only routes
-export const PUT = withBuilder(async (request, user) => {
-  // Implementation with builder user
-});
-
-// For custom role requirements
-export const DELETE = withRole(UserRole.CUSTOM_ROLE, async (request, user) => {
-  // Implementation with specific role
-});
-```
-
 ### Client-Side Authentication
 
-In client components, use Clerk's hooks for authentication state:
+On the client side, Clerk's authentication is implemented through:
 
-```typescript
-"use client";
+1. **ClerkProvider**: Wraps the application to provide authentication context
+2. **useAuth and useUser hooks**: Access authentication state and user data
+3. **SignIn and SignUp components**: Handle user authentication flows
 
-import { useAuth, useUser } from "@clerk/nextjs";
+### Server-Side Authentication
 
-export function ProfileClient() {
-  const { isLoaded, userId, sessionId } = useAuth();
-  const { user } = useUser();
-  
-  if (!isLoaded) {
-    return <div>Loading...</div>;
-  }
-  
-  if (!userId) {
-    return <div>Not authenticated</div>;
-  }
+Server-side authentication is implemented through:
+
+1. **Middleware**: Protects routes based on authentication status and user roles
+2. **currentUser()**: Accesses the authenticated user in API routes
+3. **Role-based access control**: Validates user permissions based on roles
+4. **Webhooks**: Synchronizes Clerk user events with our database
+
+### Webhook Handler
+
+The platform uses Clerk webhooks to keep the database in sync with authentication events:
+
+```ts
+// /app/api/webhooks/clerk/route.ts
+export async function POST(req: Request) {
+  // Verify webhook signature
+  // Extract event data
+  // Handle user.created and user.updated events
+  // Create or update database records
+}
+```
+
+The webhook handler:
+- Verifies the webhook signature using the CLERK_WEBHOOK_SECRET
+- Creates new users in the database when they sign up through Clerk
+- Updates user information when changes occur in Clerk
+- Preserves role information from Clerk's publicMetadata
+- Handles proper error logging and recovery
+
+## User Roles
+
+User roles are stored in Clerk's `publicMetadata` object as an array of role strings. The platform supports these primary roles:
+
+- `CLIENT`: Standard user who can book sessions and request app development
+- `BUILDER`: Verified developer who can create and offer services
+- `ADMIN`: Platform administrator with full access
+
+## Authentication Components
+
+### AuthProvider
+
+The `AuthProvider` component wraps the application with Clerk's `ClerkProvider` and configures theme support:
+
+```tsx
+// /components/auth/auth-provider.tsx
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const { theme } = useTheme();
   
   return (
-    <div>
-      <h1>Welcome, {user?.fullName}</h1>
-      {/* Component content */}
-    </div>
+    <ClerkProvider
+      appearance={{
+        baseTheme: theme === "dark" ? dark : undefined,
+        elements: {
+          // Styling configuration
+        },
+      }}
+    >
+      {children}
+    </ClerkProvider>
   );
 }
 ```
 
-### Server-Side Authentication
+### Client-Side Hooks
 
-In server components and actions, use Clerk's server utilities:
+Custom hooks have been created to provide a clean API for authentication:
 
-```typescript
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { getCurrentUser } from "@/lib/auth/clerk/helpers";
-
-export async function ServerComponent() {
-  // Using Clerk's built-in functions
-  const { userId } = auth();
-  const clerkUser = await currentUser();
+```tsx
+// /lib/auth/clerk-hooks.ts
+export const useAuth = () => {
+  const { isLoaded, isSignedIn, userId, sessionId } = useClerkAuth();
+  const { user, isLoaded: isUserLoaded } = useUser();
   
-  // Using our custom helper for combined data
-  const user = await getCurrentUser();
+  // Extract roles from publicMetadata
+  const roles = user?.publicMetadata?.roles as UserRole[] || [];
   
-  // Component implementation
+  // Create a compatible user object
+  const compatUser = isSignedIn ? {
+    id: user?.id || '',
+    name: user?.fullName || user?.username || '',
+    email: user?.primaryEmailAddress?.emailAddress || '',
+    image: user?.imageUrl || '',
+    roles,
+    // Additional user properties
+  } : null;
+  
+  return {
+    user: compatUser,
+    isLoading: !isLoaded || !isUserLoaded,
+    isAuthenticated: !!isSignedIn && !!userId,
+    isClient: roles.includes(UserRole.CLIENT) || false,
+    isBuilder: roles.includes(UserRole.BUILDER) || false,
+    isAdmin: roles.includes(UserRole.ADMIN) || false,
+    status: isLoaded ? (isSignedIn ? "authenticated" : "unauthenticated") : "loading",
+    // Authentication methods
+    signIn: async () => {...},
+    signOut: async () => {...},
+  };
+};
+```
+
+## API Route Protection
+
+API routes are protected using a tiered middleware approach:
+
+```ts
+// Example of protected API route
+import { currentUser } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  const user = await currentUser();
+  
+  if (!user) {
+    return new NextResponse(JSON.stringify({ error: "Unauthorized" }), { 
+      status: 401 
+    });
+  }
+  
+  // Get roles from user metadata
+  const roles = user.publicMetadata.roles as string[] || [];
+  
+  // Check for specific role
+  if (!roles.includes("ADMIN")) {
+    return new NextResponse(JSON.stringify({ error: "Access Denied" }), { 
+      status: 403 
+    });
+  }
+  
+  // Proceed with authorized access
+  return NextResponse.json({ success: true });
 }
 ```
 
-## Testing
+## Authentication Flows
 
-### Authentication Test Page
+### Sign-In Process
 
-A test page is available at `/test/auth` to verify authentication flows. This page:
+1. User navigates to `/login`
+2. Clerk's `SignIn` component or custom `UserAuthForm` handles authentication
+3. Upon successful sign-in, user is redirected to the callbackUrl or dashboard
+4. Session data is automatically managed by Clerk
 
-1. Displays current authentication state
-2. Shows user information retrieved from backend
-3. Provides sign-in and sign-out functionality
-4. Tests role-based access
+### Sign-Out Process
 
-### API Testing
+1. User clicks sign-out button in the site header or user menu
+2. `signOut()` function from Clerk is called
+3. User is redirected to the homepage after session end
 
-Postman collections for testing authentication are available in the `/postman` directory. They include:
+## Role Management
 
-1. Authentication flow tests
-2. Role-based access tests
-3. Different API endpoints with authentication
+Roles are assigned and managed through:
+
+1. **Initial Registration**: Basic CLIENT role assigned automatically
+2. **Admin Dashboard**: Admins can modify user roles
+3. **Builder Application**: Users can apply for BUILDER role
+4. **Database Sync**: Roles are synchronized between Clerk and the application database
+
+## Database Integration
+
+### User Model
+
+The User model in the database has been updated to support Clerk authentication:
+
+```prisma
+model User {
+  id              String    @id @default(cuid())
+  name            String?
+  email           String    @unique
+  emailVerified   DateTime?
+  image           String?
+  roles           UserRole[] @default([CLIENT])
+  isFounder       Boolean   @default(false)
+  stripeCustomerId String?
+  verified        Boolean   @default(false)
+  clerkId         String?   @unique
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Other fields and relations...
+}
+```
+
+The `clerkId` field stores the Clerk user ID and has a unique constraint to ensure data integrity.
+
+### Database Migration
+
+A migration script has been created to reset and prepare the database for Clerk authentication:
+
+```javascript
+// /scripts/reset-database-for-clerk.js
+async function resetDatabase() {
+  // Drop all tables
+  // Recreate database schema
+  // Run Prisma migrations
+  // Create founder account placeholder
+}
+```
+
+This script provides a clean approach to transitioning to Clerk without complex user data migration.
+
+## Setting Up Local Development
+
+To set up Clerk for local development:
+
+1. Create a Clerk application in the [Clerk Dashboard](https://dashboard.clerk.com/)
+2. Add development keys to `.env.local`:
+   ```
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   CLERK_SECRET_KEY=sk_test_...
+   CLERK_WEBHOOK_SECRET=whsec_...
+   ```
+3. Configure other environment variables:
+   ```
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/login
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/signup
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
+   ```
+4. Set up the webhook endpoint in Clerk Dashboard:
+   - URL: `https://your-domain.com/api/webhooks/clerk`
+   - Events: `user.created`, `user.updated`
+   - Secret: Use the same value as `CLERK_WEBHOOK_SECRET`
+
+## Testing Authentication
+
+Test authentication using these approaches:
+
+1. **Manual Testing**: Use the Clerk Dashboard to create test users with different roles
+2. **Automated Testing**: Create mock Clerk users for testing protected routes
+3. **Local Development**: Use development keys to avoid affecting production data
 
 ## Troubleshooting
 
-### Common Issues
+Common issues and solutions:
 
-1. **Missing User Data**
-   - Symptom: User authenticated with Clerk but no database record exists
-   - Solution: Check `findOrCreateUser` implementation in helpers.ts
-
-2. **Role Issues**
-   - Symptom: User has incorrect roles or missing roles
-   - Solution: Verify role assignment in createUser and check database roles column
-
-3. **Clerk Integration Errors**
-   - Symptom: Clerk components fail to load or initialize
-   - Solution: Check environment variables and Content Security Policy
-
-### Error Tracking
-
-All authentication errors are tracked in Sentry with:
-- User context (ID, email)
-- Error type and location
-- Stack trace for debugging
-
-## Migration Guide
-
-### Migrating API Routes
-
-To migrate a NextAuth route to Clerk:
-
-1. Update imports:
-   ```typescript
-   // From
-   import { auth } from "@/lib/auth/auth";
-   
-   // To
-   import { withAuth } from "@/lib/auth/clerk/api-auth";
-   import { AuthUser } from "@/lib/auth/clerk/helpers";
-   ```
-
-2. Update handler signature:
-   ```typescript
-   // From
-   export async function GET(request) {
-     const session = await auth();
-     if (!session?.user) {
-       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-     }
-     // Implementation
-   }
-   
-   // To
-   export const GET = withAuth(async (request, user) => {
-     // Implementation with user already authenticated
-   });
-   ```
-
-3. Add Sentry error tracking:
-   ```typescript
-   import * as Sentry from "@sentry/nextjs";
-   
-   export const GET = withAuth(async (request, user) => {
-     try {
-       // Implementation
-     } catch (error) {
-       console.error("Error:", error);
-       Sentry.captureException(error);
-       return NextResponse.json({ error: "An error occurred" }, { status: 500 });
-     }
-   });
-   ```
+1. **Authentication State Not Available**: Ensure components are wrapped in ClerkProvider
+2. **Role-Based Access Not Working**: Check that roles are correctly stored in user metadata
+3. **Redirect Loops**: Verify that middleware configurations don't create circular redirects
 
 ## Security Considerations
 
-1. **Content Security Policy**
-   - Clerk requires specific CSP directives for its scripts
-   - Update `next.config.js` with appropriate headers
+1. **Role Validation**: Always validate roles on the server side, never trust client-side role claims
+2. **CSRF Protection**: Clerk handles CSRF protection automatically
+3. **Session Management**: Clerk manages secure sessions with proper expirations
 
-2. **Environment Variables**
-   - Protect Clerk API keys and secrets
-   - Use different API keys for development and production
+## Future Enhancements
 
-3. **Role Management**
-   - Validate roles on every protected request
-   - Prevent role spoofing by using server-side validation
+Planned improvements to the authentication system:
 
-## References
-
-- [Clerk Documentation](https://clerk.com/docs)
-- [Next.js Authentication](https://nextjs.org/docs/authentication)
-- [Prisma User Management](https://www.prisma.io/docs/guides/other/user-management)
+1. **Multi-Factor Authentication**: Enable advanced MFA options
+2. **Organization Support**: Implement Clerk Organizations for team management
+3. **Permission System**: Add granular permissions within roles
+4. **Audit Logging**: Implement comprehensive authentication event logging
