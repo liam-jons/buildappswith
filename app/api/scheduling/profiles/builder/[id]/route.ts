@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getBuilderSchedulingProfile } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth';
 
 /**
  * GET handler for fetching a builder's complete scheduling profile

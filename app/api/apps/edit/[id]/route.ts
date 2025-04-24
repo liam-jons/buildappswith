@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { withAuth } from "@/lib/auth/clerk/api-auth";
 import { AuthUser } from "@/lib/auth/clerk/helpers";
@@ -8,7 +8,7 @@ export const PATCH = withAuth(async (
   request: NextRequest,
   user: AuthUser,
   { params }: { params: Promise<{ id: string }> }
-): Promise<Response> => {
+): Promise<NextResponse> => {
   try {
     const { id } = await params;
     const body = await request.json();
@@ -26,7 +26,7 @@ export const PATCH = withAuth(async (
     });
     
     if (!app) {
-      return Response.json(
+      return NextResponse.json(
         { error: "App not found" },
         { status: 404 }
       );
@@ -40,7 +40,7 @@ export const PATCH = withAuth(async (
       });
       
       if (!currentUser?.roles.includes("ADMIN")) {
-        return Response.json(
+        return NextResponse.json(
           { error: "You don't have permission to edit this app" },
           { status: 403 }
         );
@@ -61,11 +61,11 @@ export const PATCH = withAuth(async (
       },
     });
     
-    return Response.json(updatedApp, { status: 200 });
+    return NextResponse.json(updatedApp, { status: 200 });
   } catch (error) {
     console.error("[API] Error updating app:", error);
     Sentry.captureException(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );
@@ -76,7 +76,7 @@ export const DELETE = withAuth(async (
   request: NextRequest,
   user: AuthUser,
   { params }: { params: Promise<{ id: string }> }
-): Promise<Response> => {
+): Promise<NextResponse> => {
   try {
     const { id } = await params;
     
@@ -93,7 +93,7 @@ export const DELETE = withAuth(async (
     });
     
     if (!app) {
-      return Response.json(
+      return NextResponse.json(
         { error: "App not found" },
         { status: 404 }
       );
@@ -107,7 +107,7 @@ export const DELETE = withAuth(async (
       });
       
       if (!currentUser?.roles.includes("ADMIN")) {
-        return Response.json(
+        return NextResponse.json(
           { error: "You don't have permission to delete this app" },
           { status: 403 }
         );
@@ -119,11 +119,11 @@ export const DELETE = withAuth(async (
       where: { id },
     });
     
-    return Response.json({ success: true }, { status: 200 });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error("[API] Error deleting app:", error);
     Sentry.captureException(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );

@@ -97,7 +97,7 @@ export const POST = withAuth(async (req: NextRequest, user: AuthUser) => {
       startTime,
       endTime,
       timeZone,
-      customerId: user.stripeCustomerId,
+      customerId: user.stripeCustomerId || undefined, // Convert null to undefined
       userId: user.id,
       userEmail: user.email || "",
       userName: user.name,

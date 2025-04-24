@@ -105,7 +105,7 @@ export default function TestAuthPage() {
               
               <div className="font-medium">Status:</div>
               <div>
-                <Badge variant={userId ? "success" : "destructive"}>
+                <Badge variant={userId ? "default" : "destructive"}>
                   {userId ? "Authenticated" : "Not Authenticated"}
                 </Badge>
               </div>
@@ -138,7 +138,7 @@ export default function TestAuthPage() {
                 
                 <div className="font-medium">Verified:</div>
                 <div>
-                  <Badge variant={user.verified ? "success" : "outline"}>
+                  <Badge variant={user.verified ? "default" : "outline"}>
                     {user.verified ? "Verified" : "Not Verified"}
                   </Badge>
                 </div>

@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { withAuth } from "@/lib/auth/clerk/api-auth";
 import { AuthUser } from "@/lib/auth/clerk/helpers";
@@ -7,12 +7,12 @@ import * as Sentry from "@sentry/nextjs";
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ builderId: string }> }
-): Promise<Response> {
+): Promise<NextResponse> {
   try {
     const { builderId } = await params;
     
     if (!builderId) {
-      return Response.json(
+      return NextResponse.json(
         { error: "Builder ID is required" },
         { status: 400 }
       );
@@ -24,7 +24,7 @@ export async function GET(
     });
     
     if (!builderProfile) {
-      return Response.json(
+      return NextResponse.json(
         { error: "Builder profile not found" },
         { status: 404 }
       );
@@ -41,11 +41,11 @@ export async function GET(
       ],
     });
     
-    return Response.json(apps, { status: 200 });
+    return NextResponse.json(apps, { status: 200 });
   } catch (error) {
     console.error("[API] Error fetching apps:", error);
     Sentry.captureException(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );
@@ -56,7 +56,7 @@ export const POST = withAuth(async (
   request: NextRequest,
   user: AuthUser,
   { params }: { params: Promise<{ builderId: string }> }
-): Promise<Response> => {
+): Promise<NextResponse> => {
   try {
     const { builderId } = await params;
     const body = await request.json();
@@ -68,14 +68,14 @@ export const POST = withAuth(async (
     });
     
     if (!builderProfile) {
-      return Response.json(
+      return NextResponse.json(
         { error: "Builder profile not found" },
         { status: 404 }
       );
     }
     
     if (builderProfile.user.email !== user.email) {
-      return Response.json(
+      return NextResponse.json(
         { error: "You don't have permission to add apps to this profile" },
         { status: 403 }
       );
@@ -83,7 +83,7 @@ export const POST = withAuth(async (
     
     // Validate required fields
     if (!body.title || !body.description) {
-      return Response.json(
+      return NextResponse.json(
         { error: "Title and description are required" },
         { status: 400 }
       );
@@ -103,11 +103,11 @@ export const POST = withAuth(async (
       },
     });
     
-    return Response.json(app, { status: 201 });
+    return NextResponse.json(app, { status: 201 });
   } catch (error) {
     console.error("[API] Error creating app:", error);
     Sentry.captureException(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );

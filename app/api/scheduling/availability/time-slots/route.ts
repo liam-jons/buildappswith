@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getAvailableTimeSlots } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth';
 import { addDays, subDays, format, parseISO, isValid } from 'date-fns';
 
 // Validation schema for query parameters
