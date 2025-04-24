@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { type RouteParams } from "@/app/api/route-types";
 import { PrismaClient } from "@prisma/client";
-import { auth } from "@/lib/auth/auth";
+import { withAdmin } from "@/lib/auth/clerk/api-auth";
+import { AuthUser } from "@/lib/auth/clerk/helpers";
+import * as Sentry from "@sentry/nextjs";
 import { UserRole } from "@/lib/auth/types";
 import { z } from "zod";
 
@@ -13,27 +15,13 @@ const statusUpdateSchema = z.object({
 });
 
 // PATCH /api/admin/session-types/[id]/status - Update session type status
-export async function PATCH(
+// Updated to use Clerk authentication with admin role check
+export const PATCH = withAdmin(async (
   req: NextRequest,
+  user: AuthUser,
   context: RouteParams<{ id: string }>
-) {
+) => {
   try {
-    // Check authentication and admin status
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
-    // Check if user has admin role
-    if (!session.user.roles.includes(UserRole.ADMIN)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
     
     // Await the params to get the id
     const params = await context.params;
@@ -82,9 +70,10 @@ export async function PATCH(
     });
   } catch (error) {
     console.error("Error updating session type status:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to update session type status" },
       { status: 500 }
     );
   }
-}
+});

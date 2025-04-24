@@ -1,29 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { auth } from "@/lib/auth/auth";
-import { UserRole } from "@/lib/auth/types";
+import { withAdmin } from "@/lib/auth/clerk/api-auth";
+import { AuthUser } from "@/lib/auth/clerk/helpers";
+import * as Sentry from "@sentry/nextjs";
 
 const prisma = new PrismaClient();
 
 // GET /api/admin/builders - Get all builders
-export async function GET(req: NextRequest) {
+// Version: 1.0.59
+export const GET = withAdmin(async (req: NextRequest, user: AuthUser) => {
   try {
-    // Check authentication and admin status
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
-    // Check if user has admin role
-    if (!session.user.roles.includes(UserRole.ADMIN)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
+    // Using withAdmin middleware which already checks for admin role
+    // No need to check authentication as withAdmin already handles it
     
     // Fetch builders
     const builders = await prisma.builderProfile.findMany({
@@ -63,9 +51,10 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching builders:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to fetch builders" },
       { status: 500 }
     );
   }
-}
+});

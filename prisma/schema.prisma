@@ -25,6 +25,7 @@ model User {
   isFounder       Boolean   @default(false)     // Flag for identifying founder status
   stripeCustomerId String?
   verified        Boolean   @default(false)
+  clerkId         String?   @unique           // Clerk user ID for auth migration
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 

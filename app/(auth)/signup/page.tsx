@@ -1,5 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
-import { SuspenseUserAuthForm } from "@/components/suspense-user-auth-form";
+import { ClerkAuthForm } from "@/components/auth/clerk-auth-form";
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { Metadata } from "next";
@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Sign Up | Build Apps With",
-  description: "Sign Up for Build Apps With",
+  description: "Create a new account",
 };
 
 export default function SignUpPage() {
@@ -27,21 +27,20 @@ export default function SignUpPage() {
       </Link>
       <div className="mx-auto flex w-full flex-col justify-center gap-6 sm:w-[350px]">
         <div className="flex flex-col gap-2 text-center">
-          {/* <Icons.logo className="mx-auto h-6 w-6" /> */}
           <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome to Build Apps With
+            Create an account
           </h1>
           <p className="text-sm text-muted-foreground">
-            Sign up for an account
+            Sign up to get started
           </p>
         </div>
-        <SuspenseUserAuthForm />
+        <ClerkAuthForm mode="signup" />
         <p className="px-8 text-center text-sm text-muted-foreground">
           <Link
-            href="/signin"
+            href="/login"
             className="hover:text-brand underline underline-offset-4"
           >
-            Already have an account? Sign In
+            Already have an account? Sign in
           </Link>
         </p>
       </div>

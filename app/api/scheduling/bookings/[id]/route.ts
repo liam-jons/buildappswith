@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getBookingById, updateBookingStatus, updateBookingPayment } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth';
+import { withAuth } from '@/lib/auth/clerk/api-auth';
+import { AuthUser } from '@/lib/auth/clerk/helpers';
 import { UserRole } from '@/lib/auth/types';
+import * as Sentry from '@sentry/nextjs';
 
 // Validation schema for updating booking status
 const updateStatusSchema = z.object({
@@ -17,26 +19,17 @@ const updatePaymentSchema = z.object({
 
 /**
  * GET handler for fetching a specific booking by ID
- * Updated to use Next.js 15 promise-based params
+ * Updated to use Clerk authentication
  */
-export async function GET(
+export const GET = withAuth(async (
   request: NextRequest,
+  user: AuthUser,
   context: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     // Await the params to get the id
     const params = await context.params;
     const { id } = params;
-    
-    // Get session for auth check
-    const session = await auth();
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
     
     // Fetch the booking
     const booking = await getBookingById(id);
@@ -50,9 +43,9 @@ export async function GET(
     
     // Authorization check - only allow access to own bookings
     // unless the user is an admin
-    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
-    const isBuilder = session.user.id === booking.builderId;
-    const isClient = session.user.id === booking.clientId;
+    const isAdminUser = user.roles.includes(UserRole.ADMIN);
+    const isBuilder = user.id === booking.builderId;
+    const isClient = user.id === booking.clientId;
     
     if (!isAdminUser && !isBuilder && !isClient) {
       return NextResponse.json(
@@ -64,35 +57,27 @@ export async function GET(
     return NextResponse.json({ booking });
   } catch (error) {
     console.error(`Error fetching booking:`, error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to fetch booking' }, 
       { status: 500 }
     );
   }
-}
+});
 
 /**
  * PATCH handler for updating a booking's status
- * Updated to use Next.js 15 promise-based params
+ * Updated to use Clerk authentication
  */
-export async function PATCH(
+export const PATCH = withAuth(async (
   request: NextRequest,
+  user: AuthUser,
   context: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     // Await the params to get the id
     const params = await context.params;
     const { id } = params;
-    
-    // Get session for auth check
-    const session = await auth();
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
     
     // Fetch the booking first to check permissions
     const existingBooking = await getBookingById(id);
@@ -105,9 +90,9 @@ export async function PATCH(
     }
     
     // Authorization check
-    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
-    const isBuilder = session.user.id === existingBooking.builderId;
-    const isClient = session.user.id === existingBooking.clientId;
+    const isAdminUser = user.roles.includes(UserRole.ADMIN);
+    const isBuilder = user.id === existingBooking.builderId;
+    const isClient = user.id === existingBooking.clientId;
     
     if (!isAdminUser && !isBuilder && !isClient) {
       return NextResponse.json(
@@ -179,9 +164,10 @@ export async function PATCH(
     }
   } catch (error) {
     console.error(`Error updating booking:`, error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to update booking' }, 
       { status: 500 }
     );
   }
-}
+});

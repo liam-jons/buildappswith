@@ -1,21 +1,15 @@
 import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth/auth";
+import { withAuth } from "@/lib/auth/clerk/api-auth";
+import { AuthUser } from "@/lib/auth/clerk/helpers";
+import * as Sentry from "@sentry/nextjs";
 
-export async function PATCH(
+export const PATCH = withAuth(async (
   request: NextRequest,
+  user: AuthUser,
   { params }: { params: Promise<{ id: string }> }
-): Promise<Response> {
+): Promise<Response> => {
   try {
-    const session = await auth();
-    
-    if (!session?.user) {
-      return Response.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
     const { id } = await params;
     const body = await request.json();
     
@@ -39,10 +33,10 @@ export async function PATCH(
     }
     
     // Check if the user owns this app
-    if (app.builder.user.email !== session.user.email) {
+    if (app.builder.user.email !== user.email) {
       // Admin check
       const currentUser = await db.user.findUnique({
-        where: { email: session.user.email || '' }
+        where: { email: user.email }
       });
       
       if (!currentUser?.roles.includes("ADMIN")) {
@@ -70,27 +64,20 @@ export async function PATCH(
     return Response.json(updatedApp, { status: 200 });
   } catch (error) {
     console.error("[API] Error updating app:", error);
+    Sentry.captureException(error);
     return Response.json(
       { error: "Internal server error" },
       { status: 500 }
     );
   }
-}
+});
 
-export async function DELETE(
+export const DELETE = withAuth(async (
   request: NextRequest,
+  user: AuthUser,
   { params }: { params: Promise<{ id: string }> }
-): Promise<Response> {
+): Promise<Response> => {
   try {
-    const session = await auth();
-    
-    if (!session?.user) {
-      return Response.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
     const { id } = await params;
     
     // Get the app with builder info
@@ -113,10 +100,10 @@ export async function DELETE(
     }
     
     // Check if the user owns this app
-    if (app.builder.user.email !== session.user.email) {
+    if (app.builder.user.email !== user.email) {
       // Admin check
       const currentUser = await db.user.findUnique({
-        where: { email: session.user.email || '' }
+        where: { email: user.email }
       });
       
       if (!currentUser?.roles.includes("ADMIN")) {
@@ -135,9 +122,10 @@ export async function DELETE(
     return Response.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error("[API] Error deleting app:", error);
+    Sentry.captureException(error);
     return Response.json(
       { error: "Internal server error" },
       { status: 500 }
     );
   }
-}
+});

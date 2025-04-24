@@ -1,88 +1,120 @@
 "use client";
 
-import { useSession, signIn, signOut } from "next-auth/react";
-import { LoginButton } from '@/components/auth/login-button';
-import { UserProfile } from '@/components/auth/user-profile';
-import { Button } from '@/components/ui/button';
+import { useAuth } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "@/lib/auth/clerk/helpers";
+import * as Sentry from "@sentry/nextjs";
 
 export default function AuthTestPage() {
-  const { data: session, status } = useSession();
-
+  const { isLoaded, userId, sessionId } = useAuth();
+  const [dbUser, setDbUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (isLoaded && userId) {
+      // Test database integration
+      const fetchUser = async () => {
+        try {
+          const user = await getCurrentUser();
+          setDbUser(user);
+        } catch (err) {
+          console.error("Error fetching user:", err);
+          setError(err instanceof Error ? err.message : "Unknown error");
+          
+          // Report to Sentry
+          Sentry.captureException(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      fetchUser();
+    } else if (isLoaded) {
+      setLoading(false);
+    }
+  }, [isLoaded, userId]);
+  
+  if (!isLoaded) {
+    return (
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-4">Auth Test Page</h1>
+        <div className="animate-pulse">Loading auth state...</div>
+      </div>
+    );
+  }
+  
+  if (!userId) {
+    return (
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-4">Auth Test Page</h1>
+        <p className="text-red-500">Not authenticated. Please sign in.</p>
+        <a 
+          href="/login" 
+          className="inline-block mt-4 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
+        >
+          Go to Login
+        </a>
+      </div>
+    );
+  }
+  
   return (
-    <div className="container py-8 space-y-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4">NextAuth.js Integration Test Page</h1>
+    <div className="p-8 max-w-4xl mx-auto">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">Auth Test Page</h1>
+        <UserButton />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-card p-6 rounded-lg border">
+          <h2 className="text-xl font-semibold mb-4">Clerk Auth State</h2>
+          <ul className="space-y-2">
+            <li>
+              <span className="font-medium">Auth Status:</span> Authenticated
+            </li>
+            <li>
+              <span className="font-medium">User ID:</span> {userId}
+            </li>
+            <li>
+              <span className="font-medium">Session ID:</span> {sessionId}
+            </li>
+          </ul>
+        </div>
         
-        <div className="p-6 border rounded-lg bg-card">
-          <h2 className="text-2xl font-semibold mb-4">Authentication Status</h2>
-          
-          {status === "loading" && (
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 rounded-full bg-muted animate-pulse"></div>
-              <p>Loading authentication status...</p>
-            </div>
+        <div className="bg-card p-6 rounded-lg border">
+          <h2 className="text-xl font-semibold mb-4">Database User</h2>
+          {loading ? (
+            <div className="animate-pulse">Loading database user...</div>
+          ) : error ? (
+            <div className="text-red-500">Error: {error}</div>
+          ) : dbUser ? (
+            <ul className="space-y-2">
+              <li>
+                <span className="font-medium">DB ID:</span> {dbUser.id}
+              </li>
+              <li>
+                <span className="font-medium">Clerk ID:</span> {dbUser.clerkId}
+              </li>
+              <li>
+                <span className="font-medium">Name:</span> {dbUser.name}
+              </li>
+              <li>
+                <span className="font-medium">Email:</span> {dbUser.email}
+              </li>
+              <li>
+                <span className="font-medium">Roles:</span>{" "}
+                {dbUser.roles.join(", ")}
+              </li>
+              <li>
+                <span className="font-medium">Verified:</span>{" "}
+                {dbUser.verified ? "Yes" : "No"}
+              </li>
+            </ul>
+          ) : (
+            <p>No database user found</p>
           )}
-          
-          {status === "unauthenticated" && (
-            <div>
-              <p className="mb-4">You are not logged in.</p>
-            </div>
-          )}
-          
-          {status === "authenticated" && session?.user && (
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <UserProfile />
-                <div>
-                  <p className="font-medium">Logged in as {session.user.name}</p>
-                  <p className="text-sm text-muted-foreground">{session.user.email}</p>
-                  {session.user.roles && (
-                    <p className="text-sm text-muted-foreground capitalize">Roles: {session.user.roles.join(', ')}</p>
-                  )}
-                </div>
-              </div>
-              
-              <div className="pt-4 border-t">
-                <h3 className="font-medium mb-2">Session Object (Debug)</h3>
-                <pre className="p-4 bg-muted rounded-md overflow-auto text-xs">
-                  {JSON.stringify(session, null, 2)}
-                </pre>
-              </div>
-            </div>
-          )}
-          
-          <div className="mt-6">
-            <h3 className="font-medium mb-2">Authentication Actions</h3>
-            <div className="flex flex-wrap gap-4">
-              {status === "unauthenticated" ? (
-                <>
-                  <Button onClick={() => signIn()}>Sign in with Default</Button>
-                  <Button onClick={() => signIn("credentials")}>Sign in with Credentials</Button>
-                  <Button onClick={() => signIn("github")}>Sign in with GitHub</Button>
-                  <Button onClick={() => signIn("google")}>Sign in with Google</Button>
-                  <Button variant="outline" onClick={() => window.location.href = "/login"}>
-                    Go to Login Page
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="destructive" onClick={() => signOut()}>Sign Out</Button>
-                </>
-              )}
-            </div>
-          </div>
-          
-          <div className="mt-6 pt-4 border-t">
-            <h3 className="font-medium mb-2">Demo Credentials</h3>
-            <div className="space-y-2">
-              <p className="text-sm">Try these credentials for testing:</p>
-              <ul className="list-disc list-inside text-sm space-y-1">
-                <li><strong>Client:</strong> client@example.com / password123</li>
-                <li><strong>Learner:</strong> learner@example.com / password123</li>
-                <li><strong>Builder:</strong> builder@example.com / password123</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </div>
     </div>

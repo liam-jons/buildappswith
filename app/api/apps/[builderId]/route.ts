@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth/auth";
+import { withAuth } from "@/lib/auth/clerk/api-auth";
+import { AuthUser } from "@/lib/auth/clerk/helpers";
+import * as Sentry from "@sentry/nextjs";
 
 export async function GET(
   request: NextRequest,
@@ -42,6 +44,7 @@ export async function GET(
     return Response.json(apps, { status: 200 });
   } catch (error) {
     console.error("[API] Error fetching apps:", error);
+    Sentry.captureException(error);
     return Response.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -49,20 +52,12 @@ export async function GET(
   }
 }
 
-export async function POST(
+export const POST = withAuth(async (
   request: NextRequest,
+  user: AuthUser,
   { params }: { params: Promise<{ builderId: string }> }
-): Promise<Response> {
+): Promise<Response> => {
   try {
-    const session = await auth();
-    
-    if (!session?.user) {
-      return Response.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
     const { builderId } = await params;
     const body = await request.json();
     
@@ -79,7 +74,7 @@ export async function POST(
       );
     }
     
-    if (builderProfile.user.email !== session.user.email) {
+    if (builderProfile.user.email !== user.email) {
       return Response.json(
         { error: "You don't have permission to add apps to this profile" },
         { status: 403 }
@@ -111,9 +106,10 @@ export async function POST(
     return Response.json(app, { status: 201 });
   } catch (error) {
     console.error("[API] Error creating app:", error);
+    Sentry.captureException(error);
     return Response.json(
       { error: "Internal server error" },
       { status: 500 }
     );
   }
-}
+});

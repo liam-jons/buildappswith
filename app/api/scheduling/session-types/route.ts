@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getSessionTypes, createSessionType } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth';
+import { withAuth } from '@/lib/auth/clerk/api-auth';
+import { AuthUser } from '@/lib/auth/clerk/helpers';
 import { UserRole } from '@/lib/auth/types';
+import * as Sentry from '@sentry/nextjs';
 
 // Validation schema for query parameters
 const querySchema = z.object({
@@ -66,6 +68,7 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error in session types endpoint:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to fetch session types' }, 
       { status: 500 }
@@ -75,19 +78,10 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST handler for creating a new session type
+ * Updated to use Clerk authentication
  */
-export async function POST(request: NextRequest) {
+export const POST = withAuth(async (request: NextRequest, user: AuthUser) => {
   try {
-    // Get session for auth check
-    const session = await auth();
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
-    
     // Parse request body
     const body = await request.json();
     
@@ -103,8 +97,8 @@ export async function POST(request: NextRequest) {
     
     // Authorization check - only allow creating session types for own profile
     // or if user is an admin
-    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
-    const isOwnProfile = session.user.id === result.data.builderId;
+    const isAdminUser = user.roles.includes(UserRole.ADMIN);
+    const isOwnProfile = user.id === result.data.builderId;
     
     if (!isAdminUser && !isOwnProfile) {
       return NextResponse.json(
@@ -142,9 +136,10 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error creating session type:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to create session type' }, 
       { status: 500 }
     );
   }
-}
+});

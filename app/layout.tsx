@@ -1,4 +1,4 @@
-import { AuthProvider } from "@/lib/contexts/auth/auth-provider";
+import { Providers } from "@/components/providers/providers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
@@ -28,16 +28,9 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            disableTransitionOnChange
-          >
+        <Providers>
             {children}
-            <Toaster />
-          </ThemeProvider>
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

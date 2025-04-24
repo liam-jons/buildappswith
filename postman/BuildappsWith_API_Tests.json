@@ -1,0 +1,244 @@
+{
+  "info": {
+    "_postman_id": "3f5a9b2d-8b6a-4e41-af1e-9c8c2d48e7c3",
+    "name": "BuildappsWith API Tests",
+    "description": "Test collection for BuildappsWith API endpoints with Clerk authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "Authentication-related endpoints and tests",
+      "item": [
+        {
+          "name": "Test Auth",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/test/auth",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "test", "auth"]
+            },
+            "description": "Tests authentication with Clerk"
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{clerkToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Scheduling",
+      "description": "Scheduling-related endpoints",
+      "item": [
+        {
+          "name": "Get Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/scheduling/bookings?builderId={{builderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scheduling", "bookings"],
+              "query": [
+                {
+                  "key": "builderId",
+                  "value": "{{builderId}}"
+                }
+              ]
+            },
+            "description": "Get bookings for a builder"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"sessionTypeId\": \"{{sessionTypeId}}\",\n    \"builderId\": \"{{builderId}}\",\n    \"clientId\": \"{{clientId}}\",\n    \"startTime\": \"{{startTime}}\",\n    \"endTime\": \"{{endTime}}\",\n    \"clientTimezone\": \"Europe/London\",\n    \"builderTimezone\": \"Europe/London\",\n    \"notes\": \"Test booking created via Postman\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/scheduling/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "scheduling", "bookings"]
+            },
+            "description": "Create a new booking"
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{clerkToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Admin",
+      "description": "Admin-related endpoints",
+      "item": [
+        {
+          "name": "Get Builders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/builders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "builders"]
+            },
+            "description": "Get all builders (admin only)"
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{clerkToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Marketplace",
+      "description": "Marketplace-related endpoints",
+      "item": [
+        {
+          "name": "Get Builder Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/marketplace/builders/{{builderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "marketplace", "builders", "{{builderId}}"]
+            },
+            "description": "Get builder profile by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Featured Builders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/marketplace/featured",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "marketplace", "featured"]
+            },
+            "description": "Get featured builders"
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{clerkToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Pre-request script to set up environment if needed",
+          "// For example, get a new Clerk token if the current one is expired",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script",
+          "// Check for common error patterns",
+          "pm.test(\"Status code is 200 OK or 201 Created\", function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+          "});",
+          "",
+          "pm.test(\"Response time is less than 500ms\", function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(500);",
+          "});",
+          "",
+          "pm.test(\"Content-Type is application/json\", function () {",
+          "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "clerkToken",
+      "value": "your_auth_token_here",
+      "type": "string"
+    },
+    {
+      "key": "builderId",
+      "value": "your_builder_id_here",
+      "type": "string"
+    },
+    {
+      "key": "clientId",
+      "value": "your_client_id_here",
+      "type": "string"
+    },
+    {
+      "key": "sessionTypeId",
+      "value": "your_session_type_id_here",
+      "type": "string"
+    },
+    {
+      "key": "startTime",
+      "value": "2025-05-01T10:00:00.000Z",
+      "type": "string"
+    },
+    {
+      "key": "endTime",
+      "value": "2025-05-01T11:00:00.000Z",
+      "type": "string"
+    }
+  ]
+}
