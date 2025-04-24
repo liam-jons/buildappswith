@@ -1,19 +1,3 @@
-"use client";
-
-import { SessionProvider } from "next-auth/react";
-import { ReactNode } from "react";
-
-/**
- * Props for the AuthProvider component
- */
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-/**
- * Auth provider component that wraps the application with SessionProvider
- * for NextAuth authentication
- */
-export function AuthProvider({ children }: AuthProviderProps) {
-  return <SessionProvider>{children}</SessionProvider>;
-}
+// This file has been archived during the migration from NextAuth to Clerk
+// The original file is available in /archived/nextauth-legacy/lib/contexts/auth/auth-provider.tsx
+// This file will be removed in a future version

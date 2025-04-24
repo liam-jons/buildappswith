@@ -10,9 +10,9 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { AlignJustify, XIcon, ChevronDown, User, MoonIcon, SunIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useOnClickOutside } from "@/hooks/use-on-click-outside";
-import { useAuth } from "@/lib/auth/hooks";
+import { useAuth as useClerkAuth, useUser } from "@clerk/nextjs";
 import { UserRole } from "@/lib/auth/types";
 
 function ViewingPreferences() {
@@ -268,10 +268,37 @@ const getUserMenuItems = (roles: UserRole[] | undefined) => {
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
-  const { user, isAuthenticated, signOut } = useAuth();
+  const { isLoaded: isAuthLoaded, isSignedIn, userId, sessionId } = useClerkAuth();
+  const { user: clerkUser, isLoaded: isUserLoaded } = useUser();
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  
+  // Extract roles from publicMetadata
+  const roles = clerkUser?.publicMetadata?.roles as UserRole[] || [];
+  
+  // Create compatible user object
+  const user = isSignedIn ? {
+    id: clerkUser?.id || '',
+    name: clerkUser?.fullName || clerkUser?.username || '',
+    email: clerkUser?.primaryEmailAddress?.emailAddress || '',
+    image: clerkUser?.imageUrl || '',
+    roles,
+    verified: clerkUser?.primaryEmailAddress?.verification?.status === 'verified',
+    stripeCustomerId: clerkUser?.publicMetadata?.stripeCustomerId as string || null,
+  } : null;
+  
+  const isAuthenticated = !!isSignedIn && !!userId;
+  
+  // Function to handle sign out
+  const signOut = async (options?: { callbackUrl?: string }) => {
+    await clerkUser?.signOut();
+    if (options?.callbackUrl) {
+      router.push(options.callbackUrl);
+    }
+    return { ok: true };
+  };
   
   // Use state to store navigation items
   const [navigationItems, setNavigationItems] = useState({

@@ -8,6 +8,37 @@ All notable changes to this project will be documented in this file.
 - Admin dashboard capabilities for user management
 - Enhanced multi-tenant support through Clerk's organization features
 
+## [1.0.64] - 2025-04-24
+
+### Added
+- Implemented webhook handler for Clerk user events in `/app/api/webhooks/clerk/route.ts`
+- Created database migration to ensure clerkId field is properly defined
+- Developed clean database reset and migration script (`scripts/reset-database-for-clerk.js`)
+- Added Content Security Policy headers for Clerk in middleware.ts
+
+### Changed
+- Updated Clerk integration to use clean database approach without user migration
+- Enhanced middleware to skip CSRF verification for Clerk webhooks
+- Enhanced error handling in webhooks with comprehensive logging
+- Incrementally updated package.json version from 1.0.63 to 1.0.64
+
+## [1.0.63] - 2025-04-24
+
+### Added
+- Added Clerk-based AuthProvider component replacement
+- Updated user-auth-form component to use Clerk's authentication directly
+- Created detailed comments explaining component behavior
+
+### Changed
+- Updated site-header.tsx to use Clerk authentication directly instead of compatibility layer
+- Migrated all remaining client components from NextAuth to Clerk
+- Incrementally updated dependencies by removing NextAuth packages
+- Archived legacy NextAuth files to /archived/nextauth-legacy/ directory
+
+### Removed
+- Removed NextAuth dependencies (@auth/prisma-adapter, next-auth)
+- Marked legacy NextAuth files for removal in a future version
+
 ## [1.0.62] - 2025-04-24
 
 ### Added
