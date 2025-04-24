@@ -1,34 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getClientSchedulingProfile } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth';
+import { withAuth } from '@/lib/auth/clerk/api-auth';
+import { AuthUser } from '@/lib/auth/clerk/helpers';
+import * as Sentry from '@sentry/nextjs';
 import { UserRole } from '@/lib/auth/types';
 
 /**
  * GET handler for fetching a client's scheduling profile
- * Updated to use Next.js 15 promise-based params
+ * Updated to use Next.js 15 promise-based params and Clerk authentication
  */
-export async function GET(
+export const GET = withAuth(async (
   request: NextRequest,
+  user: AuthUser,
   context: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     // Await the params to get the id
     const params = await context.params;
     const { id } = params;
     
-    // Get session for auth check
-    const session = await auth();
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
-    
     // Authorization check - only the client or an admin can view their profile
-    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
-    const isOwnProfile = session.user.id === id;
+    const isAdminUser = user.roles.includes(UserRole.ADMIN);
+    const isOwnProfile = user.id === id;
     
     if (!isAdminUser && !isOwnProfile) {
       return NextResponse.json(
@@ -50,9 +43,10 @@ export async function GET(
     return NextResponse.json({ profile });
   } catch (error) {
     console.error(`Error fetching client scheduling profile:`, error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to fetch client scheduling profile' }, 
       { status: 500 }
     );
   }
-}
+});

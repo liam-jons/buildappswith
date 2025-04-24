@@ -1,6 +1,8 @@
-import { auth } from "@/lib/auth/auth";
+import { withAuth } from "@/lib/auth/clerk/api-auth";
+import { AuthUser } from "@/lib/auth/clerk/helpers";
 import { createBookingCheckoutSession } from "@/lib/stripe/stripe-server";
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 
 // Mock builder data - In a real implementation, this would come from a database
 type SessionType = {
@@ -43,34 +45,8 @@ const builders: BuildersDirectory = {
   },
 };
 
-export async function POST(req: NextRequest) {
+export const POST = withAuth(async (req: NextRequest, user: AuthUser) => {
   try {
-    // Authenticate the user
-    const session = await auth();
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
-    }
-    
-    // Get the user from the session
-    const user: {
-      id?: string;
-      name?: string | null;
-      email?: string | null;
-      stripeCustomerId?: string;
-    } = session.user;
-    
-    // Ensure user has an ID
-    if (!user.id) {
-      return NextResponse.json(
-        { error: "User ID not found" },
-        { status: 400 }
-      );
-    }
-    
     // Get the request body
     const {
       builderId,
@@ -122,7 +98,7 @@ export async function POST(req: NextRequest) {
       endTime,
       timeZone,
       customerId: user.stripeCustomerId,
-      userId: user.id, // We've already checked user.id is defined above
+      userId: user.id,
       userEmail: user.email || "",
       userName: user.name,
       successUrl: `${req.nextUrl.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -133,9 +109,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ id: checkoutSession.id });
   } catch (error) {
     console.error("Error creating checkout session:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to create checkout session" },
       { status: 500 }
     );
   }
-}
+});

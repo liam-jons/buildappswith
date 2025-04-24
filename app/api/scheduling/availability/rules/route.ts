@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getAvailabilityRules, createAvailabilityRule } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth';
+import { withAuth } from '@/lib/auth/clerk/api-auth';
+import { AuthUser } from '@/lib/auth/clerk/helpers';
+import * as Sentry from '@sentry/nextjs';
 import { UserRole } from '@/lib/auth/types';
 
 // Validation schema for query parameters
@@ -20,8 +22,9 @@ const createRuleSchema = z.object({
 
 /**
  * GET handler for fetching availability rules for a builder
+ * Updated to use Clerk authentication
  */
-export async function GET(request: NextRequest) {
+export const GET = withAuth(async (request: NextRequest, user: AuthUser) => {
   try {
     // Get query parameters
     const { searchParams } = new URL(request.url);
@@ -62,27 +65,20 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error in availability rules endpoint:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to fetch availability rules' }, 
       { status: 500 }
     );
   }
-}
+});
 
 /**
  * POST handler for creating a new availability rule
+ * Updated to use Clerk authentication
  */
-export async function POST(request: NextRequest) {
+export const POST = withAuth(async (request: NextRequest, user: AuthUser) => {
   try {
-    // Get session for auth check
-    const session = await auth();
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
     
     // Parse request body
     const body = await request.json();
@@ -99,8 +95,8 @@ export async function POST(request: NextRequest) {
     
     // Authorization check - only allow creating rules for own profile
     // or if user is an admin
-    const isAdminUser = session.user.roles.includes(UserRole.ADMIN);
-    const isOwnProfile = session.user.id === result.data.builderId;
+    const isAdminUser = user.roles.includes(UserRole.ADMIN);
+    const isOwnProfile = user.id === result.data.builderId;
     
     if (!isAdminUser && !isOwnProfile) {
       return NextResponse.json(
@@ -148,9 +144,10 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error creating availability rule:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to create availability rule' }, 
       { status: 500 }
     );
   }
-}
+});

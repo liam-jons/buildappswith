@@ -1,16 +1,19 @@
 /**
- * Middleware for Buildappswith Platform
- * Version: 0.1.64
+ * Combined Middleware for Buildappswith Platform
+ * Version: 1.0.58
  * 
  * Implements global middleware for the Next.js application including:
+ * - Authentication via Clerk
  * - API route protection with rate limiting
  * - CSRF protection for mutation operations
  * - Security headers for all responses
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import { csrfProtection } from './lib/csrf';
 import { rateLimit } from './lib/rate-limit';
+import { authMiddleware, clerkClient, redirectToSignIn } from '@clerk/nextjs';
+import { publicRoutes, ignoredRoutes } from './lib/auth/clerk-middleware';
 
 // Define paths that require different rate limits
 const apiPaths = {
@@ -34,17 +37,10 @@ function getRateLimitType(pathname: string) {
 }
 
 /**
- * Main middleware function
- * @param request Next.js request
+ * Apply API protection middleware
  */
-export async function middleware(request: NextRequest) {
+async function apiMiddleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
-  // Only apply middleware to API routes - this check is redundant with the matcher
-  // but we keep it for additional safety
-  if (!pathname.startsWith('/api/')) {
-    return NextResponse.next();
-  }
   
   // Skip CSRF check for authentication endpoints
   const skipCsrf = pathname.startsWith('/api/auth/');
@@ -70,11 +66,62 @@ export async function middleware(request: NextRequest) {
 }
 
 /**
- * Configure which paths this middleware applies to
+ * Main middleware function combining Clerk auth and API protection
+ */
+export default authMiddleware({
+  publicRoutes,
+  ignoredRoutes,
+  
+  async afterAuth(auth, req, evt) {
+    const { pathname } = req.nextUrl;
+    
+    // Handle API routes
+    if (pathname.startsWith('/api/')) {
+      // For protected API endpoints, verify authentication
+      const isPublicApiRoute = publicRoutes.some(route => {
+        if (typeof route === 'string') {
+          return pathname.startsWith(route);
+        }
+        return route.test(pathname);
+      });
+      
+      // If not authenticated and not a public API route, return unauthorized
+      if (!auth.userId && !isPublicApiRoute) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      
+      // Apply API protection middleware
+      return apiMiddleware(req);
+    }
+    
+    // Handle non-API routes
+    
+    // If the user is not authenticated and the route isn't public, redirect to sign-in
+    if (!auth.userId && !auth.isPublicRoute) {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
+
+    // If the user is trying to access auth pages while logged in, redirect to dashboard
+    if (auth.userId && (
+      pathname.startsWith('/login') || 
+      pathname.startsWith('/signup')
+    )) {
+      const dashboard = new URL('/dashboard', req.url);
+      return NextResponse.redirect(dashboard);
+    }
+
+    // Allow all other requests to proceed
+    return NextResponse.next();
+  },
+});
+
+/**
+ * Configure which paths middleware will run on
  */
 export const config = {
   matcher: [
-    // ONLY apply to API routes - not to ANY other routes
-    '/api/:path*'
+    '/((?!.+\\.[\\w]+$|_next).*)',
+    '/',
+    '/(api|trpc)(.*)',
   ],
 };

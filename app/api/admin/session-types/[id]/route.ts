@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { type RouteParams } from "@/app/api/route-types";
 import { PrismaClient } from "@prisma/client";
-import { auth } from "@/lib/auth/auth";
+import { withAdmin } from "@/lib/auth/clerk/api-auth";
+import { AuthUser } from "@/lib/auth/clerk/helpers";
+import * as Sentry from "@sentry/nextjs";
 import { UserRole } from "@/lib/auth/types";
 import { z } from "zod";
 
@@ -20,27 +22,13 @@ const sessionTypeUpdateSchema = z.object({
 });
 
 // GET /api/admin/session-types/[id] - Get a specific session type
-export async function GET(
+// Updated to use Clerk authentication with admin role check
+export const GET = withAdmin(async (
   req: NextRequest,
+  user: AuthUser,
   context: RouteParams<{ id: string }>
-) {
+) => {
   try {
-    // Check authentication and admin status
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
-    // Check if user has admin role
-    if (!session.user.roles.includes(UserRole.ADMIN)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
     
     // Await the params to get the id
     const params = await context.params;
@@ -67,35 +55,22 @@ export async function GET(
     return NextResponse.json({ data: serializedSessionType });
   } catch (error) {
     console.error("Error fetching session type:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to fetch session type" },
       { status: 500 }
     );
   }
-}
+});
 
 // PUT /api/admin/session-types/[id] - Update a session type
-export async function PUT(
+// Updated to use Clerk authentication with admin role check
+export const PUT = withAdmin(async (
   req: NextRequest,
+  user: AuthUser,
   context: RouteParams<{ id: string }>
-) {
+) => {
   try {
-    // Check authentication and admin status
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
-    // Check if user has admin role
-    if (!session.user.roles.includes(UserRole.ADMIN)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
     
     // Await the params to get the id
     const params = await context.params;
@@ -153,35 +128,22 @@ export async function PUT(
     });
   } catch (error) {
     console.error("Error updating session type:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to update session type" },
       { status: 500 }
     );
   }
-}
+});
 
 // DELETE /api/admin/session-types/[id] - Delete a session type
-export async function DELETE(
+// Updated to use Clerk authentication with admin role check
+export const DELETE = withAdmin(async (
   req: NextRequest,
+  user: AuthUser,
   context: RouteParams<{ id: string }>
-) {
+) => {
   try {
-    // Check authentication and admin status
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
-    // Check if user has admin role
-    if (!session.user.roles.includes(UserRole.ADMIN)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
     
     // Await the params to get the id
     const params = await context.params;
@@ -221,9 +183,10 @@ export async function DELETE(
     });
   } catch (error) {
     console.error("Error deleting session type:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to delete session type" },
       { status: 500 }
     );
   }
-}
+});

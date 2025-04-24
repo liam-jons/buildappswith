@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { auth } from '@/lib/auth/auth'; // Updated import
+import { withAuth } from '@/lib/auth/clerk/api-auth';
+import { AuthUser } from '@/lib/auth/clerk/helpers';
 import { z } from 'zod';
 
 // Create/update schema validation
@@ -37,16 +38,10 @@ const builderProfileSchema = z.object({
 /**
  * GET handler for fetching the builder profile of the authenticated user
  */
-export async function GET(request: NextRequest) {
+export const GET = withAuth(async (request: NextRequest, user: AuthUser) => {
   try {
-    const session = await auth(); // Updated to use auth()
-    
-    if (!session || !session.user || !session.user.id) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-    }
-    
-    // At this point we've verified session.user.id exists
-    const userId = session.user.id as string;
+    // Use the user ID from the authenticated user
+    const userId = user.id;
     
     // Check if profile exists
     const profile = await db.builderProfile.findUnique({
@@ -85,19 +80,13 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
 /**
  * POST handler for creating/updating a builder profile
  */
-export async function POST(request: NextRequest) {
+export const POST = withAuth(async (request: NextRequest, user: AuthUser) => {
   try {
-    const session = await auth(); // Updated to use auth()
-    
-    if (!session || !session.user || !session.user.id) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-    }
-    
     // Parse and validate the request body
     const body = await request.json();
     const result = builderProfileSchema.safeParse(body);
@@ -111,8 +100,8 @@ export async function POST(request: NextRequest) {
     
     const data = result.data;
     
-    // At this point we've verified session.user.id exists
-    const userId = session.user.id as string;
+    // Use the user ID from the authenticated user
+    const userId = user.id;
     
     // Check if user already has a builder profile
     const existingProfile = await db.builderProfile.findUnique({
@@ -207,4 +196,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

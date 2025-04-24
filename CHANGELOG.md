@@ -2,6 +2,109 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Planned
+- Admin dashboard capabilities for user management
+- Enhanced multi-tenant support through Clerk's organization features
+
+## [1.0.62] - 2025-04-24
+
+### Added
+- Created Clerk client hooks implementation compatible with NextAuth API in `/lib/auth/clerk-hooks.ts`
+- Added backward compatibility layer to smoothly transition components
+
+### Changed
+- Updated package.json version from 1.0.61 to 1.0.62
+- Modified auth hooks to use Clerk's authentication system
+- Implemented Clerk's sign-in and sign-out methods with compatible API
+
+### Fixed
+- Fixed critical authentication issue: "useSession must be wrapped in a <SessionProvider />" error
+- Resolved client-side components incompatibility with NextAuth
+- Prevented need for component-level changes by maintaining API compatibility
+
+## [1.0.61] - 2025-04-24
+
+### Changed
+- Updated package.json version from 1.0.60 to 1.0.61
+- Completed migration of remaining API routes from NextAuth to Clerk:
+  - Migrated `/api/scheduling/availability/rules` to use Clerk authentication
+  - Migrated `/api/scheduling/profiles/client/[id]` to use Clerk authentication
+  - Migrated `/api/admin/builders/prototype` to use Clerk's admin authentication
+  - Migrated `/api/admin/session-types` and related routes to use Clerk's admin authentication
+- Enhanced error handling with Sentry integration in all migrated routes
+
+### Improved
+- Standardized admin route protection with withAdmin middleware
+- Used proper role verification in scheduling API routes
+- Followed consistent error handling patterns across all routes
+
+## [1.0.60] - 2025-04-24
+
+### Added
+- Added Sentry error tracking to all migrated API routes
+
+### Changed
+- Updated package.json version from 1.0.59 to 1.0.60
+- Migrated critical API routes from NextAuth to Clerk:
+  - Migrated `/api/scheduling/bookings/[id]` to use Clerk authentication
+  - Migrated `/api/checkout/session` to use Clerk authentication
+  - Migrated `/api/scheduling/session-types` and `/api/scheduling/session-types/[id]` to use Clerk
+  - Migrated `/api/apps/[builderId]` and `/api/apps/edit/[id]` to use Clerk
+- Enhanced error handling in all migrated routes with Sentry integration
+
+### Fixed
+- Fixed context parameter handling in Clerk authentication for routes with URL parameters
+- Standardized error handling approach in all migrated routes
+
+## [1.0.59] - 2025-04-24
+
+### Added
+- Created authentication test page at `/test/auth` for verifying Clerk authentication flows
+- Added corresponding API route `/api/test/auth` for testing backend authentication
+- Implemented Postman collection for API testing
+- Created comprehensive documentation for authentication migration in `/docs/engineering`
+- Added detailed migration plan for remaining auth routes
+
+### Changed
+- Updated package.json version from 1.0.58 to 1.0.59
+- Migrated scheduling API routes to use new Clerk auth helpers
+- Migrated admin API routes to use new auth middleware
+- Enhanced error handling with Sentry integration in API routes
+- Updated Content Security Policy to support Clerk authentication scripts
+
+### Fixed
+- Resolved authentication inconsistencies between API routes
+- Fixed Content Security Policy to allow Clerk scripts and resources
+- Standardized error handling approach across authentication middleware
+
+## [1.0.58] - 2025-04-24
+
+### Added
+- Migrated authentication system from NextAuth.js to Clerk
+- Added Clerk SDK and configuration
+- Created ClerkProvider component for application-wide auth
+- Implemented standardized auth helpers for API routes
+- Created auth middleware for protecting routes
+- Updated database schema to support Clerk user IDs
+- Created AUTHENTICATION_MIGRATION.md documentation
+
+### Changed
+- Replaced SessionProvider with ClerkProvider
+- Updated login and signup pages to use Clerk components
+- Replaced NextAuth auth() with Clerk's currentUser() in API routes
+- Enhanced middleware with combined auth and API protection
+- Updated builder profile API route to use new auth helpers
+
+## [1.0.57] - 2025-04-24
+
+### Added
+- Completed comprehensive code review
+- Created detailed authentication migration plan
+- Added AUTHENTICATION_MIGRATION.md documentation
+- Identified key areas for security and scalability improvements
+
 ## [1.0.55] - 2025-04-23
 
 ### Added

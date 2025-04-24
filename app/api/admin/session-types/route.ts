@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { auth } from "@/lib/auth/auth";
+import { withAdmin } from "@/lib/auth/clerk/api-auth";
+import { AuthUser } from "@/lib/auth/clerk/helpers";
+import * as Sentry from "@sentry/nextjs";
 import { UserRole } from "@/lib/auth/types";
 import { z } from "zod";
 
@@ -20,23 +22,9 @@ const sessionTypeSchema = z.object({
 });
 
 // GET /api/admin/session-types - Get all session types
-export async function GET(req: NextRequest) {
+// Updated to use Clerk authentication with admin role check
+export const GET = withAdmin(async (req: NextRequest, user: AuthUser) => {
   try {
-    // Check authentication and admin status
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
-    if (!session.user.roles.includes(UserRole.ADMIN)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
     
     // Get query parameters
     const { searchParams } = new URL(req.url);
@@ -62,31 +50,18 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching session types:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to fetch session types" },
       { status: 500 }
     );
   }
-}
+});
 
 // POST /api/admin/session-types - Create a new session type
-export async function POST(req: NextRequest) {
+// Updated to use Clerk authentication with admin role check
+export const POST = withAdmin(async (req: NextRequest, user: AuthUser) => {
   try {
-    // Check authentication and admin status
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    
-    if (!session.user.roles.includes(UserRole.ADMIN)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
     
     // Parse request body
     const body = await req.json();
@@ -128,9 +103,10 @@ export async function POST(req: NextRequest) {
     );
   } catch (error) {
     console.error("Error creating session type:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to create session type" },
       { status: 500 }
     );
   }
-}
+});

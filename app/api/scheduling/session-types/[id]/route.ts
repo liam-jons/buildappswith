@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { updateSessionType, deleteSessionType } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth';
+import { withAuth } from '@/lib/auth/clerk/api-auth';
+import { AuthUser } from '@/lib/auth/clerk/helpers';
+import * as Sentry from '@sentry/nextjs';
 
 // Validation schema for updating a session type
 const updateSessionTypeSchema = z.object({
@@ -17,26 +19,17 @@ const updateSessionTypeSchema = z.object({
 
 /**
  * PATCH handler for updating a session type
- * Updated to use Next.js 15 promise-based params
+ * Updated to use Clerk authentication
  */
-export async function PATCH(
+export const PATCH = withAuth(async (
   request: NextRequest,
+  user: AuthUser,
   context: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     // Await the params to get the id
     const params = await context.params;
     const { id } = params;
-    
-    // Get session for auth check
-    const session = await auth();
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
     
     // Parse request body
     const body = await request.json();
@@ -91,35 +84,27 @@ export async function PATCH(
     }
   } catch (error) {
     console.error(`Error updating session type:`, error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to update session type' }, 
       { status: 500 }
     );
   }
-}
+});
 
 /**
  * DELETE handler for removing a session type
- * Updated to use Next.js 15 promise-based params
+ * Updated to use Clerk authentication
  */
-export async function DELETE(
+export const DELETE = withAuth(async (
   request: NextRequest,
+  user: AuthUser,
   context: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     // Await the params to get the id
     const params = await context.params;
     const { id } = params;
-    
-    // Get session for auth check
-    const session = await auth();
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
     
     // In a real implementation, we would:
     // 1. Fetch the session type to check permissions
@@ -145,9 +130,10 @@ export async function DELETE(
     }
   } catch (error) {
     console.error(`Error deleting session type:`, error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to delete session type' }, 
       { status: 500 }
     );
   }
-}
+});

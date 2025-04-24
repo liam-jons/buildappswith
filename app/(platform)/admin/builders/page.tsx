@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { UserRole } from "@/lib/auth/types";
+import * as Sentry from "@sentry/nextjs";
 
 // UI Components
 import { Button } from "@/components/ui/button";
@@ -27,31 +28,50 @@ import {
 import { ValidationTierBadge } from "@/components/profile/validation-tier-badge";
 
 export default function AdminBuildersPage() {
-  const { data: session, status } = useSession();
+  const { isLoaded, userId } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   
   const [isLoading, setIsLoading] = useState(true);
   const [builders, setBuilders] = useState<any[]>([]);
   const [isCreatingPrototype, setIsCreatingPrototype] = useState(false);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+  
+  // Fetch user roles from backend to check admin status
+  useEffect(() => {
+    if (isLoaded && userId) {
+      fetch("/api/test/auth")
+        .then(res => res.json())
+        .then(data => {
+          if (data.user?.roles) {
+            setUserRoles(data.user.roles);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching user data:", error);
+          Sentry.captureException(error);
+        });
+    }
+  }, [isLoaded, userId]);
   
   // Check authentication and fetch builders
   useEffect(() => {
-    if (status === "loading") return;
+    if (!isLoaded) return;
     
-    if (!session) {
-      router.push("/signin");
+    if (!userId) {
+      router.push("/login");
       return;
     }
     
     // In production, this would check for admin role
-    if (process.env.NODE_ENV === 'production' && !session.user.roles.includes(UserRole.ADMIN)) {
+    if (process.env.NODE_ENV === 'production' && !userRoles.includes(UserRole.ADMIN)) {
       router.push("/");
       return;
     }
     
     // Fetch builders from API
     fetchBuilders();
-  }, [session, status, router]);
+  }, [isLoaded, userId, userRoles, router]);
   
   // Fetch all builders
   const fetchBuilders = async () => {
@@ -100,7 +120,7 @@ export default function AdminBuildersPage() {
     }
   };
   
-  if (status === "loading" || isLoading) {
+  if (!isLoaded || isLoading) {
     return (
       <div className="container max-w-7xl py-8">
         <h1 className="text-3xl font-bold mb-6">Builder Management</h1>

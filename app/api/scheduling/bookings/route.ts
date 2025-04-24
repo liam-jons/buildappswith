@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getBuilderBookings, getClientBookings, createBooking } from '@/lib/scheduling/real-data/scheduling-service';
-import { auth } from '@/lib/auth/auth'; // Updated import
+import { withAuth } from '@/lib/auth/clerk/api-auth';
+import { AuthUser } from '@/lib/auth/clerk/helpers';
+import * as Sentry from '@sentry/nextjs';
 
 // Validation schema for query parameters
 const querySchema = z.object({
@@ -27,8 +29,9 @@ const createBookingSchema = z.object({
 /**
  * GET handler for fetching bookings
  * Can filter by builderId, clientId, date range, and status
+ * Version: 1.0.59
  */
-export async function GET(request: NextRequest) {
+export const GET = withAuth(async (request: NextRequest, user: AuthUser) => {
   try {
     // Get query parameters
     const { searchParams } = new URL(request.url);
@@ -54,15 +57,8 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    // Get session for auth check
-    const session = await auth(); // Updated to use auth()
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
+    // Using the authenticated user from withAuth middleware
+    // No need to check authentication as withAuth already handles it
     
     // Fetch bookings based on provided parameters
     let bookings;
@@ -81,22 +77,16 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
 /**
  * POST handler for creating a new booking
+ * Version: 1.0.59
  */
-export async function POST(request: NextRequest) {
+export const POST = withAuth(async (request: NextRequest, user: AuthUser) => {
   try {
-    // Get session for auth check
-    const session = await auth(); // Updated to use auth()
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' }, 
-        { status: 401 }
-      );
-    }
+    // Using the authenticated user from withAuth middleware
+    // No need to check authentication as withAuth already handles it
     
     // Parse request body
     const body = await request.json();
@@ -126,9 +116,10 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Error creating booking:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: 'Failed to create booking' }, 
       { status: 500 }
     );
   }
-}
+});
