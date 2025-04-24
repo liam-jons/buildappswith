@@ -41,7 +41,7 @@ try {
 
 export async function POST(req: Request) {
   // Get the webhook signature from the headers
-  const headerPayload = headers();
+  const headerPayload = await headers();
   const svix_id = headerPayload.get('svix-id');
   const svix_timestamp = headerPayload.get('svix-timestamp');
   const svix_signature = headerPayload.get('svix-signature');
@@ -49,14 +49,14 @@ export async function POST(req: Request) {
   // If there are no headers, return a 400 error
   if (!svix_id || !svix_timestamp || !svix_signature) {
     logger.error('Missing svix headers', { svix_id, svix_timestamp });
-    return new NextResponse('Missing webhook headers', { status: 400 });
+    return NextResponse.json({ error: 'Missing webhook headers' }, { status: 400 });
   }
 
   // Get the webhook secret from the environment
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
   if (!webhookSecret) {
     logger.error('Missing CLERK_WEBHOOK_SECRET in environment');
-    return new NextResponse('Webhook secret not configured', { status: 500 });
+    return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
   }
 
   // Get the request body
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     logger.error('Error verifying webhook', { error });
-    return new NextResponse('Invalid webhook signature', { status: 400 });
+    return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 400 });
   }
 
   const { type, data } = payload;
@@ -108,7 +108,7 @@ export async function POST(req: Request) {
       const primaryEmail = email_addresses.find(email => email.id === data.primary_email_address_id);
       if (!primaryEmail) {
         logger.error('No primary email found for user', { clerkId });
-        return new NextResponse('No primary email found', { status: 400 });
+        return NextResponse.json({ error: 'No primary email found' }, { status: 400 });
       }
 
       // Get roles from metadata or default to CLIENT
@@ -138,7 +138,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, userId: user.id });
     } catch (error) {
       logger.error('Error creating user', { error, userId: data.id });
-      return new NextResponse('Error creating user', { status: 500 });
+      return NextResponse.json({ error: 'Error creating user' }, { status: 500 });
     }
   }
 
@@ -162,14 +162,14 @@ export async function POST(req: Request) {
 
       if (!existingUser) {
         logger.error('User not found for update', { clerkId });
-        return new NextResponse('User not found', { status: 404 });
+        return NextResponse.json({ error: 'User not found' }, { status: 404 });
       }
 
       // Get primary email
       const primaryEmail = email_addresses.find(email => email.id === data.primary_email_address_id);
       if (!primaryEmail) {
         logger.error('No primary email found for user update', { clerkId });
-        return new NextResponse('No primary email found', { status: 400 });
+        return NextResponse.json({ error: 'No primary email found' }, { status: 400 });
       }
 
       // Get roles from metadata or keep existing
@@ -192,7 +192,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, userId: updatedUser.id });
     } catch (error) {
       logger.error('Error updating user', { error, userId: data.id });
-      return new NextResponse('Error updating user', { status: 500 });
+      return NextResponse.json({ error: 'Error updating user' }, { status: 500 });
     }
   }
 
@@ -202,5 +202,5 @@ export async function POST(req: Request) {
 
 // Only allow POST requests to this endpoint
 export async function GET() {
-  return new NextResponse('Method not allowed', { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }

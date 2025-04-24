@@ -7,7 +7,8 @@ import { AuthUser, requireAuth, requireRole } from './helpers';
  */
 export type AuthenticatedHandler = (
   req: NextRequest,
-  user: AuthUser
+  user: AuthUser,
+  ...args: any[]
 ) => Promise<NextResponse> | NextResponse;
 
 /**
@@ -15,7 +16,8 @@ export type AuthenticatedHandler = (
  */
 export type RoleProtectedHandler = (
   req: NextRequest,
-  user: AuthUser
+  user: AuthUser,
+  ...args: any[]
 ) => Promise<NextResponse> | NextResponse;
 
 /**
@@ -24,10 +26,10 @@ export type RoleProtectedHandler = (
  * @returns A standard Next.js API handler
  */
 export function withAuth(handler: AuthenticatedHandler) {
-  return async (req: NextRequest) => {
+  return async (req: NextRequest, ...args: any[]) => {
     try {
       const user = await requireAuth();
-      return await handler(req, user);
+      return await handler(req, user, ...args);
     } catch (error) {
       if (error instanceof Error && error.message === 'Unauthorized') {
         return NextResponse.json(
@@ -52,10 +54,10 @@ export function withAuth(handler: AuthenticatedHandler) {
  * @returns A standard Next.js API handler
  */
 export function withRole(role: UserRole, handler: RoleProtectedHandler) {
-  return async (req: NextRequest) => {
+  return async (req: NextRequest, ...args: any[]) => {
     try {
       const user = await requireRole(role);
-      return await handler(req, user);
+      return await handler(req, user, ...args);
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === 'Unauthorized') {

@@ -6,8 +6,8 @@ import { headers } from 'next/headers';
 import { logger } from '@/lib/logger';
 
 // Log all attempts to use the legacy NextAuth routes
-function logDeprecatedAccess(req: NextRequest) {
-  const headersList = headers();
+async function logDeprecatedAccess(req: NextRequest) {
+  const headersList = await headers();
   const userAgent = headersList.get('user-agent') || 'Unknown';
   const referer = headersList.get('referer') || 'Unknown';
   
@@ -22,11 +22,11 @@ function logDeprecatedAccess(req: NextRequest) {
 
 // Redirect all NextAuth requests to the login page
 export async function GET(req: NextRequest) {
-  logDeprecatedAccess(req);
+  await logDeprecatedAccess(req);
   return NextResponse.redirect(new URL('/login', req.url));
 }
 
 export async function POST(req: NextRequest) {
-  logDeprecatedAccess(req);
+  await logDeprecatedAccess(req);
   return NextResponse.redirect(new URL('/login', req.url));
 }

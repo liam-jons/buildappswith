@@ -8,12 +8,22 @@ All notable changes to this project will be documented in this file.
 - Admin dashboard capabilities for user management
 - Enhanced multi-tenant support through Clerk's organization features
 
+## [1.0.67] - 2025-04-24
+
+### Fixed
+- Fixed Promise-based headers() handling in NextAuth legacy route handler
+- Updated API routes to consistently use NextResponse.json() instead of new Response()
+- Standardized error responses across Clerk webhook handler
+- Enhanced header handling for Next.js 15.3.1 compatibility
+
 ## [1.0.66] - 2025-04-24
 
 ### Changed
 - Completed Clerk authentication migration with full cleanup of NextAuth references
 - Enhanced legacy NextAuth route handler with improved logging
 - Updated legacy auth stubs with better error messages and documentation
+- Fixed type definitions in authentication wrappers to support route parameters
+- Updated API route handlers to use NextResponse instead of Response
 
 ### Removed
 - Removed redundant middleware.nextauth.ts file
