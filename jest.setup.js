@@ -21,28 +21,45 @@ jest.mock('next/navigation', () => ({
   },
 }))
 
-// Mock next-auth properly
-jest.mock('next-auth/react', () => ({
-  useSession: jest.fn(() => ({
-    data: {
-      user: {
-        id: 'test-user-id',
-        name: 'Test User',
-        email: 'test@example.com',
-      },
-      expires: '2025-12-31',
+// Mock Clerk authentication
+jest.mock('@clerk/nextjs', () => ({
+  auth: () => ({
+    userId: 'test-user-id',
+    sessionId: 'test-session-id',
+    getToken: jest.fn().mockResolvedValue('test-token'),
+  }),
+  currentUser: jest.fn().mockResolvedValue({
+    id: 'test-user-id',
+    firstName: 'Test',
+    lastName: 'User',
+    emailAddresses: [{ emailAddress: 'test@example.com' }],
+    publicMetadata: {
+      roles: ['CLIENT'],
     },
-    status: 'authenticated',
-  })),
-  SessionProvider: ({ children }) => children,
-  getServerSession: jest.fn(() => Promise.resolve({
+  }),
+  useUser: () => ({
+    isLoaded: true,
+    isSignedIn: true,
     user: {
       id: 'test-user-id',
-      name: 'Test User',
-      email: 'test@example.com',
+      firstName: 'Test',
+      lastName: 'User',
+      primaryEmailAddress: { emailAddress: 'test@example.com' },
+      publicMetadata: {
+        roles: ['CLIENT'],
+      },
     },
-    expires: '2025-12-31',
-  })),
+  }),
+  ClerkProvider: ({ children }) => children,
+  useAuth: () => ({
+    isLoaded: true,
+    isSignedIn: true,
+    userId: 'test-user-id',
+    sessionId: 'test-session-id',
+    getToken: jest.fn().mockResolvedValue('test-token'),
+  }),
+  SignedIn: ({ children }) => children,
+  SignedOut: () => null,
 }))
 
 // Mock next/image
@@ -79,3 +96,14 @@ class MockIntersectionObserver {
   disconnect() { return null }
 }
 window.IntersectionObserver = MockIntersectionObserver
+
+// Mock ResizeObserver
+class MockResizeObserver {
+  constructor(callback) {
+    this.callback = callback
+  }
+  observe() { return null }
+  unobserve() { return null }
+  disconnect() { return null }
+}
+window.ResizeObserver = MockResizeObserver
