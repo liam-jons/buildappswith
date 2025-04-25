@@ -1,6 +1,6 @@
 {
   "name": "buildappswith",
-  "version": "1.0.71",
+  "version": "1.0.67",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -38,13 +38,7 @@
     "test:e2e": "vitest run --dir __tests__/e2e",
     "test:accessibility": "vitest run -t 'accessibility'",
     "test:debug": "vitest run --dir __tests__/unit/debug --verbose",
-    "test:verify": "jest __tests__/unit/verify-basic-utils.test.jsx",
-    "test:form": "jest __tests__/unit/form-utils.test.jsx",
-    "test:all": "jest __tests__/unit/*.test.jsx",
-    "test:auth": "jest __tests__/components/auth/protected-component.test.jsx __tests__/api/protected-route.test.js __tests__/components/auth/protected-route.test.tsx __tests__/components/admin/admin-layout.test.tsx __tests__/components/marketplace/BuilderProfileClient.test.tsx __tests__/components/marketplace/marketplace-page.test.tsx __tests__/components/marketplace/builder-card.test.tsx __tests__/components/admin/builders-page.test.tsx __tests__/integration/marketplace/marketplace-integration.test.tsx",
-    "test:auth:basic": "jest __tests__/components/auth/protected-component.test.jsx __tests__/api/protected-route.test.js",
-    "test:auth:components": "jest __tests__/components/auth/protected-route.test.tsx __tests__/components/admin/admin-layout.test.tsx __tests__/components/marketplace/BuilderProfileClient.test.tsx",
-    "test:auth:marketplace": "jest __tests__/components/marketplace/marketplace-page.test.tsx __tests__/components/marketplace/builder-card.test.tsx __tests__/components/admin/builders-page.test.tsx __tests__/integration/marketplace/marketplace-integration.test.tsx"
+    "test:verify": "jest __tests__/unit/verify-clerk-utils.test.jsx",
   },
   "dependencies": {
     "@clerk/nextjs": "^4.31.8",
