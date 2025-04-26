@@ -5,6 +5,7 @@ on:
     branches: [ develop, main ]
   push:
     branches: [ develop, main ]
+  workflow_dispatch:
 
 jobs:
   validate:
@@ -61,6 +62,8 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     needs: validate
+    # Add ID for Datadog workflow dependency
+    id: main-tests
     
     steps:
       - name: Checkout repository
@@ -96,6 +99,14 @@ jobs:
         
       - name: Run tests
         run: pnpm test
+        
+      - name: Store test artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: main-test-results
+          path: test-results/
+          retention-days: 14
         
   accessibility:
     name: Accessibility Check

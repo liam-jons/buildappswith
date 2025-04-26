@@ -1,21 +1,17 @@
-## [1.0.68] - 2025-04-25
+## [1.0.80] - 2025-04-26
 
-### Added
-- Implemented basic testing framework with Jest
-- Created test utilities for rendering components and testing forms
-- Added test verification utilities to ensure testing infrastructure works correctly
-- Established pattern for testing React components with testing-library
-- Created example test cases for basic component rendering and form interaction
-
-### Fixed
-- Resolved Clerk authentication testing configuration
-- Simplified test utilities to make them compatible with Jest
-- Created standardized approach to component testing with proper provider wrapping
-- Fixed fireEvent-based form testing to handle input changes correctly
+### Removed
+- Removed legacy route handling that was used during NextAuth migration
+- Removed legacy route validation from middleware configuration
+- Removed legacy route imports from middleware index
 
 ### Changed
-- Updated package.json test scripts for better organization:
-  - Added dedicated test:verify and test:form scripts
-  - Added test:all script for running all unit tests
-- Enhanced jest.setup.js with Clerk authentication mocks
-- Maintained WCAG 2.1 AA compliance in all testing utilities
+- Updated middleware factory to remove dependency on legacy routes
+- Updated middleware tests to use proper mocking approach
+- Simplified configuration validation without legacy route checks
+- Improved test file structure to set up mocks before imports
+
+### Fixed
+- Fixed test failures in middleware test suite
+- Corrected mocking implementation in middleware tests
+- Resolved "Cannot read properties of undefined" errors

@@ -1,876 +1,397 @@
-# Buildappswith Platform Testing Framework
+# Buildappswith Testing Framework Documentation
 
-## 1. Executive Summary
+Version: 1.0.0  
+Last Updated: April 25, 2025
 
-This document outlines a comprehensive testing strategy for the Buildappswith platform, designed to ensure high quality across the platform while supporting rapid iteration during the MVP phase and beyond. The testing framework balances thorough coverage with maintainable test code, focusing on critical user flows and platform stability.
+## Overview
 
-The framework implements four complementary testing approaches:
+The Buildappswith platform employs a comprehensive testing strategy using Vitest as the primary test runner, integrated with Datadog for visualizing test results and monitoring test performance. This document outlines the testing approach, tools, and best practices for the platform.
 
-- **Unit Testing**: Small-scale tests for individual functions and utilities (Vitest)
-- **Component Testing**: Isolated tests for React components (React Testing Library with Vitest)
-- **Integration Testing**: Testing interactions between components and services (Vitest)
-- **End-to-End Testing**: Full-flow user journey testing (Playwright)
+## Table of Contents
 
-Additionally, specialized testing approaches address:
+1. [Testing Structure](#testing-structure)
+2. [Test Types](#test-types)
+3. [Running Tests](#running-tests)
+4. [Writing Tests](#writing-tests)
+5. [Datadog Integration](#datadog-integration)
+6. [CI/CD Integration](#cicd-integration)
+7. [Best Practices](#best-practices)
 
-- **Accessibility Compliance**: Automated and manual testing to ensure WCAG 2.1 AA compliance
-- **Visual Regression**: Ensuring UI consistency across changes
-- **Performance Testing**: Monitoring critical metrics and page responsiveness
-- **Security Testing**: Validating authentication flows and data protection
+## Testing Structure
 
-This testing framework provides immediate feedback during development while establishing confidence in production deployments, particularly crucial for a platform built on trust and validation.
-
-## 2. Testing Strategy
-
-### 2.1 Testing Pyramid Approach
-
-Our testing strategy follows the "testing trophy" model, which balances different types of tests for maximum effectiveness:
+The testing framework follows a structured approach with dedicated directories for different types of tests:
 
 ```
-         /\
-        /  \
-       /    \
-      / E2E  \
-     /--------\
-    /          \
-   / Integration \
-  /--------------\
- /                \
-/     Component     \
---------------------
-|       Unit        |
---------------------
+__tests__/
+├── api/                 # API endpoint tests
+├── components/          # Component tests
+│   ├── admin/           # Admin component tests
+│   ├── auth/            # Authentication component tests
+│   ├── marketplace/     # Marketplace component tests
+│   └── ...
+├── integration/         # Integration tests between components
+├── middleware/          # Middleware tests
+├── mocks/               # Mock data and functions
+├── types/               # Type definitions for tests
+├── unit/                # Unit tests for utilities and isolated functions
+└── utils/               # Test utilities and helpers
+
+test-results/            # Test execution results
+├── coverage/            # Code coverage reports
+├── reports/             # Test execution reports
+├── snapshots/           # Component snapshots
+└── performance/         # Performance test results
 ```
 
-- **Unit Tests (Base)**: Numerous, fast, focus on business logic and utilities
-- **Component Tests (Wide Middle)**: Testing React components in isolation
-- **Integration Tests (Narrow Middle)**: Testing interactions between components
-- **E2E Tests (Top)**: Fewer tests covering critical user flows end-to-end
+## Test Types
 
-### 2.2 Unit Testing Strategy
+### Unit Tests
 
-Unit tests provide the foundation of our testing pyramid, focusing on pure logic, utilities, and services.
+Unit tests focus on testing individual functions, hooks, and utilities in isolation. They should have minimal dependencies and use mocks for external services.
 
-**Key Principles:**
-- Tests should be isolated and not dependent on external services
-- Each function should be tested for expected outputs, edge cases, and error handling
-- Aim for high coverage of critical business logic
+**Location**: `__tests__/unit/`  
+**Naming Convention**: `*.test.ts` or `*.test.tsx`
 
-**Primary Testing Tools:**
-- Vitest for test runner (faster than Jest, compatible with Next.js)
-- MSW (Mock Service Worker) for API mocking
+### Component Tests
 
-**Example Unit Test:**
+Component tests verify that UI components render correctly and respond appropriately to user interactions. They use React Testing Library to simulate user behavior.
 
-```typescript
-// src/utils/validation.test.ts
-import { describe, it, expect } from 'vitest';
-import { validateProfileData } from './validation';
+**Location**: `__tests__/components/{domain}`  
+**Naming Convention**: `ComponentName.test.tsx`
 
-describe('validateProfileData', () => {
-  it('returns true for valid profile data', () => {
-    const validProfile = {
-      name: 'Test Builder',
-      expertise: ['AI', 'Web Development'],
-      experience: 5,
-      contactEmail: 'test@example.com'
-    };
-    
-    expect(validateProfileData(validProfile)).toBe(true);
-  });
-  
-  it('returns false when required fields are missing', () => {
-    const invalidProfile = {
-      name: 'Test Builder',
-      expertise: ['AI', 'Web Development'],
-      // missing experience and contactEmail
-    };
-    
-    expect(validateProfileData(invalidProfile)).toBe(false);
-  });
-  
-  it('returns false when email format is invalid', () => {
-    const invalidProfile = {
-      name: 'Test Builder',
-      expertise: ['AI', 'Web Development'],
-      experience: 5,
-      contactEmail: 'invalid-email'
-    };
-    
-    expect(validateProfileData(invalidProfile)).toBe(false);
-  });
-});
+### API Tests
+
+API tests validate the behavior of API endpoints, ensuring they handle requests correctly and return expected responses.
+
+**Location**: `__tests__/api/`  
+**Naming Convention**: `endpoint-name.test.ts`
+
+### Integration Tests
+
+Integration tests check that multiple components or services work together correctly.
+
+**Location**: `__tests__/integration/`  
+**Naming Convention**: `feature-name.test.ts`
+
+### Middleware Tests
+
+Middleware tests validate the behavior of Next.js middleware functions.
+
+**Location**: `__tests__/middleware/`  
+**Naming Convention**: `middleware-function.test.ts`
+
+## Running Tests
+
+The project includes various npm scripts for running tests:
+
+### Standard Test Commands
+
+```bash
+# Run all tests
+npm test
+
+# Watch mode for development
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run specific test types
+npm run test:unit
+npm run test:integration
+npm run test:middleware
 ```
 
-### 2.3 Component Testing Strategy
+### Datadog-Integrated Test Commands
 
-Component tests verify that individual React components render correctly and handle user interactions properly.
+```bash
+# Run all tests and report to Datadog
+npm run test:datadog
 
-**Key Principles:**
-- Test components in isolation, mocking any dependencies
-- Focus on user interactions and component behavior
-- Verify accessibility compliance at the component level
+# Run tests with coverage and report to Datadog
+npm run test:datadog:coverage
 
-**Primary Testing Tools:**
-- React Testing Library
-- Vitest
-- jest-axe for accessibility testing
+# Run specific test suites with Datadog reporting
+npm run test:datadog:marketplace
+npm run test:datadog:auth
+npm run test:datadog:integration
+```
 
-**Example Component Test:**
+## Writing Tests
 
-```typescript
-// src/components/BuilderCard/BuilderCard.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { axe } from 'jest-axe';
-import { describe, it, expect, vi } from 'vitest';
-import BuilderCard from './BuilderCard';
+### Component Test Example
+
+```tsx
+// __tests__/components/marketplace/builder-card.test.tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import BuilderCard from '@/components/marketplace/BuilderCard';
 
 describe('BuilderCard', () => {
   const mockBuilder = {
-    id: '123',
-    name: 'Jane Doe',
-    expertise: ['AI', 'Web Development'],
+    id: '1',
+    name: 'Test Builder',
+    expertise: ['React', 'Next.js'],
     rating: 4.8,
-    completedProjects: 12,
-    imageUrl: '/images/avatars/jane-doe.jpg',
   };
-  
-  const mockOnSelect = vi.fn();
-  
+
   it('renders builder information correctly', () => {
-    render(<BuilderCard builder={mockBuilder} onSelect={mockOnSelect} />);
+    render(<BuilderCard builder={mockBuilder} />);
     
-    expect(screen.getByText('Jane Doe')).toBeInTheDocument();
-    expect(screen.getByText('AI')).toBeInTheDocument();
-    expect(screen.getByText('Web Development')).toBeInTheDocument();
+    expect(screen.getByText('Test Builder')).toBeInTheDocument();
+    expect(screen.getByText('React')).toBeInTheDocument();
+    expect(screen.getByText('Next.js')).toBeInTheDocument();
     expect(screen.getByText('4.8')).toBeInTheDocument();
-    expect(screen.getByText('12')).toBeInTheDocument();
   });
-  
-  it('calls onSelect when view profile button is clicked', () => {
-    render(<BuilderCard builder={mockBuilder} onSelect={mockOnSelect} />);
+
+  it('navigates to builder profile when clicked', async () => {
+    const mockNavigate = jest.fn();
+    render(<BuilderCard builder={mockBuilder} onSelect={mockNavigate} />);
     
-    const viewProfileButton = screen.getByRole('button', { name: /view profile/i });
-    fireEvent.click(viewProfileButton);
-    
-    expect(mockOnSelect).toHaveBeenCalledWith('123');
-  });
-  
-  it('passes accessibility checks', async () => {
-    const { container } = render(
-      <BuilderCard builder={mockBuilder} onSelect={mockOnSelect} />
-    );
-    
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    await userEvent.click(screen.getByRole('button', { name: /view profile/i }));
+    expect(mockNavigate).toHaveBeenCalledWith('1');
   });
 });
 ```
 
-### 2.4 Integration Testing Strategy
+### Utility Test Example
 
-Integration tests verify that multiple components and services work together correctly.
+```tsx
+// __tests__/unit/form-utils.test.ts
+import { validateEmail, formatPhoneNumber } from '@/lib/form-utils';
 
-**Key Principles:**
-- Test interactions between components, hooks, and services
-- Mock external dependencies but test internal interactions
-- Focus on key user flows across component boundaries
+describe('Form Utilities', () => {
+  describe('validateEmail', () => {
+    it('returns true for valid emails', () => {
+      expect(validateEmail('user@example.com')).toBe(true);
+      expect(validateEmail('user.name+tag@example.co.uk')).toBe(true);
+    });
 
-**Primary Testing Tools:**
-- React Testing Library
-- Vitest
-- MSW for API mocking
-
-**Example Integration Test:**
-
-```typescript
-// src/app/(platform)/marketplace/MarketplacePage.test.tsx
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
-import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
-import MarketplacePage from './page';
-
-// Mock server to intercept API requests
-const server = setupServer(
-  rest.get('/api/marketplace/builders', (req, res, ctx) => {
-    return res(ctx.json({
-      builders: [
-        {
-          id: '123',
-          name: 'Jane Doe',
-          expertise: ['AI', 'Web Development'],
-          rating: 4.8,
-          completedProjects: 12,
-        },
-        {
-          id: '456',
-          name: 'John Smith',
-          expertise: ['Machine Learning', 'Data Science'],
-          rating: 4.5,
-          completedProjects: 8,
-        }
-      ]
-    }));
-  }),
-  rest.get('/api/marketplace/filters', (req, res, ctx) => {
-    return res(ctx.json({
-      expertise: ['AI', 'Web Development', 'Machine Learning', 'Data Science'],
-      rating: [4, 4.5, 5],
-    }));
-  })
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
-
-describe('MarketplacePage', () => {
-  it('loads and displays builders from API', async () => {
-    render(<MarketplacePage />);
-    
-    // Check loading state
-    expect(screen.getByText(/loading builders/i)).toBeInTheDocument();
-    
-    // Wait for builders to load
-    await waitFor(() => {
-      expect(screen.getByText('Jane Doe')).toBeInTheDocument();
-      expect(screen.getByText('John Smith')).toBeInTheDocument();
+    it('returns false for invalid emails', () => {
+      expect(validateEmail('user@')).toBe(false);
+      expect(validateEmail('user@example')).toBe(false);
+      expect(validateEmail('userexample.com')).toBe(false);
     });
   });
-  
-  it('filters builders by expertise', async () => {
-    render(<MarketplacePage />);
-    
-    // Wait for builders to load
-    await waitFor(() => {
-      expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+
+  describe('formatPhoneNumber', () => {
+    it('formats phone numbers correctly', () => {
+      expect(formatPhoneNumber('1234567890')).toBe('(123) 456-7890');
+      expect(formatPhoneNumber('123-456-7890')).toBe('(123) 456-7890');
     });
-    
-    // Select AI filter
-    const user = userEvent.setup();
-    const aiFilter = screen.getByRole('checkbox', { name: /ai/i });
-    await user.click(aiFilter);
-    
-    // Jane Doe should remain, John Smith should be filtered out
-    expect(screen.getByText('Jane Doe')).toBeInTheDocument();
-    expect(screen.queryByText('John Smith')).not.toBeInTheDocument();
+
+    it('returns original input for invalid phone numbers', () => {
+      expect(formatPhoneNumber('123')).toBe('123');
+      expect(formatPhoneNumber('abc')).toBe('abc');
+    });
   });
 });
 ```
 
-### 2.5 End-to-End Testing Strategy
+## Datadog Integration
 
-End-to-end tests verify complete user flows from start to finish, including authentication, navigation, and data persistence.
+The platform integrates with Datadog for visualizing test results and monitoring test performance. This provides valuable insights into test trends and helps identify potential issues early.
 
-**Key Principles:**
-- Focus on critical user journeys
-- Test across page boundaries and actual API interactions
-- Include authentication flows and role-based access
+### Key Features
 
-**Primary Testing Tools:**
-- Playwright for browser automation
-- Custom test utilities for authentication
+1. **Test Results Visualization**: All test runs are reported to Datadog, providing dashboards for visualizing test results over time.
+2. **Component-Level Metrics**: Test performance is tracked at the component level, helping identify problematic areas.
+3. **Coverage Tracking**: Code coverage metrics are reported to Datadog for monitoring coverage trends.
+4. **Test Performance Monitoring**: Test execution time is tracked to identify slow tests and performance regressions.
 
-**Example E2E Test:**
+### Environment Variable Setup
 
-```typescript
-// e2e/marketplace-booking.spec.ts
-import { test, expect } from '@playwright/test';
+The Datadog integration requires two environment variables to be set:
 
-test.describe('Marketplace Booking Flow', () => {
-  test.beforeEach(async ({ page }) => {
-    // Log in before each test
-    await page.goto('/login');
-    await page.fill('[name="email"]', 'test-client@example.com');
-    await page.fill('[name="password"]', 'password123');
-    await page.click('button[type="submit"]');
-    await page.waitForURL('/dashboard');
-  });
+1. `DATADOG_API_KEY`: Your Datadog API key
+2. `DATADOG_APP_KEY`: Your Datadog application key
 
-  test('client can book a session with a builder', async ({ page }) => {
-    // Navigate to marketplace
-    await page.goto('/marketplace');
-    
-    // Select the first builder
-    await page.click('text=View Profile', { first: true });
-    
-    // Wait for profile page to load
-    await page.waitForSelector('h1:has-text("Book a Session")');
-    
-    // Select a session type
-    await page.click('text=One-on-One Consultation');
-    
-    // Select a date and time
-    await page.click('[aria-label="Choose Wednesday, April 30th, 2025"]');
-    await page.click('text=10:00 AM');
-    
-    // Fill in session details
-    await page.fill('[name="sessionGoals"]', 'I need help building an AI app for my business');
-    
-    // Click book session
-    await page.click('button:has-text("Book Session")');
-    
-    // Verify confirmation
-    await expect(page.locator('text=Session Booked Successfully')).toBeVisible();
-    
-    // Check that session appears in dashboard
-    await page.goto('/dashboard');
-    await expect(page.locator('text=Upcoming Sessions')).toContainText('One-on-One Consultation');
-  });
-});
-```
-
-## 3. Framework Setup
-
-### 3.1 Vitest Configuration Update
-
-Update the existing Vitest configuration to enable all testing features:
-
-```typescript
-// vitest.config.ts
-import { defineConfig } from 'vitest'
-import react from '@vitejs/plugin-react'
-import path from 'path'
-
-export default defineConfig({
-  plugins: [react()],
-  test: {
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: ['./vitest.setup.ts'],
-    css: false,
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/**',
-        '.next/**',
-        'public/**',
-        'styles/**',
-        'e2e/**',
-        '**/*.d.ts',
-        '**/__mocks__/**',
-        '**/test-utils/**',
-      ],
-    },
-    include: ['**/*.test.{ts,tsx}'],
-    exclude: [
-      '**/node_modules/**', 
-      '**/.next/**', 
-      '**/dist/**',
-      'e2e/**',
-    ],
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './'),
-      'test-utils': path.resolve(__dirname, './__tests__/utils/vitest-utils'),
-    },
-  },
-})
-```
-
-### 3.2 Vitest Setup File Update
-
-Create an updated setup file for Vitest to handle all necessary mocks:
-
-```typescript
-// vitest.setup.ts
-import '@testing-library/jest-dom/vitest'
-import { expect, afterEach, vi } from 'vitest'
-import { cleanup } from '@testing-library/react'
-import * as matchers from '@testing-library/jest-dom/matchers'
-import { toHaveNoViolations } from 'jest-axe'
-
-// Extend Vitest's expect method with testing-library matchers
-expect.extend(matchers)
-// Add jest-axe matcher
-expect.extend(toHaveNoViolations)
-
-// Runs a cleanup after each test case
-afterEach(() => {
-  cleanup()
-})
-
-// Mock next/navigation
-vi.mock('next/navigation', () => ({
-  useRouter() {
-    return {
-      push: vi.fn(),
-      replace: vi.fn(),
-      back: vi.fn(),
-      forward: vi.fn(),
-      refresh: vi.fn(),
-      prefetch: vi.fn(),
-      pathname: '/',
-      params: {},
-    }
-  },
-  useSearchParams() {
-    return new URLSearchParams()
-  },
-  usePathname() {
-    return '/'
-  },
-}))
-
-// Mock next/image
-vi.mock('next/image', () => ({
-  default: ({ src, alt, ...props }) => {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} {...props} data-testid="next-image" />
-  },
-}))
-
-// Mock Clerk authentication
-vi.mock('@clerk/nextjs', () => ({
-  auth: () => ({
-    userId: 'test-user-id',
-    sessionId: 'test-session-id',
-    getToken: vi.fn().mockResolvedValue('test-token'),
-  }),
-  currentUser: vi.fn().mockResolvedValue({
-    id: 'test-user-id',
-    firstName: 'Test',
-    lastName: 'User',
-    emailAddresses: [{ emailAddress: 'test@example.com' }],
-  }),
-  useUser: () => ({
-    isLoaded: true,
-    isSignedIn: true,
-    user: {
-      id: 'test-user-id',
-      firstName: 'Test',
-      lastName: 'User',
-      primaryEmailAddress: { emailAddress: 'test@example.com' },
-    },
-  }),
-  ClerkProvider: ({ children }) => <>{children}</>,
-  useAuth: () => ({
-    isLoaded: true,
-    isSignedIn: true,
-    userId: 'test-user-id',
-    sessionId: 'test-session-id',
-    getToken: vi.fn().mockResolvedValue('test-token'),
-  }),
-  SignedIn: ({ children }) => <>{children}</>,
-  SignedOut: () => null,
-}))
-
-// Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-})
-
-// Mock IntersectionObserver
-class MockIntersectionObserver {
-  constructor(callback) {
-    this.callback = callback
-  }
-  observe() { return null }
-  unobserve() { return null }
-  disconnect() { return null }
-}
-global.IntersectionObserver = MockIntersectionObserver
-
-// Mock ResizeObserver
-class MockResizeObserver {
-  constructor(callback) {
-    this.callback = callback
-  }
-  observe() { return null }
-  unobserve() { return null }
-  disconnect() { return null }
-}
-global.ResizeObserver = MockResizeObserver
-```
-
-### 3.3 Playwright Configuration
-
-Create a configuration file for Playwright end-to-end tests:
-
-```typescript
-// playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
-
-export default defineConfig({
-  testDir: './e2e',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    ['html'],
-    ['list']
-  ],
-  use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-  },
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-    {
-      name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'mobile-safari',
-      use: { ...devices['iPhone 12'] },
-    },
-  ],
-  // Run local dev server before starting tests
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
-});
-```
-
-## 4. Test Organization
-
-### 4.1 Directory Structure
-
-The testing framework follows this organized directory structure:
+You can set these variables in your `.env.local` file:
 
 ```
-buildappswith/
-├── __tests__/
-│   ├── components/    # Component tests
-│   │   ├── ui/        # UI component tests
-│   │   ├── landing/   # Landing page component tests
-│   │   ├── marketplace/ # Marketplace component tests
-│   │   └── ...
-│   ├── integration/   # Integration tests
-│   │   ├── marketplace/ # Marketplace integration tests
-│   │   ├── profile/   # Profile page integration tests
-│   │   └── ...
-│   ├── unit/          # Unit tests
-│   │   ├── lib/       # Library function tests
-│   │   ├── utils/     # Utility function tests
-│   │   └── ...
-│   ├── mocks/         # Mock data and functions
-│   │   ├── builders.ts # Builder mock data
-│   │   ├── users.ts   # User mock data
-│   │   └── ...
-│   └── utils/         # Test utilities
-│       ├── render.ts  # Custom render functions
-│       ├── auth.ts    # Authentication utilities
-│       └── ...
-├── e2e/               # End-to-end tests
-│   ├── auth/          # Authentication flows
-│   ├── marketplace/   # Marketplace flows
-│   ├── profile/       # Profile flows
-│   └── fixtures/      # Test fixtures for E2E
-└── test-results/      # Test results and reports
-    ├── coverage/      # Coverage reports
-    └── playwright/    # Playwright results
+# Datadog API credentials for test visualization
+DATADOG_API_KEY=your_api_key_here
+DATADOG_APP_KEY=your_app_key_here
 ```
 
-## 5. Component Test Plans
+To obtain these keys:
 
-### 5.1 Builder Marketplace Test Plan
+1. Log in to your Datadog account at [app.datadoghq.com](https://app.datadoghq.com/)
+2. Go to **Organization Settings** > **API Keys** to create or copy your API key
+3. Go to **Organization Settings** > **Application Keys** to create or copy an application key
 
-| Test Case | Steps | Expected Result | Verification Method |
-|-----------|-------|-----------------|---------------------|
-| **Builder Listing Display** | 1. Render Marketplace page<br>2. Check builder cards | Multiple builder cards displayed with correct information | Component/Integration |
-| **Builder Filtering** | 1. Render Marketplace page<br>2. Select expertise filter<br>3. Check filtered results | Only builders matching filter criteria displayed | Integration |
-| **Builder Search** | 1. Render Marketplace page<br>2. Enter search term<br>3. Check search results | Only builders matching search term displayed | Integration |
-| **Builder Card Interactions** | 1. Render BuilderCard component<br>2. Click "View Profile" button | onSelect handler called with builder ID | Component |
-| **Empty State Handling** | 1. Render Marketplace with no results<br>2. Check empty state display | No results message displayed with guidance | Component/Integration |
-| **Builder Profile Navigation** | 1. Render Marketplace page<br>2. Click "View Profile" on a builder card<br>3. Check URL change | Navigation to builder profile page | Integration/E2E |
-| **Accessibility Compliance** | 1. Render Marketplace components<br>2. Run accessibility checks | No accessibility violations detected | Component/Integration |
+### Setup and Configuration
 
-### 5.2 Validation System Test Plan
+The Datadog integration is set up using the `setup-datadog-test-visualization.js` script, which configures the necessary directories, scripts, and Datadog agent.
 
-| Test Case | Steps | Expected Result | Verification Method |
-|-----------|-------|-----------------|---------------------|
-| **Validation Badge Display** | 1. Render BuilderProfile with validation data<br>2. Check badge rendering | Correct validation tier badge displayed | Component |
-| **Validation Metrics** | 1. Render BuilderProfile with metrics<br>2. Check metrics display | Success rate, completed projects, etc. displayed correctly | Component |
-| **Tier 1 Validation Logic** | 1. Test validateTier1 function with valid data<br>2. Test with invalid data | Returns true for valid data, false for invalid data | Unit |
-| **Tier 2 Validation Logic** | 1. Test validateTier2 function with valid data<br>2. Test with invalid data | Returns true for valid data, false for invalid data | Unit |
-| **Tier 3 Validation Logic** | 1. Test validateTier3 function with valid data<br>2. Test with invalid data | Returns true for valid data, false for invalid data | Unit |
-| **Validation API Integration** | 1. Mock validation API response<br>2. Render component using validation data | Component correctly displays API-provided validation data | Integration |
-| **Validation Info Tooltip** | 1. Render validation badge<br>2. Hover over info icon<br>3. Check tooltip | Tooltip explaining validation criteria displayed | Component/E2E |
-
-## 6. Test Utilities
-
-### 6.1 Custom Render Function
-
-Create a custom render function to provide necessary context providers:
-
-```typescript
-// __tests__/utils/render.tsx
-import { render as rtlRender } from '@testing-library/react';
-import { ThemeProvider } from 'next-themes';
-import { ClerkProvider } from '@clerk/nextjs';
-
-export function render(ui, options = {}) {
-  const Wrapper = ({ children }) => (
-    <ClerkProvider>
-      <ThemeProvider defaultTheme="system" enableSystem>
-        {children}
-      </ThemeProvider>
-    </ClerkProvider>
-  );
-  
-  return rtlRender(ui, { wrapper: Wrapper, ...options });
-}
-
-// Export everything from testing-library
-export * from '@testing-library/react';
+```bash
+# Set up Datadog integration
+node scripts/setup-datadog-test-visualization.js
 ```
 
-### 6.2 Authentication Testing Utilities
+This script will:
+1. Check if the Datadog agent is installed and running
+2. Create the necessary directory structure for test results
+3. Update package.json with Datadog-specific test scripts
+4. Set up Datadog dashboard configuration
 
-Create utilities to mock different authentication states:
+### Verifying Integration
 
-```typescript
-// __tests__/utils/auth.tsx
-import { ClerkProvider, useAuth } from '@clerk/nextjs';
-import { vi } from 'vitest';
+To verify that the Datadog integration is working correctly, run the verification script:
 
-export const mockUnauthenticated = () => {
-  vi.mock('@clerk/nextjs', async () => {
-    const actual = await vi.importActual('@clerk/nextjs');
-    return {
-      ...actual,
-      useAuth: () => ({
-        isLoaded: true,
-        isSignedIn: false,
-        userId: null,
-        sessionId: null,
-      }),
-      useUser: () => ({
-        isLoaded: true,
-        isSignedIn: false,
-        user: null,
-      }),
-    };
-  });
-};
-
-export const mockAuthenticatedAs = (user) => {
-  vi.mock('@clerk/nextjs', async () => {
-    const actual = await vi.importActual('@clerk/nextjs');
-    return {
-      ...actual,
-      useAuth: () => ({
-        isLoaded: true,
-        isSignedIn: true,
-        userId: user.id,
-        sessionId: 'test-session-id',
-      }),
-      useUser: () => ({
-        isLoaded: true,
-        isSignedIn: true,
-        user: {
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          primaryEmailAddress: { emailAddress: user.email },
-        },
-      }),
-    };
-  });
-};
+```bash
+# Verify Datadog integration
+node scripts/verify-datadog-metrics.js
 ```
 
-### 6.3 Form Testing Utilities
+This script will:
+1. Run a small test to generate metrics
+2. Check that test result files are generated correctly
+3. Query the Datadog API to verify that metrics are being received
 
-Create utilities to simplify form testing:
+### Dashboard
 
-```typescript
-// __tests__/utils/forms.tsx
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+The Datadog dashboard for test visualization includes:
 
-export async function fillForm(formData) {
-  const user = userEvent.setup();
-  
-  for (const [name, value] of Object.entries(formData)) {
-    const input = screen.getByRole('textbox', { name: new RegExp(name, 'i') }) ||
-                 screen.getByLabelText(new RegExp(name, 'i'));
-    
-    await user.clear(input);
-    await user.type(input, value);
-  }
-}
+1. **Test Execution Overview**: Pass rate, test results breakdown, and execution time.
+2. **Component Test Performance**: Component-level test metrics showing pass rates and test counts.
+3. **Code Coverage Metrics**: Line, statement, function, and branch coverage over time.
 
-export async function submitForm(buttonText = 'Submit') {
-  const user = userEvent.setup();
-  const submitButton = screen.getByRole('button', { name: new RegExp(buttonText, 'i') });
-  await user.click(submitButton);
-}
+## CI/CD Integration
 
-export async function selectOption(labelText, optionText) {
-  const user = userEvent.setup();
-  const select = screen.getByLabelText(new RegExp(labelText, 'i'));
-  await user.click(select);
-  const option = screen.getByRole('option', { name: new RegExp(optionText, 'i') });
-  await user.click(option);
-}
-```
+The testing framework is integrated with CI/CD pipelines to ensure tests are run automatically on code changes.
 
-## 7. CI/CD Integration
+### GitHub Actions Integration
 
-### 7.1 GitHub Actions Workflow
+Tests are run as part of the GitHub Actions workflow with Datadog reporting. The integration includes multiple workflows:
 
-Create a GitHub Actions workflow for continuous integration:
+#### Main CI Workflow
+
+The main CI workflow runs tests and stores artifacts:
 
 ```yaml
-# .github/workflows/main.yml
-name: Test and Build
+name: Continuous Integration
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main, development ]
+    branches: [ main, develop ]
+  workflow_dispatch:
 
 jobs:
   test:
+    name: Test
     runs-on: ubuntu-latest
+    needs: validate
+    id: main-tests
     
     steps:
-      - uses: actions/checkout@v3
+      # ... other steps ...
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
+      - name: Run tests
+        run: pnpm test
         
-      - name: Run linting
-        run: npm run lint
-        
-      - name: Run type checking
-        run: npm run type-check
-        
-      - name: Run unit and integration tests
-        run: npm run test:ci
-        
-      - name: Upload coverage reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: coverage/
-          
-  e2e:
-    runs-on: ubuntu-latest
-    needs: test
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-        
-      - name: Run E2E tests
-        run: npm run test:e2e
-        
-      - name: Upload Playwright report
+      - name: Store test artifacts
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: playwright-report
-          path: playwright-report/
-          
-  build:
-    runs-on: ubuntu-latest
-    needs: [test, e2e]
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development'
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Build application
-        run: npm run build
+          name: main-test-results
+          path: test-results/
+          retention-days: 14
 ```
 
-## 8. Maintenance Guidelines
+#### Datadog Test Visualization Workflow
 
-### 8.1 Test Organization Best Practices
+A dedicated workflow for Datadog test reporting:
 
-- **Folder Structure**: Maintain the defined folder structure, adding new folders as needed for new components
-- **Test Proximity**: Keep unit tests close to the code they test when possible
-- **Test Independence**: Ensure tests are independent and don't rely on other tests
-- **Mock Management**: Centralize mock data and keep it up to date with schema changes
+```yaml
+name: Datadog Test Visualization
 
-### 8.2 Performance Optimization
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ develop, main ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Daily run at midnight UTC
 
-- **Test Isolation**: Use `describe.only` and `it.only` during development to run specific tests
-- **Test Grouping**: Group related tests to allow running subsets of the test suite
-- **Parallel Execution**: Configure CI to run tests in parallel where possible
-- **Selective Testing**: Run only affected tests on PR builds using a test impact analysis tool
+jobs:
+  test-with-datadog:
+    name: Test with Datadog Reporting
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: always()  # Run even if the test job fails
+    
+    steps:
+      # ... setup steps ...
+      
+      - name: Setup Datadog Agent
+        uses: datadog/agent-github-action@v1
+        with:
+          api_key: ${{ secrets.DATADOG_API_KEY }}
+          site: datadoghq.com
+          
+      - name: Run tests with Datadog reporting
+        run: pnpm run test:datadog
+        env:
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+          DATADOG_APP_KEY: ${{ secrets.DATADOG_APP_KEY }}
+          
+      # ... other steps ...
+```
 
-### 8.3 Documentation Standards
+### GitHub Secrets Setup
 
-- **Test Descriptions**: Write clear, descriptive test names that explain what's being tested
-- **Comments**: Add comments for complex test setups or assertions
-- **Test Plans**: Update component test plans when adding new functionality
-- **Coverage Reporting**: Review coverage reports regularly and address gaps
+To enable Datadog reporting in GitHub Actions, you need to add the following secrets to your repository:
 
-### 8.4 Quality Assurance Process
+1. **DATADOG_API_KEY**: Your Datadog API key
+2. **DATADOG_APP_KEY**: Your Datadog application key
 
-- **Pull Request Process**: Include test coverage for all new features
-- **Code Review**: Review tests during code review with the same rigor as production code
-- **Regression Prevention**: Add regression tests for fixed bugs
-- **Test Refactoring**: Schedule regular test maintenance to keep tests clean and efficient
+To add these secrets:
 
-## Conclusion
+1. Go to your repository on GitHub
+2. Navigate to Settings > Secrets and variables > Actions
+3. Click on "New repository secret"
+4. Add each key with its corresponding value
 
-This testing framework provides a comprehensive approach to ensuring the quality of the Buildappswith platform. By implementing this framework, the development team will be able to:
+These secrets will be securely used in the workflow to authenticate with Datadog.
 
-1. Catch bugs early in the development process
-2. Ensure critical user flows work as expected
-3. Maintain high accessibility standards
-4. Build confidence in the codebase for faster iteration
-5. Document expected behavior through tests
+## Best Practices
 
-The framework is designed to grow with the platform, allowing for new test types and strategies as requirements evolve. Regular maintenance of the test suite should be scheduled to ensure it remains effective and efficient.
+### General Testing Guidelines
+
+1. **Test Isolation**: Tests should be independent and not rely on the state from other tests.
+2. **Meaningful Assertions**: Tests should make meaningful assertions about behavior, not implementation details.
+3. **Mock External Dependencies**: Use mocks for external services, APIs, and databases.
+4. **Test Coverage**: Aim for high test coverage, especially for critical paths and business logic.
+5. **Test Readability**: Tests should be readable and serve as documentation for the code.
+
+### Component Testing Guidelines
+
+1. **User-Centric Testing**: Test components from the user's perspective using React Testing Library.
+2. **Accessibility Testing**: Include accessibility tests for all user-facing components.
+3. **Snapshot Testing**: Use snapshots judiciously, only for stable UI components.
+4. **Event Testing**: Test component behavior in response to user events.
+
+### Performance Testing Guidelines
+
+1. **Baseline Metrics**: Establish performance baselines for key components and operations.
+2. **Regular Monitoring**: Monitor test execution time to identify performance regressions.
+3. **Threshold Alerts**: Set up alerts for significant deviations from baseline performance.
+
+---
+
+## Appendix
+
+### Useful Resources
+
+- [Vitest Documentation](https://vitest.dev/)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [Datadog Test Monitoring](https://docs.datadoghq.com/)
+- [Testing Next.js Applications](https://nextjs.org/docs/testing)
+
+### Changelog
+
+- **2025-04-25**: Initial documentation with Datadog integration

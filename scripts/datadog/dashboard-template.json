@@ -1,0 +1,263 @@
+{
+  "title": "Buildappswith Test Dashboard",
+  "description": "Visualization of test results and metrics for the Buildappswith platform",
+  "widgets": [
+    {
+      "title": "Test Results Overview",
+      "definition": {
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "title": "Test Pass Rate",
+            "definition": {
+              "type": "query_value",
+              "request": {
+                "q": "sum:buildappswith.tests.success{*}.as_rate() / sum:buildappswith.tests.run{*}.as_rate() * 100",
+                "aggregator": "avg",
+                "conditional_formats": [
+                  {
+                    "comparator": "<",
+                    "value": 80,
+                    "palette": "red"
+                  },
+                  {
+                    "comparator": "<",
+                    "value": 95,
+                    "palette": "yellow"
+                  },
+                  {
+                    "comparator": ">=",
+                    "value": 95,
+                    "palette": "green"
+                  }
+                ]
+              },
+              "precision": 1,
+              "unit": "%"
+            }
+          },
+          {
+            "title": "Test Failures (Last 24 Hours)",
+            "definition": {
+              "type": "query_value",
+              "request": {
+                "q": "sum:buildappswith.tests.failure{*}",
+                "aggregator": "sum"
+              }
+            }
+          },
+          {
+            "title": "Average Test Duration",
+            "definition": {
+              "type": "query_value",
+              "request": {
+                "q": "avg:buildappswith.tests.duration{*}",
+                "aggregator": "avg"
+              },
+              "precision": 2,
+              "unit": "s"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "Test Results Over Time",
+      "definition": {
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "sum:buildappswith.tests.success{*}",
+            "display_type": "bars",
+            "style": {
+              "palette": "green",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          },
+          {
+            "q": "sum:buildappswith.tests.failure{*}",
+            "display_type": "bars",
+            "style": {
+              "palette": "red",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          },
+          {
+            "q": "sum:buildappswith.tests.skipped{*}",
+            "display_type": "bars",
+            "style": {
+              "palette": "grey",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "Code Coverage",
+      "definition": {
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "title": "Overall Line Coverage",
+            "definition": {
+              "type": "query_value",
+              "request": {
+                "q": "avg:buildappswith.tests.coverage.lines{*}",
+                "aggregator": "last"
+              },
+              "precision": 1,
+              "unit": "%",
+              "conditional_formats": [
+                {
+                  "comparator": "<",
+                  "value": 70,
+                  "palette": "red"
+                },
+                {
+                  "comparator": "<",
+                  "value": 80,
+                  "palette": "yellow"
+                },
+                {
+                  "comparator": ">=",
+                  "value": 80,
+                  "palette": "green"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Code Coverage by Type",
+            "definition": {
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.coverage.statements{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.coverage.branches{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.coverage.functions{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "Component Coverage",
+      "definition": {
+        "type": "query_table",
+        "requests": [
+          {
+            "q": "avg:buildappswith.tests.coverage.lines{category:components}, avg:buildappswith.tests.coverage.lines{category:lib}, avg:buildappswith.tests.coverage.lines{category:utils}, avg:buildappswith.tests.coverage.lines{category:other}",
+            "aggregator": "last"
+          }
+        ],
+        "has_search_bar": "auto"
+      }
+    },
+    {
+      "title": "Test Results by Suite",
+      "definition": {
+        "type": "toplist",
+        "requests": [
+          {
+            "q": "top(avg:buildappswith.tests.failure{*} by {suite}, 10, 'sum', 'desc')",
+            "conditional_formats": [
+              {
+                "comparator": ">",
+                "value": 0,
+                "palette": "red"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "title": "Test Performance",
+      "definition": {
+        "type": "timeseries",
+        "requests": [
+          {
+            "q": "avg:buildappswith.tests.duration{*} by {suite}",
+            "display_type": "line",
+            "style": {
+              "palette": "cool",
+              "line_type": "solid",
+              "line_width": "normal"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "CI/CD Pipeline",
+      "definition": {
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "title": "Pipeline Success Rate",
+            "definition": {
+              "type": "query_value",
+              "request": {
+                "q": "sum:buildappswith.tests.ci.pipeline_success{*}.as_count()",
+                "aggregator": "avg"
+              },
+              "precision": 0,
+              "unit": "%"
+            }
+          },
+          {
+            "title": "Pipeline Duration",
+            "definition": {
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.ci.pipeline_duration{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "cool",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "layout_type": "ordered",
+  "is_read_only": false,
+  "notify_list": []
+}

@@ -1,0 +1,292 @@
+{
+  "schema_version": 1,
+  "title": "Buildappswith Test Dashboard",
+  "description": "Comprehensive visualization of test metrics for the Buildappswith platform",
+  "widgets": [
+    {
+      "definition": {
+        "type": "group",
+        "title": "Test Execution Overview",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "definition": {
+              "title": "Test Pass Rate",
+              "type": "query_value",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.pass_rate{*}",
+                  "aggregator": "avg"
+                }
+              ],
+              "precision": 2,
+              "time": {
+                "live_span": "1d"
+              },
+              "autoscale": true,
+              "custom_unit": "%"
+            }
+          },
+          {
+            "definition": {
+              "title": "Test Results Breakdown",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.passed{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.failed{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "warm",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.skipped{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "grey",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "time": {
+                "live_span": "1w"
+              },
+              "yaxis": {
+                "label": "Count",
+                "min": "0",
+                "scale": "linear"
+              },
+              "markers": []
+            }
+          },
+          {
+            "definition": {
+              "title": "Test Execution Time",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.duration{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "cool",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "time": {
+                "live_span": "1w"
+              },
+              "yaxis": {
+                "label": "Seconds",
+                "min": "0",
+                "scale": "linear"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "group",
+        "title": "Component Test Performance",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "definition": {
+              "title": "Component Test Pass Rate",
+              "type": "toplist",
+              "requests": [
+                {
+                  "q": "top(avg:buildappswith.tests.component.*.pass_rate{*} by {component}, 10, 'mean', 'desc')",
+                  "conditional_formats": [
+                    {
+                      "comparator": "<",
+                      "value": 80,
+                      "palette": "red"
+                    },
+                    {
+                      "comparator": ">=",
+                      "value": 80,
+                      "palette": "yellow"
+                    },
+                    {
+                      "comparator": ">=",
+                      "value": 95,
+                      "palette": "green"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "live_span": "1d"
+              }
+            }
+          },
+          {
+            "definition": {
+              "title": "Component Test Counts",
+              "type": "toplist",
+              "requests": [
+                {
+                  "q": "top(avg:buildappswith.tests.component.*.total{*} by {component}, 10, 'mean', 'desc')"
+                }
+              ],
+              "time": {
+                "live_span": "1d"
+              }
+            }
+          },
+          {
+            "definition": {
+              "title": "Component Test Duration",
+              "type": "toplist",
+              "requests": [
+                {
+                  "q": "top(avg:buildappswith.tests.component.*.duration{*} by {component}, 10, 'mean', 'desc')"
+                }
+              ],
+              "time": {
+                "live_span": "1d"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "group",
+        "title": "Code Coverage Metrics",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "definition": {
+              "title": "Overall Coverage Metrics",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.coverage.lines{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.coverage.statements{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "cool",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.coverage.functions{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "warm",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.coverage.branches{*}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "time": {
+                "live_span": "1w"
+              },
+              "yaxis": {
+                "label": "Percentage",
+                "min": "0",
+                "max": "100",
+                "scale": "linear"
+              }
+            }
+          },
+          {
+            "definition": {
+              "title": "Component Coverage",
+              "type": "toplist",
+              "requests": [
+                {
+                  "q": "top(avg:buildappswith.tests.coverage.component.*.lines{*} by {component}, 10, 'mean', 'desc')",
+                  "conditional_formats": [
+                    {
+                      "comparator": "<",
+                      "value": 60,
+                      "palette": "red"
+                    },
+                    {
+                      "comparator": ">=",
+                      "value": 60,
+                      "palette": "yellow"
+                    },
+                    {
+                      "comparator": ">=",
+                      "value": 80,
+                      "palette": "green"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "live_span": "1d"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "type": "note",
+        "content": "# Test Visualization Dashboard\n\nThis dashboard provides comprehensive visualization of the Buildappswith test metrics. The data is collected from Vitest test runs and includes test execution metrics, component-specific performance, and code coverage data.\n\n## Understanding the Metrics\n\n- **Test Pass Rate**: Percentage of tests that passed out of the total executed tests\n- **Component Test Performance**: Breakdown of test metrics by component\n- **Code Coverage**: Percentage of code covered by tests across different aspects\n\n## Dashboard Update Frequency\n\nThis dashboard updates automatically when tests are run and the results are processed by the Datadog agent.",
+        "background_color": "gray",
+        "font_size": "14",
+        "text_align": "left",
+        "vertical_align": "top",
+        "show_tick": false,
+        "tick_pos": "50%",
+        "tick_edge": "left"
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "env",
+      "default": "*",
+      "prefix": "env",
+      "available_values": [
+        "development", 
+        "test", 
+        "production"
+      ]
+    }
+  ],
+  "layout_type": "ordered",
+  "is_read_only": false,
+  "notify_list": []
+}

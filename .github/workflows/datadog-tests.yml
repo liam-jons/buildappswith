@@ -1,0 +1,126 @@
+name: Datadog Test Visualization
+
+on:
+  # Run on push to main branches
+  push:
+    branches: [ develop, main ]
+  
+  # Run on PRs
+  pull_request:
+    branches: [ develop, main ]
+    
+  # Allow manual triggering
+  workflow_dispatch:
+    
+  # Run on schedule (daily at midnight UTC)
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  test-with-datadog:
+    name: Test with Datadog Reporting
+    runs-on: ubuntu-latest
+    
+    # Don't require the "test" job since it's defined in another workflow file
+    # The "if: always()" is removed as it was dependent on the test job
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+          
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Setup Datadog Agent
+        uses: datadog/agent-github-action@v1
+        with:
+          api_key: ${{ secrets.DATADOG_API_KEY }}
+          site: datadoghq.com
+          
+      - name: Run tests with Datadog reporting
+        run: pnpm run test:datadog
+        env:
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+          DATADOG_APP_KEY: ${{ secrets.DATADOG_APP_KEY }}
+          
+      - name: Run coverage tests with Datadog reporting
+        run: pnpm run test:datadog:coverage
+        env:
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+          DATADOG_APP_KEY: ${{ secrets.DATADOG_APP_KEY }}
+          
+      - name: Store test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 14
+          
+      - name: Create/Update Datadog Dashboard
+        if: always()
+        run: |
+          # Ensure directories exist
+          mkdir -p scripts/datadog/dashboards
+          
+          # Create/update the Datadog dashboard
+          node scripts/datadog/dashboards/create-dashboard.js
+        env:
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+          DATADOG_APP_KEY: ${{ secrets.DATADOG_APP_KEY }}
+          
+      - name: Create test annotation
+        if: always()
+        run: |
+          echo "### Test Results with Datadog Reporting" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f "test-results/reports/vitest-results.json" ]; then
+            TOTAL=$(jq '.numTotalTests' test-results/reports/vitest-results.json)
+            PASSED=$(jq '.numPassedTests' test-results/reports/vitest-results.json)
+            FAILED=$(jq '.numFailedTests' test-results/reports/vitest-results.json)
+            DURATION=$(jq '(.endTime - .startTime) / 1000' test-results/reports/vitest-results.json)
+            
+            echo "#### Results" >> $GITHUB_STEP_SUMMARY
+            echo "- Total Tests: $TOTAL" >> $GITHUB_STEP_SUMMARY
+            echo "- Passed: $PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "- Failed: $FAILED" >> $GITHUB_STEP_SUMMARY
+            echo "- Duration: ${DURATION}s" >> $GITHUB_STEP_SUMMARY
+            
+            # Check for dashboard ID file
+            DASHBOARD_ID_FILE=".datadog-dashboard-id"
+            if [ -f "$DASHBOARD_ID_FILE" ]; then
+              DASHBOARD_ID=$(cat "$DASHBOARD_ID_FILE")
+              echo "#### Datadog Dashboard" >> $GITHUB_STEP_SUMMARY
+              echo "Test metrics are available in the [Datadog Dashboard](https://app.datadoghq.com/dashboard/$DASHBOARD_ID)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "#### Datadog Dashboard" >> $GITHUB_STEP_SUMMARY
+              echo "Test metrics are available in the [Datadog Dashboards](https://app.datadoghq.com/dashboard/lists)" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "❌ Test results file not found" >> $GITHUB_STEP_SUMMARY
+          fi
