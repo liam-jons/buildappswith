@@ -1,0 +1,412 @@
+{
+  "title": "Buildappswith Test Results",
+  "description": "Visualization of test results across all test types",
+  "widgets": [
+    {
+      "id": 0,
+      "definition": {
+        "type": "group",
+        "title": "Test Results Overview",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 1,
+            "definition": {
+              "type": "query_value",
+              "title": "Overall Success Rate",
+              "title_size": "16",
+              "title_align": "left",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.success_rate{$env}",
+                  "aggregator": "last"
+                }
+              ],
+              "custom_links": [],
+              "time": {
+                "live_span": "1h"
+              },
+              "autoscale": true,
+              "precision": 2,
+              "unit": "%",
+              "text_align": "center",
+              "custom_unit": "%"
+            }
+          },
+          {
+            "id": 2,
+            "definition": {
+              "type": "timeseries",
+              "title": "Tests Over Time",
+              "title_size": "16",
+              "title_align": "left",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.total{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.passed{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.failed{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "red",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.skipped{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "grey",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "custom_links": [],
+              "time": {
+                "live_span": "1w"
+              },
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "label": "Tests",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "definition": {
+        "type": "group",
+        "title": "Test Performance by Type",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 4,
+            "definition": {
+              "type": "query_table",
+              "title": "Test Type Results",
+              "title_size": "16",
+              "title_align": "left",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.unit.success_rate{$env}, avg:buildappswith.tests.component.success_rate{$env}, avg:buildappswith.tests.integration.success_rate{$env}, avg:buildappswith.tests.e2e.success_rate{$env}",
+                  "aggregator": "last"
+                }
+              ],
+              "custom_links": [],
+              "has_search_bar": "auto"
+            }
+          },
+          {
+            "id": 5,
+            "definition": {
+              "type": "timeseries",
+              "title": "Success Rate by Test Type",
+              "title_size": "16",
+              "title_align": "left",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.unit.success_rate{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.component.success_rate{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "blue",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.integration.success_rate{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.e2e.success_rate{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "custom_links": [],
+              "time": {
+                "live_span": "1w"
+              },
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "label": "Success Rate (%)",
+                "min": 0,
+                "max": 100
+              },
+              "markers": [
+                {
+                  "value": "y = 95",
+                  "display_type": "warning dashed",
+                  "label": "Target Success Rate"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "definition": {
+        "type": "group",
+        "title": "Test Duration",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 7,
+            "definition": {
+              "type": "timeseries",
+              "title": "Test Duration by Type",
+              "title_size": "16",
+              "title_align": "left",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.unit.duration{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.component.duration{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "blue",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.integration.duration{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.e2e.duration{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "custom_links": [],
+              "time": {
+                "live_span": "1w"
+              },
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "label": "Duration (seconds)",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            }
+          },
+          {
+            "id": 8,
+            "definition": {
+              "type": "query_value",
+              "title": "Total Test Duration",
+              "title_size": "16",
+              "title_align": "left",
+              "requests": [
+                {
+                  "q": "sum:buildappswith.tests.duration{$env}",
+                  "aggregator": "last"
+                }
+              ],
+              "custom_links": [],
+              "time": {
+                "live_span": "1h"
+              },
+              "autoscale": true,
+              "precision": 1,
+              "unit": "s",
+              "text_align": "center",
+              "custom_unit": "s"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "definition": {
+        "type": "group",
+        "title": "Code Coverage",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 10,
+            "definition": {
+              "type": "query_value",
+              "title": "Overall Code Coverage",
+              "title_size": "16",
+              "title_align": "left",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.coverage.overall{$env}",
+                  "aggregator": "last"
+                }
+              ],
+              "custom_links": [],
+              "time": {
+                "live_span": "1h"
+              },
+              "autoscale": true,
+              "precision": 2,
+              "unit": "%",
+              "text_align": "center",
+              "custom_unit": "%"
+            }
+          },
+          {
+            "id": 11,
+            "definition": {
+              "type": "timeseries",
+              "title": "Coverage Metrics Over Time",
+              "title_size": "16",
+              "title_align": "left",
+              "requests": [
+                {
+                  "q": "avg:buildappswith.tests.coverage.lines{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "cool",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.coverage.statements{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "warm",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.coverage.functions{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                },
+                {
+                  "q": "avg:buildappswith.tests.coverage.branches{$env}",
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "custom_links": [],
+              "time": {
+                "live_span": "1w"
+              },
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "label": "Coverage (%)",
+                "min": 0,
+                "max": 100
+              },
+              "markers": [
+                {
+                  "value": "y = 80",
+                  "display_type": "warning dashed",
+                  "label": "Target Coverage"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "definition": {
+        "type": "note",
+        "content": "## Test Visualization Dashboard\n\nThis dashboard provides an overview of test results from the Buildappswith platform. The data is collected by the Datadog Test Reporter during test runs in both local development and CI environments.\n\n**Key Metrics:**\n- Success rates for different test types (unit, component, integration, e2e)\n- Test durations and performance trends\n- Code coverage metrics and trends\n\nFor more details, check the documentation in the [Buildappswith Repository](https://github.com/username/buildappswith)",
+        "background_color": "gray",
+        "font_size": "14",
+        "text_align": "left",
+        "vertical_align": "top",
+        "show_tick": true,
+        "tick_pos": "50%",
+        "tick_edge": "bottom"
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "env",
+      "default": "development",
+      "prefix": "env",
+      "available_values": [
+        "development",
+        "test",
+        "production"
+      ]
+    }
+  ],
+  "layout_type": "ordered",
+  "is_read_only": false,
+  "notify_list": []
+}
