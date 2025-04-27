@@ -1,0 +1,12 @@
+{
+  "name": "architecture-extraction-tools",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "ts-morph": "25.0.1",
+    "dependency-cruiser": "16.10.1",
+    "@types/node": "22.14.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.0.0"
+  }
+}

@@ -1,0 +1,157 @@
+graph TD
+    subgraph WebApplication
+        instrumentation_client["instrumentation-client (Utility)"]:::unused
+        instrumentation["instrumentation (Utility)"]:::unused
+        next_env_d["next-env.d (Utility)"]:::unused
+        sentry_edge_config["sentry.edge.config (Utility)"]:::unused
+        sentry_server_config["sentry.server.config (Utility)"]:::unused
+        tailwind_config["tailwind.config (Utility)"]:::unused
+        vitest_config["vitest.config (Utility)"]:::unused
+        vitest_setup["vitest.setup (Utility)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        error_boundary["error-boundary (UI Component)"]:::unused
+        site_banner["site-banner (UI Component)"]:::unused
+        csrf_edge["csrf-edge (Utility)"]:::unused
+        create_unused_features_analyzer["create-unused-features-analyzer (Utility)"]:::unused
+        extract_architecture["extract-architecture (Utility)"]:::unused
+        generate_architecture_report["generate-architecture-report (Utility)"]:::unused
+        vitest_d["vitest.d (Utility)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        animated_heading_v2["animated-heading-v2 (UI Component)"]:::unused
+        inline_animated_heading["inline-animated-heading (UI Component)"]:::unused
+        animated_beam_section["animated-beam-section (UI Component)"]:::unused
+        cta_section["cta-section (UI Component)"]:::unused
+        hero_visualization["hero-visualization (UI Component)"]:::unused
+        pricing_section["pricing-section (UI Component)"]:::unused
+        animated_beam["animated-beam (UI Component)"]:::unused
+        sphere_mask["sphere-mask (UI Component)"]:::unused
+        featured_builder_card["featured-builder-card (UI Component)"]:::unused
+        builder_profile_client["builder-profile-client (UI Component)"]:::unused
+        profile_interactive_elements["profile-interactive-elements (UI Component)"]:::unused
+        collapsible["collapsible (UI Component)"]:::unused
+        sheet["sheet (UI Component)"]:::unused
+        skeleton["skeleton (UI Component)"]:::unused
+        builders["builders (Utility)"]:::unused
+        index["index (Utility)"]:::unused
+        builders["builders (Utility)"]:::unused
+        create_dummy_profiles["create-dummy-profiles (Utility)"]:::unused
+        create_profiles["create-profiles (Utility)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        layout["layout (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        page["page (Page Component)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+    end
+
+    subgraph AuthenticationService
+        auth_utils["auth-utils (Authentication Component)"]:::unused
+        extract_auth_architecture["extract-auth-architecture (Authentication Component)"]:::unused
+        auth_provider["auth-provider (Context Provider)"]:::unused
+        login_button["login-button (UI Component)"]:::unused
+        user_profile["user-profile (UI Component)"]:::unused
+        auth_config["auth-config (Authentication Component)"]:::unused
+        auth_utils["auth-utils (Authentication Component)"]:::unused
+        hooks["hooks (Authentication Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        auth_provider["auth-provider (Authentication Component)"]:::unused
+        route["route (API Endpoint)"]:::unused
+    end
+
+    subgraph PaymentService
+        payment_status_page["payment-status-page (UI Component)"]:::unused
+        index["index (Service)"]:::unused
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        route["route (API Endpoint)"]:::unused
+    end
+
+    subgraph BookingSystem
+        route["route (API Endpoint)"]:::unused
+        page["page (Page Component)"]:::unused
+        route["route (API Endpoint)"]:::unused
+        page["page (Page Component)"]:::unused
+    end
+
+    subgraph AITimeline[AI Timeline Feature]
+        mock_data["mock-data (Utility)"]:::timeline
+        page["page (Page Component)"]:::unused
+        page["page (Page Component)"]:::unused
+    end
+
+    classDef unused fill:#FF0000,color:white;
+    classDef timeline fill:#0000FF,color:white;

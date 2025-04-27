@@ -1,0 +1,17 @@
+flowchart TD
+    %% Sign-Up Flow
+    %% Process for registering new users
+
+    step1["User navigates to /signup"]
+    step1 --> step2
+    step2["ClerkProvider initializes registration form"]
+    step2 --> step3
+    step3["User enters registration information"]
+    step3 --> step4
+    step4["Clerk validates and creates user account"]
+    step4 --> step5
+    step5["Webhook receives user.created event"]
+    step5 --> step6
+    step6["Database record is created with clerkId"]
+    step6 --> step7
+    step7["User is redirected to onboarding"]

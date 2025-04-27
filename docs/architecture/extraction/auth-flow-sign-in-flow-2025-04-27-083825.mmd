@@ -1,0 +1,15 @@
+flowchart TD
+    %% Sign-In Flow
+    %% Process for authenticating existing users
+
+    step1["User navigates to /login"]
+    step1 --> step2
+    step2["ClerkProvider initializes authentication state"]
+    step2 --> step3
+    step3["Authentication form collects credentials"]
+    step3 --> step4
+    step4["Credentials are validated by Clerk"]
+    step4 --> step5
+    step5["Upon success, user is redirected to dashboard"]
+    step5 --> step6
+    step6["Middleware verifies authentication on protected routes"]
