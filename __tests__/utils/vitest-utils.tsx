@@ -1,76 +1,43 @@
 import React from 'react'
 import { render as rtlRender } from '@testing-library/react'
 import { ThemeProvider } from '@/components/theme-provider'
+import { SessionProvider } from 'next-auth/react'
 import { Toaster } from '@/components/ui/toaster'
-import { configureMockClerk } from './clerk-test-utils'
-import { UserMockType } from './clerk-test-utils'
-import { vi } from 'vitest'
 
-// Set up Clerk mock for testing
-export const mockClerk = configureMockClerk('client')
+// Mock user data for testing
+export const mockUser = {
+  id: 'test-user-id',
+  name: 'Test User',
+  email: 'test@example.com',
+  image: null,
+}
 
-// Mock the @clerk/nextjs module
-vi.mock('@clerk/nextjs', () => mockClerk)
-
-// Mock the ClerkProvider component
-vi.mock('@/components/providers/clerk-provider', () => ({
-  ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
-}))
+// Mock session data for testing
+export const mockSession = {
+  user: mockUser,
+  expires: '2025-12-31',
+}
 
 // Wrapper component that provides all necessary providers
-function AllTheProviders({ 
-  children, 
-  userType = 'client',
-  userOverrides = {}
-}: { 
-  children: React.ReactNode,
-  userType?: UserMockType,
-  userOverrides?: Record<string, any>
-}) {
-  // Configure Clerk mock with the specified user type and overrides
-  const mockClerk = configureMockClerk(userType, userOverrides)
-  
-  // Update the mock for @clerk/nextjs
-  vi.mocked('@clerk/nextjs').mockImplementation(() => mockClerk)
-  
+function AllTheProviders({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-      <Toaster />
-    </ThemeProvider>
+    <SessionProvider session={mockSession}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        {children}
+        <Toaster />
+      </ThemeProvider>
+    </SessionProvider>
   )
 }
 
 // Custom render method that wraps components with providers
-function customRender(
-  ui: React.ReactElement, 
-  options: { 
-    userType?: UserMockType,
-    userOverrides?: Record<string, any>,
-    renderOptions?: any
-  } = {}
-) {
-  const { 
-    userType = 'client', 
-    userOverrides = {}, 
-    renderOptions = {} 
-  } = options
-  
-  return rtlRender(ui, { 
-    wrapper: (props) => (
-      <AllTheProviders 
-        userType={userType} 
-        userOverrides={userOverrides} 
-        {...props} 
-      />
-    ), 
-    ...renderOptions 
-  })
+function customRender(ui: React.ReactElement, options = {}) {
+  return rtlRender(ui, { wrapper: AllTheProviders, ...options })
 }
 
 // Re-export everything from testing library

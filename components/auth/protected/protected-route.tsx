@@ -1,27 +1,26 @@
 "use client";
 
-import { useAuth } from '@/lib/auth/clerk-hooks';
+import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-/**
- * Protected route component using Clerk authentication
- * Redirects to login if not authenticated
- */
 export function ProtectedRoute({ 
   children 
 }: { 
   children: React.ReactNode 
 }) {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { data: session, status } = useSession();
+  const isLoading = status === "loading";
+  const user = session?.user;
+  const error = !session && !isLoading;
   const router = useRouter();
 
   useEffect(() => {
-    // If not loading and not authenticated, redirect to login
-    if (!isLoading && !isAuthenticated) {
+    // If not loading and no user or error, redirect to login
+    if (!isLoading && (!user || error)) {
       router.push('/login');
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [user, isLoading, error, router]);
 
   // Show loading state while checking authentication
   if (isLoading) {
@@ -36,11 +35,11 @@ export function ProtectedRoute({
   }
 
   // Show error state if there's a problem
-  if (!isAuthenticated) {
+  if (error) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-2">
-          <p className="text-destructive">Authentication required</p>
+          <p className="text-destructive">Authentication error</p>
           <button 
             onClick={() => router.push('/login')}
             className="rounded bg-primary px-4 py-2 text-primary-foreground"

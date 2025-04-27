@@ -1,22 +1,20 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { TimeSlot, SessionType, Booking } from '@/lib/scheduling/types';
 import { formatInTimezone, detectClientTimezone } from '@/lib/scheduling/utils';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, addMinutes } from 'date-fns';
 import { createBooking } from '@/lib/api-client/scheduling';
-import { createCheckoutSession, redirectToCheckout } from '@/lib/stripe/stripe-client';
+import { createCheckoutSession } from '@/lib/stripe';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Clock, Calendar, DollarSign, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
+import { Clock, Calendar, DollarSign, CheckCircle, AlertTriangle } from 'lucide-react';
 import { BorderBeam } from '@/components/magicui/border-beam';
 import { useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
-import { logger } from '@/lib/logger';
-import { PaymentStatusIndicator } from '@/components/payment/payment-status-indicator';
 
 interface BookingFormProps {
   builderId: string;
@@ -43,9 +41,7 @@ export function BookingForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
   const [usingMockData, setUsingMockData] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
   const clientTimezone = detectClientTimezone();
   
   const startDate = parseISO(selectedSlot.startTime);
@@ -55,12 +51,10 @@ export function BookingForm({
   const isFeaturedBuilder = builderId === 'founder'; // This would be a more sophisticated check in production
   
   const handleSubmit = async () => {
-    // Reset state for fresh submission
     setIsSubmitting(true);
-    setPaymentStatus('processing');
     setPaymentError(null);
     
-    // Create the booking object with strong typing
+    // Create the booking object
     const newBookingData: Omit<Booking, 'id' | 'createdAt' | 'updatedAt'> = {
       sessionTypeId: sessionType.id,
       builderId,
@@ -75,13 +69,6 @@ export function BookingForm({
     };
     
     try {
-      // Log the booking attempt
-      logger.info('Initiating booking', {
-        builderId,
-        sessionTypeId: sessionType.id,
-        startTime: selectedSlot.startTime,
-      });
-      
       // Create the booking
       const { booking: newBooking, warning } = await createBooking(newBookingData);
       setUsingMockData(!!warning);
@@ -92,75 +79,26 @@ export function BookingForm({
         const returnUrl = `${baseUrl}/payment`;
         
         try {
-          // Generate a stable idempotency key for this booking
-          // This ensures retries won't create duplicate charges
-          const idempotencyKey = `booking_${newBooking.id}_${clientId}_${Date.now()}`;
+          // Create a checkout session and redirect to Stripe
+          const { url } = await createCheckoutSession(newBooking, returnUrl);
           
-          // Create a checkout session with idempotency support
-          const response = await createCheckoutSession(newBooking, returnUrl, idempotencyKey);
-          
-          if (response.success && response.data?.url) {
+          if (url) {
             // Redirect to Stripe checkout
-            logger.info('Redirecting to payment', {
-              bookingId: newBooking.id,
-              sessionId: response.data.sessionId,
-            });
-            
-            // Add fallback URL for cases where redirect fails
-            const redirectResult = await redirectToCheckout(
-              response.data.sessionId,
-              response.data.url
-            );
-            
-            if (!redirectResult.success) {
-              // If redirect fails, use direct URL navigation
-              window.location.href = response.data.url;
-            }
-            
+            window.location.href = url;
             return; // Exit early as we're redirecting
           } else {
-            // Handle API error response
-            throw new Error(response.message || 'Failed to create checkout session');
+            throw new Error('Failed to create checkout session');
           }
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown payment error';
-          
-          // Log the payment error
-          logger.error('Payment error', {
-            error: errorMessage,
-            bookingId: newBooking.id,
-            retryCount,
-          });
-          
-          // Update state to show error
-          setPaymentStatus('error');
-          setPaymentError(errorMessage);
+          console.error('Payment error:', error);
+          setPaymentError('Failed to process payment. Please try again.');
           setIsSubmitting(false);
-          
-          // Show error toast
-          toast.error('Payment processing failed. Please try again.');
-          
-          // If fewer than 2 retries, offer automatic retry
-          if (retryCount < 2) {
-            setRetryCount(prev => prev + 1);
-          }
-          
           return;
         }
       } else {
         // For regular builders, continue with the standard flow (no payment)
         setIsSubmitting(false);
         setIsComplete(true);
-        setPaymentStatus('success');
-        
-        // Log successful booking
-        logger.info('Booking completed successfully', {
-          bookingId: newBooking.id,
-          paymentRequired: false,
-        });
-        
-        // Show success toast
-        toast.success('Booking confirmed!');
         
         // Call the completion handler after a short delay to show the success state
         setTimeout(() => {
@@ -168,28 +106,11 @@ export function BookingForm({
         }, 1500);
       }
     } catch (error: any) {
-      // Log the booking error
-      logger.error('Booking error', {
-        error: error instanceof Error ? error.message : String(error),
-        builderId,
-        sessionTypeId: sessionType.id,
-      });
-      
-      // Update state to show error
-      setPaymentStatus('error');
+      console.error('Booking error:', error);
       setPaymentError(error.message || 'Failed to process booking');
-      setIsSubmitting(false);
-      
-      // Show error toast
       toast.error('Failed to create booking. Please try again.');
+      setIsSubmitting(false);
     }
-  };
-  
-  const handleRetry = () => {
-    // Reset error state and retry
-    setPaymentError(null);
-    setPaymentStatus('idle');
-    handleSubmit();
   };
   
   return (
@@ -295,35 +216,27 @@ export function BookingForm({
                 </div>
               )}
               
-              {/* Payment status indicator */}
-              {paymentStatus !== 'idle' && (
-                <PaymentStatusIndicator 
-                  status={paymentStatus} 
-                  message={paymentStatus === 'error' ? paymentError || 'Payment processing failed' : undefined}
-                />
+              {paymentError && (
+                <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-md p-3 text-sm text-red-800 dark:text-red-300">
+                  <div className="font-medium mb-1">Payment Error</div>
+                  <p>{paymentError}</p>
+                </div>
               )}
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button variant="outline" onClick={onCancel} disabled={isSubmitting}>
                 Cancel
               </Button>
-              
-              {paymentStatus === 'error' && retryCount < 2 ? (
-                <Button onClick={handleRetry} variant="default">
-                  Retry Payment
-                </Button>
-              ) : (
-                <Button onClick={handleSubmit} disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <div className="mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    'Confirm Booking'
-                  )}
-                </Button>
-              )}
+              <Button onClick={handleSubmit} disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Confirm Booking'
+                )}
+              </Button>
             </CardFooter>
           </>
         )}

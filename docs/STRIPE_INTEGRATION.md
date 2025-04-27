@@ -1,7 +1,5 @@
 # Stripe Integration for Buildappswith
 
-*Version: 1.0.110*
-
 This document provides information on setting up and testing the Stripe integration for the Buildappswith platform.
 
 ## Configuration

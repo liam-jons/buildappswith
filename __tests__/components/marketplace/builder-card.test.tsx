@@ -1,19 +1,11 @@
-/**
- * Builder Card Component Tests
- * Version: 1.0.116
- * 
- * Tests for the BuilderCard component using the new Clerk authentication utilities
- */
-
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BuilderCard } from '@/components/marketplace/builder-card';
-import { renderWithAuth, resetMockClerk, createUnauthenticatedMock } from '../../utils/auth-test-utils';
+import { renderWithAuth, setupMockAuth, resetMockAuth } from '../../utils/auth-test-utils';
 import { UserRole } from '@/lib/auth/types';
-import { vi, describe, it, expect, afterEach } from 'vitest';
 
 // Mock the ValidationTierBadge component
-vi.mock('@/components/profile/validation-tier-badge', () => ({
+jest.mock('@/components/profile/validation-tier-badge', () => ({
   ValidationTierBadge: ({ tier, size }: { tier: string, size?: string }) => (
     <div data-testid={`validation-tier-${tier}`} data-size={size}>
       Validation Tier: {tier}
@@ -22,7 +14,7 @@ vi.mock('@/components/profile/validation-tier-badge', () => ({
 }));
 
 // Mock the BuilderImage component
-vi.mock('@/components/marketplace/builder-image', () => ({
+jest.mock('@/components/marketplace/builder-image', () => ({
   BuilderImage: ({ src, alt, fallbackText, size }: { src?: string, alt: string, fallbackText?: string, size?: string }) => (
     <div data-testid="builder-image" data-src={src} data-alt={alt} data-fallback={fallbackText} data-size={size}>
       Builder Image
@@ -31,7 +23,7 @@ vi.mock('@/components/marketplace/builder-image', () => ({
 }));
 
 // Mock window.location
-const locationAssignMock = vi.fn();
+const locationAssignMock = jest.fn();
 Object.defineProperty(window, 'location', {
   value: {
     assign: locationAssignMock,
@@ -55,8 +47,8 @@ const mockBuilder = {
 describe('BuilderCard Component', () => {
   // Reset all mocks after each test
   afterEach(() => {
-    vi.clearAllMocks();
-    resetMockClerk();
+    jest.clearAllMocks();
+    resetMockAuth();
     locationAssignMock.mockClear();
   });
 
@@ -148,8 +140,8 @@ describe('BuilderCard Component', () => {
     for (const role of roles) {
       // Reset DOM and mocks
       document.body.innerHTML = '';
-      vi.clearAllMocks();
-      resetMockClerk();
+      jest.clearAllMocks();
+      resetMockAuth();
       
       renderWithAuth(<BuilderCard builder={mockBuilder} />, {
         userType: role,
@@ -165,10 +157,6 @@ describe('BuilderCard Component', () => {
 
   // Test unauthenticated user access
   it('renders correctly for unauthenticated users', () => {
-    // Set up unauthenticated state with Clerk
-    resetMockClerk();
-    vi.mock('@clerk/nextjs', () => createUnauthenticatedMock());
-    
     render(<BuilderCard builder={mockBuilder} />);
     
     // Check builder name and title
