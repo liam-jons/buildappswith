@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buildappswith Architecture Analysis</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2, h3, h4 {
+      color: #0066cc;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    code {
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #222;
+        color: #eee;
+      }
+      h1, h2, h3, h4 {
+        color: #66b3ff;
+      }
+      table {
+        border-color: #444;
+      }
+      th {
+        background-color: #333;
+      }
+      td {
+        border-color: #444;
+      }
+      tr:nth-child(even) {
+        background-color: #2a2a2a;
+      }
+      code {
+        background-color: #333;
+      }
+      a {
+        color: #66b3ff;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Architectural Complexity Analysis</h1><p><em>Generated on: 2025-04-27</em></p><h2>Overall Complexity</h2><p>System Complexity Score: <strong>1.71/10</strong></p><h2>Container Complexity</h2><table>
+<tr><td>Container</td><td>Component Count</td><td>Complexity Score</td><td>Coupling Score</td></tr>
+<tr><td>-----------</td><td>-----------------</td><td>------------------</td><td>----------------</td></tr>
+<tr><th>WebApplication</th><th>226</th><th>1.50/10</th><th>0.07</th></tr>
+<tr><td>Database</td><td>22</td><td>3.41/10</td><td>0.00</td></tr>
+<tr><td>AuthenticationService</td><td>35</td><td>1.97/10</td><td>0.17</td></tr>
+<tr><td>PaymentService</td><td>11</td><td>2.09/10</td><td>0.09</td></tr>
+<tr><td>BookingSystem</td><td>11</td><td>1.50/10</td><td>0.09</td></tr>
+</table><h2>Most Complex Components</h2><p>No highly complex components found.</p><h2>Cyclic Dependencies</h2><p>No cyclic dependencies detected.</p><h2>Pattern Inconsistencies</h2><p>Detected <strong>9</strong> pattern inconsistencies in the codebase.</p><h3>Utility Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib</p><p>Affected components (39):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>instrumentation-client</th><th>Utility</th><th>/Users/liamj/Documents/Development/buildappswith/instrumentation-client.ts</th></tr>
+<tr><td>instrumentation</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/instrumentation.ts</td></tr>
+<tr><td>next-env.d</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/next-env.d.ts</td></tr>
+<tr><td>sentry.edge.config</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/sentry.edge.config.ts</td></tr>
+<tr><td>sentry.server.config</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/sentry.server.config.ts</td></tr>
+<tr><td>tailwind.config</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/tailwind.config.ts</td></tr>
+<tr><td>vitest.config</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/vitest.config.ts</td></tr>
+<tr><td>vitest.setup</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/vitest.setup.ts</td></tr>
+<tr><td>global-error</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/global-error.tsx</td></tr>
+<tr><td>use-on-click-outside</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/hooks/use-on-click-outside.ts</td></tr>
+<tr><td>create-unused-features-analyzer</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/create-unused-features-analyzer.ts</td></tr>
+<tr><td>extract-architecture</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/extract-architecture.ts</td></tr>
+<tr><td>generate-architecture-report</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/generate-architecture-report.ts</td></tr>
+<tr><td>vitest.d</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/types/vitest.d.ts</td></tr>
+<tr><td>route-types</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/route-types.ts</td></tr>
+<tr><td>builders</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/api/builders.ts</td></tr>
+<tr><td>profile</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/builders/profile.ts</td></tr>
+<tr><td>profile-context</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/contexts/profile-context.tsx</td></tr>
+<tr><td>index</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/logger/index.ts</td></tr>
+<tr><td>builders</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/marketplace/builders.ts</td></tr>
+<tr><td>types</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/marketplace/types.ts</td></tr>
+<tr><td>profiles</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/mock-data/profiles.ts</td></tr>
+<tr><td>mock-data</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/scheduling/mock-data.ts</td></tr>
+<tr><td>types</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/scheduling/types.ts</td></tr>
+<tr><td>utils</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/scheduling/utils.ts</td></tr>
+<tr><td>stripe-server</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-server.ts</td></tr>
+<tr><td>mock-data</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/timeline/mock-data.ts</td></tr>
+<tr><td>builder</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/types/builder.ts</td></tr>
+<tr><td>profile-form-helpers</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/utils/profile-form-helpers.ts</td></tr>
+<tr><td>create-dummy-profiles</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/seed-data/create-dummy-profiles.ts</td></tr>
+<tr><td>create-profiles</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/seed-data/create-profiles.ts</td></tr>
+<tr><td>profile</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/liam/profile.tsx</td></tr>
+<tr><td>client</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile/[id]/client.tsx</td></tr>
+<tr><td>marketplace-service</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/marketplace/real-data/marketplace-service.ts</td></tr>
+<tr><td>scheduling-service</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/scheduling/real-data/scheduling-service.ts</td></tr>
+<tr><td>payment-success-content</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/payment/success/payment-success-content.tsx</td></tr>
+<tr><td>client</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builders/[id]/schedule/client.tsx</td></tr>
+<tr><td>availability-manager-client</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builders/[id]/schedule/manage/availability-manager-client.tsx</td></tr>
+<tr><td>client</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builders/[id]/schedule/manage/client.tsx</td></tr>
+</table><h3>Middleware Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib/middleware</p><p>Affected components (3):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>middleware</th><th>Middleware</th><th>/Users/liamj/Documents/Development/buildappswith/middleware.ts</th></tr>
+<tr><td>mock-test</td><td>Middleware</td><td>/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/mock-test.ts</td></tr>
+<tr><td>typed-mock-test</td><td>Middleware</td><td>/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/typed-mock-test.ts</td></tr>
+</table><h3>Page Component Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/app/(marketing)</p><p>Affected components (53):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>layout</th><th>Page Component</th><th>/Users/liamj/Documents/Development/buildappswith/app/layout.tsx</th></tr>
+<tr><td>layout</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/layout.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/auth-test/page.tsx</td></tr>
+<tr><td>layout</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/onboarding/layout.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/onboarding/page.tsx</td></tr>
+<tr><td>layout</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile-settings/layout.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile-settings/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/sentry-example-page/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/verify/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(auth)/login/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(auth)/signin/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(auth)/signup/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/about/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/contact/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/faq/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/heading-demo/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/heading-hero-example/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/how-it-works/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/liam/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/privacy/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/terms/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/toolkit/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(marketing)/weekly-sessions/page.tsx</td></tr>
+<tr><td>layout</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/admin/layout.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/admin/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/ai-timeline/page.tsx</td></tr>
+<tr><td>layout</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder-dashboard/layout.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder-dashboard/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder-profile/page.tsx</td></tr>
+<tr><td>layout</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/client-dashboard/layout.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/client-dashboard/page.tsx</td></tr>
+<tr><td>layout</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/dashboard/layout.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/dashboard/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/marketplace/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/portfolio/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/profile/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/timeline/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/book/[id]/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile/[id]/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile/demo/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile-settings/availability/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile-settings/edit/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/test/auth/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/admin/builders/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/admin/session-types/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder-profile/liam-jons/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/marketplace/[id]/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/payment/cancel/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/payment/success/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/profile/edit/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/book/[id]/confirmation/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builders/[id]/schedule/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builders/[id]/schedule/manage/page.tsx</td></tr>
+</table><h3>UI Component Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/components/ui</p><p>Affected components (68):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>error-boundary</th><th>UI Component</th><th>/Users/liamj/Documents/Development/buildappswith/components/error-boundary.tsx</th></tr>
+<tr><td>search-params-fallback</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/search-params-fallback.tsx</td></tr>
+<tr><td>site-banner</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/site-banner.tsx</td></tr>
+<tr><td>site-footer</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/site-footer.tsx</td></tr>
+<tr><td>site-header</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/site-header.tsx</td></tr>
+<tr><td>suspense-user-auth-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/suspense-user-auth-form.tsx</td></tr>
+<tr><td>user-auth-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/user-auth-form.tsx</td></tr>
+<tr><td>admin-nav</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/admin/admin-nav.tsx</td></tr>
+<tr><td>session-type-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/admin/session-type-form.tsx</td></tr>
+<tr><td>auth-error-boundary</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/auth-error-boundary.tsx</td></tr>
+<tr><td>clerk-auth-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/clerk-auth-form.tsx</td></tr>
+<tr><td>loading-state</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/loading-state.tsx</td></tr>
+<tr><td>login-button</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/login-button.tsx</td></tr>
+<tr><td>protected-route</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/protected-route.tsx</td></tr>
+<tr><td>user-profile</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/user-profile.tsx</td></tr>
+<tr><td>faq-accordion</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/client/faq-accordion.tsx</td></tr>
+<tr><td>contact-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/contact/contact-form.tsx</td></tr>
+<tr><td>animated-heading-v2</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/custom/animated-heading-v2.tsx</td></tr>
+<tr><td>animated-heading</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/custom/animated-heading.tsx</td></tr>
+<tr><td>inline-animated-heading</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/custom/inline-animated-heading.tsx</td></tr>
+<tr><td>two-line-animated-heading</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/custom/two-line-animated-heading.tsx</td></tr>
+<tr><td>ai-capabilities-marquee</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/ai-capabilities-marquee.tsx</td></tr>
+<tr><td>animated-beam-section</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/animated-beam-section.tsx</td></tr>
+<tr><td>animated-circular-progress-bar-demo</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/animated-circular-progress-bar-demo.tsx</td></tr>
+<tr><td>client-section</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/client-section.tsx</td></tr>
+<tr><td>cta-section</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/cta-section.tsx</td></tr>
+<tr><td>final-cta-section</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/final-cta-section.tsx</td></tr>
+<tr><td>hero-section</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/hero-section.tsx</td></tr>
+<tr><td>hero-visualization</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/hero-visualization.tsx</td></tr>
+<tr><td>key-values-section</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/key-values-section.tsx</td></tr>
+<tr><td>pricing-section</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/pricing-section.tsx</td></tr>
+<tr><td>testimonials-section</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/landing/testimonials-section.tsx</td></tr>
+<tr><td>animated-beam</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/animated-beam.tsx</td></tr>
+<tr><td>animated-circular-progress-bar</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/animated-circular-progress-bar.tsx</td></tr>
+<tr><td>aurora-text</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/aurora-text.tsx</td></tr>
+<tr><td>border-beam</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/border-beam.tsx</td></tr>
+<tr><td>marquee</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/marquee.tsx</td></tr>
+<tr><td>particles</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/particles.tsx</td></tr>
+<tr><td>sphere-mask</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/sphere-mask.tsx</td></tr>
+<tr><td>text-shimmer</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/text-shimmer.tsx</td></tr>
+<tr><td>word-rotate</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/word-rotate.tsx</td></tr>
+<tr><td>builder-card</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-card.tsx</td></tr>
+<tr><td>builder-image</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-image.tsx</td></tr>
+<tr><td>featured-builder-card</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/featured-builder-card.tsx</td></tr>
+<tr><td>profile-edit-page</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/pages/profile-edit-page.tsx</td></tr>
+<tr><td>payment-status-page</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-page.tsx</td></tr>
+<tr><td>add-project-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/add-project-form.tsx</td></tr>
+<tr><td>app-showcase</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/app-showcase.tsx</td></tr>
+<tr><td>builder-profile-client-wrapper</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/builder-profile-client-wrapper.tsx</td></tr>
+<tr><td>builder-profile-client</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/builder-profile-client.tsx</td></tr>
+<tr><td>builder-profile</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/builder-profile.tsx</td></tr>
+<tr><td>edit-profile-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/edit-profile-form.tsx</td></tr>
+<tr><td>portfolio-gallery</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/portfolio-gallery.tsx</td></tr>
+<tr><td>portfolio-showcase</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/portfolio-showcase.tsx</td></tr>
+<tr><td>profile-interactive-elements</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/profile-interactive-elements.tsx</td></tr>
+<tr><td>protected-route</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/protected/protected-route.tsx</td></tr>
+<tr><td>availability-manager</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/availability-manager.tsx</td></tr>
+<tr><td>booking-overview</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/booking-overview.tsx</td></tr>
+<tr><td>session-type-editor</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/session-type-editor.tsx</td></tr>
+<tr><td>weekly-schedule</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/weekly-schedule.tsx</td></tr>
+<tr><td>booking-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/client/booking-form.tsx</td></tr>
+<tr><td>builder-calendar</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/client/builder-calendar.tsx</td></tr>
+<tr><td>timezone-selector</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/shared/timezone-selector.tsx</td></tr>
+<tr><td>availability-exceptions</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/availability/availability-exceptions.tsx</td></tr>
+<tr><td>availability-management</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/availability/availability-management.tsx</td></tr>
+<tr><td>weekly-availability</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/availability/weekly-availability.tsx</td></tr>
+<tr><td>metrics-display</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder/profile/components/metrics-display.tsx</td></tr>
+<tr><td>portfolio-gallery</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder/profile/components/portfolio-gallery.tsx</td></tr>
+</table><h3>Context Provider Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/components/profile</p><p>Affected components (9):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>theme-provider</th><th>Context Provider</th><th>/Users/liamj/Documents/Development/buildappswith/components/theme-provider.tsx</th></tr>
+<tr><td>auth-provider</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/auth-provider.tsx</td></tr>
+<tr><td>payment-status-indicator</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-indicator.tsx</td></tr>
+<tr><td>clerk-provider</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/providers/clerk-provider.tsx</td></tr>
+<tr><td>providers</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/providers/providers.tsx</td></tr>
+<tr><td>form</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/form.tsx</td></tr>
+<tr><td>radio-group</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/radio-group.tsx</td></tr>
+<tr><td>tooltip</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/tooltip.tsx</td></tr>
+<tr><td>validation-tier</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder/profile/components/validation-tier.tsx</td></tr>
+</table><h3>Authentication Component Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib/auth</p><p>Affected components (17):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>auth-utils</th><th>Authentication Component</th><th>/Users/liamj/Documents/Development/buildappswith/lib/auth-utils.ts</th></tr>
+<tr><td>architecture-utils</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/architecture-utils.ts</td></tr>
+<tr><td>extract-auth-architecture</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/extract-auth-architecture.ts</td></tr>
+<tr><td>factory-test-solution</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/factory-test-solution.ts</td></tr>
+<tr><td>improved-integration-test</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/improved-integration-test.ts</td></tr>
+<tr><td>improved-solution</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/improved-solution.ts</td></tr>
+<tr><td>improved-test-utils</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/improved-test-utils.ts</td></tr>
+<tr><td>nextjs-mock-solution</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/nextjs-mock-solution.ts</td></tr>
+<tr><td>config</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/middleware/config.ts</td></tr>
+<tr><td>factory</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/middleware/factory.ts</td></tr>
+<tr><td>logging</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/middleware/logging.ts</td></tr>
+<tr><td>rbac</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/middleware/rbac.ts</td></tr>
+<tr><td>test-utils</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/middleware/test-utils.ts</td></tr>
+<tr><td>validation</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/middleware/validation.ts</td></tr>
+<tr><td>api-auth</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk/api-auth.ts</td></tr>
+<tr><td>helpers</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk/helpers.ts</td></tr>
+<tr><td>auth-provider</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/contexts/auth/auth-provider.tsx</td></tr>
+</table><h3>Data Model Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: ./prisma</p><p>Affected components (1):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>schema</th><th>Data Model</th><th>/Users/liamj/Documents/Development/buildappswith/prisma/schema.prisma</th></tr>
+</table><h3>Service Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib/marketplace</p><p>Affected components (6):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>scheduling</th><th>Service</th><th>/Users/liamj/Documents/Development/buildappswith/lib/api-client/scheduling.ts</th></tr>
+<tr><td>builder-profile-service</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/lib/services/builder-profile-service.ts</td></tr>
+<tr><td>builder-service</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/lib/services/builder-service.ts</td></tr>
+<tr><td>index</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/lib/stripe/index.ts</td></tr>
+<tr><td>stripe-client</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-client.ts</td></tr>
+<tr><td>BuilderProfileClient</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/marketplace/[id]/BuilderProfileClient.tsx</td></tr>
+</table><h3>API Endpoint Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/app/api/navigation</p><p>Affected components (35):</p><table>
+<tr><td>Component</td><td>Type</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>------</td></tr>
+<tr><th>route</th><th>API Endpoint</th><th>/Users/liamj/Documents/Development/buildappswith/app/api/sentry-example-api/route.ts</th></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/admin/builders/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/admin/session-types/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/apps/[builderId]/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/checkout/session/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/dev/create-liam-profile/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/dev/login/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/dev/seed-users/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/marketplace/builders/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/marketplace/featured/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/marketplace/filters/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/profiles/builder/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/profiles/user/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/availability-exceptions/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/availability-rules/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/bookings/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/builder-settings/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/session-types/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/time-slots/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/stripe/webhook/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/test/auth/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/webhooks/clerk/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/admin/builders/prototype/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/admin/session-types/[id]/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/apps/edit/[id]/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/marketplace/builders/[id]/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/availability/rules/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/availability/time-slots/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/bookings/[id]/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/session-types/[id]/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/stripe/sessions/[id]/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/admin/session-types/[id]/status/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/profiles/builder/[id]/route.ts</td></tr>
+<tr><td>route</td><td>API Endpoint</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/profiles/client/[id]/route.ts</td></tr>
+</table><h2>Architecture Simplification Recommendations</h2>
+</body>
+</html>
