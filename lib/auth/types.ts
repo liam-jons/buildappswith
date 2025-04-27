@@ -1,3 +1,5 @@
+import type { DefaultSession } from "next-auth";
+
 /**
  * User roles for role-based access control - use the same values as in Prisma schema
  */
@@ -8,30 +10,44 @@ export enum UserRole {
 }
 
 /**
- * Extended user type with Clerk and custom fields
+ * Extended user type with roles and other custom fields
  */
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  image?: string;
+export type User = DefaultSession["user"] & {
   roles: UserRole[];
   stripeCustomerId?: string;
   verified: boolean;
+};
+
+/**
+ * Extend next-auth session type to include custom user fields
+ */
+declare module "next-auth" {
+  interface Session {
+    user: User;
+  }
+  
+  interface User {
+    roles: UserRole[];
+    stripeCustomerId?: string;
+    verified: boolean;
+  }
+
+  interface JWT {
+    id: string;
+    roles: UserRole[];
+    stripeCustomerId?: string;
+    verified: boolean;
+  }
 }
 
 /**
- * Authentication state interface
+ * Extended JWT type for next-auth
  */
-export interface AuthState {
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  isClient: boolean;
-  isBuilder: boolean;
-  isAdmin: boolean;
-  status: 'loading' | 'authenticated' | 'unauthenticated';
-  signIn: (options?: { callbackUrl?: string, redirect?: boolean }) => Promise<{ ok: boolean, error: null | string }>;
-  signOut: (options?: { callbackUrl?: string }) => Promise<{ ok: boolean }>;
-  updateSession: () => Promise<null>;
+declare module "next-auth" {
+  interface JWT {
+    id: string;
+    roles: UserRole[];
+    stripeCustomerId?: string;
+    verified: boolean;
+  }
 }

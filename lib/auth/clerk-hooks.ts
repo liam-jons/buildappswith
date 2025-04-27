@@ -1,65 +1,64 @@
 "use client";
 
-import { useAuth as useClerkAuth, useUser, useClerk } from "@clerk/nextjs";
-import { useEffect } from "react";
+import { useAuth as useClerkAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { UserRole } from "./types";
-import { User, AuthState } from "./types";
 
 /**
- * Enhanced authentication hook that provides a consistent interface
+ * Hook to access the current authenticated user with a compatible API to the old NextAuth hook
  * @returns Object containing auth state and user information
- * @version 1.0.108
  */
-export const useAuth = (): AuthState => {
+export const useAuth = () => {
   const { isLoaded, isSignedIn, userId, sessionId } = useClerkAuth();
   const { user, isLoaded: isUserLoaded } = useUser();
-  const { signOut: clerkSignOut } = useClerk();
   const router = useRouter();
   
   // Extract roles from publicMetadata
   const roles = user?.publicMetadata?.roles as UserRole[] || [];
   
-  // Create a standardized user object
-  const enhancedUser: User | null = isSignedIn && user ? {
-    id: user.id,
-    name: user.fullName || user.username || '',
-    email: user.primaryEmailAddress?.emailAddress || '',
-    image: user.imageUrl || '',
+  // Create a user object that matches the shape of the old NextAuth user
+  const compatUser = isSignedIn ? {
+    id: user?.id || '',
+    name: user?.fullName || user?.username || '',
+    email: user?.primaryEmailAddress?.emailAddress || '',
+    image: user?.imageUrl || '',
     roles,
-    verified: user.primaryEmailAddress?.verification?.status === 'verified',
-    stripeCustomerId: user.publicMetadata?.stripeCustomerId as string || null,
+    verified: user?.primaryEmailAddress?.verification?.status === 'verified',
+    stripeCustomerId: user?.publicMetadata?.stripeCustomerId as string || null,
   } : null;
   
-  // Clean interface for sign in
+  // Create a compatible signIn function
   const signIn = (options?: { callbackUrl?: string, redirect?: boolean }) => {
+    // Redirect to Clerk's sign-in page
     if (options?.redirect !== false) {
       router.push(options?.callbackUrl || '/login');
     }
     return Promise.resolve({ ok: true, error: null });
   };
   
-  // Clean interface for sign out
+  // Create a compatible signOut function
   const signOut = (options?: { callbackUrl?: string }) => {
-    return clerkSignOut().then(() => {
+    // Use Clerk's sign-out functionality, which will be properly implemented
+    // when we integrate the button click handler
+    user?.signOut().then(() => {
       if (options?.callbackUrl) {
         router.push(options.callbackUrl);
       }
-      return { ok: true };
     });
+    return Promise.resolve({ ok: true });
   };
   
   return {
-    user: enhancedUser,
+    user: compatUser,
     isLoading: !isLoaded || !isUserLoaded,
     isAuthenticated: !!isSignedIn && !!userId,
-    isClient: roles.includes(UserRole.CLIENT),
-    isBuilder: roles.includes(UserRole.BUILDER),
-    isAdmin: roles.includes(UserRole.ADMIN),
+    isClient: roles.includes(UserRole.CLIENT) || false,
+    isBuilder: roles.includes(UserRole.BUILDER) || false,
+    isAdmin: roles.includes(UserRole.ADMIN) || false,
     status: isLoaded ? (isSignedIn ? "authenticated" : "unauthenticated") : "loading",
     signIn,
     signOut,
-    updateSession: () => Promise.resolve(null),
+    updateSession: () => Promise.resolve(null), // No-op for compatibility
   };
 };
 
@@ -67,7 +66,6 @@ export const useAuth = (): AuthState => {
  * Hook to check if the current user has a specific role
  * @param allowedRoles - Array of allowed roles
  * @returns Boolean indicating if the user has one of the specified roles
- * @version 1.0.108
  */
 export const useHasRole = (allowedRoles: UserRole[]) => {
   const { user, isAuthenticated } = useAuth();
@@ -77,28 +75,4 @@ export const useHasRole = (allowedRoles: UserRole[]) => {
   }
   
   return user.roles.some(role => allowedRoles.includes(role));
-};
-
-/**
- * Hook to redirect if user doesn't have required roles
- * @param allowedRoles - Array of allowed roles
- * @param redirectTo - Path to redirect to if unauthorized
- * @version 1.0.108
- */
-export const useRequireRole = (allowedRoles: UserRole[], redirectTo: string = '/login') => {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-  const hasRequiredRole = useHasRole(allowedRoles);
-  
-  // Effect to handle the redirect
-  useEffect(() => {
-    if (!isLoading && !hasRequiredRole) {
-      router.push(redirectTo);
-    }
-  }, [isLoading, hasRequiredRole, router, redirectTo]);
-  
-  return { 
-    isAuthorized: hasRequiredRole,
-    isLoading
-  };
 };
