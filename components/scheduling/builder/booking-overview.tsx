@@ -1,31 +1,38 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { useUser } from '@clerk/nextjs';
 import { Booking, SessionType } from '@/lib/scheduling/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { formatInTimezone } from '@/lib/scheduling/utils';
-import { Calendar, Clock, User, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
+import { Calendar, Clock, User, CheckCircle, AlertTriangle, XCircle, RefreshCw } from 'lucide-react';
+import { toast } from 'sonner';
+import { updateBookingStatus } from '@/lib/api-client/scheduling';
 
 interface BookingOverviewProps {
   bookings: Booking[];
   sessionTypes: SessionType[];
   timezone: string;
+  onRefresh?: () => void;
 }
 
 export function BookingOverview({
   bookings,
   sessionTypes,
-  timezone
+  timezone,
+  onRefresh
 }: BookingOverviewProps) {
   const [filter, setFilter] = useState<'upcoming' | 'past' | 'all'>('upcoming');
+  const [processingBookings, setProcessingBookings] = useState<Record<string, boolean>>({});
+  const { user } = useUser();
   
-  const getSessionTypeById = (id: string): SessionType | undefined => {
+  const getSessionTypeById = useCallback((id: string): SessionType | undefined => {
     return sessionTypes.find(type => type.id === id);
-  };
+  }, [sessionTypes]);
   
-  const getStatusColor = (status: string) => {
+  const getStatusColor = useCallback((status: string) => {
     switch (status) {
       case 'confirmed':
         return 'bg-green-500';
@@ -38,9 +45,9 @@ export function BookingOverview({
       default:
         return 'bg-gray-500';
     }
-  };
+  }, []);
   
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = useCallback((status: string) => {
     switch (status) {
       case 'confirmed':
         return <CheckCircle className="h-4 w-4" />;
@@ -53,22 +60,49 @@ export function BookingOverview({
       default:
         return null;
     }
-  };
+  }, []);
   
-  const isUpcoming = (booking: Booking): boolean => {
+  const isUpcoming = useCallback((booking: Booking): boolean => {
     return new Date(booking.startTime) > new Date();
-  };
+  }, []);
   
-  const filterBookings = () => {
+  const filterBookings = useCallback(() => {
     if (filter === 'all') return bookings;
     return bookings.filter(booking => 
       filter === 'upcoming' ? isUpcoming(booking) : !isUpcoming(booking)
     );
-  };
+  }, [bookings, filter, isUpcoming]);
   
-  const sortedBookings = filterBookings().sort((a, b) => 
-    new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-  );
+  const sortedBookings = useCallback(() => {
+    return filterBookings().sort((a, b) => 
+      new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+    );
+  }, [filterBookings]);
+
+  const handleBookingAction = async (bookingId: string, action: 'reschedule' | 'cancel') => {
+    setProcessingBookings(prev => ({ ...prev, [bookingId]: true }));
+    
+    try {
+      if (action === 'cancel') {
+        await updateBookingStatus(bookingId, 'cancelled');
+        toast.success('Booking cancelled successfully');
+      } else {
+        // Reschedule functionality would go here
+        toast.info('Reschedule functionality not yet implemented');
+      }
+      
+      if (onRefresh) {
+        onRefresh();
+      }
+    } catch (error) {
+      console.error(`Error ${action}ing booking:`, error);
+      toast.error(`Failed to ${action} booking`);
+    } finally {
+      setProcessingBookings(prev => ({ ...prev, [bookingId]: false }));
+    }
+  };
+
+  const displayedBookings = sortedBookings();
 
   return (
     <Card className="w-full">
@@ -97,11 +131,21 @@ export function BookingOverview({
             >
               All
             </Button>
+            {onRefresh && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onRefresh}
+                aria-label="Refresh bookings"
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        {sortedBookings.length === 0 ? (
+        {displayedBookings.length === 0 ? (
           <div className="text-center p-8 border border-dashed rounded-md border-muted-foreground/20">
             <Calendar className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
             <p className="text-muted-foreground">
@@ -114,18 +158,22 @@ export function BookingOverview({
           </div>
         ) : (
           <div className="space-y-4">
-            {sortedBookings.map((booking) => {
+            {displayedBookings.map((booking) => {
               const sessionType = getSessionTypeById(booking.sessionTypeId);
+              const isProcessing = processingBookings[booking.id] || false;
               return (
                 <div 
                   key={booking.id}
-                  className="p-4 border rounded-md hover:bg-accent transition-colors"
+                  className="p-4 border rounded-md hover:bg-accent/50 transition-colors"
+                  tabIndex={0}
+                  aria-label={`Booking: ${sessionType?.title || 'Unknown session'} on ${formatInTimezone(booking.startTime, 'MMM d, yyyy', timezone)}`}
                 >
                   <div className="flex justify-between mb-2">
                     <h4 className="font-medium">{sessionType?.title || 'Unknown Session Type'}</h4>
                     <Badge variant="outline" className="flex items-center gap-1">
                       <span
                         className={`w-2 h-2 rounded-full ${getStatusColor(booking.status)}`}
+                        aria-hidden="true"
                       />
                       <span className="capitalize">{booking.status}</span>
                     </Badge>
@@ -133,17 +181,19 @@ export function BookingOverview({
                   
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      {formatInTimezone(booking.startTime, 'MMM d, yyyy', timezone)}
+                      <Calendar className="h-4 w-4 mr-1" aria-hidden="true" />
+                      <span>{formatInTimezone(booking.startTime, 'MMM d, yyyy', timezone)}</span>
                     </div>
                     <div className="flex items-center">
-                      <Clock className="h-4 w-4 mr-1" />
-                      {formatInTimezone(booking.startTime, 'h:mm a', timezone)} - 
-                      {formatInTimezone(booking.endTime, 'h:mm a', timezone)}
+                      <Clock className="h-4 w-4 mr-1" aria-hidden="true" />
+                      <span>
+                        {formatInTimezone(booking.startTime, 'h:mm a', timezone)} - 
+                        {formatInTimezone(booking.endTime, 'h:mm a', timezone)}
+                      </span>
                     </div>
                     <div className="flex items-center">
-                      <User className="h-4 w-4 mr-1" />
-                      Client #{booking.clientId}
+                      <User className="h-4 w-4 mr-1" aria-hidden="true" />
+                      <span>Client #{booking.clientId}</span>
                     </div>
                   </div>
                   
@@ -159,13 +209,27 @@ export function BookingOverview({
                       <Button 
                         size="sm" 
                         variant="outline"
+                        onClick={() => handleBookingAction(booking.id, 'reschedule')}
+                        disabled={isProcessing || booking.status === 'cancelled'}
                       >
+                        {isProcessing ? (
+                          <span className="inline-block animate-spin mr-2">
+                            <RefreshCw className="h-4 w-4" />
+                          </span>
+                        ) : null}
                         Reschedule
                       </Button>
                       <Button 
                         size="sm" 
                         variant="destructive"
+                        onClick={() => handleBookingAction(booking.id, 'cancel')}
+                        disabled={isProcessing || booking.status === 'cancelled'}
                       >
+                        {isProcessing ? (
+                          <span className="inline-block animate-spin mr-2">
+                            <RefreshCw className="h-4 w-4" />
+                          </span>
+                        ) : null}
                         Cancel
                       </Button>
                     </div>

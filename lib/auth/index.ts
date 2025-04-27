@@ -1,18 +1,47 @@
-// Export everything needed from our auth implementation
-import { auth, signIn, signOut, authConfig } from "./auth";
-import type { NextAuthConfig } from "next-auth";
+/**
+ * Buildappswith Authentication Module
+ * Version: 1.0.108
+ * 
+ * Centralizes all authentication-related exports for the application.
+ * This module has been fully migrated from NextAuth.js to Clerk.
+ */
 
-// Export getServerSession for backward compatibility
+// Re-export Clerk's standard auth functionality
+export { 
+  auth,
+  currentUser,
+  clerkClient,
+  getAuth,
+} from '@clerk/nextjs/server';
+
+// Re-export client-side hooks
+export { 
+  useAuth,
+  useUser,
+  useSignIn,
+  useSignUp,
+  useClerk,
+  useOrganization,
+  useOrganizationList,
+} from '@clerk/nextjs';
+
+// Export our custom hooks and types
+export * from './types';
+export * from './clerk-hooks';
+
+// For backward compatibility, we'll maintain a getServerSession function
+// that wraps Clerk's auth() for code that hasn't been updated yet
 export async function getServerSession() {
-  return await auth();
+  const { auth } = await import('@clerk/nextjs/server');
+  const authObject = auth();
+  
+  // Only return something if there's an authenticated user
+  if (!authObject.userId) return null;
+  
+  return {
+    user: {
+      id: authObject.userId,
+      // Note: Other user details should be fetched from clerkClient if needed
+    }
+  };
 }
-
-// Export the auth configuration for use with getServerSession
-export const authOptions: NextAuthConfig = authConfig;
-
-// Re-export the auth instance, signIn, signOut from auth.ts
-export { auth, signIn, signOut };
-
-// Re-export types and hooks for easy access
-export * from "./types";
-export * from "./hooks";

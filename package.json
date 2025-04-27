@@ -1,6 +1,6 @@
 {
   "name": "buildappswith",
-  "version": "1.0.102",
+  "version": "1.0.127",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -52,7 +52,14 @@
     "test:datadog:marketplace": "vitest run --config vitest.config.js --dir __tests__/components/marketplace && node datadog-test-agent.js",
     "test:datadog:auth": "vitest run --config vitest.config.js --dir __tests__/components/auth && node datadog-test-agent.js",
     "test:datadog:integration": "vitest run --config vitest.config.js --dir __tests__/integration && node datadog-test-agent.js",
-    "test:datadog:coverage": "vitest run --config vitest.config.js --coverage && node datadog-test-agent.js"
+    "test:datadog:coverage": "vitest run --config vitest.config.js --coverage && node datadog-test-agent.js",
+    "arch:install": "bash scripts/install-architecture-extraction.sh",
+    "arch:extract": "bash scripts/run-architecture-extraction.sh",
+    "arch:extract:auth": "bash scripts/extract-auth-architecture.sh",
+    "arch:extract:all": "bash scripts/extract-all-architecture.sh",
+    "arch:report": "bash scripts/generate-architecture-report.sh",
+    "arch:combined": "pnpm arch:extract:all && pnpm arch:report",
+    "arch:unused": "bash scripts/run-unused-code-analyzer.sh"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.31.8",
@@ -97,6 +104,7 @@
     "stripe": "^18.0.0",
     "svix": "^1.64.1",
     "tailwind-merge": "^3.2.0",
+    "uuid": "^9.0.1",
     "zod": "^3.24.3"
   },
   "devDependencies": {
@@ -109,11 +117,13 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/recharts": "^2.0.1",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/parser": "^8.30.1",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/coverage-v8": "^3.1.1",
     "autoprefixer": "^10.4.21",
     "beasties": "^0.3.2",
+    "dependency-cruiser": "^16.10.1",
     "eslint": "^9.24.0",
     "eslint-config-next": "^15.3.1",
     "identity-obj-proxy": "^3.0.0",
@@ -126,6 +136,8 @@
     "prisma": "^6.6.0",
     "tailwindcss": "3.4.17",
     "tailwindcss-animate": "^1.0.7",
+    "ts-morph": "^25.0.1",
+    "ts-node": "^10.9.2",
     "ts-prune": "^0.10.3",
     "typescript": "^5.8.3",
     "vitest": "^3.1.1",

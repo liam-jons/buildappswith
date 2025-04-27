@@ -1,88 +1,125 @@
+/**
+ * Stripe webhook API route
+ * @version 1.0.110
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
-import { Stripe } from 'stripe';
+import { stripe, handleWebhookEvent } from '@/lib/stripe/stripe-server';
+import { logger } from '@/lib/logger';
 
-// Initialize Stripe with the secret key from environment variables
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: '2025-03-31.basil' as const, // Updated to match expected version format
-});
-
+// Get the webhook secret from environment variables
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+// Define response type for consistent error handling
+type ApiResponse = {
+  success: boolean;
+  message: string;
+  data?: any;
+  error?: any;
+};
+
+/**
+ * Handle POST requests for Stripe webhooks
+ * This endpoint receives webhook events from Stripe
+ */
 export async function POST(request: NextRequest) {
+  // Skip CSRF token validation for Stripe webhooks
+  // Stripe provides its own security through signatures
+  
   try {
+    // Get the raw body and signature from the request
     const body = await request.text();
     const signature = request.headers.get('stripe-signature') as string;
 
-    if (!signature || !webhookSecret) {
+    // Validate webhook signature and secret
+    if (!signature) {
+      logger.warn('Missing Stripe signature in webhook request');
       return NextResponse.json(
-        { error: 'Missing signature or webhook secret' },
+        { 
+          success: false, 
+          message: 'Missing signature', 
+          error: 'MISSING_SIGNATURE' 
+        } as ApiResponse,
         { status: 400 }
       );
     }
+    
+    if (!webhookSecret) {
+      logger.error('Stripe webhook secret not configured');
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Webhook secret not configured', 
+          error: 'CONFIGURATION_ERROR' 
+        } as ApiResponse,
+        { status: 500 }
+      );
+    }
 
-    let event: Stripe.Event;
-
+    // Verify the webhook signature
+    let event;
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      logger.info(`Webhook event received: ${event.type}`, { eventId: event.id });
     } catch (err: any) {
-      console.error(`Webhook signature verification failed: ${err.message}`);
+      logger.error('Webhook signature verification failed', { 
+        error: err.message, 
+        signatureHeader: signature.substring(0, 20) + '...' // Log partial signature for debugging
+      });
+      
       return NextResponse.json(
-        { error: 'Webhook signature verification failed' },
+        { 
+          success: false, 
+          message: 'Webhook signature verification failed', 
+          error: err.message 
+        } as ApiResponse,
         { status: 400 }
       );
     }
 
-    // Handle different event types
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutSessionCompleted(event);
-        break;
-      case 'payment_intent.succeeded':
-        await handlePaymentIntentSucceeded(event);
-        break;
-      case 'payment_intent.payment_failed':
-        await handlePaymentIntentFailed(event);
-        break;
-      // Add other event types as needed
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
+    // Process the webhook event
+    const result = await handleWebhookEvent(event);
+    
+    // Return appropriate response based on the result
+    if (!result.success) {
+      logger.warn('Webhook event handling failed', { 
+        eventId: event.id, 
+        eventType: event.type, 
+        error: result.message 
+      });
+      
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: result.message, 
+          error: 'EVENT_HANDLING_FAILED' 
+        } as ApiResponse,
+        { status: 422 } // Unprocessable Entity
+      );
     }
 
-    return NextResponse.json({ received: true });
+    // Return success response
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Webhook received and processed',
+      data: { event: event.type }
+    } as ApiResponse);
+    
   } catch (error) {
-    console.error('Stripe webhook error:', error);
+    // Log detailed error information
+    logger.error('Stripe webhook error', { 
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    
+    // Return a structured error response
     return NextResponse.json(
-      { error: 'Webhook handler failed' },
+      { 
+        success: false, 
+        message: 'Webhook handler failed', 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      } as ApiResponse,
       { status: 500 }
     );
   }
-}
-
-// Handle successful checkout completion
-async function handleCheckoutSessionCompleted(event: Stripe.Event) {
-  const session = event.data.object as Stripe.Checkout.Session;
-  
-  // Extract booking details from metadata
-  const { bookingId, sessionTypeId, startTime, endTime, builderId, clientId } = session.metadata || {};
-  
-  // TODO: In a real implementation, update the booking status in your database
-  console.log(`Booking ${bookingId} confirmed for session ${sessionTypeId}`);
-  console.log(`Payment completed for booking: ${bookingId}`);
-  
-  // TODO: Send confirmation emails to both the client and builder
-  // TODO: Add the booking to the builder's calendar
-}
-
-// Handle successful payment
-async function handlePaymentIntentSucceeded(event: Stripe.Event) {
-  const paymentIntent = event.data.object as Stripe.PaymentIntent;
-  console.log(`PaymentIntent ${paymentIntent.id} succeeded`);
-  // Additional handling if needed
-}
-
-// Handle failed payment
-async function handlePaymentIntentFailed(event: Stripe.Event) {
-  const paymentIntent = event.data.object as Stripe.PaymentIntent;
-  console.log(`PaymentIntent ${paymentIntent.id} failed`);
-  // TODO: Update booking status, notify user, etc.
 }

@@ -1,33 +1,44 @@
 /**
  * Middleware Tests
- * Version: 1.0.80
+ * Version: 1.0.114
  * 
- * Tests for the middleware implementation
+ * Tests for the middleware implementation using new Clerk authentication utilities
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockUsers } from './__tests__/mocks/users';
 
 // Set up mocks first, before importing middleware
+// Use the new mockClerk pattern from @clerk/nextjs.ts
 vi.mock('@clerk/nextjs', () => {
-  const redirectUrl = new URL('https://example.com/login');
+  // Import the default mock
+  const { authMiddleware, redirectToSignIn } = vi.importActual('__mocks__/@clerk/nextjs.ts');
+  
+  // Create a custom implementation for testing
   return {
     authMiddleware: vi.fn(({ afterAuth }) => {
       return async (req) => {
-        const auth = {
-          userId: null,
-          isPublicRoute: false,
-          sessionClaims: null,
-        };
-        return afterAuth(auth, req, {});
+        // Get auth info from headers for testing purposes
+        const userId = req.headers.get('x-auth-user-id');
+        const isPublicRoute = req.headers.get('x-is-public-route') === 'true';
+        
+        // Call the afterAuth handler with the auth state
+        return afterAuth(
+          { userId, isPublicRoute },
+          req,
+          { nextUrl: req.nextUrl }
+        );
       };
     }),
     redirectToSignIn: vi.fn(() => {
+      const redirectUrl = new URL('https://example.com/login');
       return NextResponse.redirect(redirectUrl);
     }),
     auth: vi.fn(() => ({
       userId: null,
       sessionClaims: null,
+      getToken: vi.fn().mockResolvedValue(null),
     })),
   };
 });
@@ -107,30 +118,27 @@ describe('Middleware', () => {
   });
   
   it('should allow access to public routes', async () => {
-    // Create request to public route
+    // Create request to public route with header indicating it's a public route
     const req = new NextRequest(new URL('https://buildappswith.com/'));
-    
-    // Mock auth middleware to treat this as a public route
-    vi.mocked(require('@clerk/nextjs').authMiddleware).mockImplementationOnce(({ afterAuth }) => {
-      return async (req) => {
-        const auth = {
-          userId: null,
-          isPublicRoute: true,
-          sessionClaims: null,
-        };
-        return afterAuth(auth, req, {});
-      };
-    });
-    
-    // Create new middleware instance with mock
-    const config = getMiddlewareConfig();
-    middleware = createMiddleware(config);
+    req.headers.set('x-is-public-route', 'true');
     
     // Execute middleware
     const res = await middleware(req);
     
     // Check response
     expect(res.status).toBe(200);
+  });
+  
+  it('should allow authenticated users to access protected routes', async () => {
+    // Create request to protected route with authenticated user
+    const req = new NextRequest(new URL('https://buildappswith.com/dashboard'));
+    req.headers.set('x-auth-user-id', mockUsers.client.clerkId);
+    
+    // Execute middleware
+    const res = await middleware(req);
+    
+    // Check response (undefined means NextResponse.next() which allows the request)
+    expect(res).toBeUndefined();
   });
   
   it('should return 401 for unauthenticated API requests', async () => {

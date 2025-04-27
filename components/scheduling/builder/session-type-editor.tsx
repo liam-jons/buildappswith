@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
+import { useUser } from '@clerk/nextjs';
 import { SessionType } from '@/lib/scheduling/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,9 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { X, Plus, Clock, DollarSign, AlertTriangle } from 'lucide-react';
+import { X, Plus, Clock, DollarSign, AlertTriangle, Loader2 } from 'lucide-react';
 import { TextShimmer } from '@/components/magicui/text-shimmer';
-import { getSessionTypes, createSessionType, deleteSessionType } from '@/lib/api-client/scheduling';
+import { getSessionTypes, createSessionType, deleteSessionType, updateSessionType } from '@/lib/api-client/scheduling';
 import { toast } from 'sonner';
 
 interface SessionTypeEditorProps {
@@ -31,16 +32,24 @@ const SESSION_COLORS = [
   '#795548', // Brown
 ];
 
+// Currency options with proper localization
+const CURRENCY_OPTIONS = [
+  { value: 'USD', label: 'USD - US Dollar' },
+  { value: 'EUR', label: 'EUR - Euro' },
+  { value: 'GBP', label: 'GBP - British Pound' },
+];
+
 export function SessionTypeEditor({
-  sessionTypes,
+  sessionTypes: initialSessionTypes,
   builderId,
   onUpdate
 }: SessionTypeEditorProps) {
-  const [types, setTypes] = useState<SessionType[]>(sessionTypes);
+  const [types, setTypes] = useState<SessionType[]>(initialSessionTypes);
   const [editingType, setEditingType] = useState<SessionType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
   const [usingMockData, setUsingMockData] = useState(false);
+  const { user, isLoaded: isUserLoaded } = useUser();
 
   // Fetch session types from API if needed
   const fetchSessionTypes = useCallback(async () => {
@@ -60,10 +69,17 @@ export function SessionTypeEditor({
   }, [builderId, onUpdate]);
 
   useEffect(() => {
-    if (sessionTypes.length === 0) {
+    if (initialSessionTypes.length === 0 && isUserLoaded) {
       fetchSessionTypes();
     }
-  }, [sessionTypes.length, fetchSessionTypes]);
+  }, [initialSessionTypes.length, fetchSessionTypes, isUserLoaded]);
+
+  // Update types when prop changes
+  useEffect(() => {
+    if (initialSessionTypes.length > 0) {
+      setTypes(initialSessionTypes);
+    }
+  }, [initialSessionTypes]);
 
   const addSessionType = async () => {
     // Create a new session type with default values
@@ -98,8 +114,7 @@ export function SessionTypeEditor({
     setIsUpdating(prev => ({ ...prev, [typeId]: true }));
     
     try {
-      // For now, we'll update locally, but in a full implementation
-      // we would call the API to update the session type
+      // First, update locally for immediate UI feedback
       const updatedTypes = types.map(type => 
         type.id === typeId 
           ? { ...type, ...updates } 
@@ -107,15 +122,29 @@ export function SessionTypeEditor({
       );
       
       setTypes(updatedTypes);
-      onUpdate(updatedTypes);
+      
+      // Then update on the server
+      const { sessionType: updatedType, warning } = await updateSessionType(typeId, updates);
+      setUsingMockData(!!warning);
+      
+      // Update with the server response if needed
+      const finalUpdatedTypes = updatedTypes.map(type => 
+        type.id === typeId ? updatedType : type
+      );
+      
+      setTypes(finalUpdatedTypes);
+      onUpdate(finalUpdatedTypes);
       
       // Update editing type if it's currently being edited
       if (editingType && editingType.id === typeId) {
-        setEditingType({ ...editingType, ...updates });
+        setEditingType(updatedType);
       }
     } catch (error) {
       console.error('Error updating session type:', error);
       toast.error('Failed to update session type');
+      
+      // Revert the local update on error
+      fetchSessionTypes();
     } finally {
       setIsUpdating(prev => ({ ...prev, [typeId]: false }));
     }
@@ -149,15 +178,17 @@ export function SessionTypeEditor({
     return (
       <Card className="w-full">
         <CardContent className="p-6 flex justify-center">
-          <div className="animate-pulse space-y-4 w-full">
-            <div className="h-4 bg-muted rounded w-3/4"></div>
-            <div className="h-10 bg-muted rounded w-full"></div>
-            <div className="h-32 bg-muted rounded w-full"></div>
+          <div className="flex flex-col items-center gap-4 py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-muted-foreground">Loading session types...</p>
           </div>
         </CardContent>
       </Card>
     );
   }
+
+  // Authorization check - ensure user has permission to edit
+  const isAuthorized = user?.id === builderId || user?.publicMetadata?.roles?.includes('ADMIN');
 
   return (
     <Card className="w-full">
@@ -171,13 +202,17 @@ export function SessionTypeEditor({
           </div>
           <div className="flex items-center gap-2">
             {usingMockData && (
-              <div className="text-sm text-yellow-600 dark:text-yellow-400 flex items-center gap-1.5">
-                <AlertTriangle className="h-4 w-4" />
+              <div className="text-sm text-yellow-600 dark:text-yellow-400 flex items-center gap-1.5" aria-live="polite">
+                <AlertTriangle className="h-4 w-4" aria-hidden="true" />
                 <span>Using demo data</span>
               </div>
             )}
-            <Button onClick={addSessionType}>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button 
+              onClick={addSessionType} 
+              disabled={!isAuthorized}
+              aria-label="Add new session type"
+            >
+              <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
               Add Session Type
             </Button>
           </div>
@@ -185,177 +220,216 @@ export function SessionTypeEditor({
         
         {types.length === 0 ? (
           <div className="text-center p-8 border border-dashed rounded-md border-muted-foreground/20 my-4">
-            <Clock className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+            <Clock className="h-8 w-8 mx-auto mb-2 text-muted-foreground" aria-hidden="true" />
             <p className="text-muted-foreground">No session types created yet</p>
             <Button 
               size="sm" 
               variant="link" 
               onClick={addSessionType}
+              disabled={!isAuthorized}
             >
               Create your first session type
             </Button>
           </div>
         ) : (
           <div className="space-y-4 mt-6">
-            {types.map((type) => (
-              <div 
-                key={type.id} 
-                className={`border rounded-md p-4 transition-all ${
-                  editingType?.id === type.id ? 'ring-2 ring-primary' : 'hover:bg-accent'
-                }`}
-              >
-                <div className="flex justify-between mb-2">
-                  <div className="flex items-center gap-2">
+            {types.map((type) => {
+              const isUpdatingThisType = isUpdating[type.id] || false;
+              return (
+                <div 
+                  key={type.id} 
+                  className={`border rounded-md p-4 transition-all ${
+                    editingType?.id === type.id ? 'ring-2 ring-primary' : 'hover:bg-accent/50'
+                  }`}
+                >
+                  <div className="flex justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-4 h-4 rounded-full" 
+                        style={{ backgroundColor: type.color }}
+                        aria-hidden="true"
+                      />
+                      <h4 className="font-medium">{type.title}</h4>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch 
+                        checked={type.isActive} 
+                        onCheckedChange={(checked) => updateSessionTypeLocal(type.id, { isActive: checked })}
+                        id={`active-${type.id}`}
+                        disabled={isUpdatingThisType || !isAuthorized}
+                        aria-label={`Set session type ${type.isActive ? 'inactive' : 'active'}`}
+                      />
+                      <Label htmlFor={`active-${type.id}`} className="text-sm cursor-pointer">
+                        {type.isActive ? 'Active' : 'Inactive'}
+                      </Label>
+                      
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => editingType?.id === type.id 
+                          ? setEditingType(null) 
+                          : setEditingType(type)
+                        }
+                        disabled={isUpdatingThisType || !isAuthorized}
+                        aria-expanded={editingType?.id === type.id}
+                        aria-controls={`edit-form-${type.id}`}
+                      >
+                        {editingType?.id === type.id ? 'Close' : 'Edit'}
+                      </Button>
+                      
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => deleteSessionTypeHandler(type.id)}
+                        disabled={isUpdatingThisType || !isAuthorized}
+                        aria-label={`Delete ${type.title}`}
+                      >
+                        {isUpdatingThisType ? (
+                          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                        ) : (
+                          <X className="h-4 w-4" aria-hidden="true" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-1" aria-hidden="true" />
+                      <span>{type.durationMinutes} minutes</span>
+                    </div>
+                    <div className="flex items-center">
+                      <DollarSign className="h-4 w-4 mr-1" aria-hidden="true" />
+                      <span>{type.price} {type.currency}</span>
+                    </div>
+                  </div>
+                  
+                  {editingType?.id === type.id && (
                     <div 
-                      className="w-4 h-4 rounded-full" 
-                      style={{ backgroundColor: type.color }}
-                    />
-                    <h4 className="font-medium">{type.title}</h4>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Switch 
-                      checked={type.isActive} 
-                      onCheckedChange={(checked) => updateSessionTypeLocal(type.id, { isActive: checked })}
-                      id={`active-${type.id}`}
-                      disabled={isUpdating[type.id]}
-                    />
-                    <Label htmlFor={`active-${type.id}`} className="text-sm cursor-pointer">
-                      {type.isActive ? 'Active' : 'Inactive'}
-                    </Label>
-                    
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => editingType?.id === type.id 
-                        ? setEditingType(null) 
-                        : setEditingType(type)
-                      }
-                      disabled={isUpdating[type.id]}
+                      id={`edit-form-${type.id}`} 
+                      className="mt-4 space-y-4 border-t pt-4"
                     >
-                      {editingType?.id === type.id ? 'Close' : 'Edit'}
-                    </Button>
-                    
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => deleteSessionTypeHandler(type.id)}
-                      disabled={isUpdating[type.id]}
-                    >
-                      {isUpdating[type.id] ? (
-                        <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <X className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-1" />
-                    {type.durationMinutes} minutes
-                  </div>
-                  <div className="flex items-center">
-                    <DollarSign className="h-4 w-4 mr-1" />
-                    {type.price} {type.currency}
-                  </div>
-                </div>
-                
-                {editingType?.id === type.id && (
-                  <div className="mt-4 space-y-4 border-t pt-4">
-                    <div>
-                      <Label htmlFor={`title-${type.id}`}>Session Title</Label>
-                      <Input
-                        id={`title-${type.id}`}
-                        value={type.title}
-                        onChange={(e) => updateSessionTypeLocal(type.id, { title: e.target.value })}
-                        className="mt-1"
-                        disabled={isUpdating[type.id]}
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor={`description-${type.id}`}>Description</Label>
-                      <Textarea
-                        id={`description-${type.id}`}
-                        value={type.description}
-                        onChange={(e) => updateSessionTypeLocal(type.id, { description: e.target.value })}
-                        className="mt-1"
-                        rows={3}
-                        disabled={isUpdating[type.id]}
-                      />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor={`duration-${type.id}`}>Duration (minutes)</Label>
+                        <Label htmlFor={`title-${type.id}`}>Session Title</Label>
                         <Input
-                          id={`duration-${type.id}`}
-                          type="number"
-                          value={type.durationMinutes}
-                          onChange={(e) => updateSessionTypeLocal(type.id, { 
-                            durationMinutes: parseInt(e.target.value) 
-                          })}
+                          id={`title-${type.id}`}
+                          value={type.title}
+                          onChange={(e) => updateSessionTypeLocal(type.id, { title: e.target.value })}
                           className="mt-1"
-                          min={15}
-                          step={15}
-                          disabled={isUpdating[type.id]}
+                          disabled={isUpdatingThisType}
+                          aria-describedby={`title-help-${type.id}`}
                         />
+                        <p id={`title-help-${type.id}`} className="text-xs text-muted-foreground mt-1">
+                          What clients will see when booking this session type
+                        </p>
                       </div>
                       
                       <div>
-                        <Label htmlFor={`price-${type.id}`}>Price</Label>
-                        <div className="flex mt-1">
+                        <Label htmlFor={`description-${type.id}`}>Description</Label>
+                        <Textarea
+                          id={`description-${type.id}`}
+                          value={type.description}
+                          onChange={(e) => updateSessionTypeLocal(type.id, { description: e.target.value })}
+                          className="mt-1"
+                          rows={3}
+                          disabled={isUpdatingThisType}
+                          aria-describedby={`description-help-${type.id}`}
+                        />
+                        <p id={`description-help-${type.id}`} className="text-xs text-muted-foreground mt-1">
+                          Explain what clients can expect during this session
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor={`duration-${type.id}`}>Duration (minutes)</Label>
                           <Input
-                            id={`price-${type.id}`}
+                            id={`duration-${type.id}`}
                             type="number"
-                            value={type.price}
+                            value={type.durationMinutes}
                             onChange={(e) => updateSessionTypeLocal(type.id, { 
-                              price: parseFloat(e.target.value) 
+                              durationMinutes: parseInt(e.target.value) 
                             })}
-                            className="rounded-r-none"
-                            min={0}
-                            step={1}
-                            disabled={isUpdating[type.id]}
+                            className="mt-1"
+                            min={15}
+                            step={15}
+                            disabled={isUpdatingThisType}
+                            aria-describedby={`duration-help-${type.id}`}
                           />
-                          <select
-                            value={type.currency}
-                            onChange={(e) => updateSessionTypeLocal(type.id, { 
-                              currency: e.target.value 
-                            })}
-                            className="rounded-l-none border border-input bg-background px-3"
-                            disabled={isUpdating[type.id]}
-                          >
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="GBP">GBP</option>
-                          </select>
+                          <p id={`duration-help-${type.id}`} className="text-xs text-muted-foreground mt-1">
+                            Length of session in 15-minute increments
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor={`price-${type.id}`}>Price</Label>
+                          <div className="flex mt-1">
+                            <Input
+                              id={`price-${type.id}`}
+                              type="number"
+                              value={type.price}
+                              onChange={(e) => updateSessionTypeLocal(type.id, { 
+                                price: parseFloat(e.target.value) 
+                              })}
+                              className="rounded-r-none"
+                              min={0}
+                              step={1}
+                              disabled={isUpdatingThisType}
+                              aria-label="Price amount"
+                            />
+                            <select
+                              value={type.currency}
+                              onChange={(e) => updateSessionTypeLocal(type.id, { 
+                                currency: e.target.value 
+                              })}
+                              className="rounded-l-none border border-input bg-background px-3"
+                              disabled={isUpdatingThisType}
+                              aria-label="Currency"
+                            >
+                              {CURRENCY_OPTIONS.map(option => (
+                                <option key={option.value} value={option.value}>
+                                  {option.value}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Amount clients will pay per session
+                          </p>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div>
-                      <Label>Color</Label>
-                      <div className="flex gap-2 mt-1">
-                        {SESSION_COLORS.map((color) => (
-                          <button
-                            key={color}
-                            type="button"
-                            className={`w-6 h-6 rounded-full cursor-pointer ${
-                              type.color === color ? 'ring-2 ring-primary ring-offset-2' : ''
-                            }`}
-                            style={{ backgroundColor: color }}
-                            onClick={() => updateSessionTypeLocal(type.id, { color })}
-                            aria-label={`Select color ${color}`}
-                            disabled={isUpdating[type.id]}
-                          />
-                        ))}
+                      
+                      <div>
+                        <Label id={`color-label-${type.id}`}>Color</Label>
+                        <div 
+                          className="flex gap-2 mt-1"
+                          role="radiogroup"
+                          aria-labelledby={`color-label-${type.id}`}
+                        >
+                          {SESSION_COLORS.map((color) => (
+                            <button
+                              key={color}
+                              type="button"
+                              className={`w-6 h-6 rounded-full cursor-pointer ${
+                                type.color === color ? 'ring-2 ring-primary ring-offset-2' : ''
+                              }`}
+                              style={{ backgroundColor: color }}
+                              onClick={() => updateSessionTypeLocal(type.id, { color })}
+                              aria-label={`Select color ${color}`}
+                              aria-pressed={type.color === color}
+                              disabled={isUpdatingThisType}
+                            />
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Used to identify this session type in the calendar
+                        </p>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </CardContent>

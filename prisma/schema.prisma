@@ -91,29 +91,36 @@ model VerificationToken {
 // =========================================
 
 model BuilderProfile {
-  id               String   @id @default(cuid())
-  userId           String   @unique
-  bio              String?  @db.Text
-  headline         String?
-  hourlyRate       Decimal? @db.Decimal(10, 2)
-  featuredBuilder  Boolean  @default(false)
-  domains          String[] // Array of expertise domains
-  badges           String[] // Achievement badges
-  rating           Float?   // Validation score
-  portfolioItems   Json[]   // Array of portfolio items
-  validationTier   Int      @default(1) // 1, 2, or 3 based on validation level
-  availableForHire Boolean  @default(true)
-  adhd_focus       Boolean  @default(false) // Special flag for ADHD specialization
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  socialLinks       Json?     // Social media links and contact information
+  id                      String   @id @default(cuid())
+  userId                  String   @unique
+  bio                     String?  @db.Text
+  headline                String?
+  hourlyRate              Decimal? @db.Decimal(10, 2)
+  featuredBuilder         Boolean  @default(false)
+  domains                 String[] // Array of expertise domains
+  badges                  String[] // Achievement badges
+  rating                  Float?   // Validation score
+  portfolioItems          Json[]   // Array of portfolio items
+  validationTier          Int      @default(1) // 1, 2, or 3 based on validation level
+  availableForHire        Boolean  @default(true)
+  adhd_focus              Boolean  @default(false) // Special flag for ADHD specialization
+  timezone                String   @default("Etc/UTC") // IANA timezone name
+  minimumNotice           Int      @default(60) // Minimum minutes before a session can be booked
+  bufferBetweenSessions   Int      @default(15) // Minutes between consecutive sessions
+  maximumAdvanceBooking   Int      @default(60) // Maximum days in advance a client can book
+  isAcceptingBookings     Boolean  @default(true)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  socialLinks             Json?    // Social media links and contact information
 
   // Relations
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skills           BuilderSkill[]
-  bookings         Booking[]
-  apps             App[]    // Relation to apps built by this builder
-  sessionTypes     SessionType[] // Relation to session types offered by this builder
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills                  BuilderSkill[]
+  bookings                Booking[]
+  apps                    App[]    // Relation to apps built by this builder
+  sessionTypes            SessionType[] // Relation to session types offered by this builder
+  availabilityRules       AvailabilityRule[] // Weekly recurring availability
+  availabilityExceptions  AvailabilityException[] // Exceptions to regular availability
 }
 
 model ClientProfile {
@@ -325,6 +332,46 @@ model SessionType {
   // Relations
   builder          BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
   bookings         Booking[]
+}
+
+model AvailabilityRule {
+  id               String   @id @default(cuid())
+  builderId        String
+  dayOfWeek        Int      // 0 = Sunday, 6 = Saturday
+  startTime        String   // 24-hour format "HH:MM"
+  endTime          String   // 24-hour format "HH:MM"
+  isRecurring      Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  builder          BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
+}
+
+model AvailabilityException {
+  id               String   @id @default(cuid())
+  builderId        String
+  date             DateTime // The specific date for this exception
+  isAvailable      Boolean  @default(false) // false = blocked day, true = special availability
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  builder          BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  slots            ExceptionTimeSlot[]
+}
+
+model ExceptionTimeSlot {
+  id                       String   @id @default(cuid())
+  availabilityExceptionId String
+  startTime               DateTime
+  endTime                 DateTime
+  isBooked                Boolean  @default(false)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  availabilityException   AvailabilityException @relation(fields: [availabilityExceptionId], references: [id], onDelete: Cascade)
 }
 
 // =========================================

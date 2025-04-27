@@ -15,7 +15,14 @@
 - [x] Create properly typed mock implementation using Vitest's MockInstance type
 - [x] Implement configureMockAuth helper function to simplify test setup
 
+## Completed (v1.0.114)
+- [x] Migrate middleware test to use new Clerk authentication utilities
+- [x] Create standardized pattern for middleware test authentication
+- [x] Implement header-based test configuration for authentication states
+- [x] Document middleware test migration patterns
+
 ## Medium Priority
+- [ ] Migrate remaining middleware tests to new Clerk authentication utilities
 - [ ] Add better instrumentation for middleware execution flow
 
 ## Low Priority
