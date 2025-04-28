@@ -18,15 +18,6 @@
       "dependencies": []
     },
     {
-      "name": "auth-utils",
-      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth-utils.ts",
-      "type": "Authentication Component",
-      "description": "* Helper function to check authentication status on the server\n * Redirects to login if not authenticated",
-      "container": "AuthenticationService",
-      "usedBy": [],
-      "dependencies": []
-    },
-    {
       "name": "architecture-utils",
       "path": "/Users/liamj/Documents/Development/buildappswith/scripts/architecture-utils.ts",
       "type": "Authentication Component",
@@ -50,7 +41,7 @@
       "name": "nextjs",
       "path": "/Users/liamj/Documents/Development/buildappswith/__mocks__/@clerk/nextjs.ts",
       "type": "Authentication Component",
-      "description": "* Mock implementation for @clerk/nextjs\n * Version: 1.0.112\n * \n * This centralized mock definition provides consistent behavior across tests\n * and avoids the hoisting issues that can occur with inline vi.mock() calls.\n * \n * Uses Vitest's MockInstance type for proper TypeScript support of method chaining.",
+      "description": "* Mock implementation for @clerk/nextjs\n * Version: 1.0.101\n * \n * This centralized mock definition provides consistent behavior across tests\n * and avoids the hoisting issues that can occur with inline vi.mock() calls.\n * \n * Uses Vitest's MockInstance type for proper TypeScript support of method chaining.",
       "container": "AuthenticationService",
       "usedBy": [],
       "dependencies": []
@@ -83,7 +74,7 @@
       "name": "auth-provider",
       "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/auth-provider.tsx",
       "type": "Context Provider (Clerk)",
-      "description": "* AuthProvider component using Clerk\n * Enhanced with error handling and theme integration\n * @version 1.0.108",
+      "description": "* AuthProvider component using Clerk\n * This replaces the NextAuth SessionProvider with Clerk's equivalent",
       "container": "AuthenticationService",
       "usedBy": [],
       "dependencies": []
@@ -102,24 +93,6 @@
       "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/loading-state.tsx",
       "type": "UI Component (Clerk)",
       "description": "* Component to handle authentication loading states\n * Prevents blank pages by showing a loading state while Clerk auth is initializing",
-      "container": "AuthenticationService",
-      "usedBy": [],
-      "dependencies": []
-    },
-    {
-      "name": "login-button",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/login-button.tsx",
-      "type": "UI Component (Clerk)",
-      "description": "* LoginButton component using direct Clerk authentication\n * Handles both login and signup scenarios based on variant prop\n * @version 1.0.108",
-      "container": "AuthenticationService",
-      "usedBy": [],
-      "dependencies": []
-    },
-    {
-      "name": "user-profile",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/user-profile.tsx",
-      "type": "UI Component (Clerk)",
-      "description": "* User profile component using direct Clerk authentication\n * Displays user avatar and dropdown menu with profile options\n * @version 1.0.108",
       "container": "AuthenticationService",
       "usedBy": [],
       "dependencies": []
@@ -151,7 +124,9 @@
       "description": "* Modified Middleware Factory Test\n * Version: 1.0.84\n *\n * This version uses the improved mock implementation to avoid TypeScript errors",
       "container": "AuthenticationService",
       "usedBy": [],
-      "dependencies": []
+      "dependencies": [
+        "auth"
+      ]
     },
     {
       "name": "improved-integration-test",
@@ -160,7 +135,9 @@
       "description": "* Improved Middleware Integration Test Example\n * Using Vitest's built-in MockInstance type for proper TypeScript support",
       "container": "AuthenticationService",
       "usedBy": [],
-      "dependencies": []
+      "dependencies": [
+        "auth"
+      ]
     },
     {
       "name": "improved-solution",
@@ -181,14 +158,30 @@
       "dependencies": []
     },
     {
+      "name": "auth",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/auth.ts",
+      "type": "Authentication Component",
+      "description": "* @deprecated This file is deprecated and will be removed in a future version.\n * The original NextAuth implementation has been archived in /archived/nextauth-legacy/lib/auth/auth.ts\n * \n * Please use the Clerk authentication system directly:\n * - For client-side auth: import { useAuth, useUser } from \"@clerk/nextjs\";\n * - For server-side auth: import { currentUser } from \"@clerk/nextjs/server\";\n * - For middleware: import { authMiddleware } from \"@clerk/nextjs\";",
+      "container": "AuthenticationService",
+      "usedBy": [
+        "factory-test-solution",
+        "improved-integration-test",
+        "clerk-middleware",
+        "factory",
+        "rbac",
+        "page",
+        "helpers",
+        "route"
+      ],
+      "dependencies": []
+    },
+    {
       "name": "clerk-hooks",
       "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk-hooks.ts",
       "type": "Authentication Component",
-      "description": "* Enhanced authentication hook that provides a consistent interface\n * @returns Object containing auth state and user information\n * @version 1.0.108",
+      "description": "* Hook to access the current authenticated user with a compatible API to the old NextAuth hook\n * @returns Object containing auth state and user information",
       "container": "AuthenticationService",
-      "usedBy": [
-        "index"
-      ],
+      "usedBy": [],
       "dependencies": []
     },
     {
@@ -196,15 +189,6 @@
       "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk-middleware.ts",
       "type": "Authentication Component",
       "description": "* Public routes that don't require authentication",
-      "container": "AuthenticationService",
-      "usedBy": [],
-      "dependencies": []
-    },
-    {
-      "name": "index",
-      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts",
-      "type": "Authentication Component",
-      "description": "* Buildappswith Authentication Module\n * Version: 1.0.108\n * \n * Centralizes all authentication-related exports for the application.\n * This module has been fully migrated from NextAuth.js to Clerk.",
       "container": "AuthenticationService",
       "dependencies": [],
       "usedBy": []
@@ -215,10 +199,10 @@
       "type": "Authentication Component",
       "description": "* Middleware Factory for Buildappswith Platform\n * Version: 1.0.80\n * \n * Creates middleware composition based on configuration\n * Allows easy addition and removal of middleware components\n * Validates configuration before creating middleware",
       "container": "AuthenticationService",
-      "usedBy": [],
       "dependencies": [
         "rbac"
-      ]
+      ],
+      "usedBy": []
     },
     {
       "name": "rbac",
@@ -226,10 +210,18 @@
       "type": "Authentication Component",
       "description": "* Role-Based Access Control Middleware\n * Version: 1.0.78\n * \n * Provides enhanced RBAC functionality for middleware\n * with flexible permission models and policy enforcement.",
       "container": "AuthenticationService",
+      "dependencies": [],
       "usedBy": [
         "factory"
-      ],
-      "dependencies": []
+      ]
+    },
+    {
+      "name": "page",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/book/[builderId]/page.tsx",
+      "type": "Page Component (Clerk)",
+      "container": "WebApplication",
+      "dependencies": [],
+      "usedBy": []
     },
     {
       "name": "page",
@@ -243,34 +235,29 @@
       "name": "page",
       "path": "/Users/liamj/Documents/Development/buildappswith/app/test/auth/page.tsx",
       "type": "Page Component (Clerk)",
-      "description": "* Test page for Clerk authentication\n * Tests various auth states and displays user information\n * Version: 1.0.108",
+      "description": "* Test page for Clerk authentication\n * Tests various auth states and displays user information\n * Version: 1.0.59",
       "container": "AuthenticationService",
       "usedBy": [],
       "dependencies": []
     },
     {
-      "name": "protected-route",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/protected/protected-route.tsx",
-      "type": "UI Component (Clerk)",
-      "description": "* Protected route component using Clerk authentication\n * Redirects to login if not authenticated",
-      "container": "AuthenticationService",
-      "usedBy": [],
-      "dependencies": []
-    },
-    {
-      "name": "booking-overview",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/booking-overview.tsx",
+      "name": "booking-calendar",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/client/booking-calendar.tsx",
       "type": "UI Component (Clerk)",
       "container": "WebApplication",
       "usedBy": [],
-      "dependencies": []
+      "dependencies": [
+        "booking-form"
+      ]
     },
     {
-      "name": "session-type-editor",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/session-type-editor.tsx",
+      "name": "booking-form",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/client/booking-form.tsx",
       "type": "UI Component (Clerk)",
       "container": "WebApplication",
-      "usedBy": [],
+      "usedBy": [
+        "booking-calendar"
+      ],
       "dependencies": []
     },
     {
@@ -279,8 +266,8 @@
       "type": "Authentication Component",
       "description": "* Extended user type with combined Clerk and database data",
       "container": "AuthenticationService",
-      "usedBy": [],
-      "dependencies": []
+      "dependencies": [],
+      "usedBy": []
     },
     {
       "name": "page",
@@ -296,14 +283,14 @@
       "type": "API Endpoint (Clerk)",
       "description": "* GET handler for fetching current user profile",
       "container": "WebApplication",
-      "usedBy": [],
-      "dependencies": []
+      "dependencies": [],
+      "usedBy": []
     },
     {
       "name": "route",
-      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/bookings/route.ts",
       "type": "API Endpoint (Clerk)",
-      "description": "* Stripe checkout API route\n * @version 1.0.110",
+      "description": "* Helper function to handle service errors with appropriate responses",
       "container": "WebApplication",
       "usedBy": [],
       "dependencies": []
@@ -351,15 +338,6 @@
       "name": "route",
       "path": "/Users/liamj/Documents/Development/buildappswith/app/api/apps/edit/[id]/route.ts",
       "type": "API Endpoint (Clerk)",
-      "container": "WebApplication",
-      "usedBy": [],
-      "dependencies": []
-    },
-    {
-      "name": "route",
-      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/sessions/[id]/route.ts",
-      "type": "API Endpoint (Clerk)",
-      "description": "* API route for retrieving Stripe session information\n * @version 1.0.111",
       "container": "WebApplication",
       "usedBy": [],
       "dependencies": []

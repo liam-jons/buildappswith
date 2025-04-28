@@ -1,17 +1,31 @@
-## [1.0.80] - 2025-04-26
+## 1.0.131 (2025-04-28)
 
-### Removed
-- Removed legacy route handling that was used during NextAuth migration
-- Removed legacy route validation from middleware configuration
-- Removed legacy route imports from middleware index
+### Features
 
-### Changed
-- Updated middleware factory to remove dependency on legacy routes
-- Updated middleware tests to use proper mocking approach
-- Simplified configuration validation without legacy route checks
-- Improved test file structure to set up mocks before imports
+- **components:** Standardized folder structure for components
+  - Created domain-first organization pattern
+  - Added barrel exports for simplified imports
+  - Moved ValidationTierBadge to profile/ui directory
+  - Created README files documenting the new structure
 
-### Fixed
-- Fixed test failures in middleware test suite
-- Corrected mocking implementation in middleware tests
-- Resolved "Cannot read properties of undefined" errors
+### Improvements
+
+- **organization:** Established clear patterns for component organization
+  - Separated core UI components from domain-specific components
+  - Created composite component structure for complex reusable UI
+  - Added documentation for each major component directory
+
+### Refactoring
+
+- **structure:** Created consistent folder structure scaffolding
+  - ui/core for foundational components
+  - ui/composite for complex components
+  - [domain]/ui for domain-specific components
+  - Barrel exports at each level
+
+### Documentation
+
+- **patterns:** Added comprehensive documentation of component patterns
+  - Created root-level README for components
+  - Added domain-specific documentation
+  - Documented import standards and naming conventions
