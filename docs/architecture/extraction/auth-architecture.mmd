@@ -1,26 +1,22 @@
 graph TD
   subgraph AuthenticationService
-    auth_utils["auth-utils (Authentication Component)"]:::auth
     architecture_utils["architecture-utils (Authentication Component)"]:::auth
     extract_auth_architecture["extract-auth-architecture (Authentication Component)"]:::auth
     nextjs["nextjs (Authentication Component)"]:::auth
     auth_provider["auth-provider (Context Provider (Clerk))"]:::provider
     clerk_auth_form["clerk-auth-form (UI Component (Clerk))"]:::component
     loading_state["loading-state (UI Component (Clerk))"]:::component
-    login_button["login-button (UI Component (Clerk))"]:::component
-    user_profile["user-profile (UI Component (Clerk))"]:::component
     clerk_provider["clerk-provider (Context Provider (Clerk))"]:::provider
     factory_test_solution["factory-test-solution (Authentication Component)"]:::auth
     improved_integration_test["improved-integration-test (Authentication Component)"]:::auth
     improved_solution["improved-solution (Authentication Component)"]:::auth
     nextjs_mock_solution["nextjs-mock-solution (Authentication Component)"]:::auth
+    auth["auth (Authentication Component)"]:::auth
     clerk_hooks["clerk-hooks (Authentication Component)"]:::auth
     clerk_middleware["clerk-middleware (Authentication Component)"]:::auth
-    index["index (Authentication Component)"]:::auth
     factory["factory (Authentication Component)"]:::auth
     rbac["rbac (Authentication Component)"]:::auth
     page["page (Page Component (Clerk))"]:::component
-    protected_route["protected-route (UI Component (Clerk))"]:::component
     helpers["helpers (Authentication Component)"]:::auth
     route["route (API Endpoint (Clerk))"]:::api
   end
@@ -33,15 +29,15 @@ graph TD
     page["page (Page Component (Clerk))"]:::component
     providers["providers (Context Provider (Clerk))"]:::provider
     page["page (Page Component (Clerk))"]:::component
-    booking_overview["booking-overview (UI Component (Clerk))"]:::component
-    session_type_editor["session-type-editor (UI Component (Clerk))"]:::component
+    page["page (Page Component (Clerk))"]:::component
+    booking_calendar["booking-calendar (UI Component (Clerk))"]:::component
+    booking_form["booking-form (UI Component (Clerk))"]:::component
     page["page (Page Component (Clerk))"]:::component
     route["route (API Endpoint (Clerk))"]:::api
     route["route (API Endpoint (Clerk))"]:::api
     availability_exceptions["availability-exceptions (UI Component (Clerk))"]:::component
     availability_management["availability-management (UI Component (Clerk))"]:::component
     weekly_availability["weekly-availability (UI Component (Clerk))"]:::component
-    route["route (API Endpoint (Clerk))"]:::api
     route["route (API Endpoint (Clerk))"]:::api
   end
 
@@ -52,7 +48,10 @@ graph TD
     VerificationToken["VerificationToken (Data Model)"]:::model
   end
 
+  factory_test_solution --> auth
+  improved_integration_test --> auth
   factory --> rbac
+  booking_calendar --> booking_form
   availability_management --> weekly_availability
 
   %% Container relationships

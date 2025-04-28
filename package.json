@@ -1,6 +1,6 @@
 {
   "name": "buildappswith",
-  "version": "1.0.102",
+  "version": "1.0.132",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -28,6 +28,7 @@
     "reconcile:migrations": "node scripts/reconcile-migrations.js",
     "baseline:migration": "node scripts/create-baseline-migration.js",
     "debug:migrations": "node scripts/debug-migration-check.js",
+    "standardize-imports": "bash scripts/standardize-imports.sh",
     "postinstall": "prisma generate",
     "test": "vitest --config vitest.config.js",
     "test:watch": "vitest watch --config vitest.config.js",
@@ -52,7 +53,14 @@
     "test:datadog:marketplace": "vitest run --config vitest.config.js --dir __tests__/components/marketplace && node datadog-test-agent.js",
     "test:datadog:auth": "vitest run --config vitest.config.js --dir __tests__/components/auth && node datadog-test-agent.js",
     "test:datadog:integration": "vitest run --config vitest.config.js --dir __tests__/integration && node datadog-test-agent.js",
-    "test:datadog:coverage": "vitest run --config vitest.config.js --coverage && node datadog-test-agent.js"
+    "test:datadog:coverage": "vitest run --config vitest.config.js --coverage && node datadog-test-agent.js",
+    "arch:install": "bash scripts/install-architecture-extraction.sh",
+    "arch:extract": "bash scripts/run-architecture-extraction.sh",
+    "arch:extract:auth": "bash scripts/extract-auth-architecture.sh",
+    "arch:extract:all": "bash scripts/extract-all-architecture.sh",
+    "arch:report": "bash scripts/generate-architecture-report.sh",
+    "arch:combined": "pnpm arch:extract:all && pnpm arch:report",
+    "arch:unused": "bash scripts/run-unused-code-analyzer.sh"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.31.8",
@@ -126,6 +134,9 @@
     "prisma": "^6.6.0",
     "tailwindcss": "3.4.17",
     "tailwindcss-animate": "^1.0.7",
+    "ts-morph": "^25.0.1",
+    "dependency-cruiser": "^16.10.1",
+    "ts-node": "^10.9.2",
     "ts-prune": "^0.10.3",
     "typescript": "^5.8.3",
     "vitest": "^3.1.1",

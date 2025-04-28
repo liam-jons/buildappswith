@@ -1,6 +1,6 @@
 # Buildappswith Architecture Report
 
-*Generated on: 2025-04-27*
+*Generated on: 2025-04-28*
 
 ## Architecture Overview
 
@@ -16,27 +16,27 @@ The architecture is divided into the following containers based on PRD 2.1:
 | PaymentService | Processes payments for sessions | Stripe API |
 | BookingSystem | Manages session scheduling and availability | Custom calendar integration |
 
-Total Components: **304**
+Total Components: **265**
 
 Component Types:
-- Utility: 48
+- Utility: 45
 - Middleware: 7
-- Page Component: 55
-- UI Component: 91
+- Page Component: 47
+- UI Component: 78
 - Context Provider: 12
+- Data Model: 19
 - Authentication Component: 25
-- Data Model: 22
 - Service: 8
-- API Endpoint: 36
+- API Endpoint: 24
 
-Technical Debt Components: **2** (1% of total)
-Legacy Components: **3** (1% of total)
+Technical Debt Components: **7** (3% of total)
+Legacy Components: **5** (2% of total)
 
 ### Components by Container
 
 #### WebApplication
 
-Contains 225 components.
+Contains 194 components.
 
 Representative components:
 
@@ -48,11 +48,11 @@ Representative components:
 | next-env.d | Utility |  |  |
 | sentry.edge.config | Utility |  |  |
 
-*... and 220 more components*
+*... and 189 more components*
 
 #### Database
 
-Contains 22 components.
+Contains 19 components.
 
 Representative components:
 
@@ -64,7 +64,7 @@ Representative components:
 | Session | Data Model |  |  |
 | VerificationToken | Data Model |  |  |
 
-*... and 17 more components*
+*... and 14 more components*
 
 #### AuthenticationService
 
@@ -74,11 +74,11 @@ Representative components:
 
 | Component | Type | Technical Debt | Legacy |
 |-----------|------|----------------|--------|
-| auth-utils | Authentication Component |  |  |
 | architecture-utils | Authentication Component | ✓ |  |
 | extract-auth-architecture | Authentication Component |  | ✓ |
 | auth-error-boundary | UI Component |  |  |
 | auth-provider | Context Provider |  |  |
+| clerk-auth-form | UI Component |  |  |
 
 *... and 30 more components*
 
@@ -94,13 +94,13 @@ Representative components:
 | payment-status-page | UI Component |  |  |
 | index | Service |  |  |
 | stripe-client | Service |  |  |
-| stripe-server | Utility | ✓ |  |
+| stripe-server | Utility |  |  |
 
 *... and 6 more components*
 
 #### BookingSystem
 
-Contains 11 components.
+Contains 6 components.
 
 Representative components:
 
@@ -108,18 +108,23 @@ Representative components:
 |-----------|------|----------------|--------|
 | booking-overview | UI Component |  |  |
 | weekly-schedule | UI Component |  |  |
+| booking-calendar | UI Component |  |  |
 | booking-form | UI Component |  |  |
-| builder-calendar | UI Component |  |  |
 | route | API Endpoint |  |  |
 
-*... and 6 more components*
+*... and 1 more components*
 
 ### Technical Debt Components
 
 | Component | Type | Container | Path |
 |-----------|------|-----------|------|
 | architecture-utils | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/scripts/architecture-utils.ts |
-| stripe-server | Utility | PaymentService | /Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-server.ts |
+| page | Page Component | WebApplication | /Users/liamj/Documents/Development/buildappswith/app/onboarding/page.tsx |
+| page | Page Component | WebApplication | /Users/liamj/Documents/Development/buildappswith/app/profile-settings/page.tsx |
+| builder-image | UI Component | WebApplication | /Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-image.tsx |
+| auth | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/lib/auth/auth.ts |
+| route | API Endpoint | PaymentService | /Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts |
+| route | API Endpoint | PaymentService | /Users/liamj/Documents/Development/buildappswith/app/api/stripe/webhook/route.ts |
 
 ### Legacy Components
 
@@ -128,10 +133,12 @@ Representative components:
 | extract-auth-architecture | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/scripts/extract-auth-architecture.ts |
 | generate-architecture-report | Utility | WebApplication | /Users/liamj/Documents/Development/buildappswith/scripts/generate-architecture-report.ts |
 | index | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts |
+| types | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/lib/auth/types.ts |
+| protected-route | UI Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/components/auth/protected/protected-route.tsx |
 
 ## Authentication Architecture
 
-Authentication Components: **44**
+Authentication Components: **40**
 
 ### Authentication Containers
 
@@ -147,8 +154,6 @@ Authentication Components: **44**
 
 | Component | Type | Description |
 |-----------|------|-------------|
-| auth-utils | Authentication Component | * Helper function to check authentication status on the server
- * Redirects to login if not authenticated |
 | architecture-utils | Authentication Component | * Architecture Extraction Utilities for Buildappswith
  * Version: 1.0.124
  * 
@@ -161,24 +166,17 @@ Authentication Components: **44**
  * 
  * Important: This version uses direct TypeScript analysis without structurizr-typescript |
 | nextjs | Authentication Component | * Mock implementation for @clerk/nextjs
- * Version: 1.0.112
+ * Version: 1.0.101
  * 
  * This centralized mock definition provides consistent behavior across tests
  * and avoids the hoisting issues that can occur with inline vi.mock() calls.
  * 
  * Uses Vitest's MockInstance type for proper TypeScript support of method chaining. |
 | auth-provider | Context Provider (Clerk) | * AuthProvider component using Clerk
- * Enhanced with error handling and theme integration
- * @version 1.0.108 |
+ * This replaces the NextAuth SessionProvider with Clerk's equivalent |
 | clerk-auth-form | UI Component (Clerk) | * Clerk authentication form component with theme support |
 | loading-state | UI Component (Clerk) | * Component to handle authentication loading states
  * Prevents blank pages by showing a loading state while Clerk auth is initializing |
-| login-button | UI Component (Clerk) | * LoginButton component using direct Clerk authentication
- * Handles both login and signup scenarios based on variant prop
- * @version 1.0.108 |
-| user-profile | UI Component (Clerk) | * User profile component using direct Clerk authentication
- * Displays user avatar and dropdown menu with profile options
- * @version 1.0.108 |
 | clerk-provider | Context Provider (Clerk) | * ClerkProvider wrapper component that supports theme switching |
 | factory-test-solution | Authentication Component | * Modified Middleware Factory Test
  * Version: 1.0.84
@@ -193,15 +191,16 @@ Authentication Components: **44**
  * 
  * This solution solves the "mockImplementationOnce is not a function" TypeScript error
  * by ensuring the mock functions are properly typed. |
-| clerk-hooks | Authentication Component | * Enhanced authentication hook that provides a consistent interface
- * @returns Object containing auth state and user information
- * @version 1.0.108 |
-| clerk-middleware | Authentication Component | * Public routes that don't require authentication |
-| index | Authentication Component | * Buildappswith Authentication Module
- * Version: 1.0.108
+| auth | Authentication Component | * @deprecated This file is deprecated and will be removed in a future version.
+ * The original NextAuth implementation has been archived in /archived/nextauth-legacy/lib/auth/auth.ts
  * 
- * Centralizes all authentication-related exports for the application.
- * This module has been fully migrated from NextAuth.js to Clerk. |
+ * Please use the Clerk authentication system directly:
+ * - For client-side auth: import { useAuth, useUser } from "@clerk/nextjs";
+ * - For server-side auth: import { currentUser } from "@clerk/nextjs/server";
+ * - For middleware: import { authMiddleware } from "@clerk/nextjs"; |
+| clerk-hooks | Authentication Component | * Hook to access the current authenticated user with a compatible API to the old NextAuth hook
+ * @returns Object containing auth state and user information |
+| clerk-middleware | Authentication Component | * Public routes that don't require authentication |
 | factory | Authentication Component | * Middleware Factory for Buildappswith Platform
  * Version: 1.0.80
  * 
@@ -215,9 +214,7 @@ Authentication Components: **44**
  * with flexible permission models and policy enforcement. |
 | page | Page Component (Clerk) | * Test page for Clerk authentication
  * Tests various auth states and displays user information
- * Version: 1.0.108 |
-| protected-route | UI Component (Clerk) | * Protected route component using Clerk authentication
- * Redirects to login if not authenticated |
+ * Version: 1.0.59 |
 | helpers | Authentication Component | * Extended user type with combined Clerk and database data |
 | route | API Endpoint (Clerk) | * Clerk Webhook Handler
  * 
@@ -242,18 +239,16 @@ Authentication Components: **44**
 | page | Page Component (Clerk) | N/A |
 | providers | Context Provider (Clerk) | * Combined providers wrapper for the application |
 | page | Page Component (Clerk) | N/A |
-| booking-overview | UI Component (Clerk) | N/A |
-| session-type-editor | UI Component (Clerk) | N/A |
+| page | Page Component (Clerk) | N/A |
+| booking-calendar | UI Component (Clerk) | N/A |
+| booking-form | UI Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
 | route | API Endpoint (Clerk) | * GET handler for fetching current user profile |
-| route | API Endpoint (Clerk) | * Stripe checkout API route
- * @version 1.0.110 |
+| route | API Endpoint (Clerk) | * Helper function to handle service errors with appropriate responses |
 | availability-exceptions | UI Component (Clerk) | N/A |
 | availability-management | UI Component (Clerk) | N/A |
 | weekly-availability | UI Component (Clerk) | N/A |
 | route | API Endpoint (Clerk) | N/A |
-| route | API Endpoint (Clerk) | * API route for retrieving Stripe session information
- * @version 1.0.111 |
 
 #### Database
 
