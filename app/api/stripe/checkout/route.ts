@@ -1,81 +1,147 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Stripe } from 'stripe';
+import { stripe, createBookingCheckoutSession, StripeErrorType } from '@/lib/stripe/stripe-server';
+import { withAuth } from '@clerk/nextjs/api';
+import { logger } from '@/lib/logger';
+import { getSessionTypeById } from '@/lib/scheduling/real-data/scheduling-service';
 
-// Initialize Stripe with the secret key from environment variables
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: '2025-03-31.basil' as const, // Updated to match expected version format
-});
-
-export async function POST(request: NextRequest) {
+/**
+ * API route to create a Stripe checkout session for a booking
+ * 
+ * @param request - The incoming request object
+ * @param auth - Auth object provided by Clerk's withAuth middleware
+ * @returns NextResponse with session data or error
+ */
+export const POST = withAuth(async (request: NextRequest, auth: any) => {
   try {
+    // Check authentication
+    if (!auth.userId) {
+      logger.warn('Unauthorized access attempt to checkout route');
+      return NextResponse.json(
+        { 
+          success: false,
+          message: 'Authentication required',
+          error: {
+            type: 'AUTHENTICATION_ERROR',
+            detail: 'You must be signed in to create a checkout session'
+          }
+        },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { bookingData, returnUrl } = body;
+    const logContext = { userId: auth.userId };
 
+    // Validate required fields
     if (!bookingData || !returnUrl) {
+      logger.warn('Missing required fields in checkout request', { ...logContext, body });
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        {
+          success: false,
+          message: 'Missing required fields',
+          error: {
+            type: 'VALIDATION_ERROR',
+            detail: 'Both bookingData and returnUrl are required'
+          }
+        },
         { status: 400 }
       );
     }
 
-    // Extract session type information from booking data
-    const { sessionTypeId, startTime, endTime } = bookingData;
-
-    // TODO: In a real implementation, fetch the actual session type from a database
-    // For now, we'll use a mock session type based on the ID
-    const sessionType = {
-      id: sessionTypeId,
-      title: 'Featured Builder Consultation',
-      description: 'One-on-one session with a featured AI app builder',
-      price: 9900, // $99.00 in cents
-      currency: 'usd',
-    };
-
-    // Format the booking date/time for display in Stripe
-    const startDate = new Date(startTime);
-    const formattedDateTime = startDate.toLocaleString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-
-    // Create a Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
+    // Ensure the authenticated user matches the client ID
+    if (bookingData.clientId && bookingData.clientId !== auth.userId) {
+      logger.warn('User attempted to create checkout for another user', {
+        ...logContext,
+        requestedClientId: bookingData.clientId
+      });
+      return NextResponse.json(
         {
-          price_data: {
-            currency: sessionType.currency,
-            product_data: {
-              name: sessionType.title,
-              description: `${sessionType.description} (${formattedDateTime})`,
-            },
-            unit_amount: sessionType.price,
-          },
-          quantity: 1,
+          success: false,
+          message: 'Not authorized',
+          error: {
+            type: 'AUTHORIZATION_ERROR',
+            detail: 'You cannot create a checkout session for another user'
+          }
         },
-      ],
-      mode: 'payment',
-      success_url: `${returnUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${returnUrl}/cancel`,
-      metadata: {
-        bookingId: bookingData.id,
-        sessionTypeId: sessionTypeId,
-        startTime,
-        endTime,
-        builderId: bookingData.builderId,
-        clientId: bookingData.clientId,
-      },
+        { status: 403 }
+      );
+    }
+
+    // Extract session type information from booking data
+    const { id: bookingId, sessionTypeId, startTime, endTime, builderId, timeZone = 'UTC' } = bookingData;
+
+    // Get the session type from the database
+    const sessionType = await getSessionTypeById(sessionTypeId);
+    if (!sessionType) {
+      logger.warn('Session type not found', { ...logContext, sessionTypeId });
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Session type not found',
+          error: {
+            type: 'RESOURCE_ERROR',
+            detail: `No session type found with ID: ${sessionTypeId}`
+          }
+        },
+        { status: 404 }
+      );
+    }
+
+    // Create a checkout session using the centralized utility
+    const result = await createBookingCheckoutSession({
+      builderId,
+      builderName: sessionType.builderName || 'Builder', // Fallback if name not in session type
+      sessionType: sessionType.title,
+      sessionPrice: sessionType.price,
+      startTime,
+      endTime,
+      timeZone: timeZone,
+      userId: auth.userId,
+      userEmail: auth.user?.emailAddresses?.[0]?.emailAddress || '',
+      userName: auth.user?.firstName ? `${auth.user.firstName} ${auth.user.lastName || ''}`.trim() : null,
+      successUrl: `${returnUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${returnUrl}/cancel`,
+      currency: sessionType.currency || 'usd',
+      bookingId: bookingId
     });
 
-    return NextResponse.json({ sessionId: session.id, url: session.url });
+    // Handle the result
+    if (!result.success) {
+      logger.error('Failed to create checkout session', {
+        ...logContext,
+        error: result.error,
+        message: result.message
+      });
+
+      return NextResponse.json(
+        result,
+        { status: result.error?.type === StripeErrorType.AUTHENTICATION ? 401 : 500 }
+      );
+    }
+
+    // Return the successful result
+    return NextResponse.json({
+      success: true,
+      message: 'Checkout session created successfully',
+      sessionId: result.data?.id,
+      url: result.data?.url
+    });
   } catch (error) {
-    console.error('Stripe checkout error:', error);
+    logger.error('Unexpected error in checkout route', {
+      userId: auth?.userId,
+      error: error.message || 'Unknown error'
+    });
+    
     return NextResponse.json(
-      { error: 'Error creating checkout session' },
+      {
+        success: false,
+        message: 'Error creating checkout session',
+        error: {
+          type: 'INTERNAL_ERROR',
+          detail: 'An unexpected error occurred while processing your request'
+        }
+      },
       { status: 500 }
     );
   }

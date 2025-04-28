@@ -1,88 +1,120 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Stripe } from 'stripe';
-
-// Initialize Stripe with the secret key from environment variables
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: '2025-03-31.basil' as const, // Updated to match expected version format
-});
+import { stripe, handleWebhookEvent, StripeErrorType } from '@/lib/stripe/stripe-server';
+import { logger } from '@/lib/logger';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+/**
+ * Process Stripe webhook events
+ * This route handles all webhook events from Stripe such as checkout.session.completed,
+ * payment_intent.succeeded, and payment_intent.payment_failed
+ *
+ * @param request - The incoming request from Stripe
+ * @returns NextResponse with acknowledgment or error message
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();
     const signature = request.headers.get('stripe-signature') as string;
+    const logContext = { eventType: 'unknown' };
 
+    // Validate required headers/config
     if (!signature || !webhookSecret) {
+      logger.warn('Missing Stripe webhook signature or secret', {
+        hasSignature: !!signature,
+        hasSecret: !!webhookSecret
+      });
+      
       return NextResponse.json(
-        { error: 'Missing signature or webhook secret' },
+        {
+          success: false,
+          message: 'Missing signature or webhook secret',
+          error: {
+            type: 'VALIDATION_ERROR',
+            detail: 'Both stripe-signature header and webhook secret are required'
+          }
+        },
         { status: 400 }
       );
     }
 
+    // Verify the webhook signature and construct the event
     let event: Stripe.Event;
-
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      // Update log context with the event type
+      logContext.eventType = event.type;
     } catch (err: any) {
-      console.error(`Webhook signature verification failed: ${err.message}`);
+      logger.error('Webhook signature verification failed', {
+        error: err.message,
+        signature: signature?.substring(0, 10) + '...' // Log partial signature for debugging
+      });
+      
       return NextResponse.json(
-        { error: 'Webhook signature verification failed' },
+        {
+          success: false,
+          message: 'Webhook signature verification failed',
+          error: {
+            type: 'AUTHENTICATION_ERROR',
+            detail: 'Could not verify webhook signature'
+          }
+        },
         { status: 400 }
       );
     }
-
-    // Handle different event types
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutSessionCompleted(event);
-        break;
-      case 'payment_intent.succeeded':
-        await handlePaymentIntentSucceeded(event);
-        break;
-      case 'payment_intent.payment_failed':
-        await handlePaymentIntentFailed(event);
-        break;
-      // Add other event types as needed
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
+    
+    // Log the webhook event received
+    logger.info('Webhook event received', {
+      eventId: event.id,
+      eventType: event.type
+    });
+    
+    // Handle the event using centralized handler
+    const result = await handleWebhookEvent(event);
+    
+    // Check if the handler was successful
+    if (!result.success) {
+      logger.error('Error handling webhook event', {
+        ...logContext,
+        eventId: event.id,
+        error: result.error
+      });
+      
+      // Return an error response but with 200 status
+      // Stripe will retry the webhook if we return a non-200 status
+      return NextResponse.json({
+        success: false,
+        message: result.message,
+        error: result.error,
+        received: true
+      });
     }
-
-    return NextResponse.json({ received: true });
+    
+    logger.info('Webhook event processed successfully', {
+      ...logContext,
+      eventId: event.id
+    });
+    
+    return NextResponse.json({
+      success: true,
+      message: `Processed webhook event: ${event.type}`,
+      received: true
+    });
   } catch (error) {
-    console.error('Stripe webhook error:', error);
-    return NextResponse.json(
-      { error: 'Webhook handler failed' },
-      { status: 500 }
-    );
+    logger.error('Unexpected webhook error', {
+      error: error.message || 'Unknown error'
+    });
+    
+    // Return a 200 status code to prevent Stripe from retrying the webhook
+    // But include error information in the response
+    return NextResponse.json({
+      success: false,
+      message: 'Webhook processing failed',
+      error: {
+        type: 'INTERNAL_ERROR',
+        detail: 'An unexpected error occurred while processing the webhook'
+      },
+      received: true // Acknowledge receipt to prevent retries
+    });
   }
-}
-
-// Handle successful checkout completion
-async function handleCheckoutSessionCompleted(event: Stripe.Event) {
-  const session = event.data.object as Stripe.Checkout.Session;
-  
-  // Extract booking details from metadata
-  const { bookingId, sessionTypeId, startTime, endTime, builderId, clientId } = session.metadata || {};
-  
-  // TODO: In a real implementation, update the booking status in your database
-  console.log(`Booking ${bookingId} confirmed for session ${sessionTypeId}`);
-  console.log(`Payment completed for booking: ${bookingId}`);
-  
-  // TODO: Send confirmation emails to both the client and builder
-  // TODO: Add the booking to the builder's calendar
-}
-
-// Handle successful payment
-async function handlePaymentIntentSucceeded(event: Stripe.Event) {
-  const paymentIntent = event.data.object as Stripe.PaymentIntent;
-  console.log(`PaymentIntent ${paymentIntent.id} succeeded`);
-  // Additional handling if needed
-}
-
-// Handle failed payment
-async function handlePaymentIntentFailed(event: Stripe.Event) {
-  const paymentIntent = event.data.object as Stripe.PaymentIntent;
-  console.log(`PaymentIntent ${paymentIntent.id} failed`);
-  // TODO: Update booking status, notify user, etc.
 }
