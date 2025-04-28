@@ -84,13 +84,13 @@ graph TD
 
     subgraph AuthenticationService
         extract_auth_architecture["extract-auth-architecture (Authentication Component)"]:::unused
+        clerk_hooks["clerk-hooks (Authentication Component)"]:::unused
         index["index (Authentication Component)"]:::unused
         route["route (API Endpoint)"]:::unused
     end
 
     subgraph PaymentService
         payment_status_indicator["payment-status-indicator (Context Provider)"]:::unused
-        stripe_server["stripe-server (Utility)"]:::unused
         page["page (Page Component)"]:::unused
         page["page (Page Component)"]:::unused
         route["route (API Endpoint)"]:::unused

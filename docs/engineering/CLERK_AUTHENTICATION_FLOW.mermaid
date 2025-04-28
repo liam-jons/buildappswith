@@ -1,0 +1,71 @@
+flowchart TB
+    subgraph "Client Components"
+        UserSignIn["Sign In Component (Clerk UI)"]
+        UserSignUp["Sign Up Component (Clerk UI)"] 
+        AuthContext["ClerkProvider"]
+        CustomHooks["Custom Hooks (clerk-hooks.ts)"]
+        ClientComponents["Protected Client Components"]
+    end
+
+    subgraph "Next.js Middleware"
+        AuthMiddleware["clerkMiddleware"]
+        PublicRoutes["Public Routes Configuration"]
+        RedirectLogic["Auth Redirect Logic"]
+        CSP["Content Security Policy"]
+    end
+
+    subgraph "API Routes"
+        ProtectedAPI["Protected API Endpoints"]
+        AuthWrappers["withAuth/withRole Wrappers"]
+        WebhookHandler["Clerk Webhook Handler"]
+    end
+
+    subgraph "Database Integration"
+        WebhookSync["User Data Synchronization"]
+        DBUser["User Record with clerkId"]
+        DataAccess["authData Access Layer"]
+    end
+
+    subgraph "Clerk Services"
+        ClerkAuth["Clerk Authentication"]
+        ClerkUsers["Clerk User Management"]
+        ClerkWebhooks["Clerk Webhook Events"]
+        UserMetadata["User Metadata (roles)"]
+    end
+
+    %% Client Flow
+    UserSignIn <--> AuthContext
+    UserSignUp <--> AuthContext
+    AuthContext <--> CustomHooks
+    CustomHooks --> ClientComponents
+    
+    %% Middleware Flow
+    AuthContext <--> AuthMiddleware
+    PublicRoutes --> AuthMiddleware
+    AuthMiddleware --> RedirectLogic
+    AuthMiddleware --> CSP
+    
+    %% Server Flow
+    AuthMiddleware -.-> ProtectedAPI
+    AuthWrappers --> ProtectedAPI
+    ClerkWebhooks --> WebhookHandler
+    WebhookHandler --> WebhookSync
+    WebhookSync --> DBUser
+    WebhookSync <--> DataAccess
+    
+    %% Clerk Integration
+    AuthMiddleware <--> ClerkAuth
+    ClerkAuth <--> ClerkUsers
+    ClerkUsers <--> UserMetadata
+    ClerkUsers --> ClerkWebhooks
+    
+    %% Data Flow
+    ProtectedAPI <--> DataAccess
+    DataAccess <--> DBUser
+    
+    classDef current fill:#9f9,stroke:#484,stroke-width:2px;
+    classDef removed fill:#fcc,stroke:#844,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef highlighted fill:#ccf,stroke:#448,stroke-width:2px;
+    
+    class AuthContext,AuthMiddleware,WebhookHandler,CustomHooks current;
+    class WebhookSync,AuthWrappers highlighted;

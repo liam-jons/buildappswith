@@ -107,9 +107,7 @@
       "description": "* Modified Middleware Factory Test\n * Version: 1.0.84\n *\n * This version uses the improved mock implementation to avoid TypeScript errors",
       "container": "AuthenticationService",
       "usedBy": [],
-      "dependencies": [
-        "auth"
-      ]
+      "dependencies": []
     },
     {
       "name": "improved-integration-test",
@@ -118,9 +116,7 @@
       "description": "* Improved Middleware Integration Test Example\n * Using Vitest's built-in MockInstance type for proper TypeScript support",
       "container": "AuthenticationService",
       "usedBy": [],
-      "dependencies": [
-        "auth"
-      ]
+      "dependencies": []
     },
     {
       "name": "improved-solution",
@@ -141,19 +137,13 @@
       "dependencies": []
     },
     {
-      "name": "auth",
-      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/auth.ts",
+      "name": "clerk-hooks",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk-hooks.ts",
       "type": "Authentication Component",
-      "description": "* @deprecated This file is deprecated and will be removed in a future version.\n * The original NextAuth implementation has been archived in /archived/nextauth-legacy/lib/auth/auth.ts\n * \n * Please use the Clerk authentication system directly:\n * - For client-side auth: import { useAuth, useUser } from \"@clerk/nextjs\";\n * - For server-side auth: import { currentUser } from \"@clerk/nextjs/server\";\n * - For middleware: import { authMiddleware } from \"@clerk/nextjs\";",
+      "description": "* Extended user object with our custom fields",
       "container": "AuthenticationService",
       "usedBy": [
-        "factory-test-solution",
-        "improved-integration-test",
-        "clerk-middleware",
-        "factory",
-        "rbac",
-        "page",
-        "helpers"
+        "hooks"
       ],
       "dependencies": []
     },
@@ -163,8 +153,24 @@
       "type": "Authentication Component",
       "description": "* Public routes that don't require authentication",
       "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "hooks",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/hooks.ts",
+      "type": "Authentication Component",
+      "container": "AuthenticationService",
       "dependencies": [],
       "usedBy": []
+    },
+    {
+      "name": "index",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts",
+      "type": "Authentication Component",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
     },
     {
       "name": "factory",
@@ -172,10 +178,10 @@
       "type": "Authentication Component",
       "description": "* Middleware Factory for Buildappswith Platform\n * Version: 1.0.80\n * \n * Creates middleware composition based on configuration\n * Allows easy addition and removal of middleware components\n * Validates configuration before creating middleware",
       "container": "AuthenticationService",
+      "usedBy": [],
       "dependencies": [
         "rbac"
-      ],
-      "usedBy": []
+      ]
     },
     {
       "name": "rbac",
@@ -183,18 +189,18 @@
       "type": "Authentication Component",
       "description": "* Role-Based Access Control Middleware\n * Version: 1.0.78\n * \n * Provides enhanced RBAC functionality for middleware\n * with flexible permission models and policy enforcement.",
       "container": "AuthenticationService",
-      "dependencies": [],
       "usedBy": [
         "factory"
-      ]
+      ],
+      "dependencies": []
     },
     {
       "name": "page",
       "path": "/Users/liamj/Documents/Development/buildappswith/app/book/[builderId]/page.tsx",
       "type": "Page Component (Clerk)",
       "container": "WebApplication",
-      "dependencies": [],
-      "usedBy": []
+      "usedBy": [],
+      "dependencies": []
     },
     {
       "name": "page",
@@ -230,8 +236,8 @@
       "type": "Authentication Component",
       "description": "* Extended user type with combined Clerk and database data",
       "container": "AuthenticationService",
-      "dependencies": [],
-      "usedBy": []
+      "usedBy": [],
+      "dependencies": []
     },
     {
       "name": "page",
@@ -246,6 +252,15 @@
       "path": "/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/bookings/route.ts",
       "type": "API Endpoint (Clerk)",
       "description": "* Helper function to handle service errors with appropriate responses",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "route",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts",
+      "type": "API Endpoint (Clerk)",
+      "description": "* API route to create a Stripe checkout session for a booking\n * \n * @param request - The incoming request object\n * @param auth - Auth object provided by Clerk's withAuth middleware\n * @returns NextResponse with session data or error",
       "container": "WebApplication",
       "usedBy": [],
       "dependencies": []
@@ -293,6 +308,15 @@
       "name": "route",
       "path": "/Users/liamj/Documents/Development/buildappswith/app/api/apps/edit/[id]/route.ts",
       "type": "API Endpoint (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "route",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/sessions/[id]/route.ts",
+      "type": "API Endpoint (Clerk)",
+      "description": "* GET handler for retrieving a Stripe session with associated booking\n * \n * Uses Next.js 15 promise-based params and Clerk authentication\n * to ensure only authorized users can access the session details\n * \n * @param request - The incoming request object\n * @param context - Context containing the session ID parameter\n * @param auth - Authentication object from Clerk\n * @returns NextResponse with session details or error",
       "container": "WebApplication",
       "usedBy": [],
       "dependencies": []

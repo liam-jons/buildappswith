@@ -1,0 +1,84 @@
+sequenceDiagram
+    title Buildappswith Authentication Flows
+
+    %% Sign-In Flow
+    participant U as User
+    participant BP as Browser Pages
+    participant CC as Client Components
+    participant CP as ClerkProvider
+    participant CA as Clerk API
+    participant DBI as Database Integration
+
+    %% Authentication Flow - Sign In
+    note over U,DBI: Sign-In Flow
+    U->>BP: Navigate to /login
+    BP->>CC: Load Sign In Component
+    CC->>CP: useSignIn()
+    CP->>CA: Authentication Request
+    U->>CC: Enter Credentials
+    CC->>CA: Submit Credentials
+    CA-->>CP: Auth Response (Success/Failure)
+    CP-->>CC: Update Auth State
+    alt Success
+        CC->>BP: Redirect to Dashboard
+        BP->>CP: Check Auth State
+        CP->>CA: Get User Data
+        CA->>CP: User Data with Metadata
+        CP->>DBI: Synchronize with DB (via helpers.ts)
+        note right of DBI: findOrCreateUser()
+    else Failure
+        CC->>U: Display Error Message
+    end
+
+    %% Page Access Flow
+    note over U,DBI: Protected Page Access Flow
+    U->>BP: Navigate to Protected Page
+    BP->>+CP: Request Page
+    CP->>AuthMiddleware: Check Auth Status
+    AuthMiddleware->>CA: Verify Session
+    CA-->>AuthMiddleware: Session Valid/Invalid
+    alt Invalid Session
+        AuthMiddleware-->>BP: Redirect to /login
+        BP-->>U: Show Login Page
+    else Valid Session
+        AuthMiddleware-->>BP: Allow Access
+        BP->>CC: Load Protected Component
+        CC->>CP: useAuth() / useUser()
+        CP-->>CC: User Data with Roles
+        alt Has Required Role
+            CC-->>U: Render Protected Content
+        else Missing Required Role
+            CC-->>U: Show Access Denied
+        end
+    end
+
+    %% API Protection Flow
+    note over U,DBI: Protected API Access Flow
+    U->>CC: Action Triggering API Call
+    CC->>ProtectedAPI: Request to Protected API
+    ProtectedAPI->>AuthWrapper: withAuth/withRole
+    AuthWrapper->>CA: requireAuth/requireRole
+    CA-->>AuthWrapper: Auth Status & User Data
+    alt Authorized
+        AuthWrapper->>ProtectedAPI: Proceed with Request
+        ProtectedAPI->>DBI: Database Operation
+        DBI-->>ProtectedAPI: Database Response
+        ProtectedAPI-->>CC: API Response
+        CC-->>U: Update UI
+    else Unauthorized
+        AuthWrapper-->>CC: 401/403 Response
+        CC-->>U: Show Error Message
+    end
+
+    %% Webhook Flow
+    note over U,DBI: Webhook Synchronization Flow
+    CA->>WebhookHandler: User Event (created/updated)
+    WebhookHandler->>WebhookHandler: Verify Signature
+    WebhookHandler->>DBI: Update Database
+    alt New User
+        DBI->>DBI: Create User Record
+    else Existing User
+        DBI->>DBI: Update User Record
+    end
+    DBI-->>WebhookHandler: Operation Result
+    WebhookHandler-->>CA: 200 OK Response

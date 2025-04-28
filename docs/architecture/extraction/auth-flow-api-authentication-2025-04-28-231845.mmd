@@ -1,0 +1,15 @@
+flowchart TD
+    %% API Authentication
+    %% Process for authenticating API requests
+
+    step1["Client sends request to API endpoint"]
+    step1 --> step2
+    step2["Middleware intercepts the request"]
+    step2 --> step3
+    step3["Authentication is verified using Clerk"]
+    step3 --> step4
+    step4["If authenticated, request proceeds to API handler"]
+    step4 --> step5
+    step5["API handler uses Clerk currentUser to access user data"]
+    step5 --> step6
+    step6["Response is returned to client"]

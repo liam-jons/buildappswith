@@ -1,0 +1,429 @@
+{
+  "components": [
+    {
+      "name": "site-header",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/site-header.tsx",
+      "type": "UI Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "user-auth-form",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/user-auth-form.tsx",
+      "type": "UI Component (Clerk)",
+      "description": "* User authentication form component migrated to use Clerk directly",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "architecture-utils",
+      "path": "/Users/liamj/Documents/Development/buildappswith/scripts/architecture-utils.ts",
+      "type": "Authentication Component",
+      "description": "* Architecture Extraction Utilities for Buildappswith\n * Version: 1.0.124\n * \n * This file contains utility functions for architecture extraction and analysis.",
+      "container": "AuthenticationService",
+      "usedBy": [
+        "extract-auth-architecture"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "extract-auth-architecture",
+      "path": "/Users/liamj/Documents/Development/buildappswith/scripts/extract-auth-architecture.ts",
+      "type": "Authentication Component",
+      "description": "* Authentication Architecture Extraction Script for Buildappswith\n * Version: 1.0.121\n * \n * This script focuses specifically on extracting the authentication architecture,\n * particularly the Clerk implementation that has replaced NextAuth.\n * \n * Important: This version uses direct TypeScript analysis without structurizr-typescript",
+      "container": "AuthenticationService",
+      "dependencies": [],
+      "usedBy": []
+    },
+    {
+      "name": "nextjs",
+      "path": "/Users/liamj/Documents/Development/buildappswith/__mocks__/@clerk/nextjs.ts",
+      "type": "Authentication Component",
+      "description": "* Mock implementation for @clerk/nextjs\n * Version: 1.0.101\n * \n * This centralized mock definition provides consistent behavior across tests\n * and avoids the hoisting issues that can occur with inline vi.mock() calls.\n * \n * Uses Vitest's MockInstance type for proper TypeScript support of method chaining.",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "page",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/onboarding/page.tsx",
+      "type": "Page Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "page",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/profile-settings/page.tsx",
+      "type": "Page Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "clerk-auth-form",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/clerk-auth-form.tsx",
+      "type": "UI Component (Clerk)",
+      "description": "* Clerk authentication form component with theme support",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "loading-state",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/loading-state.tsx",
+      "type": "UI Component (Clerk)",
+      "description": "* Component to handle authentication loading states\n * Prevents blank pages by showing a loading state while Clerk auth is initializing",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "clerk-provider",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/providers/clerk-provider.tsx",
+      "type": "Context Provider (Clerk)",
+      "description": "* ClerkProvider wrapper component that supports theme switching",
+      "container": "AuthenticationService",
+      "usedBy": [
+        "providers"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "providers",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/providers/providers.tsx",
+      "type": "Context Provider (Clerk)",
+      "description": "* Combined providers wrapper for the application",
+      "container": "WebApplication",
+      "dependencies": [],
+      "usedBy": []
+    },
+    {
+      "name": "factory-test-solution",
+      "path": "/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/factory-test-solution.ts",
+      "type": "Authentication Component",
+      "description": "* Modified Middleware Factory Test\n * Version: 1.0.84\n *\n * This version uses the improved mock implementation to avoid TypeScript errors",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "improved-integration-test",
+      "path": "/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/improved-integration-test.ts",
+      "type": "Authentication Component",
+      "description": "* Improved Middleware Integration Test Example\n * Using Vitest's built-in MockInstance type for proper TypeScript support",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "improved-solution",
+      "path": "/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/improved-solution.ts",
+      "type": "Authentication Component",
+      "description": "* Enhanced solution for Clerk authentication mocking\n * Using Vitest's built-in MockInstance type",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "nextjs-mock-solution",
+      "path": "/Users/liamj/Documents/Development/buildappswith/docs/middleware-mock-investigation/nextjs-mock-solution.ts",
+      "type": "Authentication Component",
+      "description": "* Improved mock implementation for @clerk/nextjs\n * Version: 1.0.84\n * \n * This solution solves the \"mockImplementationOnce is not a function\" TypeScript error\n * by ensuring the mock functions are properly typed.",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "clerk-middleware",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk-middleware.ts",
+      "type": "Authentication Component",
+      "description": "* Public routes that don't require authentication",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "hooks",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/hooks.ts",
+      "type": "Authentication Component",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "index",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts",
+      "type": "Authentication Component",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "factory",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/middleware/factory.ts",
+      "type": "Authentication Component",
+      "description": "* Middleware Factory for Buildappswith Platform\n * Version: 1.0.80\n * \n * Creates middleware composition based on configuration\n * Allows easy addition and removal of middleware components\n * Validates configuration before creating middleware",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": [
+        "rbac"
+      ]
+    },
+    {
+      "name": "rbac",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/middleware/rbac.ts",
+      "type": "Authentication Component",
+      "description": "* Role-Based Access Control Middleware\n * Version: 1.0.78\n * \n * Provides enhanced RBAC functionality for middleware\n * with flexible permission models and policy enforcement.",
+      "container": "AuthenticationService",
+      "usedBy": [
+        "factory"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "page",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/book/[builderId]/page.tsx",
+      "type": "Page Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "page",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/profile-settings/availability/page.tsx",
+      "type": "Page Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "booking-calendar",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/client/booking-calendar.tsx",
+      "type": "UI Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": [
+        "booking-form"
+      ]
+    },
+    {
+      "name": "booking-form",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/client/booking-form.tsx",
+      "type": "UI Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [
+        "booking-calendar"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "helpers",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk/helpers.ts",
+      "type": "Authentication Component",
+      "description": "* Extended user type with combined Clerk and database data",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "page",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/(platform)/admin/builders/page.tsx",
+      "type": "Page Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "route",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/scheduling/bookings/route.ts",
+      "type": "API Endpoint (Clerk)",
+      "description": "* Helper function to handle service errors with appropriate responses",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "route",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts",
+      "type": "API Endpoint (Clerk)",
+      "description": "* API route to create a Stripe checkout session for a booking\n * \n * @param request - The incoming request object\n * @param auth - Auth object provided by Clerk's withAuth middleware\n * @returns NextResponse with session data or error",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "route",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/webhooks/clerk/route.ts",
+      "type": "API Endpoint (Clerk)",
+      "description": "* Clerk Webhook Handler\n * \n * This API route handles webhook events from Clerk. It synchronizes user data\n * between Clerk and our database, ensuring user profiles are created and updated\n * appropriately based on authentication events.\n * \n * Supported events:\n * - user.created: Creates a new user record in our database\n * - user.updated: Updates user information in our database\n * \n * @version 1.0.64",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "availability-exceptions",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/availability/availability-exceptions.tsx",
+      "type": "UI Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [
+        "availability-management"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "availability-management",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/availability/availability-management.tsx",
+      "type": "UI Component (Clerk)",
+      "container": "WebApplication",
+      "dependencies": [
+        "weekly-availability"
+      ],
+      "usedBy": []
+    },
+    {
+      "name": "weekly-availability",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/availability/weekly-availability.tsx",
+      "type": "UI Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [
+        "availability-management"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "route",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/apps/edit/[id]/route.ts",
+      "type": "API Endpoint (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "route",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/sessions/[id]/route.ts",
+      "type": "API Endpoint (Clerk)",
+      "description": "* GET handler for retrieving a Stripe session with associated booking\n * \n * Uses Next.js 15 promise-based params and Clerk authentication\n * to ensure only authorized users can access the session details\n * \n * @param request - The incoming request object\n * @param context - Context containing the session ID parameter\n * @param auth - Authentication object from Clerk\n * @returns NextResponse with session details or error",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "User",
+      "path": "/Users/liamj/Documents/Development/buildappswith/prisma/schema.prisma",
+      "type": "Data Model",
+      "description": "User data model with authentication fields",
+      "container": "Database",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "Account",
+      "path": "/Users/liamj/Documents/Development/buildappswith/prisma/schema.prisma",
+      "type": "Data Model",
+      "description": "Account data model for authentication providers",
+      "container": "Database",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "Session",
+      "path": "/Users/liamj/Documents/Development/buildappswith/prisma/schema.prisma",
+      "type": "Data Model",
+      "description": "Session data model for authentication state",
+      "container": "Database",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "VerificationToken",
+      "path": "/Users/liamj/Documents/Development/buildappswith/prisma/schema.prisma",
+      "type": "Data Model",
+      "description": "Verification token model for email verification",
+      "container": "Database",
+      "usedBy": [],
+      "dependencies": []
+    }
+  ],
+  "flows": [
+    {
+      "name": "Sign-In Flow",
+      "description": "Process for authenticating existing users",
+      "steps": [
+        "1. User navigates to /login",
+        "2. ClerkProvider initializes authentication state",
+        "3. Authentication form collects credentials",
+        "4. Credentials are validated by Clerk",
+        "5. Upon success, user is redirected to dashboard",
+        "6. Middleware verifies authentication on protected routes"
+      ]
+    },
+    {
+      "name": "Sign-Up Flow",
+      "description": "Process for registering new users",
+      "steps": [
+        "1. User navigates to /signup",
+        "2. ClerkProvider initializes registration form",
+        "3. User enters registration information",
+        "4. Clerk validates and creates user account",
+        "5. Webhook receives user.created event",
+        "6. Database record is created with clerkId",
+        "7. User is redirected to onboarding"
+      ]
+    },
+    {
+      "name": "Sign-Out Flow",
+      "description": "Process for signing out users",
+      "steps": [
+        "1. User triggers sign-out action",
+        "2. Clerk signOut method is called",
+        "3. Session is terminated",
+        "4. User is redirected to homepage",
+        "5. Middleware enforces authentication on subsequent requests"
+      ]
+    },
+    {
+      "name": "API Authentication",
+      "description": "Process for authenticating API requests",
+      "steps": [
+        "1. Client sends request to API endpoint",
+        "2. Middleware intercepts the request",
+        "3. Authentication is verified using Clerk",
+        "4. If authenticated, request proceeds to API handler",
+        "5. API handler uses Clerk currentUser to access user data",
+        "6. Response is returned to client"
+      ]
+    },
+    {
+      "name": "Role-Based Access Control",
+      "description": "Process for enforcing role-based permissions",
+      "steps": [
+        "1. User requests access to protected resource",
+        "2. Middleware intercepts the request",
+        "3. User roles are retrieved from Clerk publicMetadata",
+        "4. Authorization checks verify proper role access",
+        "5. Access is granted or denied based on role",
+        "6. For API routes, appropriate status codes are returned"
+      ]
+    }
+  ],
+  "containers": [
+    {
+      "name": "AuthenticationService",
+      "description": "Handles user authentication and authorization",
+      "technology": "Clerk Authentication"
+    },
+    {
+      "name": "WebApplication",
+      "description": "Next.js web application serving the Buildappswith platform",
+      "technology": "Next.js 15.3.1 + React 19.1.0 + TypeScript"
+    },
+    {
+      "name": "Database",
+      "description": "Stores user data, builder profiles, session information, and learning content",
+      "technology": "PostgreSQL + Prisma ORM"
+    }
+  ]
+}
