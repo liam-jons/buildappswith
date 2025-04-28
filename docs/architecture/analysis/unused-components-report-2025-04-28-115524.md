@@ -4,7 +4,7 @@
 
 ## Overview
 
-Total Components: **244**
+Total Components: **246**
 Potentially Unused Components: **93** (38% of total)
 
 ## Unused Components by Container
@@ -108,12 +108,12 @@ Unused Component Count: **3** of 27 total (11%)
 
 ### PaymentService
 
-Unused Component Count: **7** of 9 total (78%)
+Unused Component Count: **7** of 11 total (64%)
 
 | Component | Type | Path | Last Modified | Reason |
 |-----------|------|------|--------------|--------|
-| payment-status-indicator | Context Provider | /Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-indicator.tsx | 2025-04-28 | No incoming references found |
-| stripe-server | Utility | /Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-server.ts | 2025-04-28 | No incoming references found |
+| payment-status-page | UI Component | /Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-page.tsx | 2025-04-28 | No incoming references found |
+| index | Service | /Users/liamj/Documents/Development/buildappswith/lib/stripe/index.ts | 2025-04-19 | No incoming references found |
 | page | Page Component | /Users/liamj/Documents/Development/buildappswith/app/(platform)/payment/cancel/page.tsx | 2025-04-28 | Page/route with no navigation links to it |
 | page | Page Component | /Users/liamj/Documents/Development/buildappswith/app/(platform)/payment/success/page.tsx | 2025-04-28 | Page/route with no navigation links to it |
 | route | API Endpoint | /Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts | 2025-04-27 | Page/route with no navigation links to it |

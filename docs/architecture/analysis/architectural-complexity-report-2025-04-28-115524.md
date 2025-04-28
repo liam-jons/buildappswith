@@ -4,7 +4,7 @@
 
 ## Overall Complexity
 
-System Complexity Score: **1.73/10**
+System Complexity Score: **1.72/10**
 
 ## Container Complexity
 
@@ -13,8 +13,8 @@ System Complexity Score: **1.73/10**
 | WebApplication | 184 | 1.48/10 | 0.08 |
 | Database | 19 | 3.39/10 | 0.00 |
 | AuthenticationService | 27 | 2.13/10 | 0.22 |
-| PaymentService | 9 | 1.56/10 | 0.11 |
-| BookingSystem | 5 | 2.70/10 | 0.40 |
+| PaymentService | 11 | 1.32/10 | 0.00 |
+| BookingSystem | 5 | 2.50/10 | 0.40 |
 
 ## Most Complex Components
 
@@ -140,7 +140,7 @@ Affected components (40):
 
 **Recommended Pattern**: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/components/ui/core
 
-Affected components (50):
+Affected components (51):
 
 | Component | Type | Path |
 |-----------|------|------|
@@ -175,6 +175,7 @@ Affected components (50):
 | word-rotate | UI Component | /Users/liamj/Documents/Development/buildappswith/components/magicui/word-rotate.tsx |
 | builder-card | UI Component | /Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-card.tsx |
 | builder-image | UI Component | /Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-image.tsx |
+| payment-status-page | UI Component | /Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-page.tsx |
 | add-project-form | UI Component | /Users/liamj/Documents/Development/buildappswith/components/profile/add-project-form.tsx |
 | app-showcase | UI Component | /Users/liamj/Documents/Development/buildappswith/components/profile/app-showcase.tsx |
 | builder-profile-client-wrapper | UI Component | /Users/liamj/Documents/Development/buildappswith/components/profile/builder-profile-client-wrapper.tsx |
@@ -250,13 +251,14 @@ Affected components (15):
 
 **Recommended Pattern**: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib/marketplace
 
-Affected components (5):
+Affected components (6):
 
 | Component | Type | Path |
 |-----------|------|------|
 | scheduling | Service | /Users/liamj/Documents/Development/buildappswith/lib/api-client/scheduling.ts |
 | builder-profile-service | Service | /Users/liamj/Documents/Development/buildappswith/lib/services/builder-profile-service.ts |
 | builder-service | Service | /Users/liamj/Documents/Development/buildappswith/lib/services/builder-service.ts |
+| index | Service | /Users/liamj/Documents/Development/buildappswith/lib/stripe/index.ts |
 | stripe-client | Service | /Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-client.ts |
 | BuilderProfileClient | Service | /Users/liamj/Documents/Development/buildappswith/app/(platform)/marketplace/[id]/BuilderProfileClient.tsx |
 

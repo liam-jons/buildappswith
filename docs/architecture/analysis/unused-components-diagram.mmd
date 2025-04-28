@@ -21,9 +21,8 @@ graph TD
         layout["layout (Page Component)"]:::unused
         page["page (Page Component)"]:::unused
         animated_heading["animated-heading (UI Component)"]:::unused
-        alert["alert (UI Component)"]:::unused
-        avatar["avatar (UI Component)"]:::unused
-        dropdown_menu["dropdown-menu (UI Component)"]:::unused
+        index["index (Utility)"]:::unused
+        index["index (Utility)"]:::unused
         create_dummy_profiles["create-dummy-profiles (Utility)"]:::unused
         create_profiles["create-profiles (Utility)"]:::unused
         page["page (Page Component)"]:::unused
@@ -53,8 +52,15 @@ graph TD
         page["page (Page Component)"]:::unused
         page["page (Page Component)"]:::unused
         page["page (Page Component)"]:::unused
+        index["index (Utility)"]:::unused
+        index["index (Utility)"]:::unused
         session_type_editor["session-type-editor (UI Component)"]:::unused
         timezone_selector["timezone-selector (UI Component)"]:::unused
+        index["index (Utility)"]:::unused
+        alert["alert (UI Component)"]:::unused
+        avatar["avatar (UI Component)"]:::unused
+        dropdown_menu["dropdown-menu (UI Component)"]:::unused
+        index["index (Utility)"]:::unused
         page["page (Page Component)"]:::unused
         page["page (Page Component)"]:::unused
         page["page (Page Component)"]:::unused
@@ -78,12 +84,13 @@ graph TD
 
     subgraph AuthenticationService
         extract_auth_architecture["extract-auth-architecture (Authentication Component)"]:::unused
+        index["index (Authentication Component)"]:::unused
         route["route (API Endpoint)"]:::unused
     end
 
     subgraph PaymentService
-        payment_status_page["payment-status-page (UI Component)"]:::unused
-        index["index (Service)"]:::unused
+        payment_status_indicator["payment-status-indicator (Context Provider)"]:::unused
+        stripe_server["stripe-server (Utility)"]:::unused
         page["page (Page Component)"]:::unused
         page["page (Page Component)"]:::unused
         route["route (API Endpoint)"]:::unused

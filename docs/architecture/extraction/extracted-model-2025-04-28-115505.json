@@ -647,6 +647,17 @@
       "isLegacy": false
     },
     {
+      "name": "payment-status-page",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-page.tsx",
+      "dependencies": [
+        "payment-status-indicator"
+      ],
+      "container": "PaymentService",
+      "isTechnicalDebt": false,
+      "isLegacy": false
+    },
+    {
       "name": "add-project-form",
       "type": "UI Component",
       "path": "/Users/liamj/Documents/Development/buildappswith/components/profile/add-project-form.tsx",
@@ -1122,6 +1133,17 @@
       "isLegacy": false
     },
     {
+      "name": "index",
+      "type": "Service",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/stripe/index.ts",
+      "dependencies": [
+        "stripe-server"
+      ],
+      "container": "PaymentService",
+      "isTechnicalDebt": false,
+      "isLegacy": false
+    },
+    {
       "name": "stripe-client",
       "type": "Service",
       "path": "/Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-client.ts",
@@ -1134,9 +1156,7 @@
       "name": "stripe-server",
       "type": "Utility",
       "path": "/Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-server.ts",
-      "dependencies": [
-        "scheduling-service"
-      ],
+      "dependencies": [],
       "container": "PaymentService",
       "isTechnicalDebt": false,
       "isLegacy": false
@@ -2359,6 +2379,11 @@
       "description": "Uses"
     },
     {
+      "source": "payment-status-page",
+      "target": "payment-status-indicator",
+      "description": "Uses"
+    },
+    {
       "source": "add-project-form",
       "target": "portfolio-showcase",
       "description": "Uses"
@@ -2449,6 +2474,11 @@
       "description": "Uses"
     },
     {
+      "source": "index",
+      "target": "stripe-server",
+      "description": "Uses"
+    },
+    {
       "source": "profile",
       "target": "session-types",
       "description": "Uses"
@@ -2531,11 +2561,6 @@
     {
       "source": "utils",
       "target": "types",
-      "description": "Uses"
-    },
-    {
-      "source": "stripe-server",
-      "target": "scheduling-service",
       "description": "Uses"
     },
     {

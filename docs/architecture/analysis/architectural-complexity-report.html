@@ -74,15 +74,15 @@
   </style>
 </head>
 <body>
-  <h1>Architectural Complexity Analysis</h1><p><em>Generated on: 2025-04-28</em></p><h2>Overall Complexity</h2><p>System Complexity Score: <strong>1.77/10</strong></p><h2>Container Complexity</h2><table>
+  <h1>Architectural Complexity Analysis</h1><p><em>Generated on: 2025-04-28</em></p><h2>Overall Complexity</h2><p>System Complexity Score: <strong>1.73/10</strong></p><h2>Container Complexity</h2><table>
 <tr><td>Container</td><td>Component Count</td><td>Complexity Score</td><td>Coupling Score</td></tr>
 <tr><td>-----------</td><td>-----------------</td><td>------------------</td><td>----------------</td></tr>
-<tr><th>WebApplication</th><th>177</th><th>1.55/10</th><th>0.08</th></tr>
+<tr><th>WebApplication</th><th>184</th><th>1.48/10</th><th>0.08</th></tr>
 <tr><td>Database</td><td>19</td><td>3.39/10</td><td>0.00</td></tr>
 <tr><td>AuthenticationService</td><td>27</td><td>2.13/10</td><td>0.22</td></tr>
-<tr><td>PaymentService</td><td>11</td><td>1.32/10</td><td>0.00</td></tr>
-<tr><td>BookingSystem</td><td>5</td><td>2.50/10</td><td>0.40</td></tr>
-</table><h2>Most Complex Components</h2><p>No highly complex components found.</p><h2>Cyclic Dependencies</h2><p>No cyclic dependencies detected.</p><h2>Pattern Inconsistencies</h2><p>Detected <strong>9</strong> pattern inconsistencies in the codebase.</p><h3>Utility Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib</p><p>Affected components (31):</p><table>
+<tr><td>PaymentService</td><td>9</td><td>1.56/10</td><td>0.11</td></tr>
+<tr><td>BookingSystem</td><td>5</td><td>2.70/10</td><td>0.40</td></tr>
+</table><h2>Most Complex Components</h2><p>No highly complex components found.</p><h2>Cyclic Dependencies</h2><p>No cyclic dependencies detected.</p><h2>Pattern Inconsistencies</h2><p>Detected <strong>9</strong> pattern inconsistencies in the codebase.</p><h3>Utility Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib</p><p>Affected components (38):</p><table>
 <tr><td>Component</td><td>Type</td><td>Path</td></tr>
 <tr><td>-----------</td><td>------</td><td>------</td></tr>
 <tr><th>instrumentation-client</th><th>Utility</th><th>/Users/liamj/Documents/Development/buildappswith/instrumentation-client.ts</th></tr>
@@ -100,6 +100,9 @@
 <tr><td>generate-architecture-report</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/generate-architecture-report.ts</td></tr>
 <tr><td>vitest.d</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/types/vitest.d.ts</td></tr>
 <tr><td>route-types</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/route-types.ts</td></tr>
+<tr><td>index</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/index.ts</td></tr>
+<tr><td>index</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/index.ts</td></tr>
+<tr><td>index</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/index.ts</td></tr>
 <tr><td>profile</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/builders/profile.ts</td></tr>
 <tr><td>profile-context</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/contexts/profile-context.tsx</td></tr>
 <tr><td>types</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/marketplace/types.ts</td></tr>
@@ -113,6 +116,10 @@
 <tr><td>create-dummy-profiles</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/seed-data/create-dummy-profiles.ts</td></tr>
 <tr><td>create-profiles</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/seed-data/create-profiles.ts</td></tr>
 <tr><td>client</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile/[id]/client.tsx</td></tr>
+<tr><td>index</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/ui/index.ts</td></tr>
+<tr><td>index</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/ui/index.ts</td></tr>
+<tr><td>index</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/composite/index.ts</td></tr>
+<tr><td>index</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/core/index.ts</td></tr>
 <tr><td>marketplace-service</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/marketplace/real-data/marketplace-service.ts</td></tr>
 <tr><td>scheduling-service</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/lib/scheduling/real-data/scheduling-service.ts</td></tr>
 <tr><td>payment-success-content</td><td>Utility</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/payment/success/payment-success-content.tsx</td></tr>
@@ -165,7 +172,7 @@
 <tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/payment/cancel/page.tsx</td></tr>
 <tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/payment/success/page.tsx</td></tr>
 <tr><td>page</td><td>Page Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/profile/edit/page.tsx</td></tr>
-</table><h3>UI Component Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/components/ui</p><p>Affected components (51):</p><table>
+</table><h3>UI Component Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/components/ui/core</p><p>Affected components (50):</p><table>
 <tr><td>Component</td><td>Type</td><td>Path</td></tr>
 <tr><td>-----------</td><td>------</td><td>------</td></tr>
 <tr><th>search-params-fallback</th><th>UI Component</th><th>/Users/liamj/Documents/Development/buildappswith/components/search-params-fallback.tsx</th></tr>
@@ -199,7 +206,6 @@
 <tr><td>word-rotate</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/magicui/word-rotate.tsx</td></tr>
 <tr><td>builder-card</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-card.tsx</td></tr>
 <tr><td>builder-image</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-image.tsx</td></tr>
-<tr><td>payment-status-page</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-page.tsx</td></tr>
 <tr><td>add-project-form</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/add-project-form.tsx</td></tr>
 <tr><td>app-showcase</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/app-showcase.tsx</td></tr>
 <tr><td>builder-profile-client-wrapper</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/builder-profile-client-wrapper.tsx</td></tr>
@@ -219,16 +225,16 @@
 <tr><td>weekly-availability</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/availability/weekly-availability.tsx</td></tr>
 <tr><td>metrics-display</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder/profile/components/metrics-display.tsx</td></tr>
 <tr><td>portfolio-gallery</td><td>UI Component</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder/profile/components/portfolio-gallery.tsx</td></tr>
-</table><h3>Context Provider Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/components/profile</p><p>Affected components (8):</p><table>
+</table><h3>Context Provider Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/components/ui/core</p><p>Affected components (8):</p><table>
 <tr><td>Component</td><td>Type</td><td>Path</td></tr>
 <tr><td>-----------</td><td>------</td><td>------</td></tr>
 <tr><th>theme-provider</th><th>Context Provider</th><th>/Users/liamj/Documents/Development/buildappswith/components/theme-provider.tsx</th></tr>
 <tr><td>payment-status-indicator</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-indicator.tsx</td></tr>
+<tr><td>role-badges</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/role-badges.tsx</td></tr>
+<tr><td>success-metrics-dashboard</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/success-metrics-dashboard.tsx</td></tr>
 <tr><td>clerk-provider</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/providers/clerk-provider.tsx</td></tr>
 <tr><td>providers</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/providers/providers.tsx</td></tr>
-<tr><td>form</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/form.tsx</td></tr>
-<tr><td>radio-group</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/radio-group.tsx</td></tr>
-<tr><td>tooltip</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/ui/tooltip.tsx</td></tr>
+<tr><td>validation-tier-badge</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/components/profile/ui/validation-tier-badge.tsx</td></tr>
 <tr><td>validation-tier</td><td>Context Provider</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/builder/profile/components/validation-tier.tsx</td></tr>
 </table><h3>Data Model Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: ./prisma</p><p>Affected components (1):</p><table>
 <tr><td>Component</td><td>Type</td><td>Path</td></tr>
@@ -252,13 +258,12 @@
 <tr><td>validation</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/middleware/validation.ts</td></tr>
 <tr><td>api-auth</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk/api-auth.ts</td></tr>
 <tr><td>helpers</td><td>Authentication Component</td><td>/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk/helpers.ts</td></tr>
-</table><h3>Service Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib/marketplace</p><p>Affected components (6):</p><table>
+</table><h3>Service Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/lib/marketplace</p><p>Affected components (5):</p><table>
 <tr><td>Component</td><td>Type</td><td>Path</td></tr>
 <tr><td>-----------</td><td>------</td><td>------</td></tr>
 <tr><th>scheduling</th><th>Service</th><th>/Users/liamj/Documents/Development/buildappswith/lib/api-client/scheduling.ts</th></tr>
 <tr><td>builder-profile-service</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/lib/services/builder-profile-service.ts</td></tr>
 <tr><td>builder-service</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/lib/services/builder-service.ts</td></tr>
-<tr><td>index</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/lib/stripe/index.ts</td></tr>
 <tr><td>stripe-client</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-client.ts</td></tr>
 <tr><td>BuilderProfileClient</td><td>Service</td><td>/Users/liamj/Documents/Development/buildappswith/app/(platform)/marketplace/[id]/BuilderProfileClient.tsx</td></tr>
 </table><h3>API Endpoint Folder Structure</h3><p><strong>Recommended Pattern</strong>: Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/app/api/admin/builders</p><p>Affected components (19):</p><table>
