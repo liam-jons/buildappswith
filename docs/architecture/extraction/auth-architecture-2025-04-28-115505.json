@@ -48,6 +48,14 @@
     },
     {
       "name": "page",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/auth-test/page.tsx",
+      "type": "Page Component (Clerk)",
+      "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "page",
       "path": "/Users/liamj/Documents/Development/buildappswith/app/onboarding/page.tsx",
       "type": "Page Component (Clerk)",
       "container": "WebApplication",
@@ -59,6 +67,15 @@
       "path": "/Users/liamj/Documents/Development/buildappswith/app/profile-settings/page.tsx",
       "type": "Page Component (Clerk)",
       "container": "WebApplication",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
+      "name": "auth-provider",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/auth-provider.tsx",
+      "type": "Context Provider (Clerk)",
+      "description": "* AuthProvider component using Clerk\n * This replaces the NextAuth SessionProvider with Clerk's equivalent",
+      "container": "AuthenticationService",
       "usedBy": [],
       "dependencies": []
     },
@@ -153,8 +170,18 @@
         "factory",
         "rbac",
         "page",
-        "helpers"
+        "helpers",
+        "route"
       ],
+      "dependencies": []
+    },
+    {
+      "name": "clerk-hooks",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk-hooks.ts",
+      "type": "Authentication Component",
+      "description": "* Hook to access the current authenticated user with a compatible API to the old NextAuth hook\n * @returns Object containing auth state and user information",
+      "container": "AuthenticationService",
+      "usedBy": [],
       "dependencies": []
     },
     {
@@ -205,6 +232,15 @@
       "dependencies": []
     },
     {
+      "name": "page",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/test/auth/page.tsx",
+      "type": "Page Component (Clerk)",
+      "description": "* Test page for Clerk authentication\n * Tests various auth states and displays user information\n * Version: 1.0.59",
+      "container": "AuthenticationService",
+      "usedBy": [],
+      "dependencies": []
+    },
+    {
       "name": "booking-calendar",
       "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/client/booking-calendar.tsx",
       "type": "UI Component (Clerk)",
@@ -240,6 +276,15 @@
       "container": "WebApplication",
       "usedBy": [],
       "dependencies": []
+    },
+    {
+      "name": "route",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/profiles/user/route.ts",
+      "type": "API Endpoint (Clerk)",
+      "description": "* GET handler for fetching current user profile",
+      "container": "WebApplication",
+      "dependencies": [],
+      "usedBy": []
     },
     {
       "name": "route",

@@ -1,0 +1,18 @@
+%% Technical Debt and Legacy Components
+graph TD
+    architecture_utils["architecture-utils (Authentication Component)"]:::technicalDebt
+    extract_auth_architecture["extract-auth-architecture (Authentication Component)"]:::legacy
+    generate_architecture_report["generate-architecture-report (Utility)"]:::legacy
+    page["page (Page Component)"]:::technicalDebt
+    page["page (Page Component)"]:::technicalDebt
+    builder_image["builder-image (UI Component)"]:::technicalDebt
+    auth["auth (Authentication Component)"]:::technicalDebt
+    index["index (Authentication Component)"]:::legacy
+    types["types (Authentication Component)"]:::legacy
+    protected_route["protected-route (UI Component)"]:::legacy
+    route["route (API Endpoint)"]:::technicalDebt
+    route["route (API Endpoint)"]:::technicalDebt
+    extract_auth_architecture --> architecture_utils
+    index --> auth
+    classDef technicalDebt fill:#FF0000,color:white;
+    classDef legacy fill:#FF9900,color:white;
