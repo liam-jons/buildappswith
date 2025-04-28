@@ -1,246 +1,199 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { TimeSlot, SessionType, Booking } from '@/lib/scheduling/types';
-import { formatInTimezone, detectClientTimezone } from '@/lib/scheduling/utils';
-import { format, parseISO, addMinutes } from 'date-fns';
-import { createBooking } from '@/lib/api-client/scheduling';
-import { createCheckoutSession } from '@/lib/stripe';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { format, parseISO } from 'date-fns';
+import { TimeSlot, SessionType } from '@/lib/scheduling/types';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Clock, Calendar, DollarSign, CheckCircle, AlertTriangle } from 'lucide-react';
-import { BorderBeam } from '@/components/magicui/border-beam';
-import { useReducedMotion } from 'framer-motion';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar, Clock, MessageSquare, CalendarClock, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface BookingFormProps {
-  builderId: string;
-  clientId: string;
-  selectedSlot: TimeSlot;
   sessionType: SessionType;
-  builderTimezone: string;
-  onBookingComplete: (booking: Booking) => void;
-  onCancel: () => void;
+  timeSlot: TimeSlot;
+  builderId: string;
+  onComplete: () => void;
+  onBack: () => void;
 }
 
-export function BookingForm({
-  builderId,
-  clientId,
-  selectedSlot,
+const BookingForm: React.FC<BookingFormProps> = ({
   sessionType,
-  builderTimezone,
-  onBookingComplete,
-  onCancel
-}: BookingFormProps) {
-  const router = useRouter();
-  const shouldReduceMotion = useReducedMotion();
-  const [notes, setNotes] = useState('');
+  timeSlot,
+  builderId,
+  onComplete,
+  onBack
+}) => {
+  const { user, isLoaded } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
-  const [usingMockData, setUsingMockData] = useState(false);
-  const clientTimezone = detectClientTimezone();
+  const [error, setError] = useState<string | null>(null);
+  const [notes, setNotes] = useState('');
   
-  const startDate = parseISO(selectedSlot.startTime);
-  const endDate = parseISO(selectedSlot.endTime);
+  // Get formatted dates from time slot
+  const startTime = parseISO(timeSlot.startTime);
+  const endTime = parseISO(timeSlot.endTime);
   
-  // Check if this is a featured builder (for payment requirement)
-  const isFeaturedBuilder = builderId === 'founder'; // This would be a more sophisticated check in production
+  // Get local timezone
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    setPaymentError(null);
-    
-    // Create the booking object
-    const newBookingData: Omit<Booking, 'id' | 'createdAt' | 'updatedAt'> = {
-      sessionTypeId: sessionType.id,
-      builderId,
-      clientId,
-      startTime: selectedSlot.startTime,
-      endTime: selectedSlot.endTime,
-      status: 'pending',
-      paymentStatus: isFeaturedBuilder ? 'unpaid' : undefined, // Only set payment status for featured builders
-      clientTimezone,
-      builderTimezone,
-      notes,
-    };
+    setError(null);
     
     try {
-      // Create the booking
-      const { booking: newBooking, warning } = await createBooking(newBookingData);
-      setUsingMockData(!!warning);
-      
-      if (isFeaturedBuilder) {
-        // For featured builders, redirect to Stripe checkout
-        const baseUrl = window.location.origin;
-        const returnUrl = `${baseUrl}/payment`;
-        
-        try {
-          // Create a checkout session and redirect to Stripe
-          const { url } = await createCheckoutSession(newBooking, returnUrl);
-          
-          if (url) {
-            // Redirect to Stripe checkout
-            window.location.href = url;
-            return; // Exit early as we're redirecting
-          } else {
-            throw new Error('Failed to create checkout session');
-          }
-        } catch (error) {
-          console.error('Payment error:', error);
-          setPaymentError('Failed to process payment. Please try again.');
-          setIsSubmitting(false);
-          return;
-        }
-      } else {
-        // For regular builders, continue with the standard flow (no payment)
-        setIsSubmitting(false);
-        setIsComplete(true);
-        
-        // Call the completion handler after a short delay to show the success state
-        setTimeout(() => {
-          onBookingComplete(newBooking);
-        }, 1500);
+      if (!isLoaded || !user) {
+        throw new Error('You must be signed in to book a session');
       }
+      
+      // Prepare booking data
+      const bookingData = {
+        sessionTypeId: sessionType.id,
+        builderId: builderId,
+        clientId: user.id,
+        startTime: timeSlot.startTime,
+        endTime: timeSlot.endTime,
+        status: 'pending',
+        paymentStatus: 'unpaid',
+        clientTimezone: timeZone,
+        builderTimezone: timeZone, // This would be fetched from builder profile
+        notes: notes
+      };
+      
+      // Create the booking
+      const response = await fetch('/api/scheduling/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create booking');
+      }
+      
+      // Successful booking
+      onComplete();
+      
     } catch (error: any) {
-      console.error('Booking error:', error);
-      setPaymentError(error.message || 'Failed to process booking');
-      toast.error('Failed to create booking. Please try again.');
+      console.error('Error creating booking:', error);
+      setError(error.message || 'Failed to create booking. Please try again.');
+      toast.error(error.message || 'Failed to create booking');
+    } finally {
       setIsSubmitting(false);
     }
   };
   
+  if (!isLoaded) {
+    return <div>Loading user information...</div>;
+  }
+  
   return (
-    <div className="relative rounded-lg">
-      <BorderBeam
-        className="absolute inset-0 rounded-lg"
-        size={shouldReduceMotion ? 0 : 50}
-        delay={1}
-        duration={3}
-      />
-      <Card className="w-full max-w-2xl mx-auto relative z-10">
-        {isComplete ? (
-          <div className="p-8 text-center">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Booking Confirmed!</h2>
-            <p className="text-muted-foreground mb-6">
-              Your booking request has been sent to the builder.
-              You&apos;ll receive a confirmation email shortly.
-            </p>
-            <Button onClick={() => onBookingComplete(null as any)}>
-              Return to Builder Profile
-            </Button>
-          </div>
-        ) : (
-          <>
-            <CardHeader>
-              <CardTitle>Confirm Your Booking</CardTitle>
-              <CardDescription>Review the details before confirming your session</CardDescription>
-              
-              {usingMockData && (
-                <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-md flex items-center gap-2 text-sm">
-                  <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-                  <span className="text-yellow-700 dark:text-yellow-300">
-                    Using demo mode. This booking won&apos;t be permanently saved.
-                  </span>
-                </div>
-              )}
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="bg-muted/50 rounded-lg p-4 space-y-3">
-                <div className="flex justify-between items-start">
-                  <h3 className="text-lg font-semibold">{sessionType.title}</h3>
-                  <div className="flex items-center">
-                    <DollarSign className="h-4 w-4 mr-1" />
-                    <span className="font-medium">{sessionType.price} {sessionType.currency}</span>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-1 text-muted-foreground" />
-                    <span>{format(startDate, 'MMMM d, yyyy')}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-1 text-muted-foreground" />
-                    <span>
-                      {formatInTimezone(selectedSlot.startTime, 'h:mm a', clientTimezone)} - 
-                      {formatInTimezone(selectedSlot.endTime, 'h:mm a', clientTimezone)}
-                      <span className="text-muted-foreground ml-1">
-                        ({sessionType.durationMinutes} minutes)
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                
-                <p className="text-sm text-muted-foreground">
-                  {sessionType.description}
-                </p>
-              </div>
-              
+    <div className="space-y-6">
+      {error && (
+        <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md">
+          {error}
+        </div>
+      )}
+      
+      {/* Booking summary */}
+      <Card className="bg-primary/5 border-primary/20">
+        <CardContent className="pt-6">
+          <h3 className="text-lg font-semibold mb-3">Booking Summary</h3>
+          
+          <div className="space-y-3">
+            <div className="flex">
+              <Calendar className="h-5 w-5 text-primary mr-3 flex-shrink-0 mt-0.5" />
               <div>
-                <Label htmlFor="notes">Notes for the Builder (Optional)</Label>
-                <Textarea
-                  id="notes"
-                  placeholder="Share what you&apos;d like to discuss in this session..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="mt-1"
-                  rows={4}
-                />
+                <p className="font-medium">Date</p>
+                <p className="text-gray-600">{format(startTime, 'EEEE, MMMM d, yyyy')}</p>
               </div>
-              
-              <div className="space-y-2 text-sm">
-                <p className="flex items-center">
-                  <span className="font-medium mr-2">Your timezone:</span>
-                  {clientTimezone}
-                </p>
-                <p className="flex items-center">
-                  <span className="font-medium mr-2">Builder&apos;s timezone:</span>
-                  {builderTimezone}
+            </div>
+            
+            <div className="flex">
+              <Clock className="h-5 w-5 text-primary mr-3 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium">Time</p>
+                <p className="text-gray-600">
+                  {format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')} ({timeZone})
                 </p>
               </div>
-              
-              {isFeaturedBuilder && (
-                <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-md p-3 text-sm">
-                  <div className="font-medium mb-1">Featured Builder Session</div>
-                  <p className="text-muted-foreground">
-                    This session requires payment. You&apos;ll be redirected to our secure payment processor to complete your booking.
-                  </p>
-                  <div className="mt-2 font-medium">
-                    {sessionType.price} {sessionType.currency}
-                  </div>
-                </div>
-              )}
-              
-              {paymentError && (
-                <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-md p-3 text-sm text-red-800 dark:text-red-300">
-                  <div className="font-medium mb-1">Payment Error</div>
-                  <p>{paymentError}</p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={onCancel} disabled={isSubmitting}>
-                Cancel
-              </Button>
-              <Button onClick={handleSubmit} disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <div className="mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  'Confirm Booking'
-                )}
-              </Button>
-            </CardFooter>
-          </>
-        )}
+            </div>
+            
+            <div className="flex">
+              <CalendarClock className="h-5 w-5 text-primary mr-3 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium">Session Type</p>
+                <p className="text-gray-600">{sessionType.title} ({sessionType.durationMinutes} minutes)</p>
+              </div>
+            </div>
+            
+            <div className="flex">
+              <CreditCard className="h-5 w-5 text-primary mr-3 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium">Price</p>
+                <p className="text-gray-600">{sessionType.price} {sessionType.currency}</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
       </Card>
+      
+      {/* Additional details form */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Additional Details</h3>
+        
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="notes">Notes for the builder (optional)</Label>
+            <Textarea
+              id="notes"
+              placeholder="Share any information that might help the builder prepare for your session..."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="min-h-[100px]"
+            />
+          </div>
+        </div>
+      </div>
+      
+      {/* Session description */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-start">
+            <MessageSquare className="h-5 w-5 text-primary mr-3 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-medium">About this session</h4>
+              <p className="text-gray-600 mt-1">{sessionType.description}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Submit button */}
+      <div className="flex justify-end">
+        <Button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="px-6"
+        >
+          {isSubmitting ? (
+            <span className="flex items-center">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Processing...
+            </span>
+          ) : (
+            'Complete Booking'
+          )}
+        </Button>
+      </div>
     </div>
   );
-}
+};
+
+export default BookingForm;

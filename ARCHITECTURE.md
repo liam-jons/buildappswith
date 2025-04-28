@@ -22,7 +22,7 @@ Buildappswith is a platform designed to democratize AI application development t
 - **Frontend**: Next.js 15.3.1 with App Router, React 19.1.0, TypeScript
 - **UI**: Tailwind CSS 3.4.17 with Magic UI components
 - **Database**: PostgreSQL with Prisma ORM v6.6.0
-- **Authentication**: Currently NextAuth.js (planning migration to Clerk)
+- **Authentication**: Clerk (migration completed)
 - **Payment**: Stripe integration
 - **Deployment**: Vercel with GitHub integration
 - **Testing**: Vitest configured
@@ -71,7 +71,7 @@ The Container diagram shows the high-level technical building blocks of Buildapp
 
 ### Current Focus Areas
 
-1. **Authentication Migration**: Planning migration from NextAuth.js to Clerk
+1. **Folder Structure Standardization**: Implementing domain-first organization pattern
 2. **Code Structure Optimization**: Improving modularity and maintainability
 3. **Testing Implementation**: Enhancing test coverage
 
@@ -85,9 +85,48 @@ To keep architecture documentation current:
 
 ## Future Plans
 
-1. **Component-Level Documentation**: Adding more detailed component diagrams
-2. **Storybook Integration**: Implementing Storybook for UI component documentation
-3. **CI/CD Integration**: Automating architecture diagram generation in the CI/CD pipeline
+1. **Storybook Integration**: Implementing Storybook for UI component documentation
+2. **CI/CD Integration**: Automating architecture diagram generation in the CI/CD pipeline
+3. **Component-Level Documentation**: Adding more detailed component diagrams
+
+## Code Organization
+
+### Folder Structure
+
+The Buildappswith codebase follows a domain-first organization pattern. See the [Folder Structure Guide](/docs/engineering/FOLDER_STRUCTURE_GUIDE.md) for detailed patterns.
+
+```
+/
+├── app/                     # Next.js App Router pages
+│   ├── (auth)/              # Auth-related pages
+│   ├── (marketing)/         # Marketing pages
+│   ├── (platform)/          # Platform pages
+│   ├── api/                 # API routes
+│   └── ...                  # Other app directories
+├── components/              # Shared components
+│   ├── [domain]/            # Domain-specific components
+│   ├── ui/                  # UI components
+│   ├── providers/           # Context providers
+│   └── ...                  # Other global components
+├── hooks/                   # Custom React hooks
+├── lib/                     # Non-React code
+│   ├── [domain]/            # Domain business logic
+│   ├── utils/               # Shared utilities
+│   └── ...                  # Other non-React code
+├── public/                  # Static assets
+├── styles/                  # Global styles
+└── types/                   # Global TypeScript types
+```
+
+### Component Organization
+
+Components are organized following a hierarchy:
+
+- **Core UI**: Foundational UI components (buttons, inputs, etc.)
+- **Composite UI**: Combinations of core components for reuse
+- **Domain UI**: Specialized components for specific domains
+
+See the [Components README](/components/README.md) for detailed patterns.
 
 ## References
 

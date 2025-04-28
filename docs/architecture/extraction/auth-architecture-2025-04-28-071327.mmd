@@ -1,0 +1,68 @@
+graph TD
+  subgraph AuthenticationService
+    architecture_utils["architecture-utils (Authentication Component)"]:::auth
+    extract_auth_architecture["extract-auth-architecture (Authentication Component)"]:::auth
+    nextjs["nextjs (Authentication Component)"]:::auth
+    auth_provider["auth-provider (Context Provider (Clerk))"]:::provider
+    clerk_auth_form["clerk-auth-form (UI Component (Clerk))"]:::component
+    loading_state["loading-state (UI Component (Clerk))"]:::component
+    clerk_provider["clerk-provider (Context Provider (Clerk))"]:::provider
+    factory_test_solution["factory-test-solution (Authentication Component)"]:::auth
+    improved_integration_test["improved-integration-test (Authentication Component)"]:::auth
+    improved_solution["improved-solution (Authentication Component)"]:::auth
+    nextjs_mock_solution["nextjs-mock-solution (Authentication Component)"]:::auth
+    auth["auth (Authentication Component)"]:::auth
+    clerk_hooks["clerk-hooks (Authentication Component)"]:::auth
+    clerk_middleware["clerk-middleware (Authentication Component)"]:::auth
+    factory["factory (Authentication Component)"]:::auth
+    rbac["rbac (Authentication Component)"]:::auth
+    page["page (Page Component (Clerk))"]:::component
+    admin_builders_page["admin-builders-page (Authentication Component)"]:::auth
+    helpers["helpers (Authentication Component)"]:::auth
+    route["route (API Endpoint (Clerk))"]:::api
+    test_auth_page["test-auth-page (Authentication Component)"]:::auth
+  end
+
+  subgraph WebApplication
+    site_header["site-header (UI Component (Clerk))"]:::component
+    user_auth_form["user-auth-form (UI Component (Clerk))"]:::component
+    page["page (Page Component (Clerk))"]:::component
+    page["page (Page Component (Clerk))"]:::component
+    page["page (Page Component (Clerk))"]:::component
+    providers["providers (Context Provider (Clerk))"]:::provider
+    page["page (Page Component (Clerk))"]:::component
+    page["page (Page Component (Clerk))"]:::component
+    booking_calendar["booking-calendar (UI Component (Clerk))"]:::component
+    booking_form["booking-form (UI Component (Clerk))"]:::component
+    page["page (Page Component (Clerk))"]:::component
+    route["route (API Endpoint (Clerk))"]:::api
+    route["route (API Endpoint (Clerk))"]:::api
+    availability_exceptions["availability-exceptions (UI Component (Clerk))"]:::component
+    availability_management["availability-management (UI Component (Clerk))"]:::component
+    weekly_availability["weekly-availability (UI Component (Clerk))"]:::component
+    route["route (API Endpoint (Clerk))"]:::api
+  end
+
+  subgraph Database
+    User["User (Data Model)"]:::model
+    Account["Account (Data Model)"]:::model
+    Session["Session (Data Model)"]:::model
+    VerificationToken["VerificationToken (Data Model)"]:::model
+  end
+
+  factory_test_solution --> auth
+  improved_integration_test --> auth
+  factory --> rbac
+  booking_calendar --> booking_form
+  availability_management --> weekly_availability
+
+  %% Container relationships
+  WebApplication --> AuthenticationService
+  AuthenticationService --> Database
+  classDef middleware fill:#FF00FF,color:white;
+  classDef auth fill:#00FF80,color:black;
+  classDef component fill:#9D00FF,color:white;
+  classDef api fill:#00FF00,color:black;
+  classDef hook fill:#FF9E00,color:black;
+  classDef provider fill:#00FFFF,color:black;
+  classDef model fill:#FFFF00,color:black;

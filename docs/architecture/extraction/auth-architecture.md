@@ -18,8 +18,6 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
 
 | Component | Type | Description |
 |-----------|------|-------------|
-| auth-utils | Authentication Component | * Helper function to check authentication status on the server
- * Redirects to login if not authenticated |
 | architecture-utils | Authentication Component | * Architecture Extraction Utilities for Buildappswith
  * Version: 1.0.124
  * 
@@ -32,24 +30,17 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
  * 
  * Important: This version uses direct TypeScript analysis without structurizr-typescript |
 | nextjs | Authentication Component | * Mock implementation for @clerk/nextjs
- * Version: 1.0.112
+ * Version: 1.0.101
  * 
  * This centralized mock definition provides consistent behavior across tests
  * and avoids the hoisting issues that can occur with inline vi.mock() calls.
  * 
  * Uses Vitest's MockInstance type for proper TypeScript support of method chaining. |
 | auth-provider | Context Provider (Clerk) | * AuthProvider component using Clerk
- * Enhanced with error handling and theme integration
- * @version 1.0.108 |
+ * This replaces the NextAuth SessionProvider with Clerk's equivalent |
 | clerk-auth-form | UI Component (Clerk) | * Clerk authentication form component with theme support |
 | loading-state | UI Component (Clerk) | * Component to handle authentication loading states
  * Prevents blank pages by showing a loading state while Clerk auth is initializing |
-| login-button | UI Component (Clerk) | * LoginButton component using direct Clerk authentication
- * Handles both login and signup scenarios based on variant prop
- * @version 1.0.108 |
-| user-profile | UI Component (Clerk) | * User profile component using direct Clerk authentication
- * Displays user avatar and dropdown menu with profile options
- * @version 1.0.108 |
 | clerk-provider | Context Provider (Clerk) | * ClerkProvider wrapper component that supports theme switching |
 | factory-test-solution | Authentication Component | * Modified Middleware Factory Test
  * Version: 1.0.84
@@ -64,15 +55,16 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
  * 
  * This solution solves the "mockImplementationOnce is not a function" TypeScript error
  * by ensuring the mock functions are properly typed. |
-| clerk-hooks | Authentication Component | * Enhanced authentication hook that provides a consistent interface
- * @returns Object containing auth state and user information
- * @version 1.0.108 |
-| clerk-middleware | Authentication Component | * Public routes that don't require authentication |
-| index | Authentication Component | * Buildappswith Authentication Module
- * Version: 1.0.108
+| auth | Authentication Component | * @deprecated This file is deprecated and will be removed in a future version.
+ * The original NextAuth implementation has been archived in /archived/nextauth-legacy/lib/auth/auth.ts
  * 
- * Centralizes all authentication-related exports for the application.
- * This module has been fully migrated from NextAuth.js to Clerk. |
+ * Please use the Clerk authentication system directly:
+ * - For client-side auth: import { useAuth, useUser } from "@clerk/nextjs";
+ * - For server-side auth: import { currentUser } from "@clerk/nextjs/server";
+ * - For middleware: import { authMiddleware } from "@clerk/nextjs"; |
+| clerk-hooks | Authentication Component | * Hook to access the current authenticated user with a compatible API to the old NextAuth hook
+ * @returns Object containing auth state and user information |
+| clerk-middleware | Authentication Component | * Public routes that don't require authentication |
 | factory | Authentication Component | * Middleware Factory for Buildappswith Platform
  * Version: 1.0.80
  * 
@@ -86,9 +78,7 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
  * with flexible permission models and policy enforcement. |
 | page | Page Component (Clerk) | * Test page for Clerk authentication
  * Tests various auth states and displays user information
- * Version: 1.0.108 |
-| protected-route | UI Component (Clerk) | * Protected route component using Clerk authentication
- * Redirects to login if not authenticated |
+ * Version: 1.0.59 |
 | helpers | Authentication Component | * Extended user type with combined Clerk and database data |
 | route | API Endpoint (Clerk) | * Clerk Webhook Handler
  * 
@@ -113,18 +103,16 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
 | page | Page Component (Clerk) | N/A |
 | providers | Context Provider (Clerk) | * Combined providers wrapper for the application |
 | page | Page Component (Clerk) | N/A |
-| booking-overview | UI Component (Clerk) | N/A |
-| session-type-editor | UI Component (Clerk) | N/A |
+| page | Page Component (Clerk) | N/A |
+| booking-calendar | UI Component (Clerk) | N/A |
+| booking-form | UI Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
 | route | API Endpoint (Clerk) | * GET handler for fetching current user profile |
-| route | API Endpoint (Clerk) | * Stripe checkout API route
- * @version 1.0.110 |
+| route | API Endpoint (Clerk) | * Helper function to handle service errors with appropriate responses |
 | availability-exceptions | UI Component (Clerk) | N/A |
 | availability-management | UI Component (Clerk) | N/A |
 | weekly-availability | UI Component (Clerk) | N/A |
 | route | API Endpoint (Clerk) | N/A |
-| route | API Endpoint (Clerk) | * API route for retrieving Stripe session information
- * @version 1.0.111 |
 
 ### Database
 
@@ -198,8 +186,6 @@ Process for enforcing role-based permissions
 
 ### user-auth-form
 
-### auth-utils
-
 ### architecture-utils
 
 Used by:
@@ -221,10 +207,6 @@ Used by:
 
 ### loading-state
 
-### login-button
-
-### user-profile
-
 ### clerk-provider
 
 Used by:
@@ -234,20 +216,33 @@ Used by:
 
 ### factory-test-solution
 
+Dependencies:
+- auth
+
 ### improved-integration-test
+
+Dependencies:
+- auth
 
 ### improved-solution
 
 ### nextjs-mock-solution
 
-### clerk-hooks
+### auth
 
 Used by:
-- index
+- factory-test-solution
+- improved-integration-test
+- clerk-middleware
+- factory
+- rbac
+- page
+- helpers
+- route
+
+### clerk-hooks
 
 ### clerk-middleware
-
-### index
 
 ### factory
 
@@ -263,11 +258,17 @@ Used by:
 
 ### page
 
-### protected-route
+### page
 
-### booking-overview
+### booking-calendar
 
-### session-type-editor
+Dependencies:
+- booking-form
+
+### booking-form
+
+Used by:
+- booking-calendar
 
 ### helpers
 
@@ -293,8 +294,6 @@ Dependencies:
 
 Used by:
 - availability-management
-
-### route
 
 ### route
 
