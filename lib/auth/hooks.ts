@@ -1,6 +1,14 @@
-// Deprecated: Use clerk-hooks.ts instead
-// This file is kept for backwards compatibility during the migration
-// and will be removed once all components have been updated
+// Export our custom hooks that wrap Clerk functionality
+export {
+  useAuth,
+  useUser,
+  useHasRole,
+  useIsAdmin,
+  useIsBuilder,
+  useIsClient,
+  useSignOut,
+  useAuthStatus
+} from './clerk-hooks';
 
-// Re-export the clerk-hooks implementation
-export * from './clerk-hooks';
+// Also export the base Clerk hooks for any direct usage needs
+export { useClerk, useSignIn, useSignUp } from '@clerk/nextjs';

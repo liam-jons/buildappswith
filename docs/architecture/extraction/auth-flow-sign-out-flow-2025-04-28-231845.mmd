@@ -1,0 +1,13 @@
+flowchart TD
+    %% Sign-Out Flow
+    %% Process for signing out users
+
+    step1["User triggers sign-out action"]
+    step1 --> step2
+    step2["Clerk signOut method is called"]
+    step2 --> step3
+    step3["Session is terminated"]
+    step3 --> step4
+    step4["User is redirected to homepage"]
+    step4 --> step5
+    step5["Middleware enforces authentication on subsequent requests"]

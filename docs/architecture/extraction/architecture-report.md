@@ -16,21 +16,21 @@ The architecture is divided into the following containers based on PRD 2.1:
 | PaymentService | Processes payments for sessions | Stripe API |
 | BookingSystem | Manages session scheduling and availability | Custom calendar integration |
 
-Total Components: **246**
+Total Components: **242**
 
 Component Types:
 - Utility: 47
 - Middleware: 7
 - Page Component: 42
-- UI Component: 71
+- UI Component: 68
 - Context Provider: 11
 - Data Model: 19
 - Authentication Component: 21
-- Service: 8
+- Service: 7
 - API Endpoint: 20
 
-Technical Debt Components: **7** (3% of total)
-Legacy Components: **5** (2% of total)
+Technical Debt Components: **4** (2% of total)
+Legacy Components: **3** (1% of total)
 
 ### Components by Container
 
@@ -68,7 +68,7 @@ Representative components:
 
 #### AuthenticationService
 
-Contains 27 components.
+Contains 25 components.
 
 Representative components:
 
@@ -80,23 +80,23 @@ Representative components:
 | clerk-auth-form | UI Component |  |  |
 | loading-state | UI Component |  |  |
 
-*... and 22 more components*
+*... and 20 more components*
 
 #### PaymentService
 
-Contains 11 components.
+Contains 9 components.
 
 Representative components:
 
 | Component | Type | Technical Debt | Legacy |
 |-----------|------|----------------|--------|
 | payment-status-indicator | Context Provider |  |  |
-| payment-status-page | UI Component |  |  |
-| index | Service |  |  |
 | stripe-client | Service |  |  |
 | stripe-server | Utility |  |  |
+| page | Page Component |  |  |
+| page | Page Component |  |  |
 
-*... and 6 more components*
+*... and 4 more components*
 
 #### BookingSystem
 
@@ -120,9 +120,6 @@ Representative components:
 | page | Page Component | WebApplication | /Users/liamj/Documents/Development/buildappswith/app/onboarding/page.tsx |
 | page | Page Component | WebApplication | /Users/liamj/Documents/Development/buildappswith/app/profile-settings/page.tsx |
 | builder-image | UI Component | WebApplication | /Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-image.tsx |
-| auth | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/lib/auth/auth.ts |
-| route | API Endpoint | PaymentService | /Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts |
-| route | API Endpoint | PaymentService | /Users/liamj/Documents/Development/buildappswith/app/api/stripe/webhook/route.ts |
 
 ### Legacy Components
 
@@ -130,13 +127,11 @@ Representative components:
 |-----------|------|-----------|------|
 | extract-auth-architecture | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/scripts/extract-auth-architecture.ts |
 | generate-architecture-report | Utility | WebApplication | /Users/liamj/Documents/Development/buildappswith/scripts/generate-architecture-report.ts |
-| index | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts |
 | types | Authentication Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/lib/auth/types.ts |
-| protected-route | UI Component | AuthenticationService | /Users/liamj/Documents/Development/buildappswith/components/auth/protected/protected-route.tsx |
 
 ## Authentication Architecture
 
-Authentication Components: **35**
+Authentication Components: **39**
 
 ### Authentication Containers
 
@@ -187,14 +182,10 @@ Authentication Components: **35**
  * 
  * This solution solves the "mockImplementationOnce is not a function" TypeScript error
  * by ensuring the mock functions are properly typed. |
-| auth | Authentication Component | * @deprecated This file is deprecated and will be removed in a future version.
- * The original NextAuth implementation has been archived in /archived/nextauth-legacy/lib/auth/auth.ts
- * 
- * Please use the Clerk authentication system directly:
- * - For client-side auth: import { useAuth, useUser } from "@clerk/nextjs";
- * - For server-side auth: import { currentUser } from "@clerk/nextjs/server";
- * - For middleware: import { authMiddleware } from "@clerk/nextjs"; |
+| clerk-hooks | Authentication Component | * Extended user object with our custom fields |
 | clerk-middleware | Authentication Component | * Public routes that don't require authentication |
+| hooks | Authentication Component | N/A |
+| index | Authentication Component | N/A |
 | factory | Authentication Component | * Middleware Factory for Buildappswith Platform
  * Version: 1.0.80
  * 
@@ -234,10 +225,24 @@ Authentication Components: **35**
 | booking-form | UI Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
 | route | API Endpoint (Clerk) | * Helper function to handle service errors with appropriate responses |
+| route | API Endpoint (Clerk) | * API route to create a Stripe checkout session for a booking
+ * 
+ * @param request - The incoming request object
+ * @param auth - Auth object provided by Clerk's withAuth middleware
+ * @returns NextResponse with session data or error |
 | availability-exceptions | UI Component (Clerk) | N/A |
 | availability-management | UI Component (Clerk) | N/A |
 | weekly-availability | UI Component (Clerk) | N/A |
 | route | API Endpoint (Clerk) | N/A |
+| route | API Endpoint (Clerk) | * GET handler for retrieving a Stripe session with associated booking
+ * 
+ * Uses Next.js 15 promise-based params and Clerk authentication
+ * to ensure only authorized users can access the session details
+ * 
+ * @param request - The incoming request object
+ * @param context - Context containing the session ID parameter
+ * @param auth - Authentication object from Clerk
+ * @returns NextResponse with session details or error |
 
 #### Database
 

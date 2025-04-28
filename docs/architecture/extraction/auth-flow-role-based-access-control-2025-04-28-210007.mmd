@@ -1,0 +1,15 @@
+flowchart TD
+    %% Role-Based Access Control
+    %% Process for enforcing role-based permissions
+
+    step1["User requests access to protected resource"]
+    step1 --> step2
+    step2["Middleware intercepts the request"]
+    step2 --> step3
+    step3["User roles are retrieved from Clerk publicMetadata"]
+    step3 --> step4
+    step4["Authorization checks verify proper role access"]
+    step4 --> step5
+    step5["Access is granted or denied based on role"]
+    step5 --> step6
+    step6["For API routes, appropriate status codes are returned"]

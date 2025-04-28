@@ -336,9 +336,9 @@
       "container": "WebApplication",
       "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 1,
+      "incomingReferences": 4,
       "outgoingReferences": 0,
-      "usageScore": 1,
+      "usageScore": 4,
       "isUnused": false,
       "lastModified": "2025-04-27",
       "complexityScore": 0
@@ -738,21 +738,6 @@
       "usageScore": 2,
       "isUnused": false,
       "lastModified": "2025-04-24",
-      "complexityScore": 1
-    },
-    {
-      "name": "protected-route",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/protected-route.tsx",
-      "dependencies": [],
-      "container": "AuthenticationService",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 4,
-      "outgoingReferences": 0,
-      "usageScore": 4,
-      "isUnused": false,
-      "lastModified": "2025-04-23",
       "complexityScore": 1
     },
     {
@@ -1417,19 +1402,22 @@
       "complexityScore": 6
     },
     {
-      "name": "auth",
+      "name": "clerk-hooks",
       "type": "Authentication Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/auth.ts",
-      "dependencies": [],
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk-hooks.ts",
+      "dependencies": [
+        "types"
+      ],
       "container": "AuthenticationService",
-      "isTechnicalDebt": true,
+      "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 2,
-      "outgoingReferences": 0,
-      "usageScore": 2,
-      "isUnused": false,
-      "lastModified": "2025-04-27",
-      "complexityScore": 1
+      "incomingReferences": 0,
+      "outgoingReferences": 1,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 2.5
     },
     {
       "name": "clerk-middleware",
@@ -1469,30 +1457,28 @@
       "container": "AuthenticationService",
       "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 2,
+      "incomingReferences": 3,
       "outgoingReferences": 0,
-      "usageScore": 2,
+      "usageScore": 3,
       "isUnused": false,
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
       "name": "index",
       "type": "Authentication Component",
       "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts",
-      "dependencies": [
-        "auth"
-      ],
+      "dependencies": [],
       "container": "AuthenticationService",
       "isTechnicalDebt": false,
-      "isLegacy": true,
+      "isLegacy": false,
       "incomingReferences": 0,
-      "outgoingReferences": 1,
+      "outgoingReferences": 0,
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-27",
-      "complexityScore": 1.5
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
     },
     {
       "name": "types",
@@ -1502,7 +1488,7 @@
       "container": "AuthenticationService",
       "isTechnicalDebt": false,
       "isLegacy": true,
-      "incomingReferences": 48,
+      "incomingReferences": 49,
       "outgoingReferences": 0,
       "usageScore": 10,
       "isUnused": false,
@@ -1874,11 +1860,10 @@
       "container": "PaymentService",
       "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 0,
+      "incomingReferences": 3,
       "outgoingReferences": 1,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "No incoming references found",
+      "usageScore": 3,
+      "isUnused": false,
       "lastModified": "2025-04-28",
       "complexityScore": 3.5
     },
@@ -2395,21 +2380,6 @@
       "unusedReason": "Page/route with no navigation links to it",
       "lastModified": "2025-04-28",
       "complexityScore": 0
-    },
-    {
-      "name": "protected-route",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/protected/protected-route.tsx",
-      "dependencies": [],
-      "container": "AuthenticationService",
-      "isTechnicalDebt": false,
-      "isLegacy": true,
-      "incomingReferences": 4,
-      "outgoingReferences": 0,
-      "usageScore": 4,
-      "isUnused": false,
-      "lastModified": "2025-04-27",
-      "complexityScore": 1
     },
     {
       "name": "index",
@@ -3007,7 +2977,7 @@
       "container": "WebApplication",
       "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 10,
+      "incomingReferences": 12,
       "outgoingReferences": 1,
       "usageScore": 10,
       "isUnused": false,
@@ -3326,15 +3296,15 @@
       "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts",
       "dependencies": [],
       "container": "PaymentService",
-      "isTechnicalDebt": true,
+      "isTechnicalDebt": false,
       "isLegacy": false,
       "incomingReferences": 0,
       "outgoingReferences": 0,
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
-      "complexityScore": 0
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
     },
     {
       "name": "route",
@@ -3342,15 +3312,15 @@
       "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/webhook/route.ts",
       "dependencies": [],
       "container": "PaymentService",
-      "isTechnicalDebt": true,
+      "isTechnicalDebt": false,
       "isLegacy": false,
       "incomingReferences": 0,
       "outgoingReferences": 0,
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
-      "complexityScore": 0
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
     },
     {
       "name": "route",
@@ -3570,8 +3540,8 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
-      "complexityScore": 0
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
     },
     {
       "name": "User",
@@ -4001,8 +3971,8 @@
       "description": "Uses"
     },
     {
-      "source": "index",
-      "target": "auth",
+      "source": "clerk-hooks",
+      "target": "types",
       "description": "Uses"
     },
     {
@@ -4238,7 +4208,7 @@
       "technology": "Next.js 15.3.1 + React 19.1.0 + TypeScript",
       "componentCount": 184,
       "complexity": 1.483695652173913,
-      "couplingScore": 0.07608695652173914
+      "couplingScore": 0.07065217391304347
     },
     {
       "name": "Database",
@@ -4252,16 +4222,16 @@
       "name": "AuthenticationService",
       "description": "Handles user authentication and authorization",
       "technology": "Clerk Authentication",
-      "componentCount": 27,
-      "complexity": 2.1296296296296298,
-      "couplingScore": 0.2222222222222222
+      "componentCount": 25,
+      "complexity": 2.26,
+      "couplingScore": 0.24
     },
     {
       "name": "PaymentService",
       "description": "Processes payments for sessions",
       "technology": "Stripe API",
       "componentCount": 9,
-      "complexity": 1.5555555555555556,
+      "complexity": 1.8888888888888888,
       "couplingScore": 0.1111111111111111
     },
     {

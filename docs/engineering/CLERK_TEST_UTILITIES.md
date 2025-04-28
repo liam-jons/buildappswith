@@ -1,286 +1,213 @@
-# Testing with Clerk Authentication
-
-This document provides guidance on testing components and functionality that use Clerk authentication in the Buildappswith platform.
+# Clerk Test Utilities
 
 ## Overview
 
-After migrating from NextAuth.js to Clerk (v1.0.109), our test utilities have been updated to properly support Clerk authentication. This document explains how to use these updated utilities to test components and API routes that rely on authentication.
+This document describes the test utilities available for working with Clerk authentication in our test suite. These utilities allow you to easily mock Clerk authentication with different user types and states.
 
-## Test Utilities
+## Available Utilities
 
-### Core Files
+### 1. Mock Providers in Test Utilities
 
-- `__tests__/utils/clerk-test-utils.ts`: Core implementation of Clerk mocking utilities
-- `__tests__/utils/test-utils.tsx`: Main testing utility for React Testing Library
-- `__tests__/utils/vitest-utils.tsx`: Similar to test-utils but with Vitest-specific implementations
-- `__mocks__/@clerk/nextjs.ts`: Centralized mock implementation for Clerk
+The `test-utils.tsx` and `vitest-utils.tsx` files have been updated to use Clerk authentication instead of NextAuth. Both files now use:
 
-### Key Features
+```typescript
+<ClerkProvider publishableKey="test_key">
+  <ThemeProvider>
+    {children}
+    <Toaster />
+  </ThemeProvider>
+</ClerkProvider>
+```
 
-- Mock different user roles (client, builder, admin, multiRole)
-- Simulate authenticated and unauthenticated states
-- Support for loading states
-- Consistent typing with the production codebase
-- Helper functions for common testing patterns
+This means that any component rendered with the `render` function from these utilities will be wrapped in the Clerk authentication context.
 
-## Basic Usage
+### 2. Mock User Data
 
-### Component Testing
+The mock user data now follows Clerk's user structure instead of the NextAuth format:
 
-```tsx
-import { render, screen } from '@/__tests__/utils/test-utils';
-import ProfilePage from '@/app/profile/page';
+```typescript
+export const mockUser: ClerkUser = {
+  id: 'clerk-client-id',
+  firstName: 'Test',
+  lastName: 'User',
+  fullName: 'Test User',
+  username: 'testuser',
+  primaryEmailAddress: {
+    emailAddress: 'client@example.com',
+    id: 'email-id',
+    verification: { status: 'verified' }
+  },
+  primaryEmailAddressId: 'email-id',
+  emailAddresses: [{
+    emailAddress: 'client@example.com',
+    id: 'email-id',
+    verification: { status: 'verified' }
+  }],
+  imageUrl: '/images/avatar-placeholder.png',
+  publicMetadata: {
+    roles: [UserRole.CLIENT],
+    verified: true,
+    completedOnboarding: true,
+    stripeCustomerId: 'stripe-client-id'
+  },
+  privateMetadata: {},
+  unsafeMetadata: {},
+  reload: vi.fn().mockResolvedValue(undefined)
+}
+```
 
-describe('ProfilePage', () => {
-  it('renders client profile when user has client role', () => {
-    // Render with client role user (default)
-    render(<ProfilePage />);
-    
+### 3. Specialized Clerk Test Utilities
+
+For more flexibility, use the specialized Clerk test utilities in `__tests__/utils/clerk-test-utils.ts`:
+
+#### Setting Up Mocks
+
+```typescript
+import { setupMockClerk, resetMockClerk } from '@/__tests__/utils/clerk-test-utils';
+
+// In beforeEach or beforeAll
+setupMockClerk('client'); // Mock as client user
+// or
+setupMockClerk('builder'); // Mock as builder user
+// or
+setupMockClerk('admin'); // Mock as admin user
+// or
+setupMockClerk('multiRole'); // Mock as multi-role user
+// or
+setupMockClerk('unverified'); // Mock as unverified user
+
+// In afterEach or afterAll
+resetMockClerk();
+```
+
+#### Configuring Custom Users
+
+```typescript
+import { configureMockClerk } from '@/__tests__/utils/clerk-test-utils';
+
+// Configure with custom properties
+const mockClerk = configureMockClerk('client', {
+  publicMetadata: {
+    completedOnboarding: false,
+    // other custom metadata
+  }
+});
+```
+
+#### Testing Unauthenticated State
+
+```typescript
+import { createUnauthenticatedMock } from '@/__tests__/utils/clerk-test-utils';
+
+// Mock an unauthenticated state
+const unauthenticatedMock = createUnauthenticatedMock();
+vi.mock('@clerk/nextjs', () => unauthenticatedMock);
+```
+
+#### Testing Loading State
+
+```typescript
+import { createLoadingMock } from '@/__tests__/utils/clerk-test-utils';
+
+// Mock a loading state
+const loadingMock = createLoadingMock();
+vi.mock('@clerk/nextjs', () => loadingMock);
+```
+
+## Usage Examples
+
+### Basic Component Test
+
+```typescript
+import { render, screen } from '@/__tests__/utils/vitest-utils';
+import UserProfile from '@/components/user-profile';
+import { setupMockClerk, resetMockClerk } from '@/__tests__/utils/clerk-test-utils';
+
+describe('UserProfile', () => {
+  beforeEach(() => {
+    setupMockClerk('client');
+  });
+
+  afterEach(() => {
+    resetMockClerk();
+  });
+
+  it('renders user name', () => {
+    render(<UserProfile />);
+    expect(screen.getByText('Test User')).toBeInTheDocument();
+  });
+});
+```
+
+### Testing Different User Types
+
+```typescript
+import { render, screen } from '@/__tests__/utils/vitest-utils';
+import Dashboard from '@/components/dashboard';
+import { setupMockClerk, resetMockClerk } from '@/__tests__/utils/clerk-test-utils';
+
+describe('Dashboard', () => {
+  afterEach(() => {
+    resetMockClerk();
+  });
+
+  it('shows client dashboard for client users', () => {
+    setupMockClerk('client');
+    render(<Dashboard />);
     expect(screen.getByText('Client Dashboard')).toBeInTheDocument();
   });
-  
-  it('renders builder profile when user has builder role', () => {
-    // Render with builder role user
-    render(<ProfilePage />, { userType: 'builder' });
-    
+
+  it('shows builder dashboard for builder users', () => {
+    setupMockClerk('builder');
+    render(<Dashboard />);
     expect(screen.getByText('Builder Dashboard')).toBeInTheDocument();
   });
-  
-  it('renders admin profile when user has admin role', () => {
-    // Render with admin role user
-    render(<ProfilePage />, { userType: 'admin' });
-    
+
+  it('shows admin dashboard for admin users', () => {
+    setupMockClerk('admin');
+    render(<Dashboard />);
     expect(screen.getByText('Admin Dashboard')).toBeInTheDocument();
   });
 });
 ```
 
-### Testing with Custom User Data
+### Testing Auth-Protected Routes
 
-```tsx
-import { render, screen } from '@/__tests__/utils/test-utils';
-import UserProfile from '@/components/profile/user-profile';
+```typescript
+import { render, screen } from '@/__tests__/utils/vitest-utils';
+import ProtectedPage from '@/app/protected/page';
+import { setupMockClerk, createUnauthenticatedMock, resetMockClerk } from '@/__tests__/utils/clerk-test-utils';
 
-describe('UserProfile', () => {
-  it('displays custom user information', () => {
-    render(<UserProfile />, { 
-      userType: 'client',
-      userOverrides: {
-        name: 'Custom User',
-        email: 'custom@example.com',
-        roles: ['CLIENT', 'ADMIN'],
-      }
-    });
-    
-    expect(screen.getByText('Custom User')).toBeInTheDocument();
-    expect(screen.getByText('custom@example.com')).toBeInTheDocument();
-    expect(screen.getByText('Admin Access')).toBeInTheDocument();
-  });
-});
-```
-
-### Testing Unauthenticated States
-
-```tsx
-import { render, screen } from '@/__tests__/utils/test-utils';
-import { resetMockClerk, createUnauthenticatedMock } from '@/__tests__/utils/clerk-test-utils';
-import { vi } from 'vitest';
-import Dashboard from '@/app/dashboard/page';
-
-describe('Dashboard', () => {
-  it('shows login button for unauthenticated users', () => {
-    // Reset and create unauthenticated Clerk mock
+describe('ProtectedPage', () => {
+  afterEach(() => {
     resetMockClerk();
-    vi.mock('@clerk/nextjs', () => createUnauthenticatedMock());
-    
-    render(<Dashboard />);
-    
-    expect(screen.getByText('Please sign in')).toBeInTheDocument();
-  });
-});
-```
-
-## Advanced Usage
-
-### Testing Middleware
-
-```tsx
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NextRequest, NextResponse } from 'next/server';
-import { authMiddleware } from '@clerk/nextjs';
-import { clerkMiddleware } from '@/lib/auth/clerk-middleware';
-
-// Mock Clerk's authMiddleware
-vi.mock('@clerk/nextjs', () => ({
-  authMiddleware: vi.fn(),
-  redirectToSignIn: vi.fn().mockImplementation((options) => {
-    return NextResponse.redirect(new URL('/login', options?.returnBackUrl || 'http://localhost'));
-  }),
-}));
-
-describe('Clerk Middleware', () => {
-  const mockRequest = new NextRequest(new URL('http://localhost/dashboard'));
-  const mockAuthenticatedRequest = new NextRequest(new URL('http://localhost/dashboard'));
-  mockAuthenticatedRequest.headers.set('x-auth-user-id', 'test-user-id');
-
-  beforeEach(() => {
-    vi.resetAllMocks();
-    
-    // Setup the authMiddleware mock implementation
-    vi.mocked(authMiddleware).mockImplementation((options) => {
-      return async (req) => {
-        // Extract auth info from request headers for testing purposes
-        const userId = req.headers.get('x-auth-user-id');
-        const isPublicRoute = options.publicRoutes?.some(route => {
-          if (typeof route === 'string') {
-            return req.nextUrl.pathname.startsWith(route);
-          }
-          return route.test(req.nextUrl.pathname);
-        }) || false;
-        
-        // Call the afterAuth handler with the auth state
-        return options.afterAuth(
-          { userId, isPublicRoute },
-          req,
-          { nextUrl: req.nextUrl }
-        );
-      };
-    });
   });
 
-  it('redirects unauthenticated users to login', async () => {
-    const middleware = clerkMiddleware;
-    const response = await middleware(mockRequest);
-    
-    expect(response?.status).toBe(307);
-    expect(response?.headers.get('location')).toContain('/login');
+  it('shows content for authenticated users', () => {
+    setupMockClerk('client');
+    render(<ProtectedPage />);
+    expect(screen.getByText('Protected Content')).toBeInTheDocument();
   });
 
-  it('allows authenticated users to access protected routes', async () => {
-    const middleware = clerkMiddleware;
-    const response = await middleware(mockAuthenticatedRequest);
+  it('redirects unauthenticated users', () => {
+    const unauthenticatedMock = createUnauthenticatedMock();
+    vi.mock('@clerk/nextjs', () => unauthenticatedMock);
     
-    expect(response).toBeUndefined(); // NextResponse.next() returns undefined in tests
-  });
-});
-```
-
-### Testing API Routes
-
-```tsx
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
-import { mockUsers } from '@/__tests__/mocks/users';
-import { POST } from '@/app/api/profile/route';
-
-// Mock Clerk's auth function
-vi.mock('@clerk/nextjs', () => ({
-  auth: vi.fn(),
-}));
-
-describe('Profile API Route', () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
-  it('returns 401 for unauthenticated requests', async () => {
-    // Mock unauthenticated state
-    vi.mocked(auth).mockReturnValue({
-      userId: null,
-      sessionId: null,
-      getToken: vi.fn().mockResolvedValue(null),
-    });
-    
-    const request = new NextRequest(
-      new URL('http://localhost/api/profile'),
-      { method: 'POST', body: JSON.stringify({ name: 'Test User' }) }
-    );
-    
-    const response = await POST(request);
-    
-    expect(response.status).toBe(401);
-    expect(await response.json()).toEqual(
-      expect.objectContaining({ error: 'Unauthorized' })
-    );
-  });
-
-  it('updates user profile for authenticated requests', async () => {
-    // Mock authenticated state
-    vi.mocked(auth).mockReturnValue({
-      userId: mockUsers.client.clerkId,
-      sessionId: 'test-session-id',
-      getToken: vi.fn().mockResolvedValue('test-token'),
-    });
-    
-    const request = new NextRequest(
-      new URL('http://localhost/api/profile'),
-      { method: 'POST', body: JSON.stringify({ name: 'Updated Name' }) }
-    );
-    
-    const response = await POST(request);
-    
-    expect(response.status).toBe(200);
-    expect(await response.json()).toEqual(
-      expect.objectContaining({ 
-        success: true,
-        data: expect.objectContaining({ name: 'Updated Name' })
-      })
-    );
+    render(<ProtectedPage />);
+    expect(screen.getByText('Redirecting to login...')).toBeInTheDocument();
   });
 });
 ```
 
 ## Best Practices
 
-1. **Use the Right Utility**:
-   - Use `test-utils.tsx` for most component tests
-   - Use `vitest-utils.tsx` for Vitest-specific tests
-   - Use `clerk-test-utils.ts` directly for advanced mocking needs
-
-2. **Role-Based Testing**:
-   - Test components with different user roles to ensure proper access control
-   - Check that UI elements are conditionally rendered based on roles
-
-3. **Test Authentication States**:
-   - Test both authenticated and unauthenticated states
-   - Verify that redirects and access controls work correctly
-
-4. **Mock Only What You Need**:
-   - The base mocks provide most functionality you'll need
-   - Override only the specific behaviors required for your test
-
-5. **Maintain Type Safety**:
-   - Use TypeScript to ensure your mocks match the expected interfaces
-   - Leverage vi.mocked() for proper typing of mocked functions
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Mock Not Being Applied**:
-   - Make sure you're importing from the correct test utilities file
-   - Check that you're not overriding the mock in your test
-
-2. **Authentication State Not Working**:
-   - Verify you're using the correct user type
-   - Check if you need to reset mocks between tests with `resetMockClerk()`
-
-3. **Type Errors**:
-   - Use `vi.mocked()` to ensure TypeScript recognizes the mock methods
-   - Check that your mock implementation matches the expected interface
-
-### Getting Help
-
-If you encounter issues with the test utilities, check:
-
-1. The comprehensive README in `__tests__/utils/README.md`
-2. The test verification file in `__tests__/utils/test-utilities.test.tsx`
-3. The Clerk documentation on testing: https://clerk.com/docs/testing/testing-overview
+1. **Always Reset Mocks**: Use `resetMockClerk()` after each test to avoid state leakage between tests.
+2. **Use Consistent Types**: Import `ClerkUser` type from clerk-test-utils for type safety.
+3. **Mock at the Right Level**: Set up mocks at the level you need - component tests often work best with the global render wrapper, while more specific tests may need direct mocking.
+4. **Testing API Routes**: For API routes, use the `auth()`, `currentUser()` and other server functions from the mock.
 
 ## References
 
-- [ADR 0002: Migrate from NextAuth to Clerk](/docs/architecture/decisions/0002-migrate-from-nextauth-to-clerk.md)
-- [ADR 0025: Standardize Clerk Test Utilities](/docs/architecture/decisions/0025-standardize-clerk-test-utilities.md)
-- [Clerk Documentation](https://clerk.com/docs)
+- [Clerk Testing Documentation](https://clerk.com/docs/testing)
 - [Vitest Mocking Guide](https://vitest.dev/guide/mocking.html)
+- [React Testing Library Best Practices](https://testing-library.com/docs/react-testing-library/intro/)

@@ -1,27 +1,47 @@
 import React from 'react'
 import { render as rtlRender, RenderOptions } from '@testing-library/react'
 import { ThemeProvider } from '@/components/theme-provider'
-import { SessionProvider } from 'next-auth/react'
+import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from '@/components/ui/toaster'
 
-// Mock user data for testing
-export const mockUser = {
-  id: 'test-user-id',
-  name: 'Test User',
-  email: 'test@example.com',
-  image: null,
-}
+// Import clerk test utilities
+import { configureMockClerk, ClerkUser } from './clerk-test-utils'
+import { mockUsers } from '../mocks/users'
 
-// Mock session data for testing
-export const mockSession = {
-  user: mockUser,
-  expires: '2025-12-31',
+// Mock user data for testing - using Clerk format
+export const mockUser: ClerkUser = {
+  id: mockUsers.client.clerkId,
+  firstName: 'Test',
+  lastName: 'User',
+  fullName: 'Test User',
+  username: 'testuser',
+  primaryEmailAddress: {
+    emailAddress: 'client@example.com',
+    id: 'email-id',
+    verification: { status: 'verified' }
+  },
+  primaryEmailAddressId: 'email-id',
+  emailAddresses: [{
+    emailAddress: 'client@example.com',
+    id: 'email-id',
+    verification: { status: 'verified' }
+  }],
+  imageUrl: '/images/avatar-placeholder.png',
+  publicMetadata: {
+    roles: mockUsers.client.roles,
+    verified: true,
+    completedOnboarding: true,
+    stripeCustomerId: 'stripe-client-id'
+  },
+  privateMetadata: {},
+  unsafeMetadata: {},
+  reload: jest.fn().mockResolvedValue(undefined)
 }
 
 // Wrapper component that provides all necessary providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SessionProvider session={mockSession}>
+    <ClerkProvider publishableKey="test_key">
       <ThemeProvider
         attribute="class"
         defaultTheme="system"
@@ -31,7 +51,7 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
         {children}
         <Toaster />
       </ThemeProvider>
-    </SessionProvider>
+    </ClerkProvider>
   )
 }
 

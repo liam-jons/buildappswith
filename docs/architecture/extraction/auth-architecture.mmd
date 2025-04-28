@@ -10,8 +10,10 @@ graph TD
     improved_integration_test["improved-integration-test (Authentication Component)"]:::auth
     improved_solution["improved-solution (Authentication Component)"]:::auth
     nextjs_mock_solution["nextjs-mock-solution (Authentication Component)"]:::auth
-    auth["auth (Authentication Component)"]:::auth
+    clerk_hooks["clerk-hooks (Authentication Component)"]:::auth
     clerk_middleware["clerk-middleware (Authentication Component)"]:::auth
+    hooks["hooks (Authentication Component)"]:::auth
+    index["index (Authentication Component)"]:::auth
     factory["factory (Authentication Component)"]:::auth
     rbac["rbac (Authentication Component)"]:::auth
     helpers["helpers (Authentication Component)"]:::auth
@@ -30,9 +32,11 @@ graph TD
     booking_form["booking-form (UI Component (Clerk))"]:::component
     page["page (Page Component (Clerk))"]:::component
     route["route (API Endpoint (Clerk))"]:::api
+    route["route (API Endpoint (Clerk))"]:::api
     availability_exceptions["availability-exceptions (UI Component (Clerk))"]:::component
     availability_management["availability-management (UI Component (Clerk))"]:::component
     weekly_availability["weekly-availability (UI Component (Clerk))"]:::component
+    route["route (API Endpoint (Clerk))"]:::api
     route["route (API Endpoint (Clerk))"]:::api
   end
 
@@ -43,8 +47,6 @@ graph TD
     VerificationToken["VerificationToken (Data Model)"]:::model
   end
 
-  factory_test_solution --> auth
-  improved_integration_test --> auth
   factory --> rbac
   booking_calendar --> booking_form
   availability_management --> weekly_availability
