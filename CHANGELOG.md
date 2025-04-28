@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.139] - 2025-04-28
+
+### Added
+- Created comprehensive authentication flow diagrams in CLERK_AUTHENTICATION_FLOW.mermaid
+- Added detailed sequence diagrams for auth flows in CLERK_AUTH_SEQUENCE_DIAGRAMS.mermaid
+- Created detailed authentication testing guide in CLERK_AUTHENTICATION_TESTING_GUIDE.md
+- Added cleanup recommendation list in CLERK_AUTHENTICATION_CLEANUP_LIST.md
+- Created post-launch enhancement recommendations in CLERK_FUTURE_RECOMMENDATIONS.md
+- Added research on Clerk best practices, webhooks security, and UI customization options
+
+### Changed
+- Updated authentication documentation to reflect current implementation
+- Organized authentication documentation for better maintainability
+
+## [1.0.138] - 2025-04-28
+
+### Added
+- Implemented custom client-side authentication hooks in `/lib/auth/clerk-hooks.ts`
+- Added role-based hooks: `useHasRole`, `useIsAdmin`, `useIsBuilder`, `useIsClient`
+- Added enhanced authentication hooks: `useAuth`, `useUser`, `useSignOut`, `useAuthStatus`
+- Created comprehensive hook documentation in CLERK_HOOKS_IMPLEMENTATION.md
+- Updated site-header.tsx to use custom hooks for better role-based access control
+
+### Changed
+- Updated `/lib/auth/hooks.ts` to export custom hooks from `clerk-hooks.ts`
+- Standardized authentication approach across client-side components
+- Improved type safety with the `ExtendedUser` interface
+- Simplified user transformation logic by centralizing in hooks
+
+## [1.0.137] - 2025-04-28
+
+### Fixed
+- Updated test utilities to use Clerk authentication instead of NextAuth
+- Fixed test-utils.tsx and vitest-utils.tsx to use ClerkProvider instead of SessionProvider
+- Updated mock user data to match Clerk's user format for consistent testing
+- Created comprehensive CLERK_TEST_UTILITIES.md documentation for authentication testing
+- Ensured consistent testing approach across Jest and Vitest environments
+
+## [1.0.136] - 2025-04-28
+
+### Changed
+- Completed authentication cleanup by removing legacy NextAuth code
+- Updated `/lib/auth/index.ts` to directly export Clerk functionality
+- Updated `/lib/auth/hooks.ts` to directly export Clerk hooks
+- Enhanced warning in `/lib/auth/auth.ts` with clear removal timeline
+- Created comprehensive authentication cleanup documentation
+
 ## [1.0.135] - 2025-04-28
 
 ### Added
@@ -111,46 +158,5 @@ All notable changes to this project will be documented in this file.
 - Added scheduling settings management with timezone support
 - Added a dedicated availability management page in profile settings
 - Updated documentation with comprehensive coverage of the new system
-
-## [1.0.102] - 2025-04-26
-
-### Added
-- Implemented Structurizr for architecture documentation using the C4 model
-- Created comprehensive C4 model with System Context and Container diagrams
-- Added detailed ARCHITECTURE.md to document the architectural approach
-- Created Architecture Decision Records (ADRs) for structurizr implementation and Clerk migration
-- Added documentation on C4 model principles and Structurizr usage
-- Created ARCHITECTURE_CHANGELOG.md for tracking architecture-specific changes
-- Implemented local Structurizr Lite setup with Docker Compose
-
-## [1.0.101] - 2025-04-26
-
-### Fixed
-- Resolved "mockImplementationOnce is not a function" TypeScript errors in middleware tests
-- Implemented proper typing with Vitest's built-in MockInstance type for Clerk authentication mocks
-- Added `configureMockAuth` helper function to simplify test setup and properly handle mock typing
-- Updated all middleware tests to use the new approach
-- Added comprehensive documentation in `docs/middleware-mock-investigation/COMPREHENSIVE_SOLUTION.md`
-- Marked middleware testing issues as resolved in MIDDLEWARE_TESTING_BACKLOG.md
-
-## [1.0.100] - 2025-04-26
-
-### Fixed
-- Fixed "Cannot read properties of undefined (reading 'length')" error in Datadog dashboard creation script
-- Switched from using Datadog API model classes to plain JavaScript objects for dashboard definition
-- Matched widget structure exactly with exported Datadog UI dashboard JSON format
-- Enhanced dashboard with component test performance and detailed note sections
-- Updated metric names to use proper "buildappswith" prefix for all metrics
-- Added comprehensive test metrics organized by logical sections
-- Improved error handling and debugging output in dashboard creation script
-
-### Fixed
-- Fixed widget structure in Datadog dashboard creation to match exported dashboard JSON
-- Implemented exact structure from successful Datadog UI export to resolve type validation errors
-- Added proper widget IDs to align with Datadog API expectations
-- Restructured request format for query_value and timeseries widgets
-- Fixed group widgets to include proper widget array structure
-- Simplified dashboard to use minimal set of widgets for initial validation
-- Updated script version number to 1.0.4 for better tracking
 
 ## See [CHANGELOG_ARCHIVE.md](./CHANGELOG_ARCHIVE.md) for older entries

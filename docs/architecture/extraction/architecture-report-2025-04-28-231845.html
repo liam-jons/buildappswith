@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buildappswith Architecture Report</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2, h3, h4 {
+      color: #0066cc;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    code {
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #222;
+        color: #eee;
+      }
+      h1, h2, h3, h4 {
+        color: #66b3ff;
+      }
+      table {
+        border-color: #444;
+      }
+      th {
+        background-color: #333;
+      }
+      td {
+        border-color: #444;
+      }
+      tr:nth-child(even) {
+        background-color: #2a2a2a;
+      }
+      code {
+        background-color: #333;
+      }
+      a {
+        color: #66b3ff;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Buildappswith Architecture Report</h1><p><em>Generated on: 2025-04-28</em></p><h2>Architecture Overview</h2><h3>System Containers</h3><p>The architecture is divided into the following containers based on PRD 2.1:</p><table>
+<tr><td>Container</td><td>Description</td><td>Technology</td></tr>
+<tr><td>-----------</td><td>-------------</td><td>------------</td></tr>
+<tr><th>WebApplication</th><th>Next.js web application serving the Buildappswith platform</th><th>Next.js 15.3.1 + React 19.1.0 + TypeScript</th></tr>
+<tr><td>Database</td><td>Stores user data, builder profiles, session information, and learning content</td><td>PostgreSQL + Prisma ORM</td></tr>
+<tr><td>AuthenticationService</td><td>Handles user authentication and authorization</td><td>Clerk Authentication</td></tr>
+<tr><td>PaymentService</td><td>Processes payments for sessions</td><td>Stripe API</td></tr>
+<tr><td>BookingSystem</td><td>Manages session scheduling and availability</td><td>Custom calendar integration</td></tr>
+</table><p>Total Components: <strong>241</strong></p><p>Component Types:
+<ul><li>Utility: 47</li><li>Middleware: 7</li><li>Page Component: 42</li><li>UI Component: 68</li><li>Context Provider: 11</li><li>Data Model: 19</li><li>Authentication Component: 20</li><li>Service: 7</li><li>API Endpoint: 20</li></ul><p>Technical Debt Components: <strong>4</strong> (2% of total)
+Legacy Components: <strong>3</strong> (1% of total)</p><h3>Components by Container</h3><h4>WebApplication</h4><p>Contains 184 components.</p><p>Representative components:</p><table>
+<tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
+<tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
+<tr><th>instrumentation-client</th><th>Utility</th></tr>
+<tr><td>instrumentation</td><td>Utility</td></tr>
+<tr><td>middleware</td><td>Middleware</td></tr>
+<tr><td>next-env.d</td><td>Utility</td></tr>
+<tr><td>sentry.edge.config</td><td>Utility</td></tr>
+</table><p><em>... and 179 more components</em></p><h4>Database</h4><p>Contains 19 components.</p><p>Representative components:</p><table>
+<tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
+<tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
+<tr><th>schema</th><th>Data Model</th></tr>
+<tr><td>User</td><td>Data Model</td></tr>
+<tr><td>Account</td><td>Data Model</td></tr>
+<tr><td>Session</td><td>Data Model</td></tr>
+<tr><td>VerificationToken</td><td>Data Model</td></tr>
+</table><p><em>... and 14 more components</em></p><h4>AuthenticationService</h4><p>Contains 24 components.</p><p>Representative components:</p><table>
+<tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
+<tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
+<tr><th>architecture-utils</th><th>Authentication Component</th><th>✓</th></tr>
+<tr><td>extract-auth-architecture</td><td>Authentication Component</td><td>✓</td></tr>
+<tr><td>auth-error-boundary</td><td>UI Component</td></tr>
+<tr><td>clerk-auth-form</td><td>UI Component</td></tr>
+<tr><td>loading-state</td><td>UI Component</td></tr>
+</table><p><em>... and 19 more components</em></p><h4>PaymentService</h4><p>Contains 9 components.</p><p>Representative components:</p><table>
+<tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
+<tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
+<tr><th>payment-status-indicator</th><th>Context Provider</th></tr>
+<tr><td>stripe-client</td><td>Service</td></tr>
+<tr><td>stripe-server</td><td>Utility</td></tr>
+<tr><td>page</td><td>Page Component</td></tr>
+<tr><td>page</td><td>Page Component</td></tr>
+</table><p><em>... and 4 more components</em></p><h4>BookingSystem</h4><p>Contains 5 components.</p><p>Representative components:</p><table>
+<tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
+<tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
+<tr><th>weekly-schedule</th><th>UI Component</th></tr>
+<tr><td>booking-calendar</td><td>UI Component</td></tr>
+<tr><td>booking-form</td><td>UI Component</td></tr>
+<tr><td>route</td><td>API Endpoint</td></tr>
+<tr><td>route</td><td>API Endpoint</td></tr>
+</table><h3>Technical Debt Components</h3><table>
+<tr><td>Component</td><td>Type</td><td>Container</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>-----------</td><td>------</td></tr>
+<tr><th>architecture-utils</th><th>Authentication Component</th><th>AuthenticationService</th><th>/Users/liamj/Documents/Development/buildappswith/scripts/architecture-utils.ts</th></tr>
+<tr><td>page</td><td>Page Component</td><td>WebApplication</td><td>/Users/liamj/Documents/Development/buildappswith/app/onboarding/page.tsx</td></tr>
+<tr><td>page</td><td>Page Component</td><td>WebApplication</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile-settings/page.tsx</td></tr>
+<tr><td>builder-image</td><td>UI Component</td><td>WebApplication</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-image.tsx</td></tr>
+</table><h3>Legacy Components</h3><table>
+<tr><td>Component</td><td>Type</td><td>Container</td><td>Path</td></tr>
+<tr><td>-----------</td><td>------</td><td>-----------</td><td>------</td></tr>
+<tr><th>extract-auth-architecture</th><th>Authentication Component</th><th>AuthenticationService</th><th>/Users/liamj/Documents/Development/buildappswith/scripts/extract-auth-architecture.ts</th></tr>
+<tr><td>generate-architecture-report</td><td>Utility</td><td>WebApplication</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/generate-architecture-report.ts</td></tr>
+<tr><td>types</td><td>Authentication Component</td><td>AuthenticationService</td><td>/Users/liamj/Documents/Development/buildappswith/lib/auth/types.ts</td></tr>
+</table><h2>Authentication Architecture</h2><p>Authentication Components: <strong>38</strong></p><h3>Authentication Containers</h3><table>
+<tr><td>Container</td><td>Description</td><td>Technology</td></tr>
+<tr><td>-----------</td><td>-------------</td><td>------------</td></tr>
+<tr><th>AuthenticationService</th><th>Handles user authentication and authorization</th><th>Clerk Authentication</th></tr>
+<tr><td>WebApplication</td><td>Next.js web application serving the Buildappswith platform</td><td>Next.js 15.3.1 + React 19.1.0 + TypeScript</td></tr>
+<tr><td>Database</td><td>Stores user data, builder profiles, session information, and learning content</td><td>PostgreSQL + Prisma ORM</td></tr>
+</table><h3>Authentication Components by Container</h3><h4>AuthenticationService</h4><table>
+<tr><td>Component</td><td>Type</td><td>Description</td></tr>
+<tr><td>-----------</td><td>------</td><td>-------------</td></tr>
+</table>
+| architecture-utils | Authentication Component | * Architecture Extraction Utilities for Buildappswith
+ * Version: 1.0.124
+ * 
+ * This file contains utility functions for architecture extraction and analysis. |
+| extract-auth-architecture | Authentication Component | * Authentication Architecture Extraction Script for Buildappswith
+ * Version: 1.0.121
+ * 
+ * This script focuses specifically on extracting the authentication architecture,
+ * particularly the Clerk implementation that has replaced NextAuth.
+ * 
+ * Important: This version uses direct TypeScript analysis without structurizr-typescript |
+| nextjs | Authentication Component | * Mock implementation for @clerk/nextjs
+ * Version: 1.0.101
+ * 
+ * This centralized mock definition provides consistent behavior across tests
+ * and avoids the hoisting issues that can occur with inline vi.mock() calls.
+ * 
+ * Uses Vitest's MockInstance type for proper TypeScript support of method chaining. |
+<table>
+<tr><td>clerk-auth-form</td><td>UI Component (Clerk)</td><td>* Clerk authentication form component with theme support</td></tr>
+</table>
+| loading-state | UI Component (Clerk) | * Component to handle authentication loading states
+ * Prevents blank pages by showing a loading state while Clerk auth is initializing |
+<table>
+<tr><td>clerk-provider</td><td>Context Provider (Clerk)</td><td>* ClerkProvider wrapper component that supports theme switching</td></tr>
+</table>
+| factory-test-solution | Authentication Component | * Modified Middleware Factory Test
+ * Version: 1.0.84
+ *
+ * This version uses the improved mock implementation to avoid TypeScript errors |
+| improved-integration-test | Authentication Component | * Improved Middleware Integration Test Example
+ * Using Vitest's built-in MockInstance type for proper TypeScript support |
+| improved-solution | Authentication Component | * Enhanced solution for Clerk authentication mocking
+ * Using Vitest's built-in MockInstance type |
+| nextjs-mock-solution | Authentication Component | * Improved mock implementation for @clerk/nextjs
+ * Version: 1.0.84
+ * 
+ * This solution solves the "mockImplementationOnce is not a function" TypeScript error
+ * by ensuring the mock functions are properly typed. |
+<table>
+<tr><td>clerk-middleware</td><td>Authentication Component</td><td>* Public routes that don't require authentication</td></tr>
+<tr><td>hooks</td><td>Authentication Component</td><td>N/A</td></tr>
+<tr><td>index</td><td>Authentication Component</td><td>N/A</td></tr>
+</table>
+| factory | Authentication Component | * Middleware Factory for Buildappswith Platform
+ * Version: 1.0.80
+ * 
+ * Creates middleware composition based on configuration
+ * Allows easy addition and removal of middleware components
+ * Validates configuration before creating middleware |
+| rbac | Authentication Component | * Role-Based Access Control Middleware
+ * Version: 1.0.78
+ * 
+ * Provides enhanced RBAC functionality for middleware
+ * with flexible permission models and policy enforcement. |
+<table>
+<tr><td>helpers</td><td>Authentication Component</td><td>* Extended user type with combined Clerk and database data</td></tr>
+</table>
+| route | API Endpoint (Clerk) | * Clerk Webhook Handler
+ * 
+ * This API route handles webhook events from Clerk. It synchronizes user data
+ * between Clerk and our database, ensuring user profiles are created and updated
+ * appropriately based on authentication events.
+ * 
+ * Supported events:
+ * - user.created: Creates a new user record in our database
+ * - user.updated: Updates user information in our database
+ * 
+ * @version 1.0.64 |</p><h4>WebApplication</h4><table>
+<tr><td>Component</td><td>Type</td><td>Description</td></tr>
+<tr><td>-----------</td><td>------</td><td>-------------</td></tr>
+<tr><th>site-header</th><th>UI Component (Clerk)</th><th>N/A</th></tr>
+<tr><td>user-auth-form</td><td>UI Component (Clerk)</td><td>* User authentication form component migrated to use Clerk directly</td></tr>
+<tr><td>page</td><td>Page Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>page</td><td>Page Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>providers</td><td>Context Provider (Clerk)</td><td>* Combined providers wrapper for the application</td></tr>
+<tr><td>page</td><td>Page Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>page</td><td>Page Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>booking-calendar</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>booking-form</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>page</td><td>Page Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>route</td><td>API Endpoint (Clerk)</td><td>* Helper function to handle service errors with appropriate responses</td></tr>
+</table>
+| route | API Endpoint (Clerk) | * API route to create a Stripe checkout session for a booking
+ * 
+ * @param request - The incoming request object
+ * @param auth - Auth object provided by Clerk's withAuth middleware
+ * @returns NextResponse with session data or error |
+<table>
+<tr><td>availability-exceptions</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>availability-management</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>weekly-availability</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
+<tr><td>route</td><td>API Endpoint (Clerk)</td><td>N/A</td></tr>
+</table>
+| route | API Endpoint (Clerk) | * GET handler for retrieving a Stripe session with associated booking
+ * 
+ * Uses Next.js 15 promise-based params and Clerk authentication
+ * to ensure only authorized users can access the session details
+ * 
+ * @param request - The incoming request object
+ * @param context - Context containing the session ID parameter
+ * @param auth - Authentication object from Clerk
+ * @returns NextResponse with session details or error |</p><h4>Database</h4><table>
+<tr><td>Component</td><td>Type</td><td>Description</td></tr>
+<tr><td>-----------</td><td>------</td><td>-------------</td></tr>
+<tr><th>User</th><th>Data Model</th><th>User data model with authentication fields</th></tr>
+<tr><td>Account</td><td>Data Model</td><td>Account data model for authentication providers</td></tr>
+<tr><td>Session</td><td>Data Model</td><td>Session data model for authentication state</td></tr>
+<tr><td>VerificationToken</td><td>Data Model</td><td>Verification token model for email verification</td></tr>
+</table><h3>Authentication Flows</h3><table>
+<tr><td>Flow</td><td>Description</td></tr>
+<tr><td>------</td><td>-------------</td></tr>
+<tr><th>Sign-In Flow</th><th>Process for authenticating existing users</th></tr>
+<tr><td>Sign-Up Flow</td><td>Process for registering new users</td></tr>
+<tr><td>Sign-Out Flow</td><td>Process for signing out users</td></tr>
+<tr><td>API Authentication</td><td>Process for authenticating API requests</td></tr>
+<tr><td>Role-Based Access Control</td><td>Process for enforcing role-based permissions</td></tr>
+</table><h3>Clerk Authentication Migration</h3><p>The authentication system has been successfully migrated from NextAuth.js to Clerk, providing improved user management capabilities, enhanced security features, and better multi-tenant support.</p><p>The migration includes:
+<ul><li>Updated middleware for authentication and authorization</li><li>Webhook handlers for Clerk events</li><li>Role-based access control using Clerk metadata</li><li>Database synchronization for user data</li></ul><h2>Viewing the Complete Architecture</h2><h3>Mermaid Diagrams</h3><p>The extraction process has generated Mermaid diagrams that can be viewed with any Mermaid renderer:</p><ul><li><a href="./architecture-diagram.mmd">General Architecture Diagram</a></li><li><a href="./auth-architecture.mmd">Authentication Architecture Diagram</a></li><li><a href="./technical-debt-diagram.mmd">Technical Debt Diagram</a></li></ul><h3>Authentication Flow Diagrams</h3><p>Individual authentication flows have been visualized as separate diagrams:</p><ul><li><a href="./auth-flow-sign-in-flow.mmd">Sign-In Flow</a></li><li><a href="./auth-flow-sign-up-flow.mmd">Sign-Up Flow</a></li><li><a href="./auth-flow-sign-out-flow.mmd">Sign-Out Flow</a></li><li><a href="./auth-flow-api-authentication.mmd">API Authentication</a></li><li><a href="./auth-flow-role-based-access-control.mmd">Role-Based Access Control</a></li></ul><h3>Structurizr Visualization</h3><p>To view the complete architecture model with interactive diagrams:</p><p>1. Navigate to the project root directory
+2. Run <code>cd docs/architecture/structurizr && docker-compose up -d</code>
+3. Open http://localhost:8080 in your browser</p><p>The architecture model includes:
+<ul><li>System Context diagram</li><li>Container diagram</li><li>Component diagrams</li><li>Technical debt and legacy code visualization</li></ul><h2>Alignment with PRD 2.1</h2><p>This architecture extraction is based on PRD 2.1, which organizes the system into the following core containers:</p><p>1. <strong>WebApplication</strong>: Next.js web application serving the Buildappswith platform
+2. <strong>Database</strong>: Stores user data, builder profiles, session information, and learning content
+3. <strong>AuthenticationService</strong>: Handles user authentication and authorization with Clerk
+4. <strong>PaymentService</strong>: Processes payments for sessions using Stripe
+5. <strong>BookingSystem</strong>: Manages session scheduling and availability</p><p>The MVP focuses on establishing Liam Jons' profile as the foundation for marketplace growth and community building.</p><h3>Online Mermaid Viewing</h3><p>You can also view the generated Mermaid diagrams using online tools:</p><p>1. Copy the content of any .mmd file
+2. Paste it into https://mermaid.live
+3. View the rendered diagram</p>
+</body>
+</html>

@@ -53,14 +53,10 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
  * 
  * This solution solves the "mockImplementationOnce is not a function" TypeScript error
  * by ensuring the mock functions are properly typed. |
-| auth | Authentication Component | * @deprecated This file is deprecated and will be removed in a future version.
- * The original NextAuth implementation has been archived in /archived/nextauth-legacy/lib/auth/auth.ts
- * 
- * Please use the Clerk authentication system directly:
- * - For client-side auth: import { useAuth, useUser } from "@clerk/nextjs";
- * - For server-side auth: import { currentUser } from "@clerk/nextjs/server";
- * - For middleware: import { authMiddleware } from "@clerk/nextjs"; |
+| clerk-hooks | Authentication Component | * Extended user object with our custom fields |
 | clerk-middleware | Authentication Component | * Public routes that don't require authentication |
+| hooks | Authentication Component | N/A |
+| index | Authentication Component | N/A |
 | factory | Authentication Component | * Middleware Factory for Buildappswith Platform
  * Version: 1.0.80
  * 
@@ -100,10 +96,24 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
 | booking-form | UI Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
 | route | API Endpoint (Clerk) | * Helper function to handle service errors with appropriate responses |
+| route | API Endpoint (Clerk) | * API route to create a Stripe checkout session for a booking
+ * 
+ * @param request - The incoming request object
+ * @param auth - Auth object provided by Clerk's withAuth middleware
+ * @returns NextResponse with session data or error |
 | availability-exceptions | UI Component (Clerk) | N/A |
 | availability-management | UI Component (Clerk) | N/A |
 | weekly-availability | UI Component (Clerk) | N/A |
 | route | API Endpoint (Clerk) | N/A |
+| route | API Endpoint (Clerk) | * GET handler for retrieving a Stripe session with associated booking
+ * 
+ * Uses Next.js 15 promise-based params and Clerk authentication
+ * to ensure only authorized users can access the session details
+ * 
+ * @param request - The incoming request object
+ * @param context - Context containing the session ID parameter
+ * @param auth - Authentication object from Clerk
+ * @returns NextResponse with session details or error |
 
 ### Database
 
@@ -203,30 +213,22 @@ Used by:
 
 ### factory-test-solution
 
-Dependencies:
-- auth
-
 ### improved-integration-test
-
-Dependencies:
-- auth
 
 ### improved-solution
 
 ### nextjs-mock-solution
 
-### auth
+### clerk-hooks
 
 Used by:
-- factory-test-solution
-- improved-integration-test
-- clerk-middleware
-- factory
-- rbac
-- page
-- helpers
+- hooks
 
 ### clerk-middleware
+
+### hooks
+
+### index
 
 ### factory
 
@@ -260,6 +262,8 @@ Used by:
 
 ### route
 
+### route
+
 ### availability-exceptions
 
 Used by:
@@ -274,6 +278,8 @@ Dependencies:
 
 Used by:
 - availability-management
+
+### route
 
 ### route
 
