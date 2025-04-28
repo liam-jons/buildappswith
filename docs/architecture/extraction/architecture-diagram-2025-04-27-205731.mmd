@@ -1,0 +1,383 @@
+graph TD
+  subgraph WebApplication
+    instrumentation_client["instrumentation-client (Utility)"]
+    instrumentation["instrumentation (Utility)"]
+    middleware["middleware (Middleware)"]
+    next_env_d["next-env.d (Utility)"]
+    sentry_edge_config["sentry.edge.config (Utility)"]
+    sentry_server_config["sentry.server.config (Utility)"]
+    tailwind_config["tailwind.config (Utility)"]
+    vitest_config["vitest.config (Utility)"]
+    vitest_setup["vitest.setup (Utility)"]
+    global_error["global-error (Utility)"]
+    layout["layout (Page Component)"]
+    error_boundary["error-boundary (UI Component)"]
+    search_params_fallback["search-params-fallback (UI Component)"]
+    site_banner["site-banner (UI Component)"]
+    site_footer["site-footer (UI Component)"]
+    site_header["site-header (UI Component)"]
+    suspense_user_auth_form["suspense-user-auth-form (UI Component)"]
+    theme_provider["theme-provider (Context Provider)"]
+    user_auth_form["user-auth-form (UI Component)"]
+    use_on_click_outside["use-on-click-outside (Utility)"]
+    auth_utils["auth-utils (Utility)"]
+    csrf_edge["csrf-edge (Utility)"]
+    csrf["csrf (Utility)"]
+    db["db (Utility)"]
+    json_utilities["json-utilities (Utility)"]
+    logger["logger (Utility)"]
+    prisma_extensions["prisma-extensions (Utility)"]
+    prisma_types["prisma-types (Utility)"]
+    rate_limit["rate-limit (Utility)"]
+    session_types["session-types (Utility)"]
+    utils["utils (Utility)"]
+    create_unused_features_analyzer["create-unused-features-analyzer (Utility)"]
+    extract_architecture["extract-architecture (Utility)"]
+    generate_architecture_report["generate-architecture-report (Utility)"]:::legacy
+    vitest_d["vitest.d (Utility)"]
+    layout["layout (Page Component)"]
+    page["page (Page Component)"]
+    layout["layout (Page Component)"]
+    route_types["route-types (Utility)"]
+    page["page (Page Component)"]
+    layout["layout (Page Component)"]
+    page["page (Page Component)"]:::technicalDebt
+    layout["layout (Page Component)"]
+    page["page (Page Component)"]:::technicalDebt
+    page["page (Page Component)"]
+    admin_nav["admin-nav (UI Component)"]
+    session_type_form["session-type-form (UI Component)"]
+    faq_accordion["faq-accordion (UI Component)"]
+    contact_form["contact-form (UI Component)"]
+    animated_heading_v2["animated-heading-v2 (UI Component)"]
+    animated_heading["animated-heading (UI Component)"]
+    inline_animated_heading["inline-animated-heading (UI Component)"]
+    two_line_animated_heading["two-line-animated-heading (UI Component)"]
+    ai_capabilities_marquee["ai-capabilities-marquee (UI Component)"]
+    animated_beam_section["animated-beam-section (UI Component)"]
+    animated_circular_progress_bar_demo["animated-circular-progress-bar-demo (UI Component)"]
+    client_section["client-section (UI Component)"]
+    cta_section["cta-section (UI Component)"]
+    final_cta_section["final-cta-section (UI Component)"]
+    hero_section["hero-section (UI Component)"]
+    hero_visualization["hero-visualization (UI Component)"]
+    key_values_section["key-values-section (UI Component)"]
+    pricing_section["pricing-section (UI Component)"]
+    testimonials_section["testimonials-section (UI Component)"]
+    animated_beam["animated-beam (UI Component)"]
+    animated_circular_progress_bar["animated-circular-progress-bar (UI Component)"]
+    aurora_text["aurora-text (UI Component)"]
+    border_beam["border-beam (UI Component)"]
+    marquee["marquee (UI Component)"]
+    particles["particles (UI Component)"]
+    sphere_mask["sphere-mask (UI Component)"]
+    text_shimmer["text-shimmer (UI Component)"]
+    word_rotate["word-rotate (UI Component)"]
+    builder_card["builder-card (UI Component)"]
+    builder_image["builder-image (UI Component)"]:::technicalDebt
+    featured_builder_card["featured-builder-card (UI Component)"]
+    profile_edit_page["profile-edit-page (UI Component)"]
+    add_project_form["add-project-form (UI Component)"]
+    app_showcase["app-showcase (UI Component)"]
+    builder_profile_client_wrapper["builder-profile-client-wrapper (UI Component)"]
+    builder_profile_client["builder-profile-client (UI Component)"]
+    builder_profile["builder-profile (UI Component)"]
+    edit_profile_form["edit-profile-form (UI Component)"]
+    portfolio_gallery["portfolio-gallery (UI Component)"]
+    portfolio_showcase["portfolio-showcase (UI Component)"]
+    profile_interactive_elements["profile-interactive-elements (UI Component)"]
+    role_badges["role-badges (Context Provider)"]
+    success_metrics_dashboard["success-metrics-dashboard (Context Provider)"]
+    validation_tier_badge["validation-tier-badge (Context Provider)"]
+    clerk_provider["clerk-provider (Context Provider)"]
+    providers["providers (Context Provider)"]
+    accordion["accordion (UI Component)"]
+    alert["alert (UI Component)"]
+    avatar["avatar (UI Component)"]
+    badge["badge (UI Component)"]
+    button["button (UI Component)"]
+    card["card (UI Component)"]
+    checkbox["checkbox (UI Component)"]
+    collapsible["collapsible (UI Component)"]
+    dialog["dialog (UI Component)"]
+    dropdown_menu["dropdown-menu (UI Component)"]
+    form["form (Context Provider)"]
+    input["input (UI Component)"]
+    label["label (UI Component)"]
+    loading_spinner["loading-spinner (UI Component)"]
+    popover["popover (UI Component)"]
+    radio_group["radio-group (Context Provider)"]
+    select["select (UI Component)"]
+    separator["separator (UI Component)"]
+    sheet["sheet (UI Component)"]
+    skeleton["skeleton (UI Component)"]
+    sonner["sonner (UI Component)"]
+    switch["switch (UI Component)"]
+    table["table (UI Component)"]
+    tabs["tabs (UI Component)"]
+    textarea["textarea (UI Component)"]
+    tooltip["tooltip (Context Provider)"]
+    mock_test["mock-test (Middleware)"]
+    typed_mock_test["typed-mock-test (Middleware)"]
+    builders["builders (Utility)"]
+    scheduling["scheduling (Service)"]
+    profile["profile (Utility)"]
+    profile_context["profile-context (Utility)"]
+    index["index (Utility)"]
+    app_service["app-service (Service)"]
+    builders["builders (Utility)"]
+    data_service["data-service (Service)"]
+    types["types (Utility)"]
+    api_protection["api-protection (Middleware)"]
+    error_handling["error-handling (Middleware)"]
+    index["index (Middleware)"]
+    performance["performance (Middleware)"]
+    profiles["profiles (Utility)"]
+    mock_data["mock-data (Utility)"]
+    types["types (Utility)"]
+    utils["utils (Utility)"]
+    builder_profile_service["builder-profile-service (Service)"]
+    builder_service["builder-service (Service)"]
+    builder["builder (Utility)"]
+    profile_form_helpers["profile-form-helpers (Utility)"]
+    create_dummy_profiles["create-dummy-profiles (Utility)"]
+    create_profiles["create-profiles (Utility)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    layout["layout (Page Component)"]
+    page["page (Page Component)"]
+    layout["layout (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    layout["layout (Page Component)"]
+    page["page (Page Component)"]
+    layout["layout (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    client["client (Utility)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    availability_manager["availability-manager (UI Component)"]
+    session_type_editor["session-type-editor (UI Component)"]
+    timezone_selector["timezone-selector (UI Component)"]
+    marketplace_service["marketplace-service (Utility)"]
+    scheduling_service["scheduling-service (Utility)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    BuilderProfileClient["BuilderProfileClient (Service)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    page["page (Page Component)"]
+    availability_exceptions["availability-exceptions (UI Component)"]
+    availability_management["availability-management (UI Component)"]
+    weekly_availability["weekly-availability (UI Component)"]
+    auth_route["auth.route (Utility)"]
+    create_liam_profile_route["create-liam-profile.route (Utility)"]
+    login_route["login.route (Utility)"]
+    seed_users_route["seed-users.route (Utility)"]
+    sentry_example_api_route["sentry-example-api.route (Utility)"]
+    admin_builders_page["admin-builders-page (Service)"]
+    sentry_example_page["sentry-example-page (Service)"]
+    metrics_display["metrics-display (UI Component)"]
+    portfolio_gallery["portfolio-gallery (UI Component)"]
+    validation_tier["validation-tier (Context Provider)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+    route["route (API Endpoint)"]
+  end
+
+  subgraph Database
+    schema["schema (Data Model)"]
+    User["User (Data Model)"]
+    Account["Account (Data Model)"]
+    Session["Session (Data Model)"]
+    VerificationToken["VerificationToken (Data Model)"]
+    BuilderProfile["BuilderProfile (Data Model)"]
+    ClientProfile["ClientProfile (Data Model)"]
+    App["App (Data Model)"]
+    Skill["Skill (Data Model)"]
+    BuilderSkill["BuilderSkill (Data Model)"]
+    SkillResource["SkillResource (Data Model)"]
+    Project["Project (Data Model)"]
+    ProjectMilestone["ProjectMilestone (Data Model)"]
+    Booking["Booking (Data Model)"]
+    SessionType["SessionType (Data Model)"]
+    AICapability["AICapability (Data Model)"]
+    CapabilityExample["CapabilityExample (Data Model)"]
+    CapabilityLimitation["CapabilityLimitation (Data Model)"]
+    CapabilityRequirement["CapabilityRequirement (Data Model)"]
+  end
+
+  subgraph AuthenticationService
+    architecture_utils["architecture-utils (Authentication Component)"]:::technicalDebt
+    extract_auth_architecture["extract-auth-architecture (Authentication Component)"]:::legacy
+    auth_error_boundary["auth-error-boundary (UI Component)"]
+    auth_provider["auth-provider (Context Provider)"]
+    clerk_auth_form["clerk-auth-form (UI Component)"]
+    loading_state["loading-state (UI Component)"]
+    login_button["login-button (UI Component)"]
+    protected_route["protected-route (UI Component)"]
+    user_profile["user-profile (UI Component)"]
+    factory_test_solution["factory-test-solution (Authentication Component)"]
+    improved_integration_test["improved-integration-test (Authentication Component)"]
+    improved_solution["improved-solution (Authentication Component)"]
+    improved_test_utils["improved-test-utils (Authentication Component)"]
+    nextjs_mock_solution["nextjs-mock-solution (Authentication Component)"]
+    auth_config["auth-config (Authentication Component)"]
+    auth_utils["auth-utils (Authentication Component)"]
+    auth["auth (Authentication Component)"]:::technicalDebt
+    clerk_hooks["clerk-hooks (Authentication Component)"]
+    clerk_middleware["clerk-middleware (Authentication Component)"]
+    data_access["data-access (Authentication Component)"]
+    hooks["hooks (Authentication Component)"]
+    index["index (Authentication Component)"]:::legacy
+    types["types (Authentication Component)"]:::legacy
+    config["config (Authentication Component)"]
+    factory["factory (Authentication Component)"]
+    logging["logging (Authentication Component)"]
+    rbac["rbac (Authentication Component)"]
+    test_utils["test-utils (Authentication Component)"]
+    validation["validation (Authentication Component)"]
+    page["page (Page Component)"]
+    protected_route["protected-route (UI Component)"]:::legacy
+    admin_builders_page["admin-builders-page (Authentication Component)"]
+    api_auth["api-auth (Authentication Component)"]
+    helpers["helpers (Authentication Component)"]
+    auth_provider["auth-provider (Authentication Component)"]
+    route["route (API Endpoint)"]
+    test_auth_page["test-auth-page (Authentication Component)"]
+  end
+
+  subgraph PaymentService
+    payment_status_indicator["payment-status-indicator (Context Provider)"]
+    payment_status_page["payment-status-page (UI Component)"]
+    index["index (Service)"]
+    stripe_client["stripe-client (Service)"]
+    stripe_server["stripe-server (Utility)"]
+    page["page (Page Component)"]
+    page["page (Page Component)"]
+    payment_success_content["payment-success-content (Utility)"]
+    route["route (API Endpoint)"]:::technicalDebt
+    route["route (API Endpoint)"]:::technicalDebt
+    route["route (API Endpoint)"]
+  end
+
+  subgraph BookingSystem
+    booking_overview["booking-overview (UI Component)"]
+    weekly_schedule["weekly-schedule (UI Component)"]
+    booking_form["booking-form (UI Component)"]
+    builder_calendar["builder-calendar (UI Component)"]
+    route["route (API Endpoint)"]
+    client["client (Utility)"]
+    page["page (Page Component)"]
+    route["route (API Endpoint)"]
+    availability_manager_client["availability-manager-client (Utility)"]
+    client["client (Utility)"]
+    page["page (Page Component)"]
+  end
+
+  middleware --> index
+  json_utilities --> prisma_types
+  prisma_extensions --> prisma_types
+  session_types --> types
+  create_unused_features_analyzer --> architecture_utils
+  extract_architecture --> architecture_utils
+  extract_auth_architecture --> architecture_utils
+  hero_section --> animated_circular_progress_bar_demo
+  payment_status_page --> payment_status_indicator
+  add_project_form --> portfolio_showcase
+  builder_profile --> validation_tier_badge
+  builder_profile --> portfolio_showcase
+  builder_profile --> app_showcase
+  builder_profile --> success_metrics_dashboard
+  builder_profile --> role_badges
+  edit_profile_form --> builder_profile
+  portfolio_gallery --> validation_tier_badge
+  portfolio_gallery --> portfolio_showcase
+  success_metrics_dashboard --> validation_tier_badge
+  clerk_provider --> loading_state
+  providers --> clerk_provider
+  providers --> auth_error_boundary
+  factory_test_solution --> factory
+  factory_test_solution --> config
+  factory_test_solution --> api_protection
+  factory_test_solution --> test_utils
+  improved_integration_test --> index
+  improved_integration_test --> test_utils
+  builders --> builder
+  scheduling --> types
+  scheduling --> mock_data
+  clerk_hooks --> types
+  index --> auth
+  index --> stripe_server
+  profile --> session_types
+  data_service --> types
+  api_protection --> csrf
+  api_protection --> rate_limit
+  api_protection --> config
+  factory --> config
+  factory --> api_protection
+  factory --> validation
+  factory --> performance
+  factory --> error_handling
+  factory --> logging
+  factory --> rbac
+  rbac --> error_handling
+  rbac --> logging
+  validation --> config
+  mock_data --> types
+  utils --> types
+  create_profiles --> db
+  create_profiles --> types
+  page --> client
+  page --> BuilderProfileClient
+  page --> payment_success_content
+  availability_manager --> weekly_schedule
+  availability_manager --> session_type_editor
+  availability_manager --> timezone_selector
+  builder_calendar --> timezone_selector
+  api_auth --> helpers
+  scheduling_service --> types
+  availability_management --> weekly_availability
+  availability_management --> availability_exceptions
+
+  %% Container relationships
+  WebApplication --> Database
+  WebApplication --> AuthenticationService
+  WebApplication --> PaymentService
+  WebApplication --> BookingSystem
+  classDef technicalDebt fill:#ff9800,color:white;
+  classDef legacy fill:#f44336,color:white;
