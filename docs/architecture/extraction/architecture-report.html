@@ -82,9 +82,9 @@
 <tr><td>AuthenticationService</td><td>Handles user authentication and authorization</td><td>Clerk Authentication</td></tr>
 <tr><td>PaymentService</td><td>Processes payments for sessions</td><td>Stripe API</td></tr>
 <tr><td>BookingSystem</td><td>Manages session scheduling and availability</td><td>Custom calendar integration</td></tr>
-</table><p>Total Components: <strong>246</strong></p><p>Component Types:
-<ul><li>Utility: 47</li><li>Middleware: 7</li><li>Page Component: 42</li><li>UI Component: 71</li><li>Context Provider: 11</li><li>Data Model: 19</li><li>Authentication Component: 21</li><li>Service: 8</li><li>API Endpoint: 20</li></ul><p>Technical Debt Components: <strong>7</strong> (3% of total)
-Legacy Components: <strong>5</strong> (2% of total)</p><h3>Components by Container</h3><h4>WebApplication</h4><p>Contains 184 components.</p><p>Representative components:</p><table>
+</table><p>Total Components: <strong>242</strong></p><p>Component Types:
+<ul><li>Utility: 47</li><li>Middleware: 7</li><li>Page Component: 42</li><li>UI Component: 68</li><li>Context Provider: 11</li><li>Data Model: 19</li><li>Authentication Component: 21</li><li>Service: 7</li><li>API Endpoint: 20</li></ul><p>Technical Debt Components: <strong>4</strong> (2% of total)
+Legacy Components: <strong>3</strong> (1% of total)</p><h3>Components by Container</h3><h4>WebApplication</h4><p>Contains 184 components.</p><p>Representative components:</p><table>
 <tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
 <tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
 <tr><th>instrumentation-client</th><th>Utility</th></tr>
@@ -100,7 +100,7 @@ Legacy Components: <strong>5</strong> (2% of total)</p><h3>Components by Contain
 <tr><td>Account</td><td>Data Model</td></tr>
 <tr><td>Session</td><td>Data Model</td></tr>
 <tr><td>VerificationToken</td><td>Data Model</td></tr>
-</table><p><em>... and 14 more components</em></p><h4>AuthenticationService</h4><p>Contains 27 components.</p><p>Representative components:</p><table>
+</table><p><em>... and 14 more components</em></p><h4>AuthenticationService</h4><p>Contains 25 components.</p><p>Representative components:</p><table>
 <tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
 <tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
 <tr><th>architecture-utils</th><th>Authentication Component</th><th>✓</th></tr>
@@ -108,15 +108,15 @@ Legacy Components: <strong>5</strong> (2% of total)</p><h3>Components by Contain
 <tr><td>auth-error-boundary</td><td>UI Component</td></tr>
 <tr><td>clerk-auth-form</td><td>UI Component</td></tr>
 <tr><td>loading-state</td><td>UI Component</td></tr>
-</table><p><em>... and 22 more components</em></p><h4>PaymentService</h4><p>Contains 11 components.</p><p>Representative components:</p><table>
+</table><p><em>... and 20 more components</em></p><h4>PaymentService</h4><p>Contains 9 components.</p><p>Representative components:</p><table>
 <tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
 <tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
 <tr><th>payment-status-indicator</th><th>Context Provider</th></tr>
-<tr><td>payment-status-page</td><td>UI Component</td></tr>
-<tr><td>index</td><td>Service</td></tr>
 <tr><td>stripe-client</td><td>Service</td></tr>
 <tr><td>stripe-server</td><td>Utility</td></tr>
-</table><p><em>... and 6 more components</em></p><h4>BookingSystem</h4><p>Contains 5 components.</p><p>Representative components:</p><table>
+<tr><td>page</td><td>Page Component</td></tr>
+<tr><td>page</td><td>Page Component</td></tr>
+</table><p><em>... and 4 more components</em></p><h4>BookingSystem</h4><p>Contains 5 components.</p><p>Representative components:</p><table>
 <tr><td>Component</td><td>Type</td><td>Technical Debt</td><td>Legacy</td></tr>
 <tr><td>-----------</td><td>------</td><td>----------------</td><td>--------</td></tr>
 <tr><th>weekly-schedule</th><th>UI Component</th></tr>
@@ -131,18 +131,13 @@ Legacy Components: <strong>5</strong> (2% of total)</p><h3>Components by Contain
 <tr><td>page</td><td>Page Component</td><td>WebApplication</td><td>/Users/liamj/Documents/Development/buildappswith/app/onboarding/page.tsx</td></tr>
 <tr><td>page</td><td>Page Component</td><td>WebApplication</td><td>/Users/liamj/Documents/Development/buildappswith/app/profile-settings/page.tsx</td></tr>
 <tr><td>builder-image</td><td>UI Component</td><td>WebApplication</td><td>/Users/liamj/Documents/Development/buildappswith/components/marketplace/builder-image.tsx</td></tr>
-<tr><td>auth</td><td>Authentication Component</td><td>AuthenticationService</td><td>/Users/liamj/Documents/Development/buildappswith/lib/auth/auth.ts</td></tr>
-<tr><td>route</td><td>API Endpoint</td><td>PaymentService</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts</td></tr>
-<tr><td>route</td><td>API Endpoint</td><td>PaymentService</td><td>/Users/liamj/Documents/Development/buildappswith/app/api/stripe/webhook/route.ts</td></tr>
 </table><h3>Legacy Components</h3><table>
 <tr><td>Component</td><td>Type</td><td>Container</td><td>Path</td></tr>
 <tr><td>-----------</td><td>------</td><td>-----------</td><td>------</td></tr>
 <tr><th>extract-auth-architecture</th><th>Authentication Component</th><th>AuthenticationService</th><th>/Users/liamj/Documents/Development/buildappswith/scripts/extract-auth-architecture.ts</th></tr>
 <tr><td>generate-architecture-report</td><td>Utility</td><td>WebApplication</td><td>/Users/liamj/Documents/Development/buildappswith/scripts/generate-architecture-report.ts</td></tr>
-<tr><td>index</td><td>Authentication Component</td><td>AuthenticationService</td><td>/Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts</td></tr>
 <tr><td>types</td><td>Authentication Component</td><td>AuthenticationService</td><td>/Users/liamj/Documents/Development/buildappswith/lib/auth/types.ts</td></tr>
-<tr><td>protected-route</td><td>UI Component</td><td>AuthenticationService</td><td>/Users/liamj/Documents/Development/buildappswith/components/auth/protected/protected-route.tsx</td></tr>
-</table><h2>Authentication Architecture</h2><p>Authentication Components: <strong>35</strong></p><h3>Authentication Containers</h3><table>
+</table><h2>Authentication Architecture</h2><p>Authentication Components: <strong>39</strong></p><h3>Authentication Containers</h3><table>
 <tr><td>Container</td><td>Description</td><td>Technology</td></tr>
 <tr><td>-----------</td><td>-------------</td><td>------------</td></tr>
 <tr><th>AuthenticationService</th><th>Handles user authentication and authorization</th><th>Clerk Authentication</th></tr>
@@ -191,15 +186,11 @@ Legacy Components: <strong>5</strong> (2% of total)</p><h3>Components by Contain
  * 
  * This solution solves the "mockImplementationOnce is not a function" TypeScript error
  * by ensuring the mock functions are properly typed. |
-| auth | Authentication Component | * @deprecated This file is deprecated and will be removed in a future version.
- * The original NextAuth implementation has been archived in /archived/nextauth-legacy/lib/auth/auth.ts
- * 
- * Please use the Clerk authentication system directly:
- * - For client-side auth: import { useAuth, useUser } from "@clerk/nextjs";
- * - For server-side auth: import { currentUser } from "@clerk/nextjs/server";
- * - For middleware: import { authMiddleware } from "@clerk/nextjs"; |
 <table>
+<tr><td>clerk-hooks</td><td>Authentication Component</td><td>* Extended user object with our custom fields</td></tr>
 <tr><td>clerk-middleware</td><td>Authentication Component</td><td>* Public routes that don't require authentication</td></tr>
+<tr><td>hooks</td><td>Authentication Component</td><td>N/A</td></tr>
+<tr><td>index</td><td>Authentication Component</td><td>N/A</td></tr>
 </table>
 | factory | Authentication Component | * Middleware Factory for Buildappswith Platform
  * Version: 1.0.80
@@ -239,11 +230,27 @@ Legacy Components: <strong>5</strong> (2% of total)</p><h3>Components by Contain
 <tr><td>booking-form</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
 <tr><td>page</td><td>Page Component (Clerk)</td><td>N/A</td></tr>
 <tr><td>route</td><td>API Endpoint (Clerk)</td><td>* Helper function to handle service errors with appropriate responses</td></tr>
+</table>
+| route | API Endpoint (Clerk) | * API route to create a Stripe checkout session for a booking
+ * 
+ * @param request - The incoming request object
+ * @param auth - Auth object provided by Clerk's withAuth middleware
+ * @returns NextResponse with session data or error |
+<table>
 <tr><td>availability-exceptions</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
 <tr><td>availability-management</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
 <tr><td>weekly-availability</td><td>UI Component (Clerk)</td><td>N/A</td></tr>
 <tr><td>route</td><td>API Endpoint (Clerk)</td><td>N/A</td></tr>
-</table><h4>Database</h4><table>
+</table>
+| route | API Endpoint (Clerk) | * GET handler for retrieving a Stripe session with associated booking
+ * 
+ * Uses Next.js 15 promise-based params and Clerk authentication
+ * to ensure only authorized users can access the session details
+ * 
+ * @param request - The incoming request object
+ * @param context - Context containing the session ID parameter
+ * @param auth - Authentication object from Clerk
+ * @returns NextResponse with session details or error |</p><h4>Database</h4><table>
 <tr><td>Component</td><td>Type</td><td>Description</td></tr>
 <tr><td>-----------</td><td>------</td><td>-------------</td></tr>
 <tr><th>User</th><th>Data Model</th><th>User data model with authentication fields</th></tr>

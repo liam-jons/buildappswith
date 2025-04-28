@@ -1,10 +1,10 @@
 {
-  "overallComplexity": 1.7315573770491803,
+  "overallComplexity": 1.7541322314049588,
   "containerComplexity": {
     "WebApplication": 1.483695652173913,
     "Database": 3.3947368421052633,
-    "AuthenticationService": 2.1296296296296298,
-    "PaymentService": 1.5555555555555556,
+    "AuthenticationService": 2.26,
+    "PaymentService": 1.8888888888888888,
     "BookingSystem": 2.7
   },
   "mostComplexComponents": [],
@@ -115,24 +115,6 @@
       "complexityScore": 3.5
     },
     {
-      "name": "stripe-server",
-      "type": "Utility",
-      "path": "/Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-server.ts",
-      "dependencies": [
-        "scheduling-service"
-      ],
-      "container": "PaymentService",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 0,
-      "outgoingReferences": 1,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-28",
-      "complexityScore": 3.5
-    },
-    {
       "name": "generate-architecture-report",
       "type": "Utility",
       "path": "/Users/liamj/Documents/Development/buildappswith/scripts/generate-architecture-report.ts",
@@ -227,6 +209,24 @@
       "unusedReason": "Page/route with no navigation links to it",
       "lastModified": "2025-04-28",
       "complexityScore": 3
+    },
+    {
+      "name": "clerk-hooks",
+      "type": "Authentication Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/clerk-hooks.ts",
+      "dependencies": [
+        "types"
+      ],
+      "container": "AuthenticationService",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 1,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 2.5
     },
     {
       "name": "page",
@@ -373,24 +373,6 @@
       "complexityScore": 2
     },
     {
-      "name": "index",
-      "type": "Authentication Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts",
-      "dependencies": [
-        "auth"
-      ],
-      "container": "AuthenticationService",
-      "isTechnicalDebt": false,
-      "isLegacy": true,
-      "incomingReferences": 0,
-      "outgoingReferences": 1,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-27",
-      "complexityScore": 1.5
-    },
-    {
       "name": "tailwind.config",
       "type": "Utility",
       "path": "/Users/liamj/Documents/Development/buildappswith/tailwind.config.ts",
@@ -419,6 +401,22 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "index",
+      "type": "Authentication Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/lib/auth/index.ts",
+      "dependencies": [],
+      "container": "AuthenticationService",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
       "lastModified": "2025-04-28",
       "complexityScore": 1
     },
@@ -713,6 +711,38 @@
     {
       "name": "route",
       "type": "API Endpoint",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts",
+      "dependencies": [],
+      "container": "PaymentService",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "Page/route with no navigation links to it",
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "route",
+      "type": "API Endpoint",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/webhook/route.ts",
+      "dependencies": [],
+      "container": "PaymentService",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "Page/route with no navigation links to it",
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "route",
+      "type": "API Endpoint",
       "path": "/Users/liamj/Documents/Development/buildappswith/app/api/admin/session-types/[id]/route.ts",
       "dependencies": [],
       "container": "WebApplication",
@@ -772,6 +802,22 @@
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
       "lastModified": "2025-04-24",
+      "complexityScore": 1
+    },
+    {
+      "name": "route",
+      "type": "API Endpoint",
+      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/sessions/[id]/route.ts",
+      "dependencies": [],
+      "container": "PaymentService",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "Page/route with no navigation links to it",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -1439,38 +1485,6 @@
     {
       "name": "route",
       "type": "API Endpoint",
-      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts",
-      "dependencies": [],
-      "container": "PaymentService",
-      "isTechnicalDebt": true,
-      "isLegacy": false,
-      "incomingReferences": 0,
-      "outgoingReferences": 0,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
-      "complexityScore": 0
-    },
-    {
-      "name": "route",
-      "type": "API Endpoint",
-      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/webhook/route.ts",
-      "dependencies": [],
-      "container": "PaymentService",
-      "isTechnicalDebt": true,
-      "isLegacy": false,
-      "incomingReferences": 0,
-      "outgoingReferences": 0,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
-      "complexityScore": 0
-    },
-    {
-      "name": "route",
-      "type": "API Endpoint",
       "path": "/Users/liamj/Documents/Development/buildappswith/app/api/test/auth/route.ts",
       "dependencies": [],
       "container": "AuthenticationService",
@@ -1498,22 +1512,6 @@
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
       "lastModified": "2025-04-19",
-      "complexityScore": 0
-    },
-    {
-      "name": "route",
-      "type": "API Endpoint",
-      "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/sessions/[id]/route.ts",
-      "dependencies": [],
-      "container": "PaymentService",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 0,
-      "outgoingReferences": 0,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
       "complexityScore": 0
     }
   ],
@@ -1931,11 +1929,10 @@
           "container": "PaymentService",
           "isTechnicalDebt": false,
           "isLegacy": false,
-          "incomingReferences": 0,
+          "incomingReferences": 3,
           "outgoingReferences": 1,
-          "usageScore": 0,
-          "isUnused": true,
-          "unusedReason": "No incoming references found",
+          "usageScore": 3,
+          "isUnused": false,
           "lastModified": "2025-04-28",
           "complexityScore": 3.5
         },
@@ -2108,7 +2105,7 @@
           "container": "WebApplication",
           "isTechnicalDebt": false,
           "isLegacy": false,
-          "incomingReferences": 10,
+          "incomingReferences": 12,
           "outgoingReferences": 1,
           "usageScore": 10,
           "isUnused": false,
@@ -2992,21 +2989,6 @@
           "complexityScore": 1
         },
         {
-          "name": "protected-route",
-          "type": "UI Component",
-          "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/protected-route.tsx",
-          "dependencies": [],
-          "container": "AuthenticationService",
-          "isTechnicalDebt": false,
-          "isLegacy": false,
-          "incomingReferences": 4,
-          "outgoingReferences": 0,
-          "usageScore": 4,
-          "isUnused": false,
-          "lastModified": "2025-04-23",
-          "complexityScore": 1
-        },
-        {
           "name": "faq-accordion",
           "type": "UI Component",
           "path": "/Users/liamj/Documents/Development/buildappswith/components/client/faq-accordion.tsx",
@@ -3407,21 +3389,6 @@
           "isUnused": false,
           "lastModified": "2025-04-28",
           "complexityScore": 3
-        },
-        {
-          "name": "protected-route",
-          "type": "UI Component",
-          "path": "/Users/liamj/Documents/Development/buildappswith/components/auth/protected/protected-route.tsx",
-          "dependencies": [],
-          "container": "AuthenticationService",
-          "isTechnicalDebt": false,
-          "isLegacy": true,
-          "incomingReferences": 4,
-          "outgoingReferences": 0,
-          "usageScore": 4,
-          "isUnused": false,
-          "lastModified": "2025-04-27",
-          "complexityScore": 1
         },
         {
           "name": "session-type-editor",
@@ -4263,15 +4230,15 @@
           "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/checkout/route.ts",
           "dependencies": [],
           "container": "PaymentService",
-          "isTechnicalDebt": true,
+          "isTechnicalDebt": false,
           "isLegacy": false,
           "incomingReferences": 0,
           "outgoingReferences": 0,
           "usageScore": 0,
           "isUnused": true,
           "unusedReason": "Page/route with no navigation links to it",
-          "lastModified": "2025-04-27",
-          "complexityScore": 0
+          "lastModified": "2025-04-28",
+          "complexityScore": 1
         },
         {
           "name": "route",
@@ -4279,15 +4246,15 @@
           "path": "/Users/liamj/Documents/Development/buildappswith/app/api/stripe/webhook/route.ts",
           "dependencies": [],
           "container": "PaymentService",
-          "isTechnicalDebt": true,
+          "isTechnicalDebt": false,
           "isLegacy": false,
           "incomingReferences": 0,
           "outgoingReferences": 0,
           "usageScore": 0,
           "isUnused": true,
           "unusedReason": "Page/route with no navigation links to it",
-          "lastModified": "2025-04-27",
-          "complexityScore": 0
+          "lastModified": "2025-04-28",
+          "complexityScore": 1
         },
         {
           "name": "route",
@@ -4414,8 +4381,8 @@
           "usageScore": 0,
           "isUnused": true,
           "unusedReason": "Page/route with no navigation links to it",
-          "lastModified": "2025-04-27",
-          "complexityScore": 0
+          "lastModified": "2025-04-28",
+          "complexityScore": 1
         }
       ],
       "recommendedPattern": "Use consistent folder structure: /Users/liamj/Documents/Development/buildappswith/app/api/admin/builders"
