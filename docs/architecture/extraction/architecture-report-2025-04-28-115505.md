@@ -16,18 +16,18 @@ The architecture is divided into the following containers based on PRD 2.1:
 | PaymentService | Processes payments for sessions | Stripe API |
 | BookingSystem | Manages session scheduling and availability | Custom calendar integration |
 
-Total Components: **246**
+Total Components: **265**
 
 Component Types:
-- Utility: 47
+- Utility: 45
 - Middleware: 7
-- Page Component: 42
-- UI Component: 71
-- Context Provider: 11
+- Page Component: 47
+- UI Component: 78
+- Context Provider: 12
 - Data Model: 19
-- Authentication Component: 21
+- Authentication Component: 25
 - Service: 8
-- API Endpoint: 20
+- API Endpoint: 24
 
 Technical Debt Components: **7** (3% of total)
 Legacy Components: **5** (2% of total)
@@ -36,7 +36,7 @@ Legacy Components: **5** (2% of total)
 
 #### WebApplication
 
-Contains 184 components.
+Contains 194 components.
 
 Representative components:
 
@@ -48,7 +48,7 @@ Representative components:
 | next-env.d | Utility |  |  |
 | sentry.edge.config | Utility |  |  |
 
-*... and 179 more components*
+*... and 189 more components*
 
 #### Database
 
@@ -68,7 +68,7 @@ Representative components:
 
 #### AuthenticationService
 
-Contains 27 components.
+Contains 35 components.
 
 Representative components:
 
@@ -77,10 +77,10 @@ Representative components:
 | architecture-utils | Authentication Component | ✓ |  |
 | extract-auth-architecture | Authentication Component |  | ✓ |
 | auth-error-boundary | UI Component |  |  |
+| auth-provider | Context Provider |  |  |
 | clerk-auth-form | UI Component |  |  |
-| loading-state | UI Component |  |  |
 
-*... and 22 more components*
+*... and 30 more components*
 
 #### PaymentService
 
@@ -100,17 +100,19 @@ Representative components:
 
 #### BookingSystem
 
-Contains 5 components.
+Contains 6 components.
 
 Representative components:
 
 | Component | Type | Technical Debt | Legacy |
 |-----------|------|----------------|--------|
+| booking-overview | UI Component |  |  |
 | weekly-schedule | UI Component |  |  |
 | booking-calendar | UI Component |  |  |
 | booking-form | UI Component |  |  |
 | route | API Endpoint |  |  |
-| route | API Endpoint |  |  |
+
+*... and 1 more components*
 
 ### Technical Debt Components
 
@@ -136,7 +138,7 @@ Representative components:
 
 ## Authentication Architecture
 
-Authentication Components: **35**
+Authentication Components: **40**
 
 ### Authentication Containers
 
@@ -170,6 +172,8 @@ Authentication Components: **35**
  * and avoids the hoisting issues that can occur with inline vi.mock() calls.
  * 
  * Uses Vitest's MockInstance type for proper TypeScript support of method chaining. |
+| auth-provider | Context Provider (Clerk) | * AuthProvider component using Clerk
+ * This replaces the NextAuth SessionProvider with Clerk's equivalent |
 | clerk-auth-form | UI Component (Clerk) | * Clerk authentication form component with theme support |
 | loading-state | UI Component (Clerk) | * Component to handle authentication loading states
  * Prevents blank pages by showing a loading state while Clerk auth is initializing |
@@ -194,6 +198,8 @@ Authentication Components: **35**
  * - For client-side auth: import { useAuth, useUser } from "@clerk/nextjs";
  * - For server-side auth: import { currentUser } from "@clerk/nextjs/server";
  * - For middleware: import { authMiddleware } from "@clerk/nextjs"; |
+| clerk-hooks | Authentication Component | * Hook to access the current authenticated user with a compatible API to the old NextAuth hook
+ * @returns Object containing auth state and user information |
 | clerk-middleware | Authentication Component | * Public routes that don't require authentication |
 | factory | Authentication Component | * Middleware Factory for Buildappswith Platform
  * Version: 1.0.80
@@ -206,6 +212,9 @@ Authentication Components: **35**
  * 
  * Provides enhanced RBAC functionality for middleware
  * with flexible permission models and policy enforcement. |
+| page | Page Component (Clerk) | * Test page for Clerk authentication
+ * Tests various auth states and displays user information
+ * Version: 1.0.59 |
 | helpers | Authentication Component | * Extended user type with combined Clerk and database data |
 | route | API Endpoint (Clerk) | * Clerk Webhook Handler
  * 
@@ -227,12 +236,14 @@ Authentication Components: **35**
 | user-auth-form | UI Component (Clerk) | * User authentication form component migrated to use Clerk directly |
 | page | Page Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
+| page | Page Component (Clerk) | N/A |
 | providers | Context Provider (Clerk) | * Combined providers wrapper for the application |
 | page | Page Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
 | booking-calendar | UI Component (Clerk) | N/A |
 | booking-form | UI Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
+| route | API Endpoint (Clerk) | * GET handler for fetching current user profile |
 | route | API Endpoint (Clerk) | * Helper function to handle service errors with appropriate responses |
 | availability-exceptions | UI Component (Clerk) | N/A |
 | availability-management | UI Component (Clerk) | N/A |

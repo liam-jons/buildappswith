@@ -1,31 +1,19 @@
-## 1.0.131 (2025-04-28)
+## 1.0.130 - 2025-04-28
 
-### Features
+### Enhanced
+- Enhanced stripe-server.ts utility with proper error typing and handling
+- Implemented database integration with booking records in Stripe operations
+- Created consistent response structure for all Stripe operations
+- Added comprehensive logging throughout Stripe payment flow
+- Improved webhook event handling with booking status updates
 
-- **components:** Standardized folder structure for components
-  - Created domain-first organization pattern
-  - Added barrel exports for simplified imports
-  - Moved ValidationTierBadge to profile/ui directory
-  - Created README files documenting the new structure
+### Fixed
+- Fixed potential race condition in payment status updates
+- Addressed missing error classification in Stripe operations
+- Resolved issue with database integration in webhook handlers
 
-### Improvements
-
-- **organization:** Established clear patterns for component organization
-  - Separated core UI components from domain-specific components
-  - Created composite component structure for complex reusable UI
-  - Added documentation for each major component directory
-
-### Refactoring
-
-- **structure:** Created consistent folder structure scaffolding
-  - ui/core for foundational components
-  - ui/composite for complex components
-  - [domain]/ui for domain-specific components
-  - Barrel exports at each level
-
-### Documentation
-
-- **patterns:** Added comprehensive documentation of component patterns
-  - Created root-level README for components
-  - Added domain-specific documentation
-  - Documented import standards and naming conventions
+### Technical
+- Added StripeErrorType enum for better error classification
+- Created StripeOperationResult interface for consistent API responses
+- Implemented proper TypeScript interfaces for function parameters
+- Enhanced error handling with contextual logging

@@ -240,6 +240,8 @@ graph TD
 
   subgraph PaymentService
     payment_status_indicator["payment-status-indicator (Context Provider)"]
+    payment_status_page["payment-status-page (UI Component)"]
+    index["index (Service)"]
     stripe_client["stripe-client (Service)"]
     stripe_server["stripe-server (Utility)"]
     page["page (Page Component)"]
@@ -266,6 +268,7 @@ graph TD
   extract_architecture --> architecture_utils
   extract_auth_architecture --> architecture_utils
   hero_section --> animated_circular_progress_bar_demo
+  payment_status_page --> payment_status_indicator
   add_project_form --> portfolio_showcase
   builder_profile --> portfolio_showcase
   builder_profile --> app_showcase
@@ -284,6 +287,7 @@ graph TD
   scheduling --> types
   scheduling --> mock_data
   index --> auth
+  index --> stripe_server
   profile --> session_types
   data_service --> types
   api_protection --> csrf
@@ -301,7 +305,6 @@ graph TD
   validation --> config
   mock_data --> types
   utils --> types
-  stripe_server --> scheduling_service
   create_profiles --> db
   create_profiles --> types
   page --> client

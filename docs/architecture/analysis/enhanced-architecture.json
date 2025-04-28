@@ -173,7 +173,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-24",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -203,7 +203,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-22",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -218,7 +218,7 @@
       "outgoingReferences": 0,
       "usageScore": 4,
       "isUnused": false,
-      "lastModified": "2025-04-24",
+      "lastModified": "2025-04-28",
       "complexityScore": 4
     },
     {
@@ -263,7 +263,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-24",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -567,7 +567,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -630,7 +630,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -662,7 +662,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -692,7 +692,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -767,7 +767,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-22",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -782,7 +782,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-21",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -798,7 +798,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-16",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -813,7 +813,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -828,7 +828,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -843,7 +843,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -873,7 +873,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -890,7 +890,7 @@
       "outgoingReferences": 1,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 1.5
     },
     {
@@ -905,7 +905,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -1040,7 +1040,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-21",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -1059,6 +1059,21 @@
       "complexityScore": 1
     },
     {
+      "name": "index",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/marketplace/index.ts",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 2,
+      "outgoingReferences": 0,
+      "usageScore": 2,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 0
+    },
+    {
       "name": "payment-status-indicator",
       "type": "Context Provider",
       "path": "/Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-indicator.tsx",
@@ -1066,30 +1081,13 @@
       "container": "PaymentService",
       "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 2,
-      "outgoingReferences": 0,
-      "usageScore": 2,
-      "isUnused": false,
-      "lastModified": "2025-04-27",
-      "complexityScore": 4
-    },
-    {
-      "name": "payment-status-page",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/payment/payment-status-page.tsx",
-      "dependencies": [
-        "payment-status-indicator"
-      ],
-      "container": "PaymentService",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
       "incomingReferences": 0,
-      "outgoingReferences": 1,
+      "outgoingReferences": 0,
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-27",
-      "complexityScore": 3.5
+      "lastModified": "2025-04-28",
+      "complexityScore": 4
     },
     {
       "name": "add-project-form",
@@ -1105,7 +1103,7 @@
       "outgoingReferences": 1,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-16",
+      "lastModified": "2025-04-28",
       "complexityScore": 4.5
     },
     {
@@ -1120,7 +1118,7 @@
       "outgoingReferences": 0,
       "usageScore": 5,
       "isUnused": false,
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -1135,7 +1133,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -1143,7 +1141,6 @@
       "type": "UI Component",
       "path": "/Users/liamj/Documents/Development/buildappswith/components/profile/builder-profile.tsx",
       "dependencies": [
-        "validation-tier-badge",
         "portfolio-showcase",
         "app-showcase",
         "success-metrics-dashboard",
@@ -1153,29 +1150,44 @@
       "isTechnicalDebt": false,
       "isLegacy": false,
       "incomingReferences": 9,
-      "outgoingReferences": 5,
+      "outgoingReferences": 4,
       "usageScore": 9,
       "isUnused": false,
-      "lastModified": "2025-04-23",
-      "complexityScore": 6.5
+      "lastModified": "2025-04-28",
+      "complexityScore": 6
+    },
+    {
+      "name": "index",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/profile/index.ts",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 0
     },
     {
       "name": "portfolio-gallery",
       "type": "UI Component",
       "path": "/Users/liamj/Documents/Development/buildappswith/components/profile/portfolio-gallery.tsx",
       "dependencies": [
-        "validation-tier-badge",
         "portfolio-showcase"
       ],
       "container": "WebApplication",
       "isTechnicalDebt": false,
       "isLegacy": false,
       "incomingReferences": 1,
-      "outgoingReferences": 2,
+      "outgoingReferences": 1,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-19",
-      "complexityScore": 5
+      "lastModified": "2025-04-28",
+      "complexityScore": 4.5
     },
     {
       "name": "portfolio-showcase",
@@ -1189,7 +1201,7 @@
       "outgoingReferences": 0,
       "usageScore": 9,
       "isUnused": false,
-      "lastModified": "2025-04-16",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -1204,39 +1216,22 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
       "name": "success-metrics-dashboard",
       "type": "Context Provider",
       "path": "/Users/liamj/Documents/Development/buildappswith/components/profile/success-metrics-dashboard.tsx",
-      "dependencies": [
-        "validation-tier-badge"
-      ],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 3,
-      "outgoingReferences": 1,
-      "usageScore": 3,
-      "isUnused": false,
-      "lastModified": "2025-04-19",
-      "complexityScore": 3.5
-    },
-    {
-      "name": "validation-tier-badge",
-      "type": "Context Provider",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/profile/validation-tier-badge.tsx",
       "dependencies": [],
       "container": "WebApplication",
       "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 17,
+      "incomingReferences": 3,
       "outgoingReferences": 0,
-      "usageScore": 10,
+      "usageScore": 3,
       "isUnused": false,
-      "lastModified": "2025-04-16",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -1275,24 +1270,9 @@
       "complexityScore": 3
     },
     {
-      "name": "accordion",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/accordion.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 1,
-      "outgoingReferences": 0,
-      "usageScore": 1,
-      "isUnused": false,
-      "lastModified": "2025-04-22",
-      "complexityScore": 1
-    },
-    {
-      "name": "alert",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/alert.tsx",
+      "name": "index",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/index.ts",
       "dependencies": [],
       "container": "WebApplication",
       "isTechnicalDebt": false,
@@ -1302,325 +1282,8 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-16",
-      "complexityScore": 1
-    },
-    {
-      "name": "avatar",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/avatar.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 0,
-      "outgoingReferences": 0,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-19",
-      "complexityScore": 1
-    },
-    {
-      "name": "badge",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/badge.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 4,
-      "outgoingReferences": 0,
-      "usageScore": 4,
-      "isUnused": false,
-      "lastModified": "2025-04-18",
-      "complexityScore": 1
-    },
-    {
-      "name": "button",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/button.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 44,
-      "outgoingReferences": 0,
-      "usageScore": 10,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 1
-    },
-    {
-      "name": "card",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/card.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 24,
-      "outgoingReferences": 0,
-      "usageScore": 10,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 1
-    },
-    {
-      "name": "checkbox",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/checkbox.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 2,
-      "outgoingReferences": 0,
-      "usageScore": 2,
-      "isUnused": false,
-      "lastModified": "2025-04-18",
-      "complexityScore": 1
-    },
-    {
-      "name": "dialog",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/dialog.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 5,
-      "outgoingReferences": 0,
-      "usageScore": 5,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 2
-    },
-    {
-      "name": "dropdown-menu",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/dropdown-menu.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 0,
-      "outgoingReferences": 0,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-19",
-      "complexityScore": 3
-    },
-    {
-      "name": "form",
-      "type": "Context Provider",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/form.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 5,
-      "outgoingReferences": 0,
-      "usageScore": 5,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 3
-    },
-    {
-      "name": "input",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/input.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 13,
-      "outgoingReferences": 0,
-      "usageScore": 10,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 1
-    },
-    {
-      "name": "label",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/label.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 10,
-      "outgoingReferences": 0,
-      "usageScore": 10,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 1
-    },
-    {
-      "name": "loading-spinner",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/loading-spinner.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 2,
-      "outgoingReferences": 0,
-      "usageScore": 2,
-      "isUnused": false,
-      "lastModified": "2025-04-19",
-      "complexityScore": 1
-    },
-    {
-      "name": "popover",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/popover.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 3,
-      "outgoingReferences": 0,
-      "usageScore": 3,
-      "isUnused": false,
-      "lastModified": "2025-04-18",
-      "complexityScore": 1
-    },
-    {
-      "name": "radio-group",
-      "type": "Context Provider",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/radio-group.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 2,
-      "outgoingReferences": 0,
-      "usageScore": 2,
-      "isUnused": false,
-      "lastModified": "2025-04-19",
-      "complexityScore": 3
-    },
-    {
-      "name": "select",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/select.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 5,
-      "outgoingReferences": 0,
-      "usageScore": 5,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 2
-    },
-    {
-      "name": "separator",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/separator.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 1,
-      "outgoingReferences": 0,
-      "usageScore": 1,
-      "isUnused": false,
-      "lastModified": "2025-04-18",
-      "complexityScore": 1
-    },
-    {
-      "name": "sonner",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/sonner.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 18,
-      "outgoingReferences": 0,
-      "usageScore": 10,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 1
-    },
-    {
-      "name": "switch",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/switch.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 5,
-      "outgoingReferences": 0,
-      "usageScore": 5,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 1
-    },
-    {
-      "name": "table",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/table.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 2,
-      "outgoingReferences": 0,
-      "usageScore": 2,
-      "isUnused": false,
-      "lastModified": "2025-04-19",
-      "complexityScore": 2
-    },
-    {
-      "name": "tabs",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/tabs.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 9,
-      "outgoingReferences": 0,
-      "usageScore": 9,
-      "isUnused": false,
-      "lastModified": "2025-04-18",
-      "complexityScore": 1
-    },
-    {
-      "name": "textarea",
-      "type": "UI Component",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/textarea.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 5,
-      "outgoingReferences": 0,
-      "usageScore": 5,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 1
-    },
-    {
-      "name": "tooltip",
-      "type": "Context Provider",
-      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/tooltip.tsx",
-      "dependencies": [],
-      "container": "WebApplication",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 5,
-      "outgoingReferences": 0,
-      "usageScore": 5,
-      "isUnused": false,
-      "lastModified": "2025-04-16",
-      "complexityScore": 2
+      "lastModified": "2025-04-28",
+      "complexityScore": 0
     },
     {
       "name": "factory-test-solution",
@@ -1823,10 +1486,11 @@
       "container": "AuthenticationService",
       "isTechnicalDebt": false,
       "isLegacy": true,
-      "incomingReferences": 2,
+      "incomingReferences": 0,
       "outgoingReferences": 1,
-      "usageScore": 2,
-      "isUnused": false,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
       "lastModified": "2025-04-27",
       "complexityScore": 1.5
     },
@@ -1874,7 +1538,7 @@
       "outgoingReferences": 0,
       "usageScore": 4,
       "isUnused": false,
-      "lastModified": "2025-04-16",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -1889,7 +1553,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -1906,7 +1570,7 @@
       "outgoingReferences": 1,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 3.5
     },
     {
@@ -1921,7 +1585,7 @@
       "outgoingReferences": 0,
       "usageScore": 10,
       "isUnused": false,
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2103,7 +1767,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -2167,7 +1831,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 5
     },
     {
@@ -2186,24 +1850,6 @@
       "complexityScore": 5
     },
     {
-      "name": "index",
-      "type": "Service",
-      "path": "/Users/liamj/Documents/Development/buildappswith/lib/stripe/index.ts",
-      "dependencies": [
-        "stripe-server"
-      ],
-      "container": "PaymentService",
-      "isTechnicalDebt": false,
-      "isLegacy": false,
-      "incomingReferences": 0,
-      "outgoingReferences": 1,
-      "usageScore": 0,
-      "isUnused": true,
-      "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-19",
-      "complexityScore": 2.5
-    },
-    {
       "name": "stripe-client",
       "type": "Service",
       "path": "/Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-client.ts",
@@ -2215,23 +1861,26 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-27",
-      "complexityScore": 2
+      "lastModified": "2025-04-28",
+      "complexityScore": 5
     },
     {
       "name": "stripe-server",
       "type": "Utility",
       "path": "/Users/liamj/Documents/Development/buildappswith/lib/stripe/stripe-server.ts",
-      "dependencies": [],
+      "dependencies": [
+        "scheduling-service"
+      ],
       "container": "PaymentService",
       "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 2,
-      "outgoingReferences": 0,
-      "usageScore": 2,
-      "isUnused": false,
-      "lastModified": "2025-04-27",
-      "complexityScore": 1
+      "incomingReferences": 0,
+      "outgoingReferences": 1,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 3.5
     },
     {
       "name": "builder",
@@ -2245,7 +1894,7 @@
       "outgoingReferences": 0,
       "usageScore": 5,
       "isUnused": false,
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2260,7 +1909,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-16",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2311,7 +1960,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-24",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2327,7 +1976,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-21",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2343,7 +1992,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-24",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2359,7 +2008,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-21",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2375,7 +2024,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-21",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2391,7 +2040,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-22",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2407,7 +2056,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-22",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2455,7 +2104,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-22",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -2471,7 +2120,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-22",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2487,7 +2136,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2519,7 +2168,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2551,7 +2200,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2583,7 +2232,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2615,7 +2264,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-22",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -2631,7 +2280,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2647,7 +2296,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -2663,7 +2312,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2678,7 +2327,7 @@
       "outgoingReferences": 0,
       "usageScore": 10,
       "isUnused": false,
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -2696,7 +2345,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 0.5
     },
     {
@@ -2712,7 +2361,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -2728,7 +2377,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2744,7 +2393,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -2763,6 +2412,53 @@
       "complexityScore": 1
     },
     {
+      "name": "index",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/marketplace/ui/index.ts",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 0
+    },
+    {
+      "name": "index",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/profile/ui/index.ts",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 0
+    },
+    {
+      "name": "validation-tier-badge",
+      "type": "Context Provider",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/profile/ui/validation-tier-badge.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 14,
+      "outgoingReferences": 0,
+      "usageScore": 10,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 3
+    },
+    {
       "name": "session-type-editor",
       "type": "UI Component",
       "path": "/Users/liamj/Documents/Development/buildappswith/components/scheduling/builder/session-type-editor.tsx",
@@ -2775,7 +2471,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 4
     },
     {
@@ -2791,7 +2487,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -2810,7 +2506,7 @@
       "outgoingReferences": 3,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 5.5
     },
     {
@@ -2825,8 +2521,8 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-27",
-      "complexityScore": 2
+      "lastModified": "2025-04-28",
+      "complexityScore": 3
     },
     {
       "name": "session-type-selector",
@@ -2840,7 +2536,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -2855,7 +2551,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -2871,8 +2567,388 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "No incoming references found",
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
+    },
+    {
+      "name": "index",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/composite/index.ts",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 0
+    },
+    {
+      "name": "accordion",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/accordion.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 1,
+      "outgoingReferences": 0,
+      "usageScore": 1,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "alert",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/alert.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "avatar",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/avatar.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "badge",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/badge.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 4,
+      "outgoingReferences": 0,
+      "usageScore": 4,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "button",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/button.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 43,
+      "outgoingReferences": 0,
+      "usageScore": 10,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "card",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/card.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 23,
+      "outgoingReferences": 0,
+      "usageScore": 10,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "checkbox",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/checkbox.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 2,
+      "outgoingReferences": 0,
+      "usageScore": 2,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "dialog",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/dialog.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 5,
+      "outgoingReferences": 0,
+      "usageScore": 5,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 2
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/dropdown-menu.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 3
+    },
+    {
+      "name": "form",
+      "type": "Context Provider",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/form.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 5,
+      "outgoingReferences": 0,
+      "usageScore": 5,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 3
+    },
+    {
+      "name": "index",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/index.ts",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-28",
+      "complexityScore": 0
+    },
+    {
+      "name": "input",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/input.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 13,
+      "outgoingReferences": 0,
+      "usageScore": 10,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "label",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/label.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 10,
+      "outgoingReferences": 0,
+      "usageScore": 10,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "loading-spinner",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/loading-spinner.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 2,
+      "outgoingReferences": 0,
+      "usageScore": 2,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "popover",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/popover.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 3,
+      "outgoingReferences": 0,
+      "usageScore": 3,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "radio-group",
+      "type": "Context Provider",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/radio-group.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 2,
+      "outgoingReferences": 0,
+      "usageScore": 2,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 3
+    },
+    {
+      "name": "select",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/select.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 5,
+      "outgoingReferences": 0,
+      "usageScore": 5,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 2
+    },
+    {
+      "name": "separator",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/separator.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 1,
+      "outgoingReferences": 0,
+      "usageScore": 1,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "sonner",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/sonner.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 18,
+      "outgoingReferences": 0,
+      "usageScore": 10,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "switch",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/switch.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 5,
+      "outgoingReferences": 0,
+      "usageScore": 5,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "table",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/table.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 2,
+      "outgoingReferences": 0,
+      "usageScore": 2,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 2
+    },
+    {
+      "name": "tabs",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/tabs.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 9,
+      "outgoingReferences": 0,
+      "usageScore": 9,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "textarea",
+      "type": "UI Component",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/textarea.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 5,
+      "outgoingReferences": 0,
+      "usageScore": 5,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 1
+    },
+    {
+      "name": "tooltip",
+      "type": "Context Provider",
+      "path": "/Users/liamj/Documents/Development/buildappswith/components/ui/core/tooltip.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 5,
+      "outgoingReferences": 0,
+      "usageScore": 5,
+      "isUnused": false,
+      "lastModified": "2025-04-28",
+      "complexityScore": 2
     },
     {
       "name": "api-auth",
@@ -2918,7 +2994,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -2931,9 +3007,9 @@
       "container": "WebApplication",
       "isTechnicalDebt": false,
       "isLegacy": false,
-      "incomingReferences": 8,
+      "incomingReferences": 10,
       "outgoingReferences": 1,
-      "usageScore": 8,
+      "usageScore": 10,
       "isUnused": false,
       "lastModified": "2025-04-27",
       "complexityScore": 3.5
@@ -2951,7 +3027,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-24",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -2967,7 +3043,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -2983,7 +3059,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-23",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -2998,7 +3074,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-21",
+      "lastModified": "2025-04-28",
       "complexityScore": 5
     },
     {
@@ -3032,7 +3108,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-18",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -3050,7 +3126,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-21",
+      "lastModified": "2025-04-28",
       "complexityScore": 0.5
     },
     {
@@ -3065,7 +3141,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-21",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -3081,7 +3157,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-16",
+      "lastModified": "2025-04-28",
       "complexityScore": 0
     },
     {
@@ -3193,7 +3269,7 @@
       "usageScore": 0,
       "isUnused": true,
       "unusedReason": "Page/route with no navigation links to it",
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 1
     },
     {
@@ -3320,7 +3396,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 4
     },
     {
@@ -3338,7 +3414,7 @@
       "outgoingReferences": 2,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 5
     },
     {
@@ -3353,7 +3429,7 @@
       "outgoingReferences": 0,
       "usageScore": 2,
       "isUnused": false,
-      "lastModified": "2025-04-27",
+      "lastModified": "2025-04-28",
       "complexityScore": 4
     },
     {
@@ -3368,7 +3444,7 @@
       "outgoingReferences": 0,
       "usageScore": 0,
       "isUnused": false,
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -3383,7 +3459,7 @@
       "outgoingReferences": 0,
       "usageScore": 1,
       "isUnused": false,
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 2
     },
     {
@@ -3398,7 +3474,7 @@
       "outgoingReferences": 0,
       "usageScore": 0,
       "isUnused": false,
-      "lastModified": "2025-04-19",
+      "lastModified": "2025-04-28",
       "complexityScore": 3
     },
     {
@@ -3840,18 +3916,8 @@
       "description": "Uses"
     },
     {
-      "source": "payment-status-page",
-      "target": "payment-status-indicator",
-      "description": "Uses"
-    },
-    {
       "source": "add-project-form",
       "target": "portfolio-showcase",
-      "description": "Uses"
-    },
-    {
-      "source": "builder-profile",
-      "target": "validation-tier-badge",
       "description": "Uses"
     },
     {
@@ -3876,17 +3942,7 @@
     },
     {
       "source": "portfolio-gallery",
-      "target": "validation-tier-badge",
-      "description": "Uses"
-    },
-    {
-      "source": "portfolio-gallery",
       "target": "portfolio-showcase",
-      "description": "Uses"
-    },
-    {
-      "source": "success-metrics-dashboard",
-      "target": "validation-tier-badge",
       "description": "Uses"
     },
     {
@@ -3947,11 +4003,6 @@
     {
       "source": "index",
       "target": "auth",
-      "description": "Uses"
-    },
-    {
-      "source": "index",
-      "target": "stripe-server",
       "description": "Uses"
     },
     {
@@ -4037,6 +4088,11 @@
     {
       "source": "utils",
       "target": "types",
+      "description": "Uses"
+    },
+    {
+      "source": "stripe-server",
+      "target": "scheduling-service",
       "description": "Uses"
     },
     {
@@ -4180,9 +4236,9 @@
       "name": "WebApplication",
       "description": "Next.js web application serving the Buildappswith platform",
       "technology": "Next.js 15.3.1 + React 19.1.0 + TypeScript",
-      "componentCount": 177,
-      "complexity": 1.5508474576271187,
-      "couplingScore": 0.07909604519774012
+      "componentCount": 184,
+      "complexity": 1.483695652173913,
+      "couplingScore": 0.07608695652173914
     },
     {
       "name": "Database",
@@ -4204,16 +4260,16 @@
       "name": "PaymentService",
       "description": "Processes payments for sessions",
       "technology": "Stripe API",
-      "componentCount": 11,
-      "complexity": 1.3181818181818181,
-      "couplingScore": 0
+      "componentCount": 9,
+      "complexity": 1.5555555555555556,
+      "couplingScore": 0.1111111111111111
     },
     {
       "name": "BookingSystem",
       "description": "Manages session scheduling and availability",
       "technology": "Custom calendar integration",
       "componentCount": 5,
-      "complexity": 2.5,
+      "complexity": 2.7,
       "couplingScore": 0.4
     }
   ]

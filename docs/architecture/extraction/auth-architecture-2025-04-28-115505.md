@@ -36,6 +36,8 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
  * and avoids the hoisting issues that can occur with inline vi.mock() calls.
  * 
  * Uses Vitest's MockInstance type for proper TypeScript support of method chaining. |
+| auth-provider | Context Provider (Clerk) | * AuthProvider component using Clerk
+ * This replaces the NextAuth SessionProvider with Clerk's equivalent |
 | clerk-auth-form | UI Component (Clerk) | * Clerk authentication form component with theme support |
 | loading-state | UI Component (Clerk) | * Component to handle authentication loading states
  * Prevents blank pages by showing a loading state while Clerk auth is initializing |
@@ -60,6 +62,8 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
  * - For client-side auth: import { useAuth, useUser } from "@clerk/nextjs";
  * - For server-side auth: import { currentUser } from "@clerk/nextjs/server";
  * - For middleware: import { authMiddleware } from "@clerk/nextjs"; |
+| clerk-hooks | Authentication Component | * Hook to access the current authenticated user with a compatible API to the old NextAuth hook
+ * @returns Object containing auth state and user information |
 | clerk-middleware | Authentication Component | * Public routes that don't require authentication |
 | factory | Authentication Component | * Middleware Factory for Buildappswith Platform
  * Version: 1.0.80
@@ -72,6 +76,9 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
  * 
  * Provides enhanced RBAC functionality for middleware
  * with flexible permission models and policy enforcement. |
+| page | Page Component (Clerk) | * Test page for Clerk authentication
+ * Tests various auth states and displays user information
+ * Version: 1.0.59 |
 | helpers | Authentication Component | * Extended user type with combined Clerk and database data |
 | route | API Endpoint (Clerk) | * Clerk Webhook Handler
  * 
@@ -93,12 +100,14 @@ The Buildappswith platform uses Clerk for authentication and user management. Th
 | user-auth-form | UI Component (Clerk) | * User authentication form component migrated to use Clerk directly |
 | page | Page Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
+| page | Page Component (Clerk) | N/A |
 | providers | Context Provider (Clerk) | * Combined providers wrapper for the application |
 | page | Page Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
 | booking-calendar | UI Component (Clerk) | N/A |
 | booking-form | UI Component (Clerk) | N/A |
 | page | Page Component (Clerk) | N/A |
+| route | API Endpoint (Clerk) | * GET handler for fetching current user profile |
 | route | API Endpoint (Clerk) | * Helper function to handle service errors with appropriate responses |
 | availability-exceptions | UI Component (Clerk) | N/A |
 | availability-management | UI Component (Clerk) | N/A |
@@ -190,6 +199,10 @@ Used by:
 
 ### page
 
+### page
+
+### auth-provider
+
 ### clerk-auth-form
 
 ### loading-state
@@ -225,6 +238,9 @@ Used by:
 - rbac
 - page
 - helpers
+- route
+
+### clerk-hooks
 
 ### clerk-middleware
 
@@ -237,6 +253,8 @@ Dependencies:
 
 Used by:
 - factory
+
+### page
 
 ### page
 
@@ -255,6 +273,8 @@ Used by:
 ### helpers
 
 ### page
+
+### route
 
 ### route
 

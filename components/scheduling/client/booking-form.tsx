@@ -10,8 +10,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Clock, MessageSquare, CalendarClock, CreditCard } from 'lucide-react';
+import { Calendar, Clock, MessageSquare, CalendarClock, CreditCard, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { completeBookingWithPayment, StripeClientErrorType } from '@/lib/stripe/stripe-client';
 
 interface BookingFormProps {
   sessionType: SessionType;
@@ -63,27 +64,43 @@ const BookingForm: React.FC<BookingFormProps> = ({
         notes: notes
       };
       
-      // Create the booking
-      const response = await fetch('/api/scheduling/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData),
-      });
+      // Determine the return URL for Stripe checkout
+      const returnUrl = `${window.location.origin}/booking/confirmation`;
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create booking');
+      // Complete the booking with payment in one unified process
+      const result = await completeBookingWithPayment(bookingData, returnUrl);
+      
+      if (!result.success) {
+        // Handle different error types for better user messaging
+        let errorMessage = result.message;
+        
+        switch (result.error?.type) {
+          case StripeClientErrorType.CHECKOUT:
+            errorMessage = 'Unable to create payment session. Please try again.';
+            break;
+          case StripeClientErrorType.REDIRECT:
+            errorMessage = 'Unable to redirect to payment page. Please try again.';
+            break;
+          case StripeClientErrorType.NETWORK:
+            errorMessage = 'Network error. Please check your connection and try again.';
+            break;
+          case StripeClientErrorType.INITIALIZATION:
+            errorMessage = 'Payment system initialization failed. Please try again later.';
+            break;
+          default:
+            errorMessage = result.error?.detail || 'An error occurred during the booking process.';
+        }
+        
+        throw new Error(errorMessage);
       }
       
-      // Successful booking
-      onComplete();
+      // No need to call onComplete() as we're redirecting to Stripe
+      // The confirmation will happen after the user returns from Stripe
       
     } catch (error: any) {
-      console.error('Error creating booking:', error);
-      setError(error.message || 'Failed to create booking. Please try again.');
-      toast.error(error.message || 'Failed to create booking');
+      console.error('Error processing booking payment:', error);
+      setError(error.message || 'Failed to process booking. Please try again.');
+      toast.error(error.message || 'Failed to process booking');
     } finally {
       setIsSubmitting(false);
     }
@@ -96,8 +113,12 @@ const BookingForm: React.FC<BookingFormProps> = ({
   return (
     <div className="space-y-6">
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md">
-          {error}
+        <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md flex items-start">
+          <AlertCircle className="h-5 w-5 text-red-500 mr-2 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium">Payment Error</p>
+            <p>{error}</p>
+          </div>
         </div>
       )}
       
