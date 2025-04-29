@@ -4,30 +4,7 @@ This document outlines the remaining tasks for implementing the standardized fol
 
 ## Priority 1: UI Components Restructuring
 
-- [ ] Move core UI components to /components/ui/core/
-  - [ ] accordion.tsx
-  - [ ] alert.tsx
-  - [ ] avatar.tsx
-  - [ ] badge.tsx
-  - [ ] button.tsx
-  - [ ] card.tsx
-  - [ ] checkbox.tsx
-  - [ ] dialog.tsx
-  - [ ] dropdown-menu.tsx
-  - [ ] form.tsx
-  - [ ] input.tsx
-  - [ ] label.tsx
-  - [ ] loading-spinner.tsx
-  - [ ] popover.tsx
-  - [ ] radio-group.tsx
-  - [ ] select.tsx
-  - [ ] separator.tsx
-  - [ ] sonner.tsx
-  - [ ] switch.tsx
-  - [ ] table.tsx
-  - [ ] tabs.tsx
-  - [ ] textarea.tsx
-  - [ ] tooltip.tsx
+- [X] Move core UI components to /components/ui/core/
 - [ ] Update imports across the codebase
 - [ ] Test to ensure functionality is preserved
 - [ ] Identify composite components for potential extraction
@@ -37,10 +14,10 @@ This document outlines the remaining tasks for implementing the standardized fol
 - [ ] Review and reorganize marketplace components
   - [ ] Move domain-specific UI to /components/marketplace/ui
   - [ ] Update imports and exports
-- [ ] Review and reorganize auth components
-  - [ ] Move components from Clerk migration
-  - [ ] Remove legacy NextAuth components
-  - [ ] Update imports and exports
+- [X] Review and reorganize auth components
+  - [X] Move components from Clerk migration
+  - [X] Remove legacy NextAuth components
+  - [X] Update imports and exports
 - [ ] Review and reorganize admin components
   - [ ] Move domain-specific UI to /components/admin/ui
   - [ ] Update imports and exports
@@ -77,7 +54,7 @@ This document outlines the remaining tasks for implementing the standardized fol
 
 - [x] Created folder structure plan
 - [x] Established directory scaffolding
-- [x] Created barrel exports
+- [ ] Created barrel exports (some still outstanding)
 - [x] Moved ValidationTierBadge to proper location
 - [x] Created comprehensive folder structure guide
 - [x] Added component README documentation

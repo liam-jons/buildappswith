@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.140] - 2025-04-29
+
+### Added
+- Created enhanced unused code analyzer script with improved detection accuracy
+- Added support for barrel exports and modern import patterns in analyzer
+- Created comprehensive documentation in UNUSED_CODE_ANALYZER_GUIDE.md
+- Added domain-based classification of unused components for systematic cleanup
+- Added multiple output formats (Markdown, HTML, JSON, Mermaid) for analysis reports
+- Added interactive backup mode for safely moving unused components
+- Added new npm scripts: arch:unused:enhanced, arch:unused:fix, arch:unused:verbose
+
+### Fixed
+- Resolved false positives in unused component detection
+- Fixed Next.js system file detection (pages, layouts, routes)
+- Improved JSX usage detection with support for kebab-case variants
+- Enhanced detection of API route usage
+
 ## [1.0.139] - 2025-04-28
 
 ### Added
@@ -105,6 +122,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Identified 202 potentially unused components for removal (76% of total components)
+- Created comprehensive codebase cleanup strategy in docs/architecture/analysis
+- Generated detailed component usage analysis to support cleanup efforts
+- Added domain-based organization of unused components for systematic removal
+- Enhanced unused components analyzer script for more accurate detection
+### Changed
+- Identified 202 potentially unused components for removal (76% of total components)
+- Created comprehensive codebase cleanup strategy in docs/architecture/analysis
+- Generated detailed component usage analysis to support cleanup efforts
+- Added domain-based organization of unused components for systematic removal
+- Enhanced unused components analyzer script for more accurate detection
 ### Changed
 - Identified 105 potentially unused components for removal (40% of total components)
 - Created comprehensive codebase cleanup strategy in docs/architecture/decisions
