@@ -1,6 +1,6 @@
 {
   "name": "buildappswith",
-  "version": "1.0.139",
+  "version": "1.0.140",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -60,7 +60,10 @@
     "arch:extract:all": "bash scripts/extract-all-architecture.sh",
     "arch:report": "bash scripts/generate-architecture-report.sh",
     "arch:combined": "pnpm arch:extract:all && pnpm arch:report",
-    "arch:unused": "bash scripts/run-unused-code-analyzer.sh"
+    "arch:unused": "bash scripts/run-unused-code-analyzer.sh",
+    "arch:unused:enhanced": "bash scripts/enhanced-unused-code-analyzer.sh",
+    "arch:unused:fix": "bash scripts/enhanced-unused-code-analyzer.sh --fix",
+    "arch:unused:verbose": "bash scripts/enhanced-unused-code-analyzer.sh --verbose"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.31.8",
