@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Unused Code Analyzer Runner for Buildappswith
-# Version: 1.0.125
+# Version: 1.0.140
+#
+# Note: Consider using enhanced-unused-code-analyzer.sh for more accurate results
 #
 # This script runs the unused features analyzer and reports the results
 
