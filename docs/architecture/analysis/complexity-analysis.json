@@ -1,7 +1,7 @@
 {
-  "overallComplexity": 1.7541322314049588,
+  "overallComplexity": 1.7592592592592593,
   "containerComplexity": {
-    "WebApplication": 1.483695652173913,
+    "WebApplication": 1.491891891891892,
     "Database": 3.3947368421052633,
     "AuthenticationService": 2.26,
     "PaymentService": 1.8888888888888888,
@@ -113,6 +113,22 @@
       "unusedReason": "No incoming references found",
       "lastModified": "2025-04-27",
       "complexityScore": 3.5
+    },
+    {
+      "name": "buildappswith-platform-overview",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/docs/buildappswith-platform-overview.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-29",
+      "complexityScore": 3
     },
     {
       "name": "generate-architecture-report",
@@ -1662,6 +1678,22 @@
           "isUnused": false,
           "lastModified": "2025-04-24",
           "complexityScore": 0
+        },
+        {
+          "name": "buildappswith-platform-overview",
+          "type": "Utility",
+          "path": "/Users/liamj/Documents/Development/buildappswith/docs/buildappswith-platform-overview.tsx",
+          "dependencies": [],
+          "container": "WebApplication",
+          "isTechnicalDebt": false,
+          "isLegacy": false,
+          "incomingReferences": 0,
+          "outgoingReferences": 0,
+          "usageScore": 0,
+          "isUnused": true,
+          "unusedReason": "No incoming references found",
+          "lastModified": "2025-04-29",
+          "complexityScore": 3
         },
         {
           "name": "use-on-click-outside",

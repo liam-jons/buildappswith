@@ -38,6 +38,7 @@ workspace "Buildappswith Platform" "Architecture documentation for the Buildapps
                 suspense_user_auth_form = component "suspense-user-auth-form" "UI Component"
                 theme_provider = component "theme-provider" "Context Provider"
                 user_auth_form = component "user-auth-form" "UI Component"
+                buildappswith_platform_overview = component "buildappswith-platform-overview" "Utility"
                 use_on_click_outside = component "use-on-click-outside" "Utility"
                 csrf = component "csrf" "Utility"
                 db = component "db" "Utility"
