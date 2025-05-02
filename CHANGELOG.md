@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- Identified 202 potentially unused components for removal (76% of total components)
+- Created comprehensive codebase cleanup strategy in docs/architecture/analysis
+- Generated detailed component usage analysis to support cleanup efforts
+- Added domain-based organization of unused components for systematic removal
+- Enhanced unused components analyzer script for more accurate detection
+
+
 All notable changes to this project will be documented in this file.
 
 ## [1.0.142] - 2025-04-29

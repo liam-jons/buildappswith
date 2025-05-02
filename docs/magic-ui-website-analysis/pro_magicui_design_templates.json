@@ -1,0 +1,461 @@
+{
+  "url": "https://pro.magicui.design/docs/templates/agent",
+  "title": "AI Agent Template | Magic UI Pro",
+  "metaDescription": "",
+  "headings": [
+    {
+      "level": 4,
+      "text": "Getting Started"
+    },
+    {
+      "level": 4,
+      "text": "Templates"
+    },
+    {
+      "level": 4,
+      "text": "Page Sections"
+    },
+    {
+      "level": 1,
+      "text": "AI Agent Template"
+    },
+    {
+      "level": 2,
+      "text": "What is this?"
+    },
+    {
+      "level": 2,
+      "text": "Who is this for?"
+    },
+    {
+      "level": 2,
+      "text": "What's included?"
+    },
+    {
+      "level": 3,
+      "text": "Features"
+    },
+    {
+      "level": 3,
+      "text": "Page Sections"
+    },
+    {
+      "level": 2,
+      "text": "Built with the latest technologies"
+    },
+    {
+      "level": 2,
+      "text": "Changelog"
+    },
+    {
+      "level": 3,
+      "text": "fix: update text"
+    },
+    {
+      "level": 3,
+      "text": "fix: update text"
+    },
+    {
+      "level": 3,
+      "text": "fix: update smooth scroll"
+    },
+    {
+      "level": 3,
+      "text": "fix: update background color"
+    },
+    {
+      "level": 3,
+      "text": "fix: remove unused images"
+    }
+  ],
+  "mainText": "[data-radix-scroll-area-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-radix-scroll-area-viewport]::-webkit-scrollbar{display:none}Getting StartedIntroductionInstallationTemplatesAI AgentNewDev ToolMobileSaaSStartupPortfolioPage SectionsHeaderHeroSocial Proof PressSocial Proof CompaniesSocial Proof TestimonialsStatsFeature ScrollFeature SlideshowFeature CardsCarouselPricingCall To ActionFAQFooterDocsAI Agent TemplateAI Agent TemplateThe ultimate landing page template for your AI agent startup.self.__wrap_n=self.__wrap_n||(self.CSS&&CSS.supports(\"text-wrap\",\"balance\")?1:2);self.__wrap_b=(e,t,n)=>{let r=(n=n||document.querySelector(`[data-br=\"${e}\"]`)).parentElement,i=e=>n.style.maxWidth=e+\"px\";n.style.maxWidth=\"\";let u=r.clientWidth,o=r.clientHeight,s=u/2-.25,a=u+.5,l;if(u){for(i(s),s=Math.max(n.scrollWidth,s);s+1<a;)i(l=Math.round((s+a)/2)),r.clientHeight===o?a=l:s=l;i(a*t+u*(1-t))}n.__wrap_o||\"undefined\"!=typeof ResizeObserver&&(n.__wrap_o=new ResizeObserver(()=>{self.__wrap_b(0,+n.dataset.brr,n)})).observe(r)};self.__wrap_n!=1&&self.__wrap_b(\":R14puujt7j5kq:\",1)Get AccessLive Preview\nWhat is this?This is a landing page template for an AI agent startup. The template is built with Next.js, TailwindCSS, and Motion, optimized for showcasing AI agent services.\n\nWho is this for?You are launching a new AI agent startup and need a professional, eye-catching landing page to showcase your product's features.\n\nWhat's included?This template is specifically designed for landing pages, packed with essential features and components to streamline your development process. It helps you create stunning, high-converting landing pages in a fraction of the time, allowing you to focus on what matters most - your product.FeaturesSave 500+ hours of work1x Landing Page with 9 sectionsDark mode support100% Mobile responsiveSEO optimizedInteractive animationsClean and maintainable codeGlobal config for easy updatesEasy customization1-click download and setupDeploy live to VercelPage SectionsHeaderHeroLogosFeatures Bento GridTestimonialsPricingFAQCTAFooter\n\nBuilt with the latest technologiesThis template is built with the latest technologies and best practices in mind.Next.jsv15.2.2Reactv19TypeScriptv5TailwindCSSv4Motionv12.5next-themesv0.4.6radix-uishadcn/ui\n\nChangelogStay up to date with our latest changesKeep track of our ongoing improvements and new features as we continuously enhance our template.22 days agofix: update text22 days agofix: update text22 days agofix: update smooth scroll22 days agofix: update background color22 days agofix: remove unused imagesInstallationDev Tool{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"headline\":\"AI Agent Template\",\"datePublished\":\"2025-03-25T00:00:00.000Z\",\"dateModified\":\"2025-03-25T00:00:00.000Z\",\"url\":\"https://magicui.design/docs/templates/agent\",\"author\":{\"@type\":\"Person\",\"name\":\"dillionverma\",\"url\":\"https://twitter.com/dillionverma\"}}",
+  "codeBlocks": [],
+  "links": [
+    {
+      "url": "https://pro.magicui.design/",
+      "text": "Magic UIPro",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/templates",
+      "text": "Docs",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/#pricing",
+      "text": "Pricing",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/login",
+      "text": "Login",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/#pricing",
+      "text": "Get AccessGet Unlimited Access",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs",
+      "text": "Introduction",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/installation",
+      "text": "Installation",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/agent",
+      "text": "AI AgentNew",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/devtool",
+      "text": "Dev Tool",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/mobile",
+      "text": "Mobile",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/saas",
+      "text": "SaaS",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/startup",
+      "text": "Startup",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/portfolio",
+      "text": "Portfolio",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/header",
+      "text": "Header",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/hero",
+      "text": "Hero",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/social-proof-press",
+      "text": "Social Proof Press",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/social-proof-companies",
+      "text": "Social Proof Companies",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/social-proof-testimonials",
+      "text": "Social Proof Testimonials",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/stats",
+      "text": "Stats",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/feature-scroll",
+      "text": "Feature Scroll",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/feature-slideshow",
+      "text": "Feature Slideshow",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/feature-cards",
+      "text": "Feature Cards",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/carousel",
+      "text": "Carousel",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/pricing",
+      "text": "Pricing",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/call-to-action",
+      "text": "Call To Action",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/faq",
+      "text": "FAQ",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/footer",
+      "text": "Footer",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://agent-magicui.vercel.app/",
+      "text": "Live Preview",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://pro.magicui.design/docs/installation",
+      "text": "Installation",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/devtool",
+      "text": "Dev Tool",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://twitter.com/magicuidesign",
+      "text": "Twitter",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://github.com/magicuidesign/magicui",
+      "text": "GitHub",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://discord.gg/87p2vpsat5",
+      "text": "Discord",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://pro.magicui.design/",
+      "text": "Home",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/#pricing",
+      "text": "Magic UI Pro",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/",
+      "text": "Magic UI Free",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://pro.magicui.design/#pricing",
+      "text": "Pricing",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/affiliates",
+      "text": "AffiliatesEarn 30%",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.featurebase.app/",
+      "text": "Roadmap",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://pro.magicui.design/#faqs",
+      "text": "FAQs",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "mailto:support@magicui.design",
+      "text": "Contact",
+      "isRelative": true,
+      "isSameHost": false
+    },
+    {
+      "url": "https://pro.magicui.design/license",
+      "text": "License Agreement",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/agent",
+      "text": "AI Agent",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/devtool",
+      "text": "Dev Tool",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/mobile",
+      "text": "Mobile",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/saas",
+      "text": "SaaS",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/startup",
+      "text": "Startup",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/templates/portfolio",
+      "text": "Portfolio",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/header",
+      "text": "Header",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/hero",
+      "text": "Hero",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/social-proof-press",
+      "text": "Social Proof Press",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/social-proof-companies",
+      "text": "Social Proof Companies",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/social-proof-testimonials",
+      "text": "Social Proof Testimonials",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/stats",
+      "text": "Stats",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/feature-scroll",
+      "text": "Feature Scroll",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/feature-slideshow",
+      "text": "Feature Slideshow",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/feature-cards",
+      "text": "Feature Cards",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/pricing",
+      "text": "Pricing",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/call-to-action",
+      "text": "Call To Action",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/faq",
+      "text": "FAQ",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/docs/sections/footer",
+      "text": "Footer",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/login",
+      "text": "Log In",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/register",
+      "text": "Sign Up",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/",
+      "text": "Magic UI Pro",
+      "isRelative": false,
+      "isSameHost": true
+    }
+  ],
+  "images": [],
+  "aiAnalysis": "Here is a summary of the key points from the AI Agent Template page on the Magic UI Pro website:\n\nOverview:\n- This is a landing page template designed for AI agent startups, built with Next.js, Tailwind CSS, and Motion.\n- It provides a professional, high-converting landing page to showcase AI agent services and features.\n\nKey Features:\n- Includes 9 essential landing page sections (Header, Hero, Logos, Features, Testimonials, Pricing, FAQ, CTA, Footer)\n- 100% mobile responsive and SEO optimized\n- Interactive animations and smooth scrolling\n- Clean, maintainable code with global configuration options\n- Easy customization and 1-click deployment to Vercel\n\nTarget Audience:\n- Founders and teams launching a new AI agent startup who need a professional landing page.\n\nTechnical Details:\n- Built with the latest web technologies: Next.js 15.2.2, React 19, TypeScript 5, Tailwind CSS 4, Motion 12.5\n- Leverages popular libraries like next-themes and radix-ui\n\nOverall, this template provides a feature-rich, visually appealing landing page solution to help AI agent startups get up and running quickly with a high-converting web presence."
+}

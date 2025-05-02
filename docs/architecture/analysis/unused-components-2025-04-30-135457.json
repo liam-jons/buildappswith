@@ -1,0 +1,1415 @@
+[
+  {
+    "name": "accordion",
+    "path": "./components/ui/core/accordion.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "add-project-form",
+    "path": "./components/profile/add-project-form.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "admin-nav",
+    "path": "./components/admin/admin-nav.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "ai-capabilities-marquee",
+    "path": "./components/landing/ai-capabilities-marquee.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "alert",
+    "path": "./components/ui/core/alert.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "animated-circular-progress-bar-demo",
+    "path": "./components/landing/animated-circular-progress-bar-demo.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "animated-circular-progress-bar",
+    "path": "./components/magicui/animated-circular-progress-bar.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "animated-heading",
+    "path": "./components/custom/animated-heading.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "api-auth",
+    "path": "./lib/auth/clerk/api-auth.ts",
+    "type": "Library",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "api-protection",
+    "path": "./lib/middleware/api-protection.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "app-service",
+    "path": "./lib/marketplace/app-service.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "app-showcase",
+    "path": "./components/profile/app-showcase.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "architecture-utils",
+    "path": "./scripts/architecture-utils.ts",
+    "type": "Other",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "aurora-text",
+    "path": "./components/magicui/aurora-text.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "auth-error-boundary",
+    "path": "./components/auth/auth-error-boundary.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "availability-exceptions",
+    "path": "./components/scheduling/builder/availability/availability-exceptions.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "availability-management",
+    "path": "./components/scheduling/builder/availability/availability-management.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "avatar",
+    "path": "./components/ui/core/avatar.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "badge",
+    "path": "./components/ui/core/badge.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "booking-calendar",
+    "path": "./components/scheduling/client/booking-calendar.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "booking-form",
+    "path": "./components/scheduling/client/booking-form.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "border-beam",
+    "path": "./components/magicui/border-beam.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "builder-card",
+    "path": "./components/marketplace/builder-card.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "builder-image",
+    "path": "./components/marketplace/builder-image.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "builder-profile-client-wrapper",
+    "path": "./components/profile/builder-profile-client-wrapper.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "builder-profile-service",
+    "path": "./lib/services/builder-profile-service.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "builder-profile",
+    "path": "./components/profile/builder-profile.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "builder-service",
+    "path": "./lib/services/builder-service.ts",
+    "type": "Library",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "builder",
+    "path": "./lib/types/builder.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "BuilderProfileClient",
+    "path": "./app/(platform)/marketplace/[id]/BuilderProfileClient.tsx",
+    "type": "Other",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "button",
+    "path": "./components/ui/core/button.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "card",
+    "path": "./components/ui/core/card.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "check-current-status",
+    "path": "./scripts/check-current-status.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "check-final",
+    "path": "./scripts/check-final.js",
+    "type": "Other",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "check-git-branches",
+    "path": "./scripts/check-git-branches.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "check-migration-history",
+    "path": "./scripts/check-migration-history.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "check-migration-status",
+    "path": "./scripts/check-migration-status.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "check-typescript-fixes",
+    "path": "./scripts/check-typescript-fixes.js",
+    "type": "Other",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "checkbox",
+    "path": "./components/ui/core/checkbox.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "clerk-auth-form",
+    "path": "./components/auth/clerk-auth-form.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "clerk-hooks",
+    "path": "./lib/auth/clerk-hooks.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "clerk-provider",
+    "path": "./components/providers/clerk-provider.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "client-section",
+    "path": "./components/landing/client-section.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "client",
+    "path": "./app/profile/[id]/client.tsx",
+    "type": "Other",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "config",
+    "path": "./lib/middleware/config.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "config",
+    "path": "./scripts/datadog/config.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "contact-form",
+    "path": "./components/contact/contact-form.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "coverage-processor",
+    "path": "./scripts/datadog/coverage-processor.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "create-baseline-migration",
+    "path": "./scripts/create-baseline-migration.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "create-dashboard",
+    "path": "./scripts/datadog/dashboards/create-dashboard.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "create-dummy-profiles",
+    "path": "./scripts/seed-data/create-dummy-profiles.ts",
+    "type": "Other",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "create-profiles",
+    "path": "./scripts/seed-data/create-profiles.ts",
+    "type": "Other",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "create-unused-features-analyzer",
+    "path": "./scripts/create-unused-features-analyzer.ts",
+    "type": "Other",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "csrf",
+    "path": "./lib/csrf.ts",
+    "type": "Library",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "data-access",
+    "path": "./lib/auth/data-access.ts",
+    "type": "Library",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "data-service",
+    "path": "./lib/marketplace/data-service.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "datadog-config",
+    "path": "./datadog-config.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "datadog-test-agent",
+    "path": "./datadog-test-agent.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "db",
+    "path": "./lib/db.ts",
+    "type": "Library",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "debug-migration-check",
+    "path": "./scripts/debug-migration-check.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "diagnose-database-state",
+    "path": "./scripts/diagnose-database-state.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "diagnose-migration-drift",
+    "path": "./scripts/diagnose-migration-drift.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "dialog",
+    "path": "./components/ui/core/dialog.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "dropdown-menu",
+    "path": "./components/ui/core/dropdown-menu.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "error-handling",
+    "path": "./lib/middleware/error-handling.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "extract-architecture",
+    "path": "./scripts/extract-architecture.ts",
+    "type": "Other",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "extract-auth-architecture",
+    "path": "./scripts/extract-auth-architecture.ts",
+    "type": "Other",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "factory",
+    "path": "./lib/middleware/factory.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "faq-accordion",
+    "path": "./components/client/faq-accordion.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "fileMock",
+    "path": "./__mocks__/fileMock.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "final-cta-section",
+    "path": "./components/landing/final-cta-section.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "find-component-imports",
+    "path": "./scripts/find-component-imports.js",
+    "type": "Other",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "fix-barrel-exports",
+    "path": "./scripts/fix-barrel-exports.js",
+    "type": "Other",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "fix-build-issues",
+    "path": "./scripts/fix-build-issues.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "fix-duplicate-migrations",
+    "path": "./scripts/fix-duplicate-migrations.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "fix-migration-drift",
+    "path": "./scripts/fix-migration-drift.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "fix-migration-sync",
+    "path": "./scripts/fix-migration-sync.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "fix-prisma-types",
+    "path": "./scripts/fix-prisma-types.js",
+    "type": "Other",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "fix-social-links-drift",
+    "path": "./scripts/fix-social-links-drift.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "form",
+    "path": "./components/ui/core/form.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "generate-architecture-report",
+    "path": "./scripts/generate-architecture-report.ts",
+    "type": "Other",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "helpers",
+    "path": "./lib/auth/clerk/helpers.ts",
+    "type": "Library",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "hero-section",
+    "path": "./components/landing/hero-section.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "hooks",
+    "path": "./lib/auth/hooks.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./components/marketplace/index.ts",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./components/marketplace/ui/index.ts",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./components/profile/index.ts",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./components/profile/ui/index.ts",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./components/ui/composite/index.ts",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./components/ui/core/index.ts",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./components/ui/index.ts",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./lib/auth/index.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "index",
+    "path": "./lib/middleware/index.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "init-production-database",
+    "path": "./scripts/init-production-database.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "input",
+    "path": "./components/ui/core/input.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "instrumentation-client",
+    "path": "./instrumentation-client.ts",
+    "type": "Other",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "instrumentation",
+    "path": "./instrumentation.ts",
+    "type": "Other",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "investigate-social-links",
+    "path": "./scripts/investigate-social-links.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "jest.config",
+    "path": "./jest.config.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "jest.setup",
+    "path": "./jest.setup.js",
+    "type": "Other",
+    "lastModified": "2025-04-25"
+  }
+,
+  {
+    "name": "json-utilities",
+    "path": "./lib/json-utilities.ts",
+    "type": "Library",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "key-values-section",
+    "path": "./components/landing/key-values-section.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "label",
+    "path": "./components/ui/core/label.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "loading-spinner",
+    "path": "./components/ui/core/loading-spinner.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "loading-state",
+    "path": "./components/auth/loading-state.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "logger",
+    "path": "./lib/logger.ts",
+    "type": "Library",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "logging",
+    "path": "./lib/middleware/logging.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "marketplace-service",
+    "path": "./lib/marketplace/real-data/marketplace-service.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "marquee",
+    "path": "./components/magicui/marquee.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "metrics-display",
+    "path": "./app/(platform)/builder/profile/components/metrics-display.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "mock-data",
+    "path": "./lib/scheduling/mock-data.ts",
+    "type": "Library",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "next-env.d",
+    "path": "./next-env.d.ts",
+    "type": "Other",
+    "lastModified": "2025-04-16"
+  }
+,
+  {
+    "name": "nextjs",
+    "path": "./__mocks__/@clerk/nextjs.ts",
+    "type": "Other",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "particles",
+    "path": "./components/magicui/particles.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "payment-status-indicator",
+    "path": "./components/payment/payment-status-indicator.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "payment-success-content",
+    "path": "./app/(platform)/payment/success/payment-success-content.tsx",
+    "type": "Other",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "performance",
+    "path": "./lib/middleware/performance.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "popover",
+    "path": "./components/ui/core/popover.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "portfolio-gallery",
+    "path": "./app/(platform)/builder/profile/components/portfolio-gallery.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "portfolio-gallery",
+    "path": "./components/profile/portfolio-gallery.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "portfolio-showcase",
+    "path": "./components/profile/portfolio-showcase.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "postcss.config",
+    "path": "./postcss.config.js",
+    "type": "Other",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "prisma-extensions",
+    "path": "./lib/prisma-extensions.ts",
+    "type": "Library",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "prisma-types",
+    "path": "./lib/prisma-types.ts",
+    "type": "Library",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "production-checklist",
+    "path": "./scripts/production-checklist.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "production-database-check",
+    "path": "./scripts/production-database-check.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "profile-context",
+    "path": "./lib/contexts/profile-context.tsx",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "profile-form-helpers",
+    "path": "./lib/utils/profile-form-helpers.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "profile",
+    "path": "./lib/builders/profile.ts",
+    "type": "Library",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "profiles",
+    "path": "./lib/mock-data/profiles.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "providers",
+    "path": "./components/providers/providers.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "quick-seed",
+    "path": "./scripts/seed-data/quick-seed.js",
+    "type": "Other",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "radio-group",
+    "path": "./components/ui/core/radio-group.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "rate-limit",
+    "path": "./lib/rate-limit.ts",
+    "type": "Library",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "rbac",
+    "path": "./lib/middleware/rbac.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "reconcile-migrations",
+    "path": "./scripts/reconcile-migrations.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "reset-database-for-clerk",
+    "path": "./scripts/reset-database-for-clerk.js",
+    "type": "Other",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "role-badges",
+    "path": "./components/profile/role-badges.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "route-types",
+    "path": "./app/api/route-types.ts",
+    "type": "API",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "scheduling-service",
+    "path": "./lib/scheduling/real-data/scheduling-service.ts",
+    "type": "Library",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "scheduling",
+    "path": "./lib/api-client/scheduling.ts",
+    "type": "Library",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "search-params-fallback",
+    "path": "./components/search-params-fallback.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "seed-builder-profiles",
+    "path": "./scripts/seed-data/seed-builder-profiles.js",
+    "type": "Other",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "seed-db",
+    "path": "./scripts/seed-db.js",
+    "type": "Other",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "seed-with-env",
+    "path": "./scripts/seed-with-env.js",
+    "type": "Other",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "seed",
+    "path": "./prisma/seed/seed.js",
+    "type": "Other",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "select",
+    "path": "./components/ui/core/select.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "sentry.edge.config",
+    "path": "./sentry.edge.config.ts",
+    "type": "Other",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "sentry.server.config",
+    "path": "./sentry.server.config.ts",
+    "type": "Other",
+    "lastModified": "2025-04-24"
+  }
+,
+  {
+    "name": "separator",
+    "path": "./components/ui/core/separator.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "session-type-editor",
+    "path": "./components/scheduling/builder/session-type-editor.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "session-type-form",
+    "path": "./components/admin/session-type-form.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "session-type-selector",
+    "path": "./components/scheduling/client/session-type-selector.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "session-types",
+    "path": "./lib/session-types.ts",
+    "type": "Library",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "setup-datadog-test-visualization",
+    "path": "./scripts/setup-datadog-test-visualization.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "setup-production-db",
+    "path": "./scripts/setup-production-db.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "setup",
+    "path": "./scripts/datadog/setup.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "site-footer",
+    "path": "./components/site-footer.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "site-header",
+    "path": "./components/site-header.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "sonner",
+    "path": "./components/ui/core/sonner.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "stripe-client",
+    "path": "./lib/stripe/stripe-client.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "stripe-server",
+    "path": "./lib/stripe/stripe-server.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "styleMock",
+    "path": "./__mocks__/styleMock.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "success-metrics-dashboard",
+    "path": "./components/profile/success-metrics-dashboard.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "suspense-user-auth-form",
+    "path": "./components/suspense-user-auth-form.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "switch",
+    "path": "./components/ui/core/switch.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "sync-database",
+    "path": "./scripts/sync-database.js",
+    "type": "Other",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "sync-dev-prod-databases",
+    "path": "./scripts/sync-dev-prod-databases.js",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "table",
+    "path": "./components/ui/core/table.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "tabs",
+    "path": "./components/ui/core/tabs.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "tailwind.config",
+    "path": "./tailwind.config.ts",
+    "type": "Other",
+    "lastModified": "2025-04-22"
+  }
+,
+  {
+    "name": "test-reporter",
+    "path": "./lib/datadog/test-reporter.js",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "test-utils",
+    "path": "./lib/middleware/test-utils.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "testimonials-section",
+    "path": "./components/landing/testimonials-section.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "text-shimmer",
+    "path": "./components/magicui/text-shimmer.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "textarea",
+    "path": "./components/ui/core/textarea.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "theme-provider",
+    "path": "./components/theme-provider.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "time-slot-selector",
+    "path": "./components/scheduling/client/time-slot-selector.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "timezone-selector",
+    "path": "./components/scheduling/shared/timezone-selector.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "tooltip",
+    "path": "./components/ui/core/tooltip.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "two-line-animated-heading",
+    "path": "./components/custom/two-line-animated-heading.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "types",
+    "path": "./lib/auth/types.ts",
+    "type": "Library",
+    "lastModified": "2025-04-27"
+  }
+,
+  {
+    "name": "types",
+    "path": "./lib/marketplace/types.ts",
+    "type": "Library",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "types",
+    "path": "./lib/scheduling/types.ts",
+    "type": "Library",
+    "lastModified": "2025-04-18"
+  }
+,
+  {
+    "name": "update-component-imports",
+    "path": "./scripts/update-component-imports.js",
+    "type": "Other",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "update-liam-profile",
+    "path": "./scripts/seed-data/update-liam-profile.js",
+    "type": "Other",
+    "lastModified": "2025-04-23"
+  }
+,
+  {
+    "name": "use-on-click-outside",
+    "path": "./hooks/use-on-click-outside.ts",
+    "type": "Hook",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "user-auth-form",
+    "path": "./components/user-auth-form.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "utils",
+    "path": "./lib/scheduling/utils.ts",
+    "type": "Library",
+    "lastModified": "2025-04-20"
+  }
+,
+  {
+    "name": "utils",
+    "path": "./lib/utils.ts",
+    "type": "Library",
+    "lastModified": "2025-04-16"
+  }
+,
+  {
+    "name": "validation-tier-badge",
+    "path": "./components/profile/ui/validation-tier-badge.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "validation-tier",
+    "path": "./app/(platform)/builder/profile/components/validation-tier.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "validation",
+    "path": "./lib/middleware/validation.ts",
+    "type": "Library",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "verify-datadog-metrics",
+    "path": "./scripts/verify-datadog-metrics.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "vitest-datadog-reporter",
+    "path": "./scripts/datadog/vitest-datadog-reporter.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "vitest.config",
+    "path": "./vitest.config.js",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "vitest.config",
+    "path": "./vitest.config.ts",
+    "type": "Other",
+    "lastModified": "2025-04-26"
+  }
+,
+  {
+    "name": "vitest.d",
+    "path": "./types/vitest.d.ts",
+    "type": "Other",
+    "lastModified": "2025-04-21"
+  }
+,
+  {
+    "name": "vitest.setup",
+    "path": "./vitest.setup.ts",
+    "type": "Other",
+    "lastModified": "2025-04-25"
+  }
+,
+  {
+    "name": "weekly-availability",
+    "path": "./components/scheduling/builder/availability/weekly-availability.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "weekly-schedule",
+    "path": "./components/scheduling/builder/weekly-schedule.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-28"
+  }
+,
+  {
+    "name": "word-rotate",
+    "path": "./components/magicui/word-rotate.tsx",
+    "type": "UI Component",
+    "lastModified": "2025-04-18"
+  }
+]
