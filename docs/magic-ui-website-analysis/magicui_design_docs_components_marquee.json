@@ -1,0 +1,891 @@
+{
+  "url": "https://magicui.design/docs/components/marquee",
+  "title": "Marquee | Magic UI",
+  "metaDescription": "",
+  "headings": [
+    {
+      "level": 4,
+      "text": "Getting Started"
+    },
+    {
+      "level": 4,
+      "text": "Templates"
+    },
+    {
+      "level": 4,
+      "text": "Components"
+    },
+    {
+      "level": 4,
+      "text": "Device Mocks"
+    },
+    {
+      "level": 4,
+      "text": "Special Effects"
+    },
+    {
+      "level": 4,
+      "text": "Animations"
+    },
+    {
+      "level": 4,
+      "text": "Text Animations"
+    },
+    {
+      "level": 4,
+      "text": "Buttons"
+    },
+    {
+      "level": 4,
+      "text": "Backgrounds"
+    },
+    {
+      "level": 1,
+      "text": "Marquee"
+    },
+    {
+      "level": 2,
+      "text": "Installation"
+    },
+    {
+      "level": 2,
+      "text": "Examples"
+    },
+    {
+      "level": 3,
+      "text": "Vertical"
+    },
+    {
+      "level": 3,
+      "text": "3D"
+    },
+    {
+      "level": 2,
+      "text": "Usage"
+    },
+    {
+      "level": 2,
+      "text": "Props"
+    }
+  ],
+  "mainText": "Getting Started IntroductionInstallationTailwind v4NewTemplates AI AgentNewProDev ToolProMobileProSaaSProStartupProPortfolioComponents MarqueeTerminalHero Video DialogBento GridAnimated ListDockGlobeTweet CardOrbiting CirclesAvatar CirclesIcon CloudAnimated Circular Progress BarFile TreeCode ComparisonScript Copy ButtonScroll ProgressLensPointerDevice Mocks SafariiPhone 15 ProAndroidSpecial Effects Animated BeamBorder BeamShine BorderMagic CardMeteorsNeon Gradient CardConfettiParticlesCool ModeScratch To RevealAnimations Blur FadeText Animations Text AnimateLine Shadow TextAurora TextNumber TickerAnimated Shiny TextAnimated Gradient TextText RevealHyper TextWord RotateTyping AnimationScroll Based VelocityFlip TextBox RevealSparkles TextMorphing TextSpinning TextButtons Rainbow ButtonShimmer ButtonShiny ButtonInteractive Hover ButtonAnimated Subscribe ButtonPulsating ButtonRipple ButtonBackgrounds Warp BackgroundFlickering GridAnimated Grid PatternRetro GridRippleDot PatternGrid PatternInteractive Grid PatternDocsMarqueeMarqueeAn infinite scrolling component that can be used to display text, images, or videos.PreviewCodeOpen in Jack@jackI've never seen anything like this before. It's amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jane@janeI'm at a loss for words. This is amazing. I love it.Jenny@jennyI'm at a loss for words. This is amazing. I love it.James@jamesI'm at a loss for words. This is amazing. I love it.Jane@janeI'm at a loss for words. This is amazing. I love it.Jenny@jennyI'm at a loss for words. This is amazing. I love it.James@jamesI'm at a loss for words. This is amazing. I love it.Jane@janeI'm at a loss for words. This is amazing. I love it.Jenny@jennyI'm at a loss for words. This is amazing. I love it.James@jamesI'm at a loss for words. This is amazing. I love it.Jane@janeI'm at a loss for words. This is amazing. I love it.Jenny@jennyI'm at a loss for words. This is amazing. I love it.James@jamesI'm at a loss for words. This is amazing. I love it.\nInstallation\nCLIManualpnpmnpmyarnbunpnpm dlx shadcn@latest add \"https://magicui.design/r/marquee\"\nCopy\nExamples\nVertical\nPreviewCodeOpen in Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.\n3D\nPreviewCodeOpen in Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jack@jackI've never seen anything like this before. It's amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.Jill@jillI don't know what to say. I'm speechless. This is amazing.John@johnI'm at a loss for words. This is amazing. I love it.\nUsage\nimport { Marquee } from \"@/components/magicui/marquee.tsx\";\n<Marquee>\n  <span>Next.js</span>\n  <span>React</span>\n  <span>TypeScript</span>\n  <span>Tailwind CSS</span>\n</Marquee>\nProps\nPropTypeDefaultDescriptionclassNamestring-The class name to apply to the component.reversebooleanfalseWhether or not to reverse the direction of the marquee.pauseOnHoverbooleanfalseWhether or not to pause the marquee when the user hovers over the component.verticalbooleanfalseWhether or not to display the marquee vertically.childrennode-The content to display in the marquee.repeatnumber1The number of times to repeat the content.PortfolioTerminalOn This PageInstallationExamplesVertical3DUsagePropsContributeReport an issueRequest a featureEdit this page",
+  "codeBlocks": [
+    {
+      "language": "text",
+      "code": "pnpm dlx shadcn@latest add \"https://magicui.design/r/marquee\""
+    },
+    {
+      "language": "text",
+      "code": "pnpm dlx shadcn@latest add \"https://magicui.design/r/marquee\""
+    },
+    {
+      "language": "text",
+      "code": "import { Marquee } from \"@/components/magicui/marquee.tsx\";"
+    },
+    {
+      "language": "text",
+      "code": "import { Marquee } from \"@/components/magicui/marquee.tsx\";"
+    },
+    {
+      "language": "text",
+      "code": "<Marquee>\n  <span>Next.js</span>\n  <span>React</span>\n  <span>TypeScript</span>\n  <span>Tailwind CSS</span>\n</Marquee>"
+    },
+    {
+      "language": "text",
+      "code": "<Marquee>\n  <span>Next.js</span>\n  <span>React</span>\n  <span>TypeScript</span>\n  <span>Tailwind CSS</span>\n</Marquee>"
+    },
+    {
+      "language": "text",
+      "code": "className"
+    },
+    {
+      "language": "text",
+      "code": "string"
+    },
+    {
+      "language": "text",
+      "code": "-"
+    },
+    {
+      "language": "text",
+      "code": "reverse"
+    },
+    {
+      "language": "text",
+      "code": "boolean"
+    },
+    {
+      "language": "text",
+      "code": "false"
+    },
+    {
+      "language": "text",
+      "code": "pauseOnHover"
+    },
+    {
+      "language": "text",
+      "code": "boolean"
+    },
+    {
+      "language": "text",
+      "code": "false"
+    },
+    {
+      "language": "text",
+      "code": "vertical"
+    },
+    {
+      "language": "text",
+      "code": "boolean"
+    },
+    {
+      "language": "text",
+      "code": "false"
+    },
+    {
+      "language": "text",
+      "code": "children"
+    },
+    {
+      "language": "text",
+      "code": "node"
+    }
+  ],
+  "links": [
+    {
+      "url": "https://pro.magicui.design/",
+      "text": "✨  Introducing Magic UI Pro - 50+ blocks and templates to build beautiful landing pages in minutes.",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/",
+      "text": "Magic UI",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/components",
+      "text": "Components",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://pro.magicui.design/",
+      "text": "TemplatesNew",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/showcase",
+      "text": "Showcase",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://github.com/magicuidesign/magicui",
+      "text": "StarStar on GitHub 15,434",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://discord.gg/87p2vpsat5",
+      "text": "Discord",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://github.com/magicuidesign/magicui",
+      "text": "GitHub",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://twitter.com/magicuidesign",
+      "text": "Twitter",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://magicui.design/docs",
+      "text": "Introduction",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/installation",
+      "text": "Installation",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/tailwind-v4",
+      "text": "Tailwind v4New",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/templates/agent",
+      "text": "AI AgentNewPro",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/templates/devtool",
+      "text": "Dev ToolPro",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/templates/mobile",
+      "text": "MobilePro",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/templates/saas",
+      "text": "SaaSPro",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/templates/startup",
+      "text": "StartupPro",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/templates/portfolio",
+      "text": "Portfolio",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee",
+      "text": "Marquee",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/terminal",
+      "text": "Terminal",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/hero-video-dialog",
+      "text": "Hero Video Dialog",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/bento-grid",
+      "text": "Bento Grid",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/animated-list",
+      "text": "Animated List",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/dock",
+      "text": "Dock",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/globe",
+      "text": "Globe",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/tweet-card",
+      "text": "Tweet Card",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/orbiting-circles",
+      "text": "Orbiting Circles",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/avatar-circles",
+      "text": "Avatar Circles",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/icon-cloud",
+      "text": "Icon Cloud",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/animated-circular-progress-bar",
+      "text": "Animated Circular Progress Bar",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/file-tree",
+      "text": "File Tree",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/code-comparison",
+      "text": "Code Comparison",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/script-copy-btn",
+      "text": "Script Copy Button",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/scroll-progress",
+      "text": "Scroll Progress",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/lens",
+      "text": "Lens",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/pointer",
+      "text": "Pointer",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/safari",
+      "text": "Safari",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/iphone-15-pro",
+      "text": "iPhone 15 Pro",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/android",
+      "text": "Android",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/animated-beam",
+      "text": "Animated Beam",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/border-beam",
+      "text": "Border Beam",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/shine-border",
+      "text": "Shine Border",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/magic-card",
+      "text": "Magic Card",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/meteors",
+      "text": "Meteors",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/neon-gradient-card",
+      "text": "Neon Gradient Card",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/confetti",
+      "text": "Confetti",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/particles",
+      "text": "Particles",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/cool-mode",
+      "text": "Cool Mode",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/scratch-to-reveal",
+      "text": "Scratch To Reveal",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/blur-fade",
+      "text": "Blur Fade",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/text-animate",
+      "text": "Text Animate",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/line-shadow-text",
+      "text": "Line Shadow Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/aurora-text",
+      "text": "Aurora Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/number-ticker",
+      "text": "Number Ticker",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/animated-shiny-text",
+      "text": "Animated Shiny Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/animated-gradient-text",
+      "text": "Animated Gradient Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/text-reveal",
+      "text": "Text Reveal",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/hyper-text",
+      "text": "Hyper Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/word-rotate",
+      "text": "Word Rotate",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/typing-animation",
+      "text": "Typing Animation",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/scroll-based-velocity",
+      "text": "Scroll Based Velocity",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/flip-text",
+      "text": "Flip Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/box-reveal",
+      "text": "Box Reveal",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/sparkles-text",
+      "text": "Sparkles Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/morphing-text",
+      "text": "Morphing Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/spinning-text",
+      "text": "Spinning Text",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/rainbow-button",
+      "text": "Rainbow Button",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/shimmer-button",
+      "text": "Shimmer Button",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/shiny-button",
+      "text": "Shiny Button",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/interactive-hover-button",
+      "text": "Interactive Hover Button",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/animated-subscribe-button",
+      "text": "Animated Subscribe Button",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/pulsating-button",
+      "text": "Pulsating Button",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/ripple-button",
+      "text": "Ripple Button",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/warp-background",
+      "text": "Warp Background",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/flickering-grid",
+      "text": "Flickering Grid",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/animated-grid-pattern",
+      "text": "Animated Grid Pattern",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/retro-grid",
+      "text": "Retro Grid",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/ripple",
+      "text": "Ripple",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/dot-pattern",
+      "text": "Dot Pattern",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/grid-pattern",
+      "text": "Grid Pattern",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/interactive-grid-pattern",
+      "text": "Interactive Grid Pattern",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://v0.dev/chat/api/open?url=https://magicui.design/r/marquee-demo.json",
+      "text": "Open in",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#installation",
+      "text": "[No Text]",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#examples",
+      "text": "[No Text]",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#vertical",
+      "text": "[No Text]",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://v0.dev/chat/api/open?url=https://magicui.design/r/marquee-demo-vertical.json",
+      "text": "Open in",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#3d",
+      "text": "[No Text]",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://v0.dev/chat/api/open?url=https://magicui.design/r/marquee-3d.json",
+      "text": "Open in",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#usage",
+      "text": "[No Text]",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#props",
+      "text": "[No Text]",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/templates/portfolio",
+      "text": "Portfolio",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/terminal",
+      "text": "Terminal",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#installation",
+      "text": "Installation",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#examples",
+      "text": "Examples",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#vertical",
+      "text": "Vertical",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#3d",
+      "text": "3D",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#usage",
+      "text": "Usage",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://magicui.design/docs/components/marquee#props",
+      "text": "Props",
+      "isRelative": false,
+      "isSameHost": true
+    },
+    {
+      "url": "https://github.com/magicuidesign/magicui/issues/new?title=%5Bbug%5D%3A+%2Fdocs%2Fcomponents%2Fmarquee&labels=bug&labels=documentation&template=bug_report.md",
+      "text": "Report an issue",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://github.com/magicuidesign/magicui/issues/new?title=%5Bfeat%5D%3A+%2Fdocs%2Fcomponents%2Fmarquee&labels=enhancement&template=feature_request.md",
+      "text": "Request a feature",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://github.com/magicuidesign/magicui/blob/main/content/docs/components/marquee.mdx",
+      "text": "Edit this page",
+      "isRelative": false,
+      "isSameHost": false
+    },
+    {
+      "url": "https://twitter.com/magicuidesign",
+      "text": "dillion",
+      "isRelative": false,
+      "isSameHost": false
+    }
+  ],
+  "images": [
+    {
+      "src": "https://avatar.vercel.sh/jack",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jill",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/john",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jack",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jill",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/john",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jack",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jill",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/john",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jack",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jill",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/john",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jane",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jenny",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/james",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jane",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jenny",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/james",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jane",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "src": "https://avatar.vercel.sh/jenny",
+      "alt": "",
+      "width": 32,
+      "height": 32
+    }
+  ],
+  "aiAnalysis": "Here is a summary of the key points from the \"Marquee\" page on the Magic UI website:\n\nMain Points:\n- The Marquee component is an infinite scrolling component that can be used to display text, images, or videos.\n- It provides a visually appealing and attention-grabbing way to display content.\n- The component supports vertical and 3D scrolling styles.\n\nKey Features:\n- Infinite scrolling of content\n- Ability to reverse the scrolling direction\n- Option to pause scrolling on hover\n- Vertical or 3D scrolling orientation\n- Customizable number of content repeats\n\nUsage:\n- The component is imported and used like `<Marquee>...</Marquee>` with the desired child content.\n- Props are available to control direction, pause on hover, orientation, and repeat count.\n\nInstallation:\n- The component can be installed via CLI, manual, or package managers like npm, yarn, and pnpm.\n\nOverall, the Marquee component from Magic UI provides a dynamic and visually engaging way to display content on a website or application. The various configuration options allow developers to tailor the behavior to their specific needs."
+}

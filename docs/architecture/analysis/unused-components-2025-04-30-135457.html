@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buildappswith Unused Components Analysis</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    h1, h2, h3 {
+      margin-top: 1.5em;
+      color: #0066cc;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1em 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .summary {
+      background: #f0f7ff;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .highlight {
+      color: #e04030;
+      font-weight: bold;
+    }
+    code {
+      font-family: monospace;
+      background: #f5f5f5;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #1a1a1a;
+        color: #eee;
+      }
+      h1, h2, h3 {
+        color: #66b3ff;
+      }
+      table {
+        border-color: #444;
+      }
+      th {
+        background-color: #333;
+      }
+      tr:nth-child(even) {
+        background-color: #2a2a2a;
+      }
+      .summary {
+        background: #162b44;
+      }
+      code {
+        background: #333;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Buildappswith Unused Components Analysis</h1>
+  
+  <p>Generated on: Wed 30 Apr 2025 13:55:21 BST</p>
+  
+  <div class="summary">
+    <h2>Summary</h2>
+    <p><strong>Total Components:</strong> 264</p>
+    <p><strong>Used Components:</strong> 62</p>
+    <p><strong>Unused Components:</strong> <span class="highlight">202 (76%)</span></p>
+  </div>
+<h2>UI Library (26 components)</h2>
+<table>
+  <tr>
+    <th>Component</th>
+    <th>File</th>
+    <th>Path</th>
+    <th>Last Modified</th>
+  </tr>
+<tr><td>accordion | accordion.tsx | ./components/ui/core/accordion.tsx | 2025-04-28 |\n| alert | alert.tsx | ./components/ui/core/alert.tsx | 2025-04-28 |\n| avatar | avatar.tsx | ./components/ui/core/avatar.tsx | 2025-04-28 |\n| badge | badge.tsx | ./components/ui/core/badge.tsx | 2025-04-28 |\n| button | button.tsx | ./components/ui/core/button.tsx | 2025-04-28 |\n| card | card.tsx | ./components/ui/core/card.tsx | 2025-04-28 |\n| checkbox | checkbox.tsx | ./components/ui/core/checkbox.tsx | 2025-04-28 |\n| dialog | dialog.tsx | ./components/ui/core/dialog.tsx | 2025-04-28 |\n| dropdown-menu | dropdown-menu.tsx | ./components/ui/core/dropdown-menu.tsx | 2025-04-28 |\n| form | form.tsx | ./components/ui/core/form.tsx | 2025-04-28 |\n| index | index.ts | ./components/ui/composite/index.ts | 2025-04-28 |\n| index | index.ts | ./components/ui/core/index.ts | 2025-04-28 |\n| index | index.ts | ./components/ui/index.ts | 2025-04-28 |\n| input | input.tsx | ./components/ui/core/input.tsx | 2025-04-28 |\n| label | label.tsx | ./components/ui/core/label.tsx | 2025-04-28 |\n| loading-spinner | loading-spinner.tsx | ./components/ui/core/loading-spinner.tsx | 2025-04-28 |\n| popover | popover.tsx | ./components/ui/core/popover.tsx | 2025-04-28 |\n| radio-group | radio-group.tsx | ./components/ui/core/radio-group.tsx | 2025-04-28 |\n| select | select.tsx | ./components/ui/core/select.tsx | 2025-04-28 |\n| separator | separator.tsx | ./components/ui/core/separator.tsx | 2025-04-28 |\n| sonner | sonner.tsx | ./components/ui/core/sonner.tsx | 2025-04-28 |\n| switch | switch.tsx | ./components/ui/core/switch.tsx | 2025-04-28 |\n| table | table.tsx | ./components/ui/core/table.tsx | 2025-04-28 |\n| tabs | tabs.tsx | ./components/ui/core/tabs.tsx | 2025-04-28 |\n| textarea | textarea.tsx | ./components/ui/core/textarea.tsx | 2025-04-28 |\n| tooltip</td><td>tooltip.tsx</td><td>./components/ui/core/tooltip.tsx</td><td>2025-04-28</td></tr>\n
+</table>
+<h2>Magic UI Components (7 components)</h2>
+<table>
+  <tr>
+    <th>Component</th>
+    <th>File</th>
+    <th>Path</th>
+    <th>Last Modified</th>
+  </tr>
+<tr><td>animated-circular-progress-bar | animated-circular-progress-bar.tsx | ./components/magicui/animated-circular-progress-bar.tsx | 2025-04-20 |\n| aurora-text | aurora-text.tsx | ./components/magicui/aurora-text.tsx | 2025-04-18 |\n| border-beam | border-beam.tsx | ./components/magicui/border-beam.tsx | 2025-04-18 |\n| marquee | marquee.tsx | ./components/magicui/marquee.tsx | 2025-04-18 |\n| particles | particles.tsx | ./components/magicui/particles.tsx | 2025-04-23 |\n| text-shimmer | text-shimmer.tsx | ./components/magicui/text-shimmer.tsx | 2025-04-20 |\n| word-rotate</td><td>word-rotate.tsx</td><td>./components/magicui/word-rotate.tsx</td><td>2025-04-18</td></tr>\n
+</table>
+  <h2>Cleanup Recommendations</h2>
+  
+  <p>Based on the analysis, here are recommendations for cleanup:</p>
+  
+  <h3>1. High Priority Removals</h3>
+  <ul>
+    <li>Remove unused UI components first as they are the most self-contained</li>
+    <li>Focus on components that haven't been modified in over 30 days</li>
+    <li>Prioritize domains with the highest number of unused components</li>
+  </ul>
+  
+  <h3>2. Verification Process</h3>
+  <ul>
+    <li>Manually verify each component before removal</li>
+    <li>Check for dynamic imports or other non-standard usage patterns</li>
+    <li>Consider temporarily commenting out rather than deleting initially</li>
+  </ul>
+  
+  <h3>3. Batch Removal Strategy</h3>
+  <ul>
+    <li>Remove components by domain to maintain context</li>
+    <li>Run the application and tests after each batch removal</li>
+    <li>Document removals in CHANGELOG.md for version tracking</li>
+  </ul>
+</body>
+</html>

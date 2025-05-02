@@ -267,6 +267,22 @@
       "complexityScore": 2
     },
     {
+      "name": "buildappswith-platform-overview",
+      "type": "Utility",
+      "path": "/Users/liamj/Documents/Development/buildappswith/docs/buildappswith-platform-overview.tsx",
+      "dependencies": [],
+      "container": "WebApplication",
+      "isTechnicalDebt": false,
+      "isLegacy": false,
+      "incomingReferences": 0,
+      "outgoingReferences": 0,
+      "usageScore": 0,
+      "isUnused": true,
+      "unusedReason": "No incoming references found",
+      "lastModified": "2025-04-29",
+      "complexityScore": 3
+    },
+    {
       "name": "use-on-click-outside",
       "type": "Utility",
       "path": "/Users/liamj/Documents/Development/buildappswith/hooks/use-on-click-outside.ts",
@@ -4206,9 +4222,9 @@
       "name": "WebApplication",
       "description": "Next.js web application serving the Buildappswith platform",
       "technology": "Next.js 15.3.1 + React 19.1.0 + TypeScript",
-      "componentCount": 184,
-      "complexity": 1.483695652173913,
-      "couplingScore": 0.07065217391304347
+      "componentCount": 185,
+      "complexity": 1.491891891891892,
+      "couplingScore": 0.07027027027027027
     },
     {
       "name": "Database",
