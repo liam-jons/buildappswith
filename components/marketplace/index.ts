@@ -1,10 +1,14 @@
 /**
- * Marketplace Components
+ * Marketplace Components - Barrel Exports
  * 
- * This module exports components related to the marketplace functionality.
- * Components include builder cards, search filters, and other marketplace-specific UI elements.
+ * This file exports all components related to the marketplace domain.
+ * Add new component exports here as they are created.
  */
 
-export * from "./builder-card";
-export * from "./builder-image";
-export * from "./ui/index";
+// Export domain-specific components
+export * from './builder-card';
+export * from './builder-image';
+export * from './builder-list';
+
+// Export UI components
+export * from './ui';

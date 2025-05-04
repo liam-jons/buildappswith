@@ -104,8 +104,9 @@ async function getIdentifier(req: NextRequest): Promise<string> {
   ip = ip.split(',')[0].trim();
   
   // In a real implementation, you could also use authenticated user ID if available
-  // const session = await getSession();
-  // return session?.user?.id || ip;
+  // Use Clerk to get the user ID if authenticated
+  // const auth = await currentUser();
+  // return auth?.id || ip;
   
   return ip;
 }

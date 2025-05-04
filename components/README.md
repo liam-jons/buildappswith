@@ -6,72 +6,109 @@ This directory contains all the React components used throughout the Buildappswi
 
 ```
 /components
-├── [domain]/         # Domain-specific components
-│   ├── ui/           # Domain-specific UI components
-│   │   └── index.ts  # Barrel exports
-│   └── index.ts      # Barrel exports
-├── ui/               # Shared UI components
-│   ├── core/         # Foundational UI components (mostly shadcn/ui)
-│   ├── composite/    # Composed UI components reused across domains
-│   └── index.ts      # Barrel exports
-├── providers/        # Context providers
-└── [global components] # Root level components used across the app
+├── [domain]/                 # Domain-specific components
+│   ├── ui/                   # Domain-specific UI components
+│   │   ├── [component].tsx   # Individual components
+│   │   └── index.ts          # Barrel exports
+│   ├── [component].tsx       # Domain-specific components
+│   └── index.ts              # Barrel exports
+├── ui/                       # Shared UI components
+│   ├── core/                 # Foundational UI components
+│   │   ├── [component].tsx   # Individual components
+│   │   └── index.ts          # Barrel exports
+│   ├── composite/            # Composed UI components
+│   │   ├── [component].tsx   # Individual components
+│   │   └── index.ts          # Barrel exports
+│   └── index.ts              # Barrel exports
+└── providers/                # Context providers
+    ├── [provider].tsx        # Individual providers
+    └── index.ts              # Barrel exports
 ```
 
-## Organization Principles
+## Core Domains
 
-1. **Domain-First Organization**: Components are primarily organized by domain/feature
-2. **UI Component Hierarchy**: 
-   - Core UI (buttons, inputs, etc.)
-   - Composite UI (combinations of core components)
-   - Domain-specific UI (specialized for a particular domain)
-3. **Feature Colocation**: Components specific to a feature are kept together
-4. **Barrel Exports**: Index files are used to simplify imports
-5. **Component Isolation**: Components minimize dependencies on other domains
+Components are organized into these primary domains:
 
-## Naming Conventions
+1. **auth** - Authentication and user management components
+2. **marketplace** - Builder discovery and marketplace components
+3. **profile** - User profile management components
+4. **scheduling** - Booking and availability management components
+5. **payment** - Payment processing and transaction components
+6. **admin** - Administrative interface components
+7. **trust** - Trust architecture and validation components
+8. **community** - Community and knowledge sharing components
+9. **learning** - Educational components and learning paths
 
-- Component files: `kebab-case.tsx`
-- Component names: `PascalCase`
-- Directory names: `kebab-case`
-- Barrel exports: `index.ts`
+## UI Component Hierarchy
 
-## Import Standards
+UI components follow a clear hierarchy:
 
-Always import from barrel files when possible:
+1. **Core Components**: Foundational building blocks (buttons, inputs, cards)
+2. **Composite Components**: Combinations of core components for common patterns
+3. **Domain-Specific Components**: Specialized components for specific domains
+
+## Usage Guidelines
+
+### Importing Components
+
+Always import components using barrel exports:
 
 ```typescript
-// Good ✅
-import { Button } from "@/components/ui";
-import { BuilderCard } from "@/components/marketplace";
+// Good - Use barrel exports
+import { Button, Card } from "@/components/ui";
+import { ValidationTierBadge } from "@/components/trust";
 
-// Avoid ❌
+// Avoid - Don't import directly from component files
 import { Button } from "@/components/ui/button";
-import { BuilderCard } from "@/components/marketplace/builder-card";
+import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
 ```
 
-For domain-specific UI components, import from the domain barrel:
+### Component Organization
 
-```typescript
-// Good ✅
-import { ValidationTierBadge } from "@/components/profile";
+When creating new components:
 
-// Avoid ❌
-import { ValidationTierBadge } from "@/components/profile/ui/validation-tier-badge";
-```
+1. **Place in the correct domain directory**
+   - Domain-specific UI components go in `/[domain]/ui/`
+   - Domain logic components go in `/[domain]/`
+   - Shared UI components go in `/ui/core/` or `/ui/composite/`
 
-## Adding New Components
+2. **Use appropriate naming conventions**
+   - Component files: `kebab-case.tsx`
+   - Component names: `PascalCase`
+   - Export names: match component names
 
-1. Determine the appropriate domain for your component
-2. Create the component in the appropriate directory
-3. Export the component from the relevant index.ts file
-4. Use the appropriate naming conventions
+3. **Include appropriate documentation**
+   - JSDoc comments for component purpose and props
+   - Usage examples where appropriate
+   - Notes on any significant implementation details
 
-## Component Documentation
+4. **Add to barrel exports**
+   - Export from appropriate index.ts file
+   - Use named exports for clarity
 
-Each component should include:
+## Component Types
 
-- "use client" directive if the component uses client-side features
-- JSDoc comments explaining the component's purpose
-- Properly typed props using TypeScript interfaces
-- Comments for complex logic
+### Server Components
+
+Server components render on the server and are the default component type. They:
+- Don't use client-side hooks or state
+- Don't include event handlers
+- Fetch data on the server
+- Have no "use client" directive
+
+### Client Components
+
+Client components include the "use client" directive and can:
+- Use React hooks like useState and useEffect
+- Include event handlers
+- Access browser APIs
+- Update after the initial render
+
+## Magic UI Components
+
+The Buildappswith platform uses Magic UI components for enhanced visual effects:
+
+- Import from the `magicui` directory
+- Always respect reduced motion preferences
+- Provide static alternatives for users with motion sensitivity
+- Keep animations subtle and purposeful
