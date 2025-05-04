@@ -1,9 +1,10 @@
 /**
- * UI Components
- * 
- * This is the main entry point for UI components in the application.
- * It provides access to both core components and composite components.
+ * UI components barrel export file
+ * Version: 1.0.0
  */
 
-export * from "./core";
-export * from "./composite";
+// Re-export core components
+export * from './core';
+
+// Re-export composite components
+export * from './composite';

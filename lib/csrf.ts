@@ -147,8 +147,14 @@ export const useCsrf = () => {
   return {
     // Function to get CSRF token for use in fetch headers
     getCsrfToken: () => {
-      // Implementation depends on how client handles auth
-      return ''; // Placeholder
+      // Get token from cookies or create a new one
+      // Using the same pattern as our server-side implementation
+      const token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith(CSRF_SECRET_COOKIE))
+        ?.split('=')[1];
+      
+      return token || ''; // Return token or empty string
     },
     
     // Prebuilt form field component
