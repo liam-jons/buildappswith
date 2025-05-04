@@ -1,53 +1,102 @@
-import type { DefaultSession } from "next-auth";
+/**
+ * Authentication Types
+ * 
+ * This file defines the common types used throughout the authentication system.
+ * 
+ * Version: 1.0.0
+ */
 
 /**
- * User roles for role-based access control - use the same values as in Prisma schema
+ * User roles in the system
  */
 export enum UserRole {
-  CLIENT = "CLIENT",
-  BUILDER = "BUILDER",
-  ADMIN = "ADMIN",
+  ADMIN = 'ADMIN',
+  BUILDER = 'BUILDER',
+  CLIENT = 'CLIENT',
 }
 
 /**
- * Extended user type with roles and other custom fields
+ * Extended user data with application-specific fields
  */
-export type User = DefaultSession["user"] & {
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  imageUrl: string;
   roles: UserRole[];
-  stripeCustomerId?: string;
   verified: boolean;
-};
-
-/**
- * Extend next-auth session type to include custom user fields
- */
-declare module "next-auth" {
-  interface Session {
-    user: User;
-  }
-  
-  interface User {
-    roles: UserRole[];
-    stripeCustomerId?: string;
-    verified: boolean;
-  }
-
-  interface JWT {
+  completedOnboarding?: boolean;
+  stripeCustomerId?: string;
+  builderProfile?: {
     id: string;
-    roles: UserRole[];
-    stripeCustomerId?: string;
-    verified: boolean;
-  }
+    slug: string;
+    validationTier: number;
+  };
+  clientProfile?: {
+    id: string;
+  };
 }
 
 /**
- * Extended JWT type for next-auth
+ * Authentication error types
  */
-declare module "next-auth" {
-  interface JWT {
-    id: string;
-    roles: UserRole[];
-    stripeCustomerId?: string;
-    verified: boolean;
-  }
+export enum AuthErrorType {
+  AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',
+  AUTHORIZATION_ERROR = 'AUTHORIZATION_ERROR',
+  CONFIGURATION_ERROR = 'CONFIGURATION_ERROR',
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  RATE_LIMIT_ERROR = 'RATE_LIMIT_ERROR',
+  SERVER_ERROR = 'SERVER_ERROR',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+}
+
+/**
+ * Standardized authentication error
+ */
+export interface AuthError {
+  type: AuthErrorType;
+  message: string;
+  status?: number;
+  cause?: unknown;
+}
+
+/**
+ * Standardized API response for authentication operations
+ */
+export interface AuthResponse<T = any> {
+  success: boolean;
+  message: string;
+  data?: T;
+  error?: AuthError;
+}
+
+/**
+ * Authentication options for sign-in and sign-out
+ */
+export interface AuthOptions {
+  callbackUrl?: string;
+  redirectUrl?: string;
+}
+
+/**
+ * Authentication middleware options
+ */
+export interface AuthMiddlewareOptions {
+  requireAuth?: boolean;
+  requireRoles?: UserRole[];
+}
+
+/**
+ * Authentication context type for providers
+ */
+export interface AuthContextType {
+  user: AuthUser | null;
+  isLoaded: boolean;
+  isSignedIn: boolean;
+  roles: UserRole[];
+  hasRole: (role: UserRole) => boolean;
+  isAdmin: boolean;
+  isBuilder: boolean;
+  isClient: boolean;
+  signOut: (options?: AuthOptions) => Promise<void>;
 }

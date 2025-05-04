@@ -26,8 +26,7 @@
   ],
   "env": {
     "NODE_ENV": "production",
-    "NEXT_PUBLIC_APP_URL": "https://buildappswith.vercel.app",
-    "NEXTAUTH_URL": "https://buildappswith.vercel.app"
+    "NEXT_PUBLIC_APP_URL": "https://buildappswith.vercel.app"
   },
   "build": {
     "env": {

@@ -1,206 +1,437 @@
 /**
  * Clerk Webhook Handler
  * 
- * This API route handles webhook events from Clerk. It synchronizes user data
- * between Clerk and our database, ensuring user profiles are created and updated
- * appropriately based on authentication events.
+ * This enhanced handler processes Clerk webhook events with:
+ * - IP allowlisting for enhanced security
+ * - Signature verification to validate authenticity
+ * - Idempotency to prevent duplicate processing
+ * - Structured logging for monitoring and debugging
  * 
- * Supported events:
- * - user.created: Creates a new user record in our database
- * - user.updated: Updates user information in our database
- * 
- * @version 1.0.64
+ * Version: 1.1.0
  */
 
-import { headers } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+import { Webhook } from 'svix';
 import { WebhookEvent } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { UserRole } from '@/lib/auth/types';
+import { logger } from '@/lib/logger';
 
-// Simple console logger as fallback if logger module is missing
-const fallbackLogger = {
-  info: (message: string, data?: any) => console.info(`[INFO] ${message}`, data || ''),
-  error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data || ''),
-  warn: (message: string, data?: any) => console.warn(`[WARN] ${message}`, data || ''),
-  debug: (message: string, data?: any) => console.debug(`[DEBUG] ${message}`, data || ''),
-};
+// Environment variables
+const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
-// Try to import logger, fall back to console if not available
-let logger: typeof fallbackLogger;
-try {
-  // Dynamic import to prevent build issues
-  import('@/lib/logger').then(module => {
-    logger = module.logger;
-  }).catch(() => {
-    logger = fallbackLogger;
-  });
-} catch (e) {
-  logger = fallbackLogger;
-}
+// Allowed IPs for Svix webhook service
+// Source: https://clerk.com/docs/webhooks/svix-ip-allowlist
+const ALLOWED_IPS = [
+  '3.128.159.22',
+  '3.21.242.127',
+  '52.14.114.70',
+  '3.125.183.140',
+  '3.65.193.143',
+  '3.71.203.39',
+  '18.192.147.95',
+  '18.156.74.191',
+  '3.10.8.30',
+  '13.42.119.50',
+  '18.168.67.42',
+  '3.9.123.191',
+];
 
-export async function POST(req: Request) {
-  // Get the webhook signature from the headers
-  const headerPayload = await headers();
-  const svix_id = headerPayload.get('svix-id');
-  const svix_timestamp = headerPayload.get('svix-timestamp');
-  const svix_signature = headerPayload.get('svix-signature');
-
-  // If there are no headers, return a 400 error
-  if (!svix_id || !svix_timestamp || !svix_signature) {
-    logger.error('Missing svix headers', { svix_id, svix_timestamp });
-    return NextResponse.json({ error: 'Missing webhook headers' }, { status: 400 });
-  }
-
-  // Get the webhook secret from the environment
-  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
-  if (!webhookSecret) {
-    logger.error('Missing CLERK_WEBHOOK_SECRET in environment');
-    return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
-  }
-
-  // Get the request body
-  let payload: WebhookEvent;
-  const body = await req.text();
-  
+/**
+ * Handler for Clerk webhook events
+ */
+export async function POST(request: NextRequest) {
   try {
-    // Attempt to verify webhook
+    // Start timing
+    const startTime = performance.now();
+    
+    // Get the client IP address
+    const clientIP = request.headers.get('x-forwarded-for') || 
+                     request.headers.get('x-real-ip') ||
+                     '0.0.0.0';
+    
+    // Check if the client IP is in the allowed list
+    const ip = clientIP.split(',')[0].trim();
+    if (!ALLOWED_IPS.includes(ip)) {
+      logger.warn('Unauthorized webhook attempt', { ip });
+      
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Unauthorized IP address' 
+        }, 
+        { status: 401 }
+      );
+    }
+    
+    // Get the webhook body
+    const payload = await request.text();
+    const headersList = request.headers;
+    
+    // Get the webhook signature
+    const svixId = headersList.get('svix-id') || '';
+    const svixTimestamp = headersList.get('svix-timestamp') || '';
+    const svixSignature = headersList.get('svix-signature') || '';
+    
+    // Check if we've already processed this webhook
+    const existingEvent = await db.webhookEvent.findUnique({
+      where: { id: svixId }
+    });
+    
+    if (existingEvent) {
+      logger.info('Webhook already processed', { id: svixId });
+      
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Webhook already processed' 
+      });
+    }
+    
+    // Verify the webhook signature
+    if (!WEBHOOK_SECRET) {
+      logger.error('Missing webhook secret');
+      
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Server configuration error' 
+        },
+        { status: 500 }
+      );
+    }
+    
+    // Create a new svix instance with our secret
+    const wh = new Webhook(WEBHOOK_SECRET);
+    
+    // Verify the payload with the headers
+    let evt: WebhookEvent;
+    
     try {
-      // Try to import svix dynamically
-      const { Webhook } = await import('svix');
-      const wh = new Webhook(webhookSecret);
-      payload = wh.verify(body, {
-        'svix-id': svix_id,
-        'svix-timestamp': svix_timestamp,
-        'svix-signature': svix_signature,
+      evt = wh.verify(payload, {
+        'svix-id': svixId,
+        'svix-timestamp': svixTimestamp,
+        'svix-signature': svixSignature,
       }) as WebhookEvent;
-    } catch (e) {
-      // If svix fails to import, log a warning and parse the body directly
-      // Note: This bypasses signature verification and should only be used during development
-      logger.warn('Svix import failed, bypassing verification', { error: e });
-      if (process.env.NODE_ENV === 'production') {
-        throw new Error('Webhook verification required in production');
-      }
-      payload = JSON.parse(body) as WebhookEvent;
+    } catch (error) {
+      logger.error('Webhook verification failed', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        svixId,
+      });
+      
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Invalid webhook signature' 
+        },
+        { status: 400 }
+      );
     }
+    
+    // Successfully verified webhook
+    logger.info('Webhook received', { 
+      type: evt.type,
+      id: svixId
+    });
+    
+    // Handle the webhook based on the event type
+    switch (evt.type) {
+      case 'user.created': {
+        await handleUserCreated(evt.data);
+        break;
+      }
+      case 'user.updated': {
+        await handleUserUpdated(evt.data);
+        break;
+      }
+      case 'user.deleted': {
+        await handleUserDeleted(evt.data);
+        break;
+      }
+      case 'organization.created': {
+        await handleOrganizationCreated(evt.data);
+        break;
+      }
+      case 'organization.updated': {
+        await handleOrganizationUpdated(evt.data);
+        break;
+      }
+      case 'organization.deleted': {
+        await handleOrganizationDeleted(evt.data);
+        break;
+      }
+      default: {
+        logger.info('Unhandled webhook event type', { type: evt.type });
+      }
+    }
+    
+    // Mark webhook as processed to prevent duplicate processing
+    await db.webhookEvent.create({
+      data: {
+        id: svixId,
+        type: evt.type,
+        timestamp: new Date(svixTimestamp),
+        processed: true,
+        processingTime: performance.now() - startTime,
+      }
+    });
+    
+    // Record metric
+    await recordWebhookMetric({
+      type: evt.type,
+      status: 'success',
+      processingTime: performance.now() - startTime,
+    });
+    
+    return NextResponse.json({ 
+      success: true,
+      message: 'Webhook processed successfully'
+    });
   } catch (error) {
-    logger.error('Error verifying webhook', { error });
-    return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 400 });
+    // Log the error with context
+    logger.error('Webhook processing error', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      headers: Object.fromEntries([...request.headers.entries()].filter(
+        ([key]) => !key.includes('authorization') && !key.includes('cookie')
+      )),
+    });
+    
+    // Record error metric
+    await recordWebhookMetric({
+      type: 'unknown',
+      status: 'failure',
+      processingTime: 0,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+    
+    // Return error response
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Error processing webhook',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
   }
-
-  const { type, data } = payload;
-  logger.info(`Webhook received: ${type}`, { userId: data.id });
-
-  // Handle user.created event
-  if (type === 'user.created') {
-    try {
-      // Extract user data from the webhook payload
-      const {
-        id: clerkId,
-        email_addresses,
-        image_url,
-        first_name,
-        last_name,
-        public_metadata,
-      } = data;
-
-      // Get primary email
-      const primaryEmail = email_addresses.find(email => email.id === data.primary_email_address_id);
-      if (!primaryEmail) {
-        logger.error('No primary email found for user', { clerkId });
-        return NextResponse.json({ error: 'No primary email found' }, { status: 400 });
-      }
-
-      // Get roles from metadata or default to CLIENT
-      const roles = (public_metadata.roles as UserRole[]) || [UserRole.CLIENT];
-
-      // Create the user in our database
-      const user = await db.user.create({
-        data: {
-          clerkId,
-          email: primaryEmail.email_address,
-          name: `${first_name || ''} ${last_name || ''}`.trim() || null,
-          image: image_url,
-          roles,
-          verified: primaryEmail.verification?.status === 'verified' || false,
-          stripeCustomerId: (public_metadata.stripeCustomerId as string) || null,
-        },
-      });
-
-      // Create a client profile for all users by default
-      await db.clientProfile.create({
-        data: {
-          userId: user.id,
-        },
-      });
-
-      logger.info('User created successfully', { userId: user.id, clerkId });
-      return NextResponse.json({ success: true, userId: user.id });
-    } catch (error) {
-      logger.error('Error creating user', { error, userId: data.id });
-      return NextResponse.json({ error: 'Error creating user' }, { status: 500 });
-    }
-  }
-
-  // Handle user.updated event
-  if (type === 'user.updated') {
-    try {
-      // Extract user data from the webhook payload
-      const {
-        id: clerkId,
-        email_addresses,
-        image_url,
-        first_name,
-        last_name,
-        public_metadata,
-      } = data;
-
-      // Find existing user by Clerk ID
-      const existingUser = await db.user.findUnique({
-        where: { clerkId },
-      });
-
-      if (!existingUser) {
-        logger.error('User not found for update', { clerkId });
-        return NextResponse.json({ error: 'User not found' }, { status: 404 });
-      }
-
-      // Get primary email
-      const primaryEmail = email_addresses.find(email => email.id === data.primary_email_address_id);
-      if (!primaryEmail) {
-        logger.error('No primary email found for user update', { clerkId });
-        return NextResponse.json({ error: 'No primary email found' }, { status: 400 });
-      }
-
-      // Get roles from metadata or keep existing
-      const roles = (public_metadata.roles as UserRole[]) || existingUser.roles;
-
-      // Update the user in our database
-      const updatedUser = await db.user.update({
-        where: { clerkId },
-        data: {
-          email: primaryEmail.email_address,
-          name: `${first_name || ''} ${last_name || ''}`.trim() || existingUser.name,
-          image: image_url || existingUser.image,
-          roles,
-          verified: primaryEmail.verification?.status === 'verified' || existingUser.verified,
-          stripeCustomerId: (public_metadata.stripeCustomerId as string) || existingUser.stripeCustomerId,
-        },
-      });
-
-      logger.info('User updated successfully', { userId: updatedUser.id, clerkId });
-      return NextResponse.json({ success: true, userId: updatedUser.id });
-    } catch (error) {
-      logger.error('Error updating user', { error, userId: data.id });
-      return NextResponse.json({ error: 'Error updating user' }, { status: 500 });
-    }
-  }
-
-  // Return success for other event types we don't handle
-  return NextResponse.json({ success: true, message: `Webhook received: ${type}` });
 }
 
-// Only allow POST requests to this endpoint
-export async function GET() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+/**
+ * Record webhook metric for monitoring
+ */
+async function recordWebhookMetric(metric: {
+  type: string;
+  status: 'success' | 'failure';
+  processingTime: number;
+  error?: string;
+}) {
+  try {
+    // Store webhook metrics in database
+    await db.webhookMetric.create({
+      data: {
+        type: metric.type,
+        status: metric.status,
+        processingTime: metric.processingTime,
+        error: metric.error,
+        timestamp: new Date(),
+      }
+    });
+  } catch (error) {
+    // Log but don't fail the webhook on metric recording errors
+    logger.error('Failed to record webhook metric', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+}
+
+/**
+ * Handler for user.created events
+ */
+async function handleUserCreated(data: any) {
+  try {
+    const userId = data.id;
+    const email = data.email_addresses?.[0]?.email_address;
+    
+    // Check if user already exists (idempotency check)
+    const existingUser = await db.user.findUnique({
+      where: { clerkId: userId }
+    });
+    
+    if (existingUser) {
+      logger.info('User already exists, skipping creation', { userId });
+      return;
+    }
+    
+    // Create the user in our database
+    await db.user.create({
+      data: {
+        clerkId: userId,
+        email: email,
+        name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
+        imageUrl: data.image_url,
+        // Add default roles based on your application logic
+        roles: ['CLIENT'], // Default role
+      }
+    });
+    
+    logger.info('User created successfully', { userId });
+  } catch (error) {
+    logger.error('Error handling user.created event', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId: data.id,
+    });
+    throw error; // Re-throw to trigger error handling in the main function
+  }
+}
+
+/**
+ * Handler for user.updated events
+ */
+async function handleUserUpdated(data: any) {
+  try {
+    const userId = data.id;
+    const email = data.email_addresses?.[0]?.email_address;
+    
+    // Update the user in our database
+    await db.user.update({
+      where: { clerkId: userId },
+      data: {
+        email: email,
+        name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
+        imageUrl: data.image_url,
+        // Only update roles if they're in the public metadata
+        ...(data.public_metadata?.roles && { 
+          roles: data.public_metadata.roles 
+        }),
+        // Track verification status
+        ...(data.public_metadata?.verified !== undefined && {
+          verified: data.public_metadata.verified
+        }),
+        // Update other fields as needed
+      }
+    });
+    
+    logger.info('User updated successfully', { userId });
+  } catch (error) {
+    logger.error('Error handling user.updated event', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId: data.id,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Handler for user.deleted events
+ */
+async function handleUserDeleted(data: any) {
+  try {
+    const userId = data.id;
+    
+    // Soft delete the user in our database
+    await db.user.update({
+      where: { clerkId: userId },
+      data: {
+        active: false,
+        deletedAt: new Date(),
+      }
+    });
+    
+    logger.info('User marked as deleted', { userId });
+  } catch (error) {
+    logger.error('Error handling user.deleted event', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId: data.id,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Handler for organization.created events
+ */
+async function handleOrganizationCreated(data: any) {
+  try {
+    const orgId = data.id;
+    
+    // Check if organization already exists (idempotency check)
+    const existingOrg = await db.organization.findUnique({
+      where: { clerkId: orgId }
+    });
+    
+    if (existingOrg) {
+      logger.info('Organization already exists, skipping creation', { orgId });
+      return;
+    }
+    
+    // Create the organization in our database
+    await db.organization.create({
+      data: {
+        clerkId: orgId,
+        name: data.name,
+        slug: data.slug,
+        imageUrl: data.image_url,
+      }
+    });
+    
+    logger.info('Organization created successfully', { orgId });
+  } catch (error) {
+    logger.error('Error handling organization.created event', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      orgId: data.id,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Handler for organization.updated events
+ */
+async function handleOrganizationUpdated(data: any) {
+  try {
+    const orgId = data.id;
+    
+    // Update the organization in our database
+    await db.organization.update({
+      where: { clerkId: orgId },
+      data: {
+        name: data.name,
+        slug: data.slug,
+        imageUrl: data.image_url,
+      }
+    });
+    
+    logger.info('Organization updated successfully', { orgId });
+  } catch (error) {
+    logger.error('Error handling organization.updated event', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      orgId: data.id,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Handler for organization.deleted events
+ */
+async function handleOrganizationDeleted(data: any) {
+  try {
+    const orgId = data.id;
+    
+    // Soft delete the organization in our database
+    await db.organization.update({
+      where: { clerkId: orgId },
+      data: {
+        active: false,
+        deletedAt: new Date(),
+      }
+    });
+    
+    logger.info('Organization marked as deleted', { orgId });
+  } catch (error) {
+    logger.error('Error handling organization.deleted event', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      orgId: data.id,
+    });
+    throw error;
+  }
 }
