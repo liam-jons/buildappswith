@@ -1,9 +1,13 @@
-/**
- * Profile Components
- * 
- * This module exports components related to user profiles and validation.
- * Components include profile cards, validation badges, and other profile-specific UI elements.
- */
+// Export profile components
+export * from "./builder-profile";
+export * from "./client-profile";
+export * from "./app-showcase";
+export * from "./portfolio-gallery";
+export * from "./portfolio-showcase";
+export * from "./role-badges";
+export * from "./success-metrics-dashboard";
+export * from "./builder-profile-client-wrapper";
+export * from "./add-project-form";
 
-export * from "./ui/validation-tier-badge";
+// Export UI components from UI subdirectory
 export * from "./ui";

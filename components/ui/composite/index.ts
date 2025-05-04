@@ -1,8 +1,7 @@
 /**
- * Composite UI Components
- * 
- * This module exports more complex UI components that combine multiple core components.
- * These components are still generic enough to be used across different parts of the application.
+ * Composite UI components barrel export file
+ * Version: 1.0.0
  */
 
-// Will contain composite components as they are developed
+// Export composite UI components here
+// Example: export * from './card';

@@ -1,8 +1,11 @@
 /**
- * Marketplace UI Components
+ * Marketplace UI Components - Barrel Exports
  * 
- * This module exports UI components specific to the marketplace functionality.
- * These components are more specialized than core UI components but still reusable within the marketplace domain.
+ * This file exports all UI components specific to the marketplace domain.
+ * Add new component exports here as they are created.
  */
 
-// Will contain marketplace-specific UI components as they are developed
+// Export UI components
+export * from './filter-panel';
+// export * from './sort-controls';
+// export * from './category-selector';
