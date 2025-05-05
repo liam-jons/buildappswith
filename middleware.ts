@@ -81,8 +81,8 @@ export default authMiddleware({
     '/hero-dark.png',
     '/favicon.ico',
     
-    // Future Sanity CDN URLs - adjust based on your Sanity project configuration
-    'https://cdn.sanity.io/(.*)',
+    // Sanity paths (when integrated in the future)
+    '/sanity/(.*)',
   ],
   
   // Debug mode (enable only in development)
