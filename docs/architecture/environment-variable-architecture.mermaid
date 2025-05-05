@@ -1,0 +1,63 @@
+flowchart TD
+    subgraph Environments["Environment Types"]
+        DEV[Development]
+        PREV[Preview/Branch]
+        PROD[Production]
+    end
+
+    subgraph Variables["Variable Categories"]
+        AUTH[Authentication]
+        DB[Database]
+        PAY[Payment]
+        FEAT[Feature Flags]
+        CONFIG[App Config]
+        MONITOR[Monitoring]
+    end
+
+    subgraph Access["Access Patterns"]
+        CLIENT[Client-Side]
+        SERVER[Server-Only]
+        BOTH[Both]
+    end
+
+    subgraph Security["Security Levels"]
+        PUBLIC[Public Values]
+        SENSITIVE[Sensitive Data]
+        SECRETS[Critical Secrets]
+    end
+
+    DEV --> Variables
+    PREV --> Variables
+    PROD --> Variables
+
+    AUTH --> SERVER
+    AUTH --> SECRETS
+    
+    DB --> SERVER
+    DB --> SECRETS
+    
+    PAY --> SERVER
+    PAY --> SECRETS
+    
+    FEAT --> BOTH
+    FEAT --> PUBLIC
+    
+    CONFIG --> BOTH
+    CONFIG --> SENSITIVE
+    
+    MONITOR --> SERVER
+    MONITOR --> SENSITIVE
+
+    CLIENT --> PUBLIC
+    SERVER --> |can access| SENSITIVE
+    SERVER --> |can access| SECRETS
+
+    classDef env fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:white
+    classDef category fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:white
+    classDef access fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:white
+    classDef security fill:#F44336,stroke:#C62828,stroke-width:2px,color:white
+    
+    class DEV,PREV,PROD env
+    class AUTH,DB,PAY,FEAT,CONFIG,MONITOR category
+    class CLIENT,SERVER,BOTH access
+    class PUBLIC,SENSITIVE,SECRETS security
