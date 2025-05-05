@@ -1,14 +1,17 @@
 "use client";
 
-import { ThemeToggle } from "@/components/theme-provider";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { mainNavItems } from "./data.tsx";
+import { NavigationItem, NavbarProps } from "./types";
+import { AnimatedSubscribeButton } from "../magicui/animated-subscribe-button";
 
-const INITIAL_WIDTH = "70rem";
-const MAX_WIDTH = "800px";
+const INITIAL_WIDTH = "72rem";
+const MAX_WIDTH = "1100px";
 
 // Animation variants
 const overlayVariants = {
@@ -37,53 +40,68 @@ const drawerVariants = {
   },
 };
 
-const drawerMenuContainerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
+const dropdownVariants = {
+  hidden: { opacity: 0, y: -5 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      type: "spring",
+      damping: 20,
+      stiffness: 300
+    }
+  },
+  exit: { 
+    opacity: 0, 
+    y: -5,
+    transition: { duration: 0.1 } 
+  }
 };
 
-const drawerMenuVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
+// Viewing Preferences component
+function ViewingPreferences({ isMobile = false }: { isMobile?: boolean }) {
+  const { theme, setTheme } = useTheme();
+  
+  if (isMobile) {
+    return (
+      <button
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        className="flex items-center justify-center px-4 py-2 rounded-md hover:bg-secondary/30 transition-colors"
+        aria-label="Toggle theme"
+      >
+        <span className="mr-2">VP</span>
+        <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      </button>
+    );
+  }
+  
+  return (
+    <AnimatedSubscribeButton
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="h-auto rounded-md bg-secondary/30 hover:bg-secondary/50 text-primary"
+      aria-label="Toggle theme"
+      subscribeStatus={theme === "dark"}
+    >
+      <span className="flex items-center">
+        <span className="mr-2">Viewing Preferences</span>
+        <Sun className="h-4 w-4" />
+      </span>
+      <span className="flex items-center">
+        <span className="mr-2">Viewing Preferences</span>
+        <Moon className="h-4 w-4" />
+      </span>
+    </AnimatedSubscribeButton>
+  );
+}
 
-const navLinks = [
-  { id: "hero", name: "Home", href: "#hero" },
-  { id: "feature-scroll", name: "How It Works", href: "#feature-scroll" },
-  { id: "bento", name: "Features", href: "#bento" },
-  { id: "testimonials", name: "Testimonials", href: "#testimonials" },
-];
-
-export function Navbar() {
+export function Navbar({ className }: NavbarProps) {
   const { scrollY } = useScroll();
   const [hasScrolled, setHasScrolled] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("hero");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = navLinks.map((item) =>
-        item.href.substring(1),
-      );
-
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 150 && rect.bottom >= 150) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  // Handle scroll effects
   useEffect(() => {
     const unsubscribe = scrollY.on("change", (latest) => {
       setHasScrolled(latest > 10);
@@ -91,20 +109,39 @@ export function Navbar() {
     return unsubscribe;
   }, [scrollY]);
 
-  const toggleDrawer = () => setIsDrawerOpen((prev) => !prev);
-  const handleOverlayClick = () => setIsDrawerOpen(false);
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (activeDropdown && !(event.target as Element).closest('.dropdown-trigger')) {
+        setActiveDropdown(null);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [activeDropdown]);
+
+  // Toggle mobile menu
+  const toggleMobileMenu = () => setIsMobileMenuOpen(prev => !prev);
+
+  // Toggle dropdown menu
+  const toggleDropdown = (title: string) => {
+    setActiveDropdown(activeDropdown === title ? null : title);
+  };
 
   return (
     <header
       className={cn(
-        "sticky z-50 mx-4 flex justify-center transition-all duration-300 md:mx-0",
-        hasScrolled ? "top-6" : "top-4 mx-0",
+        "sticky z-50 flex justify-center transition-all duration-300",
+        hasScrolled ? "top-6" : "top-4",
+        className
       )}
     >
       <motion.div
         initial={{ width: INITIAL_WIDTH }}
         animate={{ width: hasScrolled ? MAX_WIDTH : INITIAL_WIDTH }}
         transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        className="w-full"
       >
         <div
           className={cn(
@@ -114,47 +151,157 @@ export function Navbar() {
               : "shadow-none px-7",
           )}
         >
-          <div className="flex h-[56px] items-center justify-between p-4">
+          <div className="flex h-16 items-center justify-between p-4">
+            {/* Logo */}
             <Link href="/" className="flex items-center gap-3">
-              <div className="text-lg font-semibold text-primary">BuildAppsWith</div>
+              <div className="text-lg font-bold text-primary">BW</div>
             </Link>
 
-            <nav className="hidden md:flex space-x-6">
-              {navLinks.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const element = document.getElementById(item.href.substring(1));
-                    element?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className={`underline-offset-4 hover:text-primary/80 transition-colors ${
-                    activeSection === item.href.substring(1)
-                      ? "text-primary font-medium"
-                      : "text-primary/60"
-                  }`}
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-4">
+              <Link
+                href="/how-it-works"
+                className="text-primary/60 hover:text-primary transition-colors px-3 py-2"
+              >
+                How It Works
+              </Link>
+              
+              {/* I would like to... dropdown */}
+              <div className="relative dropdown-trigger">
+                <button 
+                  onClick={() => toggleDropdown("I would like to...")}
+                  className={cn(
+                    "flex items-center gap-1 px-3 py-2 rounded-md transition-colors",
+                    activeDropdown === "I would like to..." 
+                      ? "bg-secondary/50 text-primary" 
+                      : "hover:bg-secondary/30 text-primary/60 hover:text-primary"
+                  )}
+                  aria-expanded={activeDropdown === "I would like to..."}
                 >
-                  {item.name}
-                </a>
-              ))}
+                  I would like to...
+                  <ChevronDown className={cn(
+                    "h-4 w-4 transition-transform", 
+                    activeDropdown === "I would like to..." ? "rotate-180" : ""
+                  )} />
+                </button>
+                
+                <AnimatePresence>
+                  {activeDropdown === "I would like to..." && (
+                    <motion.div 
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      variants={dropdownVariants}
+                      className="absolute left-0 mt-2 w-72 rounded-md border border-border bg-card shadow-lg overflow-hidden"
+                    >
+                      <div className="p-2 space-y-1">
+                        {mainNavItems[0].items?.map((subItem) => (
+                          <Link
+                            key={subItem.title}
+                            href={subItem.href}
+                            onClick={() => setActiveDropdown(null)}
+                            className="block px-4 py-3 rounded-md text-sm hover:bg-secondary/30 transition-colors"
+                          >
+                            <div className="font-medium">{subItem.title}</div>
+                            {subItem.description && (
+                              <div className="text-muted-foreground text-xs mt-1">{subItem.description}</div>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              
+              <Link
+                href="/marketplace"
+                className="text-primary/60 hover:text-primary transition-colors px-3 py-2"
+              >
+                Marketplace
+              </Link>
+              
+              <Link
+                href="/toolkit"
+                className="text-primary/60 hover:text-primary transition-colors px-3 py-2"
+              >
+                Free Toolkit
+              </Link>
+              
+              {/* About Us dropdown */}
+              <div className="relative dropdown-trigger">
+                <button 
+                  onClick={() => toggleDropdown("About Us")}
+                  className={cn(
+                    "flex items-center gap-1 px-3 py-2 rounded-md transition-colors",
+                    activeDropdown === "About Us" 
+                      ? "bg-secondary/50 text-primary" 
+                      : "hover:bg-secondary/30 text-primary/60 hover:text-primary"
+                  )}
+                  aria-expanded={activeDropdown === "About Us"}
+                >
+                  About Us
+                  <ChevronDown className={cn(
+                    "h-4 w-4 transition-transform", 
+                    activeDropdown === "About Us" ? "rotate-180" : ""
+                  )} />
+                </button>
+                
+                <AnimatePresence>
+                  {activeDropdown === "About Us" && (
+                    <motion.div 
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      variants={dropdownVariants}
+                      className="absolute left-0 mt-2 w-72 rounded-md border border-border bg-card shadow-lg overflow-hidden"
+                    >
+                      <div className="p-2 space-y-1">
+                        {mainNavItems[1].items?.map((subItem) => (
+                          <Link
+                            key={subItem.title}
+                            href={subItem.href}
+                            onClick={() => setActiveDropdown(null)}
+                            className="block px-4 py-3 rounded-md text-sm hover:bg-secondary/30 transition-colors"
+                          >
+                            <div className="font-medium">{subItem.title}</div>
+                            {subItem.description && (
+                              <div className="text-muted-foreground text-xs mt-1">{subItem.description}</div>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </nav>
 
-            <div className="flex flex-row items-center gap-1 md:gap-3 shrink-0">
-              <div className="flex items-center space-x-6">
-                <Link
-                  className="bg-secondary h-8 hidden md:flex items-center justify-center text-sm font-normal tracking-wide rounded-full text-primary-foreground dark:text-secondary-foreground w-fit px-4 shadow-[inset_0_1px_2px_rgba(255,255,255,0.25),0_3px_3px_-1.5px_rgba(16,24,40,0.06),0_1px_1px_rgba(16,24,40,0.08)] border border-white/[0.12]"
-                  href="/marketplace"
-                >
-                  Find a Builder
-                </Link>
-              </div>
-              <ThemeToggle />
-              <button
-                className="md:hidden border border-border size-8 rounded-md cursor-pointer flex items-center justify-center"
-                onClick={toggleDrawer}
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2 md:gap-4">
+              <ViewingPreferences />
+              
+              <Link 
+                href="/signin" 
+                className="hidden md:block text-primary/70 hover:text-primary transition-colors border border-border rounded-lg px-4 py-2"
               >
-                {isDrawerOpen ? (
+                Sign In
+              </Link>
+              
+              <Link
+                href="/signup"
+                className="bg-primary text-white hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+              >
+                Get Started
+              </Link>
+              
+              {/* Mobile Menu Button */}
+              <button
+                className="md:hidden border border-border size-10 rounded-md flex items-center justify-center"
+                onClick={toggleMobileMenu}
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              >
+                {isMobileMenuOpen ? (
                   <X className="size-5" />
                 ) : (
                   <Menu className="size-5" />
@@ -165,82 +312,76 @@ export function Navbar() {
         </div>
       </motion.div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Menu */}
       <AnimatePresence>
-        {isDrawerOpen && (
+        {isMobileMenuOpen && (
           <>
             <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
               initial="hidden"
               animate="visible"
               exit="exit"
               variants={overlayVariants}
               transition={{ duration: 0.2 }}
-              onClick={handleOverlayClick}
+              onClick={() => setIsMobileMenuOpen(false)}
             />
 
             <motion.div
-              className="fixed inset-x-0 w-[95%] mx-auto bottom-3 bg-background border border-border p-4 rounded-xl shadow-lg"
+              className="fixed inset-x-0 w-[95%] mx-auto bottom-3 bg-background border border-border p-4 rounded-xl shadow-lg z-50 max-h-[85vh] overflow-y-auto"
               initial="hidden"
               animate="visible"
               exit="exit"
               variants={drawerVariants}
             >
-              {/* Mobile menu content */}
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <Link href="/" className="flex items-center gap-3">
                     <div className="text-lg font-semibold text-primary">BuildAppsWith</div>
                   </Link>
                   <button
-                    onClick={toggleDrawer}
-                    className="border border-border rounded-md p-1 cursor-pointer"
+                    onClick={toggleMobileMenu}
+                    className="border border-border rounded-md p-1"
+                    aria-label="Close menu"
                   >
                     <X className="size-5" />
                   </button>
                 </div>
 
-                <motion.ul
-                  className="flex flex-col text-sm mb-4 border border-border rounded-md"
-                  variants={drawerMenuContainerVariants}
-                >
-                  <AnimatePresence>
-                    {navLinks.map((item) => (
-                      <motion.li
-                        key={item.id}
-                        className="p-2.5 border-b border-border last:border-b-0"
-                        variants={drawerMenuVariants}
-                      >
-                        <a
-                          href={item.href}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const element = document.getElementById(
-                              item.href.substring(1),
-                            );
-                            element?.scrollIntoView({ behavior: "smooth" });
-                            setIsDrawerOpen(false);
-                          }}
-                          className={`underline-offset-4 hover:text-primary/80 transition-colors ${
-                            activeSection === item.href.substring(1)
-                              ? "text-primary font-medium"
-                              : "text-primary/60"
-                          }`}
+                <div className="space-y-4">
+                  {mainNavItems.map((item) => (
+                    <div key={item.title} className="border border-border rounded-md overflow-hidden">
+                      {item.items ? (
+                        <MobileDropdownItem item={item} onClose={() => setIsMobileMenuOpen(false)} />
+                      ) : (
+                        <Link
+                          href={item.href || '/'}
+                          className="block p-3 hover:bg-secondary/30 transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          {item.name}
-                        </a>
-                      </motion.li>
-                    ))}
-                  </AnimatePresence>
-                </motion.ul>
+                          {item.title}
+                        </Link>
+                      )}
+                    </div>
+                  ))}
+                </div>
 
-                {/* Action buttons */}
-                <div className="flex flex-col gap-2">
+                {/* Mobile Actions */}
+                <div className="flex flex-col gap-2 mt-2">
+                  <ViewingPreferences isMobile={true} />
+                  
                   <Link
-                    href="/marketplace"
-                    className="bg-secondary h-8 flex items-center justify-center text-sm font-normal tracking-wide rounded-full text-primary-foreground dark:text-secondary-foreground w-full px-4 shadow-[inset_0_1px_2px_rgba(255,255,255,0.25),0_3px_3px_-1.5px_rgba(16,24,40,0.06),0_1px_1px_rgba(16,24,40,0.08)] border border-white/[0.12] hover:bg-secondary/80 transition-all ease-out active:scale-95"
+                    href="/signin"
+                    className="text-center py-2 text-primary/80 hover:text-primary transition-colors border border-border rounded-lg"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Find a Builder
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="bg-primary text-white hover:bg-primary/90 text-center py-3 rounded-lg font-medium transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Get Started
                   </Link>
                 </div>
               </div>
@@ -249,5 +390,50 @@ export function Navbar() {
         )}
       </AnimatePresence>
     </header>
+  );
+}
+
+// Mobile dropdown component
+function MobileDropdownItem({ 
+  item, 
+  onClose 
+}: { 
+  item: NavigationItem; 
+  onClose: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div>
+      <button
+        className="w-full p-3 flex items-center justify-between hover:bg-secondary/30 transition-colors"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+      >
+        <span>{item.title}</span>
+        <ChevronDown className={cn(
+          "h-4 w-4 transition-transform", 
+          isOpen ? "rotate-180" : ""
+        )} />
+      </button>
+      
+      {isOpen && item.items && (
+        <div className="border-t border-border bg-secondary/10">
+          {item.items.map((subItem) => (
+            <Link
+              key={subItem.title}
+              href={subItem.href}
+              className="block p-3 hover:bg-secondary/30 transition-colors"
+              onClick={onClose}
+            >
+              <div className="font-medium">{subItem.title}</div>
+              {subItem.description && (
+                <div className="text-muted-foreground text-xs mt-1">{subItem.description}</div>
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
