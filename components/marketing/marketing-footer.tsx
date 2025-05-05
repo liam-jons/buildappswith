@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { NewsletterForm } from "./ui/newsletter-form";
 
 export interface FooterSection {
   title: string;
@@ -155,21 +156,10 @@ export function MarketingFooter({
           <div className="lg:col-span-1">
             <h3 className="font-semibold text-lg mb-4">{newsletterTitle}</h3>
             <p className="text-muted-foreground mb-4">{newsletterDescription}</p>
-            <form className="space-y-2" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder={newsletterPlaceholder}
-                className="w-full px-4 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                aria-label={newsletterPlaceholder}
-                required
-              />
-              <button
-                type="submit"
-                className="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 font-medium hover:bg-primary/90 transition-colors"
-              >
-                {newsletterButtonText}
-              </button>
-            </form>
+            <NewsletterForm 
+              placeholder={newsletterPlaceholder}
+              buttonText={newsletterButtonText}
+            />
           </div>
         </div>
 
