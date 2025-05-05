@@ -27,7 +27,7 @@ export const AnimatedSpan = ({
   </motion.div>
 );
 
-interface TypingAnimationProps extends MotionProps {
+interface TerminalTypingAnimationProps extends MotionProps {
   children: string;
   className?: string;
   duration?: number;
@@ -35,16 +35,16 @@ interface TypingAnimationProps extends MotionProps {
   as?: React.ElementType;
 }
 
-export const TypingAnimation = ({
+export const TerminalTypingAnimation = ({
   children,
   className,
   duration = 60,
   delay = 0,
   as: Component = "span",
   ...props
-}: TypingAnimationProps) => {
+}: TerminalTypingAnimationProps) => {
   if (typeof children !== "string") {
-    throw new Error("TypingAnimation: children must be a string. Received:");
+    throw new Error("TerminalTypingAnimation: children must be a string. Received:");
   }
 
   const MotionComponent = motion.create(Component, {

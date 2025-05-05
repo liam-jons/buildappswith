@@ -63,10 +63,26 @@ export default authMiddleware({
   
   // Ignore specific routes entirely
   ignoredRoutes: [
+    // API webhook endpoints
     '/api/webhooks/clerk',
     '/api/webhooks/stripe',
+    
+    // Static assets from Next.js
     '/_next/static/(.*)',
+    '/_next/image(.*)',
+    
+    // Image directories
     '/images/(.*)',
+    '/logos/(.*)',
+    '/assets/(.*)',
+    
+    // Static images at root
+    '/hero-light.png',
+    '/hero-dark.png',
+    '/favicon.ico',
+    
+    // Future Sanity CDN URLs - adjust based on your Sanity project configuration
+    'https://cdn.sanity.io/(.*)',
   ],
   
   // Debug mode (enable only in development)
@@ -79,34 +95,52 @@ export default authMiddleware({
       
       // Handle non-authenticated users trying to access protected routes
       if (!auth.isPublicRoute && !auth.isAuthorized) {
-        // Get current path for redirect
-        const url = new URL(req.url);
-        const returnUrl = encodeURIComponent(url.pathname + url.search);
-        
-        // Redirect to login with return URL
-        evt.redirect(`/login?returnUrl=${returnUrl}`);
-        
-        // Log authentication attempt
-        logger.info('Authentication required', {
-          path: url.pathname,
-          redirectTo: `/login?returnUrl=${returnUrl}`,
-        });
+        try {
+          // Get current path for redirect
+          const url = new URL(req.url);
+          const returnUrl = encodeURIComponent(url.pathname + url.search);
+          
+          // Only redirect if it's a page request (not static assets)
+          const isAssetRequest = /\.(jpg|jpeg|png|gif|svg|webp|css|js|woff2?|ttf|otf|ico)$/i.test(url.pathname);
+          if (!isAssetRequest && evt.redirect) {
+            // Redirect to login with return URL
+            evt.redirect(`/login?returnUrl=${returnUrl}`);
+            
+            // Log authentication attempt
+            logger.info('Authentication required', {
+              path: url.pathname,
+              redirectTo: `/login?returnUrl=${returnUrl}`,
+            });
+          }
+        } catch (err) {
+          logger.error('Redirect error', { error: err, path: req.url });
+        }
       }
       
       // Add user information to headers for server components
-      if (auth.isAuthorized) {
-        evt.headers.set('x-user-id', auth.userId);
-        
-        // Add roles if available
-        const roles = auth.sessionClaims?.['public_metadata']?.['roles'];
-        if (roles) {
-          evt.headers.set('x-user-roles', JSON.stringify(roles));
+      if (auth.isAuthorized && evt.headers) {
+        try {
+          evt.headers.set('x-user-id', auth.userId);
+          
+          // Add roles if available
+          const roles = auth.sessionClaims?.['public_metadata']?.['roles'];
+          if (roles) {
+            evt.headers.set('x-user-roles', JSON.stringify(roles));
+          }
+        } catch (err) {
+          logger.error('Headers error', { error: err, path: req.url });
         }
       }
       
       // Add performance monitoring header
-      const startTime = Date.now();
-      evt.headers.set('x-server-timing', `auth;dur=${Date.now() - startTime}`);
+      try {
+        if (evt.headers) {
+          const startTime = Date.now();
+          evt.headers.set('x-server-timing', `auth;dur=${Date.now() - startTime}`);
+        }
+      } catch (err) {
+        logger.error('Timing header error', { error: err, path: req.url });
+      }
     } catch (error) {
       // Log any errors in the middleware
       logger.error('Middleware error', {
