@@ -8,11 +8,11 @@ import { HeroSection } from "@/components/landing/hero-section";
 import { Navbar } from "@/components/landing/navbar";
 import { PerformanceMonitor } from "@/components/landing/performance-optimizations";
 import { SkillsTreeSection } from "@/components/landing/skills-tree-section";
-import { TrustedEcosystem } from "@/components/landing/trusted-ecosystem";
-import { AIStats } from "@/components/landing/ai-stats";
-import { SkillsCarousel } from "@/components/landing/skills-carousel";
 
-export default function Page() {
+// Metadata for this page would normally be in a separate metadata.ts file
+// or in a page.tsx file marked as server component
+
+export default function NewLandingPage() {
   return (
     <AccessibilityProvider>
       {/* Add accessibility styles */}
@@ -32,16 +32,7 @@ export default function Page() {
         {/* AI Capabilities Marquee */}
         <AICapabilitiesMarquee />
         
-        {/* AI Stats */}
-        <AIStats />
-        
-        {/* Trusted Ecosystem */}
-        <TrustedEcosystem />
-        
-        {/* Skills Learning Carousel */}
-        <SkillsCarousel />
-        
-        {/* How It Works */}
+        {/* Skills Learning Tree */}
         <SkillsTreeSection />
         
         {/* CTA Section */}

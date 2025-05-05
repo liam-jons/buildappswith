@@ -4,3 +4,6 @@ export * from './cta-section';
 export * from './testimonial-section';
 export * from './bento-section';
 export * from './navbar';
+export * from './ai-capabilities-marquee';
+export * from './skills-tree-section';
+export * from './footer';
