@@ -50,7 +50,7 @@ export interface Testimonial {
   avatar?: string;
   content: string;
   rating: number;
-  date: Date;
+  date: string | Date;
 }
 
 export interface BuilderAvailability {
@@ -67,7 +67,7 @@ export interface PortfolioProject {
   technologies: string[];
   demoUrl?: string;
   repositoryUrl?: string;
-  completionDate?: Date;
+  completionDate?: string | Date;
   featured?: boolean;
 }
 
@@ -101,83 +101,69 @@ export interface Metric {
   };
 }
 
-export type ExpertiseAreas = Partial<Record<SpecializationArea, SpecializationContent>>;
+export type ExpertiseAreasUpdate = Record<string, any>;
 
-export interface BuilderProfile {
+export interface SessionTypeWithId {
   id: string;
-  clerkUserId: string; // Link to Clerk user
-  displayName: string;
-  tagline: string;
-  bio: string;
-  specializations: string[];
-  avatar?: ProfileImage;
-  coverImage?: ProfileImage;
-  validationTier: ValidationTier;
-  roles: UserRole[];
-  isFounder?: boolean;
-  adhdFocus: boolean;
-  skills: string[];
-  joinDate: Date;
-  completedProjects: number;
-  rating: number;
-  responseRate: number;
-  socialLinks?: SocialProfiles;
-  availability: BuilderAvailability;
-  portfolio: PortfolioProject[];
-  apps?: AIApp[];
-  testimonials?: Testimonial[];
-  metrics?: MetricsCategory[];
-  featured: boolean;
-  slug: string;
-
-  // Specialization content
-  expertiseAreas: ExpertiseAreas;
+  title: string;
+  description: string;
+  durationMinutes: number;
+  price: number;
+  currency: string;
+  isActive: boolean;
+  color?: string;
+  maxParticipants?: number;
 }
 
-// Type for API responses
-export interface BuilderProfileResponse {
-  success: boolean;
-  data?: BuilderProfile;
-  error?: string;
-}
-
-export interface BuilderProfilesResponse {
-  success: boolean;
-  data?: BuilderProfile[];
-  error?: string;
-}
-
-// Type for API requests
-export interface CreateProfileRequest {
-  displayName: string;
-  tagline: string;
-  bio: string;
-  specializations: string[];
-  validationTier: ValidationTier;
-  roles: UserRole[];
-  isFounder?: boolean;
-  adhdFocus: boolean;
-  skills: string[];
-  socialLinks?: SocialProfiles;
-  slug: string;
-  expertiseAreas?: ExpertiseAreas;
-}
-
-export interface UpdateProfileRequest {
-  displayName?: string;
-  tagline?: string;
+export interface BuilderProfileData {
+  id: string;
   bio?: string;
-  specializations?: string[];
-  validationTier?: ValidationTier;
-  roles?: UserRole[];
-  isFounder?: boolean;
-  adhdFocus?: boolean;
-  skills?: string[];
-  socialLinks?: SocialProfiles;
-  availability?: BuilderAvailability;
+  headline?: string;
   slug?: string;
-  featured?: boolean;
-  expertiseAreas?: ExpertiseAreas;
+  tagline?: string;
+  displayName?: string;
+  validationTier: number;
+  domains: string[];
+  badges: string[];
+  completedProjects: number;
+  responseRate?: number;
+  hourlyRate?: number;
+  availableForHire: boolean;
+  adhd_focus: boolean;
+  expertiseAreas: Record<string, any>;
+  socialLinks: Record<string, string>;
+  portfolioItems: any[];
+  featured: boolean;
+  searchable: boolean;
+  availability: string;
+  topSkills: string[];
+}
+
+export interface BuilderProfileResponse {
+  userId: string;
+  clerkId?: string;
+  email: string;
+  name?: string;
+  profile: BuilderProfileData;
+}
+
+// Type for updating builder profile
+export interface UpdateBuilderProfileData {
+  bio?: string | null;
+  headline?: string | null;
+  slug?: string | null;
+  tagline?: string | null;
+  displayName?: string | null;
+  domains?: string[];
+  badges?: string[];
+  hourlyRate?: number | null;
+  availableForHire?: boolean;
+  adhd_focus?: boolean;
+  socialLinks?: Record<string, string> | null;
+  portfolioItems?: any[] | null;
+  searchable?: boolean;
+  availability?: string;
+  topSkills?: string[];
 }
 
 /**
@@ -194,7 +180,7 @@ export interface ProfilePermissions {
  * Profile auth context for UI components
  */
 export interface ProfileAuthContext {
-  profile: BuilderProfile;
+  profile?: BuilderProfileData;
   permissions: ProfilePermissions;
   isOwner: boolean;
   isAdmin: boolean;
