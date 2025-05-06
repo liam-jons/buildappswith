@@ -5,13 +5,13 @@
  * controls based on authentication state. It ensures profiles are publicly viewable
  * while protecting sensitive information.
  * 
- * Version: 1.0.0
+ * Version: 1.1.0
  */
 
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/hooks/auth';
+import { useProfileAuth } from './profile-auth-provider';
 import { BuilderProfile } from './builder-profile';
 import { SessionTypeList } from '@/components/scheduling/session-type-list';
 import { BookingButton } from '@/components/booking/booking-button';
@@ -50,17 +50,17 @@ interface BuilderProfileWrapperProps {
  * data access controls based on authentication state
  */
 export function BuilderProfileWrapper({ builder, className }: BuilderProfileWrapperProps) {
-  const { isSignedIn, isAdmin, isBuilder } = useAuth();
+  const { isOwner, isAdmin, isAuthenticated, permissions } = useProfileAuth();
   
   // Filter sensitive data for public/unauthorized access
   const filteredBuilder = {
     ...builder,
     // Remove sensitive fields for unauthenticated or unauthorized users
-    email: isSignedIn && (isAdmin || (isBuilder && builder.id === 'current-user-id')) ? builder.email : undefined,
-    phoneNumber: isSignedIn && (isAdmin || (isBuilder && builder.id === 'current-user-id')) ? builder.phoneNumber : undefined,
-    privateNotes: isSignedIn && (isAdmin || (isBuilder && builder.id === 'current-user-id')) ? builder.privateNotes : undefined,
-    earnings: isSignedIn && (isAdmin || (isBuilder && builder.id === 'current-user-id')) ? builder.earnings : undefined,
-    stripeAccountId: isSignedIn && isAdmin ? builder.stripeAccountId : undefined,
+    email: permissions.canEdit ? builder.email : undefined,
+    phoneNumber: permissions.canEdit ? builder.phoneNumber : undefined,
+    privateNotes: permissions.canEdit ? builder.privateNotes : undefined,
+    earnings: permissions.canEdit ? builder.earnings : undefined,
+    stripeAccountId: isAdmin ? builder.stripeAccountId : undefined,
   };
   
   return (
@@ -74,7 +74,7 @@ export function BuilderProfileWrapper({ builder, className }: BuilderProfileWrap
       {/* Main profile content */}
       <BuilderProfile 
         builder={filteredBuilder} 
-        showContactInfo={isSignedIn && (isAdmin || (isBuilder && builder.id === 'current-user-id'))}
+        showContactInfo={permissions.canEdit}
       />
       
       {/* Session types section */}
@@ -83,12 +83,12 @@ export function BuilderProfileWrapper({ builder, className }: BuilderProfileWrap
         <SessionTypeList 
           sessions={builder.sessionTypes} 
           builderId={builder.id}
-          showBookingButtons={true}
+          showBookingButtons={!isOwner}
         />
       </div>
       
       {/* Admin-only section */}
-      {isSignedIn && isAdmin && (
+      {isAdmin && (
         <div className="mt-8 p-4 border border-amber-200 bg-amber-50 rounded-md">
           <h3 className="text-lg font-medium text-amber-800">Admin Information</h3>
           <div className="mt-2 space-y-2 text-sm">
@@ -102,16 +102,36 @@ export function BuilderProfileWrapper({ builder, className }: BuilderProfileWrap
               <button className="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded text-sm">
                 Edit Profile
               </button>
-              <button className="px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-sm text-red-700">
-                Suspend Account
-              </button>
+              {permissions.canDelete && (
+                <button className="px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-sm text-red-700">
+                  Suspend Account
+                </button>
+              )}
             </div>
           </div>
         </div>
       )}
       
-      {/* Primary booking call-to-action for non-builders */}
-      {!isBuilder && (
+      {/* Profile editing options for owners */}
+      {isOwner && (
+        <div className="mt-8 p-4 border border-blue-200 bg-blue-50 rounded-md">
+          <h3 className="text-lg font-medium text-blue-800">Profile Management</h3>
+          <div className="mt-4 flex gap-4">
+            <button className="px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded text-sm">
+              Edit Profile
+            </button>
+            <button className="px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded text-sm">
+              Manage Session Types
+            </button>
+            <button className="px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded text-sm">
+              Manage Availability
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Primary booking call-to-action for authenticated non-owners */}
+      {isAuthenticated && !isOwner && (
         <div className="mt-10 flex justify-center">
           <BookingButton 
             builderId={builder.id} 

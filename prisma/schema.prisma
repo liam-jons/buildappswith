@@ -13,11 +13,14 @@ model User {
   name             String?
   email            String          @unique
   emailVerified    DateTime?
-  image            String?
+  image            String?         // Keep for backward compatibility
+  imageUrl         String?         // New field for Clerk integration
   isFounder        Boolean         @default(false)
   stripeCustomerId String?
   verified         Boolean         @default(false)
   clerkId          String?         @unique
+  active           Boolean         @default(true)
+  deletedAt        DateTime?
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   roles            UserRole[]      @default([CLIENT])
@@ -271,6 +274,66 @@ model CapabilityRequirement {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   capability   AICapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
+}
+
+model WebhookEvent {
+  id              String    @id @default(cuid())
+  svixId          String    @unique
+  type            String
+  payload         Json
+  processed       Boolean   @default(false)
+  processingError String?
+  processingCount Int       @default(0)
+  lastProcessed   DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([type])
+  @@index([processed, processingCount]) // For retry queries
+}
+
+model WebhookMetric {
+  id             String   @id @default(cuid())
+  type           String
+  status         String
+  processingTime Float
+  error          String?
+  timestamp      DateTime @default(now())
+  
+  @@index([type])
+  @@index([status])
+  @@index([timestamp])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  action      String
+  targetId    String?
+  targetType  String?
+  details     Json
+  ipAddress   String?
+  userAgent   String?
+  timestamp   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([timestamp])
+  @@index([targetType, targetId])
+}
+
+model Organization {
+  id        String    @id @default(cuid())
+  clerkId   String    @unique
+  name      String
+  slug      String?   @unique
+  imageUrl  String?
+  active    Boolean   @default(true)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  @@index([slug])
 }
 
 enum UserRole {
