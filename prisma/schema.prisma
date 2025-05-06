@@ -13,8 +13,8 @@ model User {
   name             String?
   email            String          @unique
   emailVerified    DateTime?
-  image            String?         // Keep for backward compatibility
-  imageUrl         String?         // New field for Clerk integration
+  image            String? // Keep for backward compatibility
+  imageUrl         String? // New field for Clerk integration
   isFounder        Boolean         @default(false)
   stripeCustomerId String?
   verified         Boolean         @default(false)
@@ -67,38 +67,38 @@ model VerificationToken {
 }
 
 model BuilderProfile {
-  id               String         @id @default(cuid())
-  userId           String         @unique
-  bio              String?        @db.Text
-  headline         String?
-  hourlyRate       Decimal?       @db.Decimal(10, 2)
-  featuredBuilder  Boolean        @default(false)
-  domains          String[]
-  badges           String[]
-  rating           Float?
-  portfolioItems   Json[]
-  validationTier   Int            @default(1)
-  availableForHire Boolean        @default(true)
-  adhd_focus       Boolean        @default(false)
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  socialLinks      Json?
-  apps             App[]
-  bookings         Booking[]
-  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skills           BuilderSkill[]
-  sessionTypes     SessionType[]
+  id                String         @id @default(cuid())
+  userId            String         @unique
+  bio               String?        @db.Text
+  headline          String?
+  hourlyRate        Decimal?       @db.Decimal(10, 2)
+  featuredBuilder   Boolean        @default(false)
+  domains           String[]
+  badges            String[]
+  rating            Float?
+  portfolioItems    Json[]
+  validationTier    Int            @default(1)
+  availableForHire  Boolean        @default(true)
+  adhd_focus        Boolean        @default(false)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  socialLinks       Json?
+  apps              App[]
+  bookings          Booking[]
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills            BuilderSkill[]
+  sessionTypes      SessionType[]
   // Marketplace fields
-  slug             String?        @unique
-  tagline          String?
-  displayName      String?
-  completedProjects Int           @default(0)
-  responseRate     Float?
-  expertiseAreas   Json?
-  featured         Boolean        @default(false)
-  searchable       Boolean        @default(true)
-  availability     String         @default("available")
-  topSkills        String[]       @default([])
+  slug              String?        @unique
+  tagline           String?
+  displayName       String?
+  completedProjects Int            @default(0)
+  responseRate      Float?
+  expertiseAreas    Json?
+  featured          Boolean        @default(false)
+  searchable        Boolean        @default(true)
+  availability      String         @default("available")
+  topSkills         String[]       @default([])
 
   @@index([featured])
   @@index([searchable])
@@ -303,7 +303,7 @@ model WebhookEvent {
   lastProcessed   DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  
+
   @@index([type])
   @@index([processed, processingCount]) // For retry queries
 }
@@ -315,23 +315,23 @@ model WebhookMetric {
   processingTime Float
   error          String?
   timestamp      DateTime @default(now())
-  
+
   @@index([type])
   @@index([status])
   @@index([timestamp])
 }
 
 model AuditLog {
-  id          String   @id @default(cuid())
-  userId      String
-  action      String
-  targetId    String?
-  targetType  String?
-  details     Json
-  ipAddress   String?
-  userAgent   String?
-  timestamp   DateTime @default(now())
-  
+  id         String   @id @default(cuid())
+  userId     String
+  action     String
+  targetId   String?
+  targetType String?
+  details    Json
+  ipAddress  String?
+  userAgent  String?
+  timestamp  DateTime @default(now())
+
   @@index([userId])
   @@index([action])
   @@index([timestamp])
@@ -348,7 +348,7 @@ model Organization {
   deletedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  
+
   @@index([slug])
 }
 

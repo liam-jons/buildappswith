@@ -1,0 +1,90 @@
+/**
+ * Stripe payment types
+ * Version: 1.0.0
+ * 
+ * TypeScript type definitions for payment
+ */
+
+export enum StripeWebhookEventType {
+  CHECKOUT_SESSION_COMPLETED = 'checkout.session.completed',
+  CHECKOUT_SESSION_EXPIRED = 'checkout.session.expired',
+  PAYMENT_INTENT_SUCCEEDED = 'payment_intent.succeeded',
+  PAYMENT_INTENT_FAILED = 'payment_intent.payment_failed',
+}
+
+export enum StripePaymentStatus {
+  SUCCEEDED = 'succeeded',
+  PROCESSING = 'processing',
+  REQUIRES_PAYMENT_METHOD = 'requires_payment_method',
+  REQUIRES_CONFIRMATION = 'requires_confirmation',
+  REQUIRES_ACTION = 'requires_action',
+  CANCELED = 'canceled',
+}
+
+export interface StripeCheckoutMetadata {
+  bookingId: string;
+  builderId: string;
+  clientId: string;
+  sessionTypeId: string;
+}
+
+export interface CheckoutSessionRequest {
+  bookingData: {
+    id?: string;
+    builderId: string;
+    sessionTypeId: string;
+    startTime: string;
+    endTime: string;
+    clientId?: string;
+  };
+  returnUrl: string;
+}
+
+export interface CheckoutSessionResponse {
+  sessionId: string;
+  url: string;
+}
+
+export interface StripeWebhookEvent {
+  id: string;
+  object: string;
+  api_version: string;
+  created: number;
+  data: {
+    object: any;
+  };
+  livemode: boolean;
+  pending_webhooks: number;
+  request: {
+    id: string | null;
+    idempotency_key: string | null;
+  };
+  type: StripeWebhookEventType;
+}
+
+export interface StripePaymentIntent {
+  id: string;
+  object: string;
+  amount: number;
+  amount_received: number;
+  currency: string;
+  customer: string;
+  description: string | null;
+  metadata: Record<string, string>;
+  payment_method: string;
+  payment_method_types: string[];
+  status: StripePaymentStatus;
+}
+
+export interface StripeCheckoutSession {
+  id: string;
+  object: string;
+  amount_total: number;
+  currency: string;
+  customer: string;
+  customer_email: string | null;
+  metadata: StripeCheckoutMetadata;
+  payment_intent: string | null;
+  payment_status: string;
+  url: string | null;
+}

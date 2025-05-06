@@ -1,0 +1,102 @@
+/**
+ * Scheduling types
+ * Version: 1.0.0
+ * 
+ * TypeScript type definitions for scheduling
+ */
+
+export enum BookingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
+}
+
+export enum PaymentStatus {
+  UNPAID = 'UNPAID',
+  PAID = 'PAID',
+  REFUNDED = 'REFUNDED',
+  FAILED = 'FAILED',
+}
+
+export interface TimeSlot {
+  startTime: string;
+  endTime: string;
+  available: boolean;
+}
+
+export interface SessionType {
+  id: string;
+  builderId: string;
+  title: string;
+  description: string;
+  durationMinutes: number;
+  price: number;
+  currency: string;
+  isActive: boolean;
+  color?: string;
+  maxParticipants?: number;
+}
+
+export interface Booking {
+  id: string;
+  builderId: string;
+  clientId: string;
+  sessionTypeId: string;
+  title: string;
+  description?: string;
+  startTime: string;
+  endTime: string;
+  status: BookingStatus;
+  paymentStatus: PaymentStatus;
+  amount?: number;
+  stripeSessionId?: string;
+  clientTimezone?: string;
+  builderTimezone?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BookingRequest {
+  sessionTypeId: string;
+  builderId: string;
+  clientId: string;
+  startTime: string;
+  endTime: string;
+  notes?: string;
+  clientTimezone?: string;
+}
+
+export interface BookingResponse {
+  booking: Booking;
+}
+
+export interface AvailabilityRule {
+  id: string;
+  builderId: string;
+  dayOfWeek: number; // 0-6, where 0 is Sunday
+  startTime: string; // HH:MM format
+  endTime: string;   // HH:MM format
+  isActive: boolean;
+}
+
+export interface AvailabilityException {
+  id: string;
+  builderId: string;
+  date: string;      // YYYY-MM-DD format
+  isBlocked: boolean;
+  timeSlots?: {
+    startTime: string; // HH:MM format
+    endTime: string;   // HH:MM format
+  }[];
+}
+
+export interface BuilderSchedulingSettings {
+  builderId: string;
+  timezone: string;
+  minimumNotice: number;       // Minutes
+  bufferBetweenSessions: number; // Minutes
+  maximumAdvanceBooking: number; // Days
+  acceptingBookings: boolean;
+}

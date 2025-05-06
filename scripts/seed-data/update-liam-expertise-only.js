@@ -1,17 +1,15 @@
 /**
- * Seed script for Liam Jons profile with expertise areas and Clerk integration
+ * Script to only update Liam's expertise areas
  * 
- * This script updates Liam Jons's profile with expertise areas, ADHD focus,
- * and integrates with Clerk authentication.
- * 
- * Version: 1.1.0
+ * This script assumes Liam's user and basic profile already exist via Clerk webhooks
+ * and only updates the expertise areas and related profile fields.
  */
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Updating Liam\'s profile with expertise areas...');
+  console.log('Updating Liam\'s expertise areas...');
 
   // Use the appropriate Clerk ID based on environment
   const isProd = process.env.NODE_ENV === 'production';
@@ -19,71 +17,100 @@ async function main() {
     ? 'user_2wBNHJwI9cJdILyvlRnv4zxu090' // Liam's production Clerk user ID
     : 'user_2wiigzHyOhaAl4PPIhkKyT2yAkx'; // Liam's development Clerk user ID (with admin)
 
-  // First, let's check if a user with this Clerk ID exists
+  // Find Liam's user by Clerk ID
   let user = await prisma.user.findUnique({
     where: { clerkId: clerkUserId },
     select: {
       id: true,
       name: true,
       email: true,
-      emailVerified: true,
-      clerkId: true,
-      roles: true,
-      isFounder: true,
-      verified: true,
       builderProfile: true
     }
   });
 
   if (!user) {
-    console.log('Creating user for Liam with Clerk ID:', clerkUserId);
+    console.log(`User with Clerk ID ${clerkUserId} not found in database. Creating user.`);
     
-    // Create the user
-    user = await prisma.user.create({
+    // Create the user with minimal required fields
+    try {
+      const email = isProd ? 'liam@buildappswith.ai' : 'liam.jones@buildappswith.com';
+      
+      user = await prisma.user.create({
+        data: {
+          name: 'Liam Jons',
+          email: email,
+          clerkId: clerkUserId,
+          roles: ['ADMIN', 'BUILDER'],
+          isFounder: true,
+          verified: true,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          builderProfile: true
+        }
+      });
+      
+      console.log(`Created user: ${user.name} (${user.email})`);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      console.log('Trying to get existing user by email instead...');
+      
+      // Try to find by email as fallback
+      user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: 'liam@buildappswith.ai' },
+            { email: 'liam.jones@buildappswith.com' }
+          ]
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          builderProfile: true
+        }
+      });
+      
+      if (!user) {
+        console.error('Could not find or create user. Exiting.');
+        process.exit(1);
+      }
+      
+      // Update the user's clerkId
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { clerkId: clerkUserId }
+      });
+      
+      console.log(`Updated existing user with Clerk ID: ${user.name} (${user.email})`);
+    }
+  }
+
+  console.log(`Found user: ${user.name} (${user.email})`);
+
+  // Check if builder profile exists
+  let builderProfile = user.builderProfile;
+  
+  if (!builderProfile) {
+    console.log('Builder profile not found. Creating a new one.');
+    
+    builderProfile = await prisma.builderProfile.create({
       data: {
-        name: 'Liam Jons',
-        email: 'liam@buildappswith.ai',
-        emailVerified: new Date(),
-        clerkId: clerkUserId,
-        roles: ['BUILDER', 'ADMIN'],
-        isFounder: true,
-        verified: true,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        clerkId: true,
-        roles: true,
-        isFounder: true,
-        verified: true,
-        builderProfile: true
+        userId: user.id,
+        bio: "Founder of BuildAppsWith, helping individuals and businesses leverage AI to build applications that solve real problems. Specialized in ADHD productivity strategies and creating value through thoughtful AI integration. With over 10 years of experience in software development and AI, I focus on practical implementations that deliver tangible results.",
+        headline: "AI Application Builder & ADHD Productivity Specialist",
+        adhd_focus: true,
+        validationTier: 3,
+        domains: ["AI Development", "ADHD Productivity", "Business Strategy", "AI Literacy"],
+        badges: ["Founder", "AI Expert", "Verified"]
       }
     });
+    
+    console.log(`Created builder profile: ${builderProfile.id}`);
   } else {
-    console.log('User already exists:', user.id);
-    
-    // Update user info if needed
-    user = await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        name: 'Liam Jons',
-        email: 'liam@buildappswith.ai',
-        roles: ['BUILDER', 'ADMIN'],
-        isFounder: true,
-        verified: true,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        clerkId: true,
-        roles: true,
-        isFounder: true,
-        verified: true,
-        builderProfile: true
-      }
-    });
+    console.log(`Found existing builder profile: ${builderProfile.id}`);
   }
 
   // Prepare expertise areas JSON
@@ -209,148 +236,104 @@ async function main() {
     }
   ];
 
-  // Check if builder profile already exists
-  let builderProfile = user.builderProfile;
+  // Update the profile with expertise areas via direct SQL to avoid schema issues
+  try {
+    // Use Prisma's $queryRaw to execute SQL directly
+    await prisma.$executeRaw`
+      UPDATE "BuilderProfile" 
+      SET 
+        "displayName" = 'Liam Jons',
+        "responseRate" = 98,
+        "completedProjects" = 87,
+        "tagline" = 'Building AI applications with focus on ADHD productivity and business value',
+        "slug" = 'liam-jons',
+        "expertiseAreas" = ${JSON.stringify(expertiseAreas)}::jsonb,
+        "featured" = true,
+        "searchable" = true,
+        "availability" = 'available',
+        "socialLinks" = ${JSON.stringify(socialLinks)}::jsonb,
+        "portfolioItems" = ${JSON.stringify(portfolioItems)}::jsonb
+      WHERE "id" = ${builderProfile.id}
+    `;
 
-  if (builderProfile) {
-    console.log('Updating existing builder profile for Liam');
-    
-    // Update the core fields first
-    builderProfile = await prisma.builderProfile.update({
-      where: { id: builderProfile.id },
-      data: {
-        bio: "Founder of BuildAppsWith, helping individuals and businesses leverage AI to build applications that solve real problems. Specialized in ADHD productivity strategies and creating value through thoughtful AI integration. With over 10 years of experience in software development and AI, I focus on practical implementations that deliver tangible results.",
-        headline: "AI Application Builder & ADHD Productivity Specialist",
-        domains: ["AI Development", "ADHD Productivity", "Business Strategy", "AI Literacy"],
-        badges: ["Founder", "AI Expert", "Verified"],
-        rating: 4.9,
-        validationTier: 3,
-        adhd_focus: true,
-        availableForHire: true,
-        featuredBuilder: true,
-        socialLinks: socialLinks,
-        portfolioItems: portfolioItems
-      },
-    });
-    
-    // Use direct SQL to update the new fields
-    await prisma.$executeRaw`
-      UPDATE "BuilderProfile" 
-      SET 
-        "displayName" = 'Liam Jons',
-        "responseRate" = 98,
-        "completedProjects" = 87,
-        "tagline" = 'Building AI applications with focus on ADHD productivity and business value',
-        "slug" = 'liam-jons',
-        "clerkUserId" = ${clerkUserId},
-        "expertiseAreas" = ${JSON.stringify(expertiseAreas)}::jsonb,
-        "featured" = true
-      WHERE "id" = ${builderProfile.id}
-    `;
-  } else {
-    console.log('Creating new builder profile for Liam');
-    
-    // Create the builder profile
-    builderProfile = await prisma.builderProfile.create({
-      data: {
-        userId: user.id,
-        bio: "Founder of BuildAppsWith, helping individuals and businesses leverage AI to build applications that solve real problems. Specialized in ADHD productivity strategies and creating value through thoughtful AI integration. With over 10 years of experience in software development and AI, I focus on practical implementations that deliver tangible results.",
-        headline: "AI Application Builder & ADHD Productivity Specialist",
-        domains: ["AI Development", "ADHD Productivity", "Business Strategy", "AI Literacy"],
-        badges: ["Founder", "AI Expert", "Verified"],
-        rating: 4.9,
-        validationTier: 3,
-        adhd_focus: true,
-        availableForHire: true,
-        featuredBuilder: true,
-        socialLinks: socialLinks,
-        portfolioItems: portfolioItems
-      },
-    });
-    
-    // Use direct SQL to update the new fields
-    await prisma.$executeRaw`
-      UPDATE "BuilderProfile" 
-      SET 
-        "displayName" = 'Liam Jons',
-        "responseRate" = 98,
-        "completedProjects" = 87,
-        "tagline" = 'Building AI applications with focus on ADHD productivity and business value',
-        "slug" = 'liam-jons',
-        "clerkUserId" = ${clerkUserId},
-        "expertiseAreas" = ${JSON.stringify(expertiseAreas)}::jsonb,
-        "featured" = true
-      WHERE "id" = ${builderProfile.id}
-    `;
+    console.log('Successfully updated Liam\'s profile with expertise areas.');
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    process.exit(1);
   }
 
-  // Create session types for Liam
-  const sessionTypes = [
-    {
-      title: "Quick Strategy Session",
-      description: "30-minute focused session to discuss a specific challenge or opportunity with AI implementation.",
-      durationMinutes: 30,
-      price: 75,
-      currency: "USD",
-      isActive: true,
-      color: "#4f46e5", // Indigo
-    },
-    {
-      title: "ADHD Productivity Consultation",
-      description: "In-depth session focused on designing AI-powered productivity systems tailored to ADHD minds.",
-      durationMinutes: 60,
-      price: 150,
-      currency: "USD",
-      isActive: true,
-      color: "#9333ea", // Purple
-    },
-    {
-      title: "Business AI Assessment",
-      description: "Comprehensive evaluation of your business operations to identify high-value AI implementation opportunities.",
-      durationMinutes: 90,
-      price: 250,
-      currency: "USD",
-      isActive: true,
-      color: "#0891b2", // Cyan
-    },
-    {
-      title: "AI Literacy Workshop",
-      description: "Personalized workshop to elevate your AI literacy and prompt engineering skills.",
-      durationMinutes: 120,
-      price: 300,
-      currency: "USD",
-      isActive: true,
-      color: "#16a34a", // Green
-    }
-  ];
+  // Create session types for Liam if they don't exist
+  try {
+    const existingSessionTypes = await prisma.sessionType.findMany({
+      where: { builderId: builderProfile.id }
+    });
 
-  // Check for existing session types
-  const existingSessionTypes = await prisma.sessionType.findMany({
-    where: { builderId: builderProfile.id }
-  });
-
-  if (existingSessionTypes.length === 0) {
-    console.log('Creating session types for Liam');
-    
-    // Create session types
-    for (const sessionType of sessionTypes) {
-      await prisma.sessionType.create({
-        data: {
-          builderId: builderProfile.id,
-          ...sessionType
+    if (existingSessionTypes.length === 0) {
+      console.log('Creating session types for Liam');
+      
+      const sessionTypes = [
+        {
+          title: "Quick Strategy Session",
+          description: "30-minute focused session to discuss a specific challenge or opportunity with AI implementation.",
+          durationMinutes: 30,
+          price: 75,
+          currency: "USD",
+          isActive: true,
+          color: "#4f46e5", // Indigo
+          builderId: builderProfile.id
+        },
+        {
+          title: "ADHD Productivity Consultation",
+          description: "In-depth session focused on designing AI-powered productivity systems tailored to ADHD minds.",
+          durationMinutes: 60,
+          price: 150,
+          currency: "USD",
+          isActive: true,
+          color: "#9333ea", // Purple
+          builderId: builderProfile.id
+        },
+        {
+          title: "Business AI Assessment",
+          description: "Comprehensive evaluation of your business operations to identify high-value AI implementation opportunities.",
+          durationMinutes: 90,
+          price: 250,
+          currency: "USD",
+          isActive: true,
+          color: "#0891b2", // Cyan
+          builderId: builderProfile.id
+        },
+        {
+          title: "AI Literacy Workshop",
+          description: "Personalized workshop to elevate your AI literacy and prompt engineering skills.",
+          durationMinutes: 120,
+          price: 300,
+          currency: "USD",
+          isActive: true,
+          color: "#16a34a", // Green
+          builderId: builderProfile.id
         }
+      ];
+
+      // Create session types
+      await prisma.sessionType.createMany({
+        data: sessionTypes
       });
+      
+      console.log('Created session types for Liam');
+    } else {
+      console.log(`Found ${existingSessionTypes.length} existing session types, skipping creation`);
     }
-  } else {
-    console.log('Session types already exist for Liam');
+  } catch (error) {
+    console.error('Error creating session types:', error);
+    // Continue execution - don't exit as this is non-critical
   }
 
-  console.log('Profile update complete!');
+  console.log('Profile update completed successfully!');
 }
 
 main()
-  .catch((e) => {
-    console.error('Error updating profile:', e);
+  .catch(e => {
+    console.error('Error:', e);
     process.exit(1);
   })
   .finally(async () => {
