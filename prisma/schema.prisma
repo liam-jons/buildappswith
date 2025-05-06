@@ -69,7 +69,7 @@ model VerificationToken {
 model BuilderProfile {
   id               String         @id @default(cuid())
   userId           String         @unique
-  bio              String?
+  bio              String?        @db.Text
   headline         String?
   hourlyRate       Decimal?       @db.Decimal(10, 2)
   featuredBuilder  Boolean        @default(false)
@@ -88,6 +88,22 @@ model BuilderProfile {
   user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   skills           BuilderSkill[]
   sessionTypes     SessionType[]
+  // Marketplace fields
+  slug             String?        @unique
+  tagline          String?
+  displayName      String?
+  completedProjects Int           @default(0)
+  responseRate     Float?
+  expertiseAreas   Json?
+  featured         Boolean        @default(false)
+  searchable       Boolean        @default(true)
+  availability     String         @default("available")
+  topSkills        String[]       @default([])
+
+  @@index([featured])
+  @@index([searchable])
+  @@index([availability])
+  @@index([validationTier])
 }
 
 model ClientProfile {
@@ -105,7 +121,7 @@ model ClientProfile {
 model App {
   id           String         @id @default(cuid())
   title        String
-  description  String
+  description  String         @db.Text
   imageUrl     String?
   technologies String[]
   status       AppStatus      @default(CONCEPT)
@@ -121,7 +137,7 @@ model Skill {
   id            String          @id @default(cuid())
   name          String
   slug          String          @unique
-  description   String?
+  description   String?         @db.Text
   domain        String
   level         Int
   prerequisites String[]
@@ -150,10 +166,10 @@ model SkillResource {
   id           String       @id @default(cuid())
   skillId      String
   title        String
-  description  String?
+  description  String?      @db.Text
   resourceType ResourceType
   url          String?
-  content      String?
+  content      String?      @db.Text
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   skill        Skill        @relation(fields: [skillId], references: [id], onDelete: Cascade)
@@ -162,7 +178,7 @@ model SkillResource {
 model Project {
   id           String             @id @default(cuid())
   title        String
-  description  String
+  description  String             @db.Text
   clientId     String
   status       ProjectStatus      @default(DRAFT)
   budget       Decimal?           @db.Decimal(10, 2)
@@ -179,7 +195,7 @@ model ProjectMilestone {
   id           String    @id @default(cuid())
   projectId    String
   title        String
-  description  String?
+  description  String?   @db.Text
   dueDate      DateTime?
   completed    Boolean   @default(false)
   completedAt  DateTime?
@@ -195,7 +211,7 @@ model Booking {
   clientId        String
   sessionTypeId   String?
   title           String
-  description     String?
+  description     String?        @db.Text
   startTime       DateTime
   endTime         DateTime
   status          BookingStatus  @default(PENDING)
@@ -215,7 +231,7 @@ model SessionType {
   id              String         @id @default(cuid())
   builderId       String
   title           String
-  description     String
+  description     String         @db.Text
   durationMinutes Int
   price           Decimal        @db.Decimal(10, 2)
   currency        String
@@ -232,7 +248,7 @@ model AICapability {
   id                    String                  @id @default(cuid())
   date                  DateTime
   title                 String
-  description           String
+  description           String                  @db.Text
   domain                String
   isModelImprovement    Boolean                 @default(false)
   modelName             String?
@@ -251,8 +267,8 @@ model CapabilityExample {
   id             String       @id @default(cuid())
   capabilityId   String
   title          String
-  description    String
-  implementation String?
+  description    String       @db.Text
+  implementation String?      @db.Text
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   capability     AICapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
@@ -261,7 +277,7 @@ model CapabilityExample {
 model CapabilityLimitation {
   id           String       @id @default(cuid())
   capabilityId String
-  description  String
+  description  String       @db.Text
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   capability   AICapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
@@ -270,7 +286,7 @@ model CapabilityLimitation {
 model CapabilityRequirement {
   id           String       @id @default(cuid())
   capabilityId String
-  description  String
+  description  String       @db.Text
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   capability   AICapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)

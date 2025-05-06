@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ValidationTierBadge } from "@/components/profile/validation-tier-badge";
+import { useState, useEffect, useCallback } from "react";
+import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
 import { BuilderCard } from "@/components/marketplace/builder-card";
-import { motion } from "framer-motion";
-import { TextShimmer } from "@/components/magicui/text-shimmer";
-import { Button } from "@/components/ui/button";
+import { TextAnimate } from "@/components/magicui/text-animate";
+import { Button } from "@/components/ui/core/button";
 import {
   Card,
   CardContent,
@@ -13,96 +12,98 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/core/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-
-interface Builder {
-  id: string;
-  name: string;
-  title?: string;
-  bio?: string;
-  avatarUrl?: string;
-  validationTier: 'entry' | 'established' | 'expert';
-  skills?: string[];
-}
-
-interface ApiResponse {
-  data: Builder[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasMore: boolean;
-  };
-}
-
-interface Filters {
-  validationTiers: string[];
-  skills: string[];
-  availability: string[];
-}
-
-interface AvailableFilters {
-  skills: Array<{value: string; label: string}>;
-  validationTiers: Array<{value: string; label: string}>;
-  availability: Array<{value: string; label: string}>;
-  sortOptions: Array<{value: string; label: string}>;
-}
+} from "@/components/ui/core/select";
+import { Input } from "@/components/ui/core/input";
+import { Checkbox } from "@/components/ui/core/checkbox";
+import { Label } from "@/components/ui/core/label";
+import { 
+  BuilderProfileListing,
+  MarketplaceFilters,
+  MarketplaceFilterOptions,
+  PaginationInfo
+} from "@/lib/marketplace/types";
+import { fetchBuilders, fetchMarketplaceFilterOptions } from "@/lib/marketplace/api";
+import { useDebounce } from "@/hooks/use-debounce";
 
 export default function MarketplacePage() {
   const [isLoading, setIsLoading] = useState(true);
-
-  const [builders, setBuilders] = useState<Builder[]>([]);
-  const [filters, setFilters] = useState<Filters>({
+  const [builders, setBuilders] = useState<BuilderProfileListing[]>([]);
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    page: 1,
+    limit: 9,
+    total: 0,
+    totalPages: 0,
+    hasMore: false
+  });
+  
+  const [filters, setFilters] = useState<MarketplaceFilters>({
     validationTiers: [],
     skills: [],
-    availability: []
+    availability: [],
+    sortBy: "featured"
   });
-  const [availableFilters, setAvailableFilters] = useState<AvailableFilters>({
+  
+  const [activeFilters, setActiveFilters] = useState<MarketplaceFilters>(filters);
+  const [availableFilters, setAvailableFilters] = useState<MarketplaceFilterOptions>({
     skills: [],
     validationTiers: [],
     availability: [],
     sortOptions: []
   });
+  
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("rating");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   // Fetch builders and available filters
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        // Fetch available filters
-        const filtersResponse = await fetch("/api/marketplace/filters");
-        if (filtersResponse.ok) {
-          const filtersData = await filtersResponse.json();
-          setAvailableFilters(filtersData);
+  const fetchData = useCallback(async (page: number = 1, currentFilters: MarketplaceFilters) => {
+    setIsLoading(true);
+    try {
+      // Fetch available filters if first load
+      if (availableFilters.skills.length === 0) {
+        try {
+          const filtersResponse = await fetchMarketplaceFilterOptions();
+          setAvailableFilters(filtersResponse);
+        } catch (error) {
+          console.error('Error fetching available filters:', error);
         }
-
-        // Fetch builders
-        const buildersResponse = await fetch("/api/marketplace/builders?page=1&limit=9&sortBy=rating");
-        if (buildersResponse.ok) {
-          const buildersData: ApiResponse = await buildersResponse.json();
-          setBuilders(buildersData.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching marketplace data:", error);
-      } finally {
-        setIsLoading(false);
       }
-    };
 
-    fetchInitialData();
-  }, []);
+      // Fetch builders
+      const response = await fetchBuilders(
+        page, 
+        pagination.limit,
+        {
+          ...currentFilters,
+          searchQuery: debouncedSearchQuery || undefined
+        }
+      );
+      
+      setBuilders(response.data);
+      setPagination(response.pagination);
+    } catch (error) {
+      console.error("Error fetching marketplace data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [availableFilters.skills.length, debouncedSearchQuery, pagination.limit]);
+
+  // Initial data load
+  useEffect(() => {
+    fetchData(1, activeFilters);
+  }, [fetchData, activeFilters]);
+
+  // Update search query when debounced value changes
+  useEffect(() => {
+    const updatedFilters = { ...activeFilters, searchQuery: debouncedSearchQuery || undefined };
+    setActiveFilters(updatedFilters);
+  }, [debouncedSearchQuery]);
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +112,58 @@ export default function MarketplacePage() {
 
   // Handle sort change
   const handleSortChange = (value: string) => {
-    setSortBy(value);
+    const updatedFilters = { ...filters, sortBy: value };
+    setFilters(updatedFilters);
+  };
+
+  // Handle checkbox changes
+  const handleCheckboxChange = (
+    filterType: 'validationTiers' | 'skills' | 'availability',
+    value: string | number,
+    checked: boolean
+  ) => {
+    const currentValues = filters[filterType] || [];
+    let newValues: (string | number)[];
+    
+    if (checked) {
+      newValues = [...currentValues, value];
+    } else {
+      newValues = currentValues.filter(v => v !== value);
+    }
+    
+    setFilters({
+      ...filters,
+      [filterType]: newValues
+    });
+  };
+
+  // Apply filters button
+  const handleApplyFilters = () => {
+    setActiveFilters(filters);
+  };
+
+  // Reset filters button
+  const handleResetFilters = () => {
+    setFilters({
+      validationTiers: [],
+      skills: [],
+      availability: [],
+      sortBy: "featured"
+    });
+    setSearchQuery("");
+    setActiveFilters({
+      validationTiers: [],
+      skills: [],
+      availability: [],
+      sortBy: "featured"
+    });
+  };
+
+  // Load more builders
+  const handleLoadMore = () => {
+    if (pagination.hasMore) {
+      fetchData(pagination.page + 1, activeFilters);
+    }
   };
 
   // Quick skeleton loader for builder cards
@@ -144,6 +196,13 @@ export default function MarketplacePage() {
     </Card>
   );
 
+  // Check if any filters are active
+  const hasActiveFilters = 
+    filters.validationTiers?.length > 0 || 
+    filters.skills?.length > 0 || 
+    filters.availability?.length > 0 ||
+    !!searchQuery;
+
   return (
     <div className="container max-w-7xl py-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
@@ -160,12 +219,12 @@ export default function MarketplacePage() {
             onChange={handleSearchChange}
             className="w-full md:w-64"
           />
-          <Select value={sortBy} onValueChange={handleSortChange}>
+          <Select value={filters.sortBy} onValueChange={handleSortChange}>
             <SelectTrigger className="w-40">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              {availableFilters.sortOptions.map((option: any) => (
+              {availableFilters.sortOptions?.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
@@ -185,17 +244,20 @@ export default function MarketplacePage() {
             <div className="space-y-4">
               <h3 className="font-medium">Validation Level</h3>
               <div className="space-y-2">
-                {availableFilters.validationTiers.map((tier: any) => (
+                {availableFilters.validationTiers?.map((tier) => (
                   <div key={tier.value} className="flex items-center space-x-2">
                     <Checkbox
                       id={`tier-${tier.value}`}
-                      checked={filters.validationTiers.includes(tier.value)}
+                      checked={filters.validationTiers?.includes(tier.value)}
+                      onCheckedChange={(checked) => 
+                        handleCheckboxChange('validationTiers', tier.value, checked === true)
+                      }
                     />
                     <Label htmlFor={`tier-${tier.value}`} className="cursor-pointer">
                       <ValidationTierBadge
-                        tier={tier.value as any}
+                        tier={tier.value === 1 ? "basic" : tier.value === 2 ? "verified" : "expert"}
                         size="sm"
-                        showTooltip={false}
+                        showLabel={true}
                       />
                     </Label>
                   </div>
@@ -206,11 +268,14 @@ export default function MarketplacePage() {
             <div className="space-y-4">
               <h3 className="font-medium">Availability</h3>
               <div className="space-y-2">
-                {availableFilters.availability.map((option: any) => (
+                {availableFilters.availability?.map((option) => (
                   <div key={option.value} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`availability-${option.value}`}
-                      checked={filters.availability.includes(option.value)}
+                      checked={filters.availability?.includes(option.value)}
+                      onCheckedChange={(checked) => 
+                        handleCheckboxChange('availability', option.value, checked === true)
+                      }
                     />
                     <Label htmlFor={`availability-${option.value}`} className="cursor-pointer">
                       {option.label}
@@ -222,13 +287,16 @@ export default function MarketplacePage() {
 
             <div className="space-y-4">
               <h3 className="font-medium">Skills</h3>
-              {availableFilters.skills.length > 0 ? (
+              {availableFilters.skills?.length > 0 ? (
                 <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
-                  {availableFilters.skills.slice(0, 10).map((skill: any) => (
+                  {availableFilters.skills.slice(0, 10).map((skill) => (
                     <div key={skill.value} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`skill-${skill.value}`}
-                        checked={filters.skills.includes(skill.value)}
+                        checked={filters.skills?.includes(skill.value)}
+                        onCheckedChange={(checked) => 
+                          handleCheckboxChange('skills', skill.value, checked === true)
+                        }
                       />
                       <Label htmlFor={`skill-${skill.value}`} className="cursor-pointer">
                         {skill.label}
@@ -243,26 +311,56 @@ export default function MarketplacePage() {
               )}
             </div>
 
-            <Button className="w-full" variant="outline">
-              Apply Filters
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                className="flex-1" 
+                variant="default"
+                onClick={handleApplyFilters}
+                disabled={!hasActiveFilters}
+              >
+                Apply Filters
+              </Button>
+              <Button 
+                className="flex-shrink-0" 
+                variant="outline"
+                onClick={handleResetFilters}
+                disabled={!hasActiveFilters}
+              >
+                Reset
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
         {/* Results Grid */}
         <div className="lg:col-span-3">
-          {isLoading ? (
+          {isLoading && builders.length === 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array(6).fill(0).map((_, i) => (
                 <SkeletonBuilderCard key={i} />
               ))}
             </div>
           ) : builders.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {builders.map((builder) => (
-                <BuilderCard key={builder.id} builder={builder} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {builders.map((builder) => (
+                  <BuilderCard key={builder.id} builder={builder} />
+                ))}
+              </div>
+              
+              {pagination.hasMore && (
+                <div className="mt-8 text-center">
+                  <Button 
+                    onClick={handleLoadMore}
+                    variant="outline"
+                    size="lg"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Loading..." : "Load More Builders"}
+                  </Button>
+                </div>
+              )}
+            </>
           ) : (
             <Card className="w-full p-8 text-center">
               <div className="flex flex-col items-center justify-center space-y-4">
@@ -277,20 +375,14 @@ export default function MarketplacePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
-                <TextShimmer className="text-xl font-semibold">No builders found</TextShimmer>
+                <TextAnimate animation="blurIn" className="text-xl font-semibold">No builders found</TextAnimate>
                 <p className="text-muted-foreground">
                   Try adjusting your search or filters to find builders
                 </p>
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setFilters({
-                      validationTiers: [],
-                      skills: [],
-                      availability: []
-                    });
-                  }}
+                  onClick={handleResetFilters}
+                  disabled={!hasActiveFilters}
                 >
                   Reset Filters
                 </Button>
@@ -299,7 +391,9 @@ export default function MarketplacePage() {
                   <p className="text-muted-foreground mb-4">
                     Interested in becoming a builder?
                   </p>
-                  <Button>Create Your Builder Profile</Button>
+                  <Button onClick={() => window.location.href = "/profile"}>
+                    Create Your Builder Profile
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -309,4 +403,3 @@ export default function MarketplacePage() {
     </div>
   );
 }
-

@@ -2,7 +2,7 @@
 
 import { DiscordLogoIcon, TwitterLogoIcon, GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/core/button";
 import { cn } from "@/lib/utils";
 
 const footerNavs = [

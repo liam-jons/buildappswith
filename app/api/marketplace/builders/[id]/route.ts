@@ -1,17 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchBuilderById } from '@/lib/marketplace/real-data/marketplace-service';
+import { fetchBuilderById, trackMarketplaceEvent } from '@/lib/marketplace/data/marketplace-service';
 
 /**
  * GET handler for fetching a single builder by ID
- * Updated to use Next.js 15 promise-based params
  */
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    // Await the params to get the id
-    const params = await context.params;
     const builderId = params.id;
     
     if (!builderId) {
@@ -30,6 +27,9 @@ export async function GET(
         { status: 404 }
       );
     }
+    
+    // Track profile view event (don't await to avoid blocking the response)
+    trackMarketplaceEvent('profile_view', undefined, builderId);
     
     return NextResponse.json(builder);
   } catch (error) {

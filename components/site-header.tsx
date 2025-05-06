@@ -1,10 +1,10 @@
 "use client";
 
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/core/button";
 import { useTheme } from "next-themes";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/core/switch";
+import { Label } from "@/components/ui/core/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/core/popover";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { AlignJustify, XIcon, ChevronDown, User, MoonIcon, SunIcon } from "lucide-react";

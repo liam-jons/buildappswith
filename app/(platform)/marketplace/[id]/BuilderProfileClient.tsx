@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ValidationTierBadge } from "@/components/profile/validation-tier-badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
+import { Button } from "@/components/ui/core/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/core/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/core/tabs";
 import { CalendarIcon, Clock, User } from "lucide-react";
 import Link from "next/link";
 
@@ -15,7 +15,7 @@ interface BuilderProfile {
   title: string;
   bio: string;
   avatarUrl: string | null;
-  validationTier: 'entry' | 'established' | 'expert';
+  validationTier: 'basic' | 'verified' | 'expert';
   skills: string[];
   hourlyRate?: number;
   portfolio?: any[];

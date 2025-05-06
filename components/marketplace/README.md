@@ -17,6 +17,8 @@ This directory contains components related to the marketplace functionality of t
 
 - `BuilderCard`: Displays a builder profile card in the marketplace listing
 - `BuilderImage`: Handles the image display for builder profiles
+- `BuilderList`: Displays a filterable list of builders in the marketplace
+- `BuilderDashboard`: Comprehensive dashboard for builders to manage their profiles, view analytics, and handle bookings
 
 ## Usage Guidelines
 
