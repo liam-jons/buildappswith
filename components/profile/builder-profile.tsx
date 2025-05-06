@@ -21,7 +21,11 @@ import {
   MixerHorizontalIcon,
   RocketIcon,
   StackIcon,
-  HeartFilledIcon
+  HeartFilledIcon,
+  LightningBoltIcon,
+  PersonIcon,
+  MagicWandIcon,
+  TargetIcon
 } from "@radix-ui/react-icons";
 import { ValidationTierBadge, ValidationTier } from "./validation-tier-badge";
 import { PortfolioShowcase, PortfolioProject } from "./portfolio-showcase";
@@ -29,6 +33,12 @@ import { AppShowcase, AppItem } from "./app-showcase";
 import { SuccessMetricsDashboard, MetricsCategory } from "./success-metrics-dashboard";
 import { MultiRoleBadge } from "./role-badges";
 import { UserRole } from "@prisma/client";
+import { 
+  SpecializationArea, 
+  SpecializationContent,
+  ExpertiseAreas,
+  Testimonial
+} from "@/lib/profile/types";
 
 export interface BuilderProfileData {
   id: string;
@@ -59,6 +69,7 @@ export interface BuilderProfileData {
   portfolio: PortfolioProject[];
   apps?: AppItem[];
   metrics?: MetricsCategory[];
+  expertiseAreas?: ExpertiseAreas;
 }
 
 interface BuilderProfileProps {
@@ -88,7 +99,7 @@ export function BuilderProfile({
 }: BuilderProfileProps) {
   const shouldReduceMotion = useReducedMotion();
   const [showFullBio, setShowFullBio] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>("portfolio");
+  const [activeTab, setActiveTab] = useState<string>("expertise");
   
   // Format bio with show more/less if longer than 280 characters
   const bioIsTruncated = profile.bio.length > 280;
@@ -445,6 +456,177 @@ export function BuilderProfile({
                     validationTier={profile.validationTier}
                     metrics={profile.metrics || []}
                   />
+                </section>
+              </TabsContent>
+            )}
+
+            {/* Expertise Areas Tab */}
+            {profile.expertiseAreas && Object.keys(profile.expertiseAreas).length > 0 && (
+              <TabsTrigger 
+                value="expertise" 
+                className="flex items-center gap-1.5"
+              >
+                <MagicWandIcon className="h-4 w-4" />
+                Expertise Areas
+              </TabsTrigger>
+            )}
+            
+            {profile.expertiseAreas && Object.keys(profile.expertiseAreas).length > 0 && (
+              <TabsContent value="expertise" className="mt-0">
+                <section className="space-y-8">
+                  <h3 className="text-lg font-medium mb-4">Specialized Expertise</h3>
+                  
+                  {/* ADHD Productivity */}
+                  {profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY] && (
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <LightningBoltIcon className="h-5 w-5 text-purple-500" />
+                        <h4 className="text-xl font-semibold">ADHD Productivity Enhancement</h4>
+                      </div>
+                      <p className="text-muted-foreground mb-4">
+                        {profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].description}
+                      </p>
+                      
+                      <ul className="space-y-2 mb-6">
+                        {profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].bulletPoints.map((point, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <CheckIcon className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      
+                      {profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].testimonials.length > 0 && (
+                        <div className="bg-muted/50 rounded-md p-4 border border-border">
+                          <blockquote className="italic">
+                            "{profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].testimonials[0].content}"
+                          </blockquote>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="font-medium">{profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].testimonials[0].author}</div>
+                            {profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].testimonials[0].role && (
+                              <div className="text-sm text-muted-foreground">
+                                {profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].testimonials[0].role}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* AI Literacy */}
+                  {profile.expertiseAreas[SpecializationArea.AI_LITERACY] && (
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <PersonIcon className="h-5 w-5 text-blue-500" />
+                        <h4 className="text-xl font-semibold">AI Literacy Development</h4>
+                      </div>
+                      <p className="text-muted-foreground mb-4">
+                        {profile.expertiseAreas[SpecializationArea.AI_LITERACY].description}
+                      </p>
+                      
+                      <ul className="space-y-2 mb-6">
+                        {profile.expertiseAreas[SpecializationArea.AI_LITERACY].bulletPoints.map((point, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <CheckIcon className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      
+                      {profile.expertiseAreas[SpecializationArea.AI_LITERACY].testimonials.length > 0 && (
+                        <div className="bg-muted/50 rounded-md p-4 border border-border">
+                          <blockquote className="italic">
+                            "{profile.expertiseAreas[SpecializationArea.AI_LITERACY].testimonials[0].content}"
+                          </blockquote>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="font-medium">{profile.expertiseAreas[SpecializationArea.AI_LITERACY].testimonials[0].author}</div>
+                            {profile.expertiseAreas[SpecializationArea.AI_LITERACY].testimonials[0].role && (
+                              <div className="text-sm text-muted-foreground">
+                                {profile.expertiseAreas[SpecializationArea.AI_LITERACY].testimonials[0].role}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Building with AI */}
+                  {profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI] && (
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <StackIcon className="h-5 w-5 text-teal-500" />
+                        <h4 className="text-xl font-semibold">Building with AI</h4>
+                      </div>
+                      <p className="text-muted-foreground mb-4">
+                        {profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].description}
+                      </p>
+                      
+                      <ul className="space-y-2 mb-6">
+                        {profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].bulletPoints.map((point, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <CheckIcon className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      
+                      {profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].testimonials.length > 0 && (
+                        <div className="bg-muted/50 rounded-md p-4 border border-border">
+                          <blockquote className="italic">
+                            "{profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].testimonials[0].content}"
+                          </blockquote>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="font-medium">{profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].testimonials[0].author}</div>
+                            {profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].testimonials[0].role && (
+                              <div className="text-sm text-muted-foreground">
+                                {profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].testimonials[0].role}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Business Value */}
+                  {profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE] && (
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <TargetIcon className="h-5 w-5 text-red-500" />
+                        <h4 className="text-xl font-semibold">Business Value Opportunities</h4>
+                      </div>
+                      <p className="text-muted-foreground mb-4">
+                        {profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].description}
+                      </p>
+                      
+                      <ul className="space-y-2 mb-6">
+                        {profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].bulletPoints.map((point, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <CheckIcon className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      
+                      {profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].testimonials.length > 0 && (
+                        <div className="bg-muted/50 rounded-md p-4 border border-border">
+                          <blockquote className="italic">
+                            "{profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].testimonials[0].content}"
+                          </blockquote>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="font-medium">{profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].testimonials[0].author}</div>
+                            {profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].testimonials[0].role && (
+                              <div className="text-sm text-muted-foreground">
+                                {profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].testimonials[0].role}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </section>
               </TabsContent>
             )}
