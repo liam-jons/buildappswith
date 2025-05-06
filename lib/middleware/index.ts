@@ -1,6 +1,6 @@
 /**
  * Middleware Module Index
- * Version: 1.0.80
+ * Version: 1.1.0
  * 
  * Exports middleware components and configuration
  */
@@ -15,7 +15,8 @@ export * from './validation';
 export * from './performance';
 export * from './error-handling';
 export * from './logging';
+export * from './profile-auth';
 export * from './rbac';
 
 // Re-export with version tracking
-export const MIDDLEWARE_VERSION = '1.0.80';
+export const MIDDLEWARE_VERSION = '1.1.0';

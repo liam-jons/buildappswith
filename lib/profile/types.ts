@@ -179,3 +179,25 @@ export interface UpdateProfileRequest {
   featured?: boolean;
   expertiseAreas?: ExpertiseAreas;
 }
+
+/**
+ * Profile permissions for authorization
+ */
+export interface ProfilePermissions {
+  canView: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
+  canVerify: boolean;
+}
+
+/**
+ * Profile auth context for UI components
+ */
+export interface ProfileAuthContext {
+  profile: BuilderProfile;
+  permissions: ProfilePermissions;
+  isOwner: boolean;
+  isAdmin: boolean;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}

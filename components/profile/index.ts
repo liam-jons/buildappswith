@@ -8,6 +8,7 @@ export * from "./role-badges";
 export * from "./success-metrics-dashboard";
 export * from "./builder-profile-client-wrapper";
 export * from "./add-project-form";
+export * from "./profile-auth-provider";
 
 // Export UI components from UI subdirectory
 export * from "./ui";

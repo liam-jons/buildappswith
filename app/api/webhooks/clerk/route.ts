@@ -39,6 +39,8 @@ const ALLOWED_IPS = [
 /**
  * Handler for Clerk webhook events
  */
+import { logWebhookEvent } from '@/lib/auth/security-logging';
+
 export async function POST(request: NextRequest) {
   try {
     // Start timing
@@ -53,6 +55,18 @@ export async function POST(request: NextRequest) {
     const ip = clientIP.split(',')[0].trim();
     if (!ALLOWED_IPS.includes(ip)) {
       logger.warn('Unauthorized webhook attempt', { ip });
+      
+      // Log the rejected webhook event
+      await logWebhookEvent({
+        webhookId: request.headers.get('svix-id') || 'unknown',
+        eventType: 'unknown',
+        status: 'rejected',
+        details: {
+          reason: 'Unauthorized IP address',
+          ip,
+          allowedIps: ALLOWED_IPS
+        }
+      });
       
       return NextResponse.json(
         { 
@@ -74,11 +88,23 @@ export async function POST(request: NextRequest) {
     
     // Check if we've already processed this webhook
     const existingEvent = await db.webhookEvent.findUnique({
-      where: { id: svixId }
+      where: { svixId }
     });
     
     if (existingEvent) {
       logger.info('Webhook already processed', { id: svixId });
+      
+      // Log the duplicate webhook event
+      await logWebhookEvent({
+        webhookId: svixId,
+        eventType: existingEvent.type,
+        status: 'success',
+        details: {
+          reason: 'Duplicate webhook',
+          previouslyProcessed: existingEvent.lastProcessed,
+          processingTime: 0
+        }
+      });
       
       return NextResponse.json({ 
         success: true, 
@@ -117,6 +143,18 @@ export async function POST(request: NextRequest) {
         svixId,
       });
       
+      // Log the verification failure with security logging
+      await logWebhookEvent({
+        webhookId: svixId,
+        eventType: 'verification_failed',
+        status: 'rejected',
+        error: error instanceof Error ? error : String(error),
+        details: {
+          reason: 'Invalid webhook signature',
+          processingTime: performance.now() - startTime
+        }
+      });
+      
       return NextResponse.json(
         { 
           success: false, 
@@ -125,6 +163,16 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    
+    // Log the verified webhook event
+    await logWebhookEvent({
+      webhookId: svixId,
+      eventType: evt.type,
+      status: 'success',
+      details: {
+        processingTime: performance.now() - startTime
+      }
+    });
     
     // Successfully verified webhook
     logger.info('Webhook received', { 
@@ -195,12 +243,21 @@ export async function POST(request: NextRequest) {
       )),
     });
     
-    // Record error metric
-    await recordWebhookMetric({
-      type: 'unknown',
+    // Use our enhanced security logging for the error
+    const svixId = request.headers.get('svix-id') || 'unknown';
+    const eventType = request.headers.get('svix-event-type') || 'unknown';
+    
+    await logWebhookEvent({
+      webhookId: svixId,
+      eventType: eventType,
       status: 'failure',
-      processingTime: 0,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error : String(error),
+      details: {
+        headers: Object.fromEntries([...request.headers.entries()].filter(
+          ([key]) => !key.includes('authorization') && !key.includes('cookie')
+        )),
+        errorStack: error instanceof Error ? error.stack : undefined
+      }
     });
     
     // Return error response
@@ -251,27 +308,114 @@ async function handleUserCreated(data: any) {
     const userId = data.id;
     const email = data.email_addresses?.[0]?.email_address;
     
-    // Check if user already exists (idempotency check)
-    const existingUser = await db.user.findUnique({
+    if (!email) {
+      logger.error('No email found for user', { userId });
+      return;
+    }
+    
+    // Check if user already exists by Clerk ID (idempotency check)
+    const existingUserByClerkId = await db.user.findUnique({
       where: { clerkId: userId }
     });
     
-    if (existingUser) {
-      logger.info('User already exists, skipping creation', { userId });
+    if (existingUserByClerkId) {
+      logger.info('User already exists with this Clerk ID, skipping creation', { userId });
+      return;
+    }
+    
+    // Check if user exists by email (email reconciliation)
+    const existingUserByEmail = await db.user.findUnique({
+      where: { email }
+    });
+    
+    if (existingUserByEmail) {
+      // Special case: user exists with the email but doesn't have clerkId yet
+      if (!existingUserByEmail.clerkId) {
+        // Update the existing user with the Clerk ID
+        await db.user.update({
+          where: { id: existingUserByEmail.id },
+          data: { 
+            clerkId: userId,
+            imageUrl: data.image_url,
+            image: data.image_url,
+            // Only update name if the existing one is empty
+            name: existingUserByEmail.name || `${data.first_name || ''} ${data.last_name || ''}`.trim(),
+            // Update verification status if needed
+            ...(data.email_addresses?.[0]?.verification?.status === 'verified' && {
+              emailVerified: new Date()
+            })
+          }
+        });
+        
+        logger.info('Linked existing user with Clerk ID', { 
+          userId: existingUserByEmail.id, 
+          email, 
+          clerkId: userId 
+        });
+        
+        // Log this for special handling of Liam's case
+        if (email.includes('buildappswith')) {
+          logger.info('Linked buildappswith user email with Clerk ID', { 
+            email, 
+            userId: existingUserByEmail.id,
+            clerkId: userId
+          });
+        }
+        
+        return;
+      }
+      
+      // If user exists with email but has a different clerkId, log this anomaly
+      logger.warn('Email conflict: user exists with different Clerk ID', {
+        email,
+        existingClerkId: existingUserByEmail.clerkId,
+        newClerkId: userId
+      });
+      
       return;
     }
     
     // Create the user in our database
-    await db.user.create({
+    const user = await db.user.create({
       data: {
         clerkId: userId,
         email: email,
         name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
         imageUrl: data.image_url,
+        image: data.image_url, // Also update the legacy field
         // Add default roles based on your application logic
-        roles: ['CLIENT'], // Default role
+        roles: data.public_metadata?.roles || ['CLIENT'], // Default role
       }
     });
+    
+    // Create profiles based on roles
+    const roles = data.public_metadata?.roles || ['CLIENT'];
+    
+    // Create builder profile if needed
+    if (roles.includes('BUILDER')) {
+      await db.builderProfile.create({
+        data: {
+          userId: user.id,
+          domains: [],
+          badges: [],
+          availableForHire: true,
+          validationTier: 1,
+        }
+      });
+      
+      logger.info('Created builder profile for new user', { userId: user.id });
+    }
+    
+    // Create client profile if needed
+    if (roles.includes('CLIENT')) {
+      await db.clientProfile.create({
+        data: {
+          userId: user.id,
+        }
+      });
+      
+      logger.info('Created client profile for new user', { userId: user.id });
+    }
     
     logger.info('User created successfully', { userId });
   } catch (error) {
@@ -291,6 +435,63 @@ async function handleUserUpdated(data: any) {
     const userId = data.id;
     const email = data.email_addresses?.[0]?.email_address;
     
+    if (!email) {
+      logger.error('No email found for user update', { userId });
+      return;
+    }
+    
+    // Find the user in our database
+    const existingUser = await db.user.findUnique({
+      where: { clerkId: userId }
+    });
+    
+    if (!existingUser) {
+      logger.warn('User not found for update, trying to create instead', { clerkId: userId });
+      return await handleUserCreated(data);
+    }
+    
+    // Check if the email is changing
+    const isEmailChanging = existingUser.email !== email;
+    
+    if (isEmailChanging) {
+      // Check if the new email is already used by another user
+      const conflictingUser = await db.user.findUnique({
+        where: { email }
+      });
+      
+      if (conflictingUser && conflictingUser.id !== existingUser.id) {
+        logger.warn('Email conflict during update: email already in use by different user', {
+          email,
+          currentUserId: existingUser.id,
+          conflictingUserId: conflictingUser.id
+        });
+        
+        // Special case for buildappswith emails
+        if (email.includes('buildappswith') || existingUser.email.includes('buildappswith')) {
+          logger.info('Special buildappswith email reconciliation needed', {
+            oldEmail: existingUser.email,
+            newEmail: email,
+            userId: existingUser.id
+          });
+          
+          // Log this as an audit event
+          await db.auditLog.create({
+            data: {
+              userId: existingUser.id,
+              action: 'EMAIL_RECONCILIATION_NEEDED',
+              targetId: existingUser.id,
+              targetType: 'User',
+              details: {
+                oldEmail: existingUser.email,
+                newEmail: email,
+                reason: 'buildappswith email domain change'
+              }
+            }
+          });
+        }
+      }
+    }
+    
     // Update the user in our database
     await db.user.update({
       where: { clerkId: userId },
@@ -298,6 +499,7 @@ async function handleUserUpdated(data: any) {
         email: email,
         name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
         imageUrl: data.image_url,
+        image: data.image_url, // Also update the legacy field
         // Only update roles if they're in the public metadata
         ...(data.public_metadata?.roles && { 
           roles: data.public_metadata.roles 
@@ -309,6 +511,51 @@ async function handleUserUpdated(data: any) {
         // Update other fields as needed
       }
     });
+    
+    // Check if we need to create profiles
+    if (data.public_metadata?.roles) {
+      const user = await db.user.findUnique({
+        where: { clerkId: userId },
+        include: {
+          builderProfile: true,
+          clientProfile: true
+        }
+      });
+      
+      if (user) {
+        // Create builder profile if needed
+        if (
+          data.public_metadata.roles.includes('BUILDER') && 
+          !user.builderProfile
+        ) {
+          await db.builderProfile.create({
+            data: {
+              userId: user.id,
+              domains: [],
+              badges: [],
+              availableForHire: true,
+              validationTier: 1,
+            }
+          });
+          
+          logger.info('Created builder profile for existing user', { userId: user.id });
+        }
+        
+        // Create client profile if needed
+        if (
+          data.public_metadata.roles.includes('CLIENT') && 
+          !user.clientProfile
+        ) {
+          await db.clientProfile.create({
+            data: {
+              userId: user.id,
+            }
+          });
+          
+          logger.info('Created client profile for existing user', { userId: user.id });
+        }
+      }
+    }
     
     logger.info('User updated successfully', { userId });
   } catch (error) {
