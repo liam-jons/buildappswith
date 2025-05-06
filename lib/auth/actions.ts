@@ -12,6 +12,22 @@ import { UserRole, AuthResponse } from '@/lib/auth/types';
 import { createAuditLog, ensureProfilesForUser } from '@/lib/profile/data-service';
 
 /**
+ * Get the current user ID from Clerk
+ * Returns null if not authenticated
+ */
+export async function getCurrentUserId(): Promise<string | null> {
+  try {
+    const user = await currentUser();
+    return user?.id || null;
+  } catch (error) {
+    logger.error('Error getting current user ID', { 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    });
+    return null;
+  }
+}
+
+/**
  * Get the current user from Clerk and database
  */
 export async function getCurrentUser() {
@@ -222,6 +238,46 @@ export async function removeRoleFromUser(userId: string, role: UserRole): Promis
         type: 'SERVER_ERROR',
         message: error instanceof Error ? error.message : 'Unknown error'
       }
+    };
+  }
+}
+
+/**
+ * Get user roles for the current user
+ */
+export async function getUserRoles() {
+  try {
+    const user = await getCurrentUser();
+    
+    if (!user) {
+      return {
+        roles: [],
+        primaryRole: null
+      };
+    }
+    
+    // Determine primary role (prioritize ADMIN > BUILDER > CLIENT)
+    let primaryRole = null;
+    if (user.roles.includes(UserRole.ADMIN)) {
+      primaryRole = 'ADMIN';
+    } else if (user.roles.includes(UserRole.BUILDER)) {
+      primaryRole = 'BUILDER';
+    } else if (user.roles.includes(UserRole.CLIENT)) {
+      primaryRole = 'CLIENT';
+    }
+    
+    return {
+      roles: user.roles,
+      primaryRole
+    };
+  } catch (error) {
+    logger.error('Error getting user roles', { 
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+    
+    return {
+      roles: [],
+      primaryRole: null
     };
   }
 }

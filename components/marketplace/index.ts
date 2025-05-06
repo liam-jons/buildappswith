@@ -9,6 +9,7 @@
 export * from './builder-card';
 export * from './builder-image';
 export * from './builder-list';
+export * from './builder-dashboard';
 
 // Export UI components
 export * from './ui';
