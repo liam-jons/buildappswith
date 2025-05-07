@@ -1,15 +1,17 @@
 /**
- * Marketplace Components - Barrel Exports
- * 
- * This file exports all components related to the marketplace domain.
- * Add new component exports here as they are created.
+ * marketplace components barrel export file
+ * Version: 1.0.0
  */
 
-// Export domain-specific components
+// Export components
+export * from './builder-list';
+export { default as BuilderImage } from './builder-image';
+export { default as BuilderDashboard } from './builder-dashboard';
+export { default as BuilderCard } from './builder-card';
+export { default as FilterPanel } from './ui/filter-panel';
 export * from './builder-card';
 export * from './builder-image';
-export * from './builder-list';
 export * from './builder-dashboard';
 
-// Export UI components
+// Re-export subdirectory
 export * from './ui';

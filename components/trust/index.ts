@@ -1,9 +1,12 @@
 /**
- * Trust Domain Components - Barrel Exports
- * 
- * This file exports components from the trust domain
- * for simplified imports across the application.
+ * trust components barrel export file
+ * Version: 1.0.0
  */
 
-// Export domain-specific UI components
+// Re-export subdirectory exports
+export * from './ui';
+
+// Export components
+export * from './ui';
+export { default as ValidationTierBadge } from './ui/validation-tier-badge';
 export * from "./ui";

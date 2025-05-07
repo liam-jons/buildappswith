@@ -86,7 +86,7 @@ export function Footer({ className }: FooterProps) {
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  We'll send you updates on new features and events. No spam.
+                  We&apos;ll send you updates on new features and events. No spam.
                 </p>
               </div>
             </div>

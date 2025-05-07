@@ -488,7 +488,7 @@ export function SiteHeader() {
                 pathname === "/toolkit" ? "bg-slate-100 dark:bg-slate-800" : ""
               )}
             >
-              Toolkit
+              Free Toolkit
             </Link>
 
             {/* About dropdown */}
@@ -754,7 +754,7 @@ export function SiteHeader() {
                     className={`hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors ${pathname === "/toolkit" ? "bg-slate-200 dark:bg-slate-700" : ""}`}
                     href="/toolkit"
                   >
-                    <span className="font-medium">Toolkit</span>
+                    <span className="font-medium">Free Toolkit</span>
                   </Link>
                 </motion.li>
               </motion.ul>

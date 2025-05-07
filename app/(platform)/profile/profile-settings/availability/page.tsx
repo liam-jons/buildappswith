@@ -5,7 +5,7 @@ import { useUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import AvailabilityManagement from '@/components/scheduling/builder/availability/availability-management';
 import { UserRole } from '@/lib/auth/types';
-import LoadingSpinner from '@/components/ui/loading-spinner';
+import { LoadingSpinner } from '@/components/ui';
 
 export default function AvailabilityPage() {
   const { user, isLoaded } = useUser();

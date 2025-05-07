@@ -1,7 +1,10 @@
 /**
- * Providers barrel export file
+ * providers components barrel export file
  * Version: 1.0.0
  */
 
-// Export providers here
-// Example: export * from './auth-provider';
+// Export components
+export { default as providers } from './providers';
+export { default as ClerkProvider } from './clerk-provider';
+
+export { default as Providers } from './providers';

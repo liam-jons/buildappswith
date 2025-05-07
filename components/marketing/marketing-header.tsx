@@ -1,298 +1,847 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/core/button";
+import { useTheme } from "next-themes";
+import { Switch } from "@/components/ui/core/switch";
+import { Label } from "@/components/ui/core/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/core/popover";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
-import { AnimatePresence, motion, useScroll } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AlignJustify, XIcon, ChevronDown, User, MoonIcon, SunIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { ViewingPreferences } from "./ui/viewing-preferences";
+import { useEffect, useState, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useOnClickOutside } from "@/hooks/use-on-click-outside";
+import { useAuth, useUser, useSignOut } from "@/lib/auth/hooks";
+import { UserRole } from "@/lib/auth/types";
 
-const INITIAL_WIDTH = "70rem";
-const MAX_WIDTH = "800px";
+function ViewingPreferences() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [dyslexicMode, setDyslexicMode] = useState(false);
 
-// Animation variants
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
-
-const drawerVariants = {
-  hidden: { opacity: 0, y: 100 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    rotate: 0,
-    transition: {
-      type: "spring",
-      damping: 15,
-      stiffness: 200,
-      staggerChildren: 0.03,
-    },
-  },
-  exit: {
-    opacity: 0,
-    y: 100,
-    transition: { duration: 0.1 },
-  },
-};
-
-const drawerMenuContainerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
-
-const drawerMenuVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
-
-export interface NavLink {
-  id: string;
-  name: string;
-  href: string;
-}
-
-export interface MarketingHeaderProps {
-  navLinks?: NavLink[];
-  ctaText?: string;
-  ctaHref?: string;
-  logoText?: string;
-  logoAlt?: string;
-  logoHref?: string;
-  className?: string;
-  showViewingPreferences?: boolean;
-}
-
-export function MarketingHeader({
-  navLinks = [
-    { id: "hero", name: "Home", href: "#hero" },
-    { id: "feature-scroll", name: "How It Works", href: "#feature-scroll" },
-    { id: "bento", name: "Features", href: "#bento" },
-    { id: "testimonials", name: "Testimonials", href: "#testimonials" },
-  ],
-  ctaText = "Find a Builder",
-  ctaHref = "/marketplace",
-  logoText = "BuildAppsWith",
-  logoAlt = "BuildAppsWith logo",
-  logoHref = "/",
-  className,
-  showViewingPreferences = true,
-}: MarketingHeaderProps) {
-  const { scrollY } = useScroll();
-  const [hasScrolled, setHasScrolled] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("hero");
+  // After mounting, we have access to the theme
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = navLinks.map((item) =>
-        item.href.substring(1),
-      );
+    // Apply OpenDyslexic font if dyslexicMode is enabled
+    if (!mounted) return;
+    
+    if (dyslexicMode) {
+      document.body.classList.add('dyslexic-mode');
+      document.documentElement.classList.add('dyslexic-mode');
+    } else {
+      document.body.classList.remove('dyslexic-mode');
+      document.documentElement.classList.remove('dyslexic-mode');
+    }
+  }, [dyslexicMode, mounted]);
 
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 150 && rect.bottom >= 150) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [navLinks]);
-
-  useEffect(() => {
-    const unsubscribe = scrollY.on("change", (latest) => {
-      setHasScrolled(latest > 10);
-    });
-    return unsubscribe;
-  }, [scrollY]);
-
-  const toggleDrawer = () => setIsDrawerOpen((prev) => !prev);
-  const handleOverlayClick = () => setIsDrawerOpen(false);
+  if (!mounted) return null;
 
   return (
-    <header
-      className={cn(
-        "sticky z-50 mx-4 flex justify-center transition-all duration-300 md:mx-0",
-        hasScrolled ? "top-6" : "top-4 mx-0",
-        className
-      )}
-    >
-      <motion.div
-        initial={{ width: INITIAL_WIDTH }}
-        animate={{ width: hasScrolled ? MAX_WIDTH : INITIAL_WIDTH }}
-        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-      >
-        <div
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
           className={cn(
-            "mx-auto max-w-7xl rounded-2xl transition-all duration-300 xl:px-0",
-            hasScrolled
-              ? "px-2 border border-border backdrop-blur-lg bg-background/75"
-              : "shadow-none px-7",
+            buttonVariants({ variant: "outline" }),
+            "ml-4 h-8 text-sm md:flex hidden bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
           )}
+          aria-label="Toggle viewing preferences"
         >
-          <div className="flex h-[56px] items-center justify-between p-4">
-            <Link href={logoHref} className="flex items-center gap-3" aria-label={logoAlt}>
-              <div className="text-lg font-semibold text-primary">{logoText}</div>
-            </Link>
-
-            <nav className="hidden md:flex space-x-6">
-              {navLinks.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const element = document.getElementById(item.href.substring(1));
-                    element?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className={`underline-offset-4 hover:text-primary/80 transition-colors ${
-                    activeSection === item.href.substring(1)
-                      ? "text-primary font-medium"
-                      : "text-primary/60"
-                  }`}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </nav>
-
-            <div className="flex flex-row items-center gap-1 md:gap-3 shrink-0">
-              <div className="flex items-center space-x-6">
-                <Link
-                  className="bg-secondary h-8 hidden md:flex items-center justify-center text-sm font-normal tracking-wide rounded-full text-primary-foreground dark:text-secondary-foreground w-fit px-4 shadow-[inset_0_1px_2px_rgba(255,255,255,0.25),0_3px_3px_-1.5px_rgba(16,24,40,0.06),0_1px_1px_rgba(16,24,40,0.08)] border border-white/[0.12]"
-                  href={ctaHref}
-                >
-                  {ctaText}
-                </Link>
+          Viewing Preferences
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-72">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">Viewing Preferences</h4>
+            <p className="text-sm text-muted-foreground">
+              Customise your viewing experience with these options.
+            </p>
+          </div>
+          <div className="grid gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                {theme === "dark" ? <MoonIcon className="h-4 w-4" /> : <SunIcon className="h-4 w-4" />}
+                <Label htmlFor="theme-mode">Dark Mode</Label>
               </div>
-              
-              {/* Viewing Preferences */}
-              {showViewingPreferences && (
-                <>
-                  {/* Desktop version */}
-                  <div className="hidden md:block">
-                    <ViewingPreferences />
-                  </div>
-                  
-                  {/* Mobile version */}
-                  <div className="md:hidden">
-                    <ViewingPreferences variant="minimal" />
-                  </div>
-                </>
-              )}
-              
-              <button
-                className="md:hidden border border-border size-8 rounded-md cursor-pointer flex items-center justify-center"
-                onClick={toggleDrawer}
-                aria-label={isDrawerOpen ? "Close menu" : "Open menu"}
-              >
-                {isDrawerOpen ? (
-                  <X className="size-5" />
-                ) : (
-                  <Menu className="size-5" />
-                )}
-              </button>
+              <Switch
+                id="theme-mode"
+                checked={theme === "dark"}
+                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.60007 2.09998C3.60007 2.70003 4.08235 3.17897 4.72275 3.24449L5.00007 3.26904V2.09998H3.60007ZM5.00007 1.09998V0.0999756H3.50007V1.09998H5.00007ZM6.00007 0.0999756V1.09998L6.60007 1.09998C7.25259 1.09998 7.92308 1.20847 8.54182 1.41333L5.54064 10.4123L6.00007 11.8H8.00007V10.8H6.53384L9.45444 2.09998H10.8001V0.0999756H6.00007ZM11.8001 0.0999756V1.09998H13.8001V2.09998H11.8001V3.09998H13.8001V4.09997H11.8001V5.09997H13.8001V6.09997H11.8001V7.09997H13.8001V8.09997H11.8001V9.09997H13.8001V10.1H11.8001V11.1H13.8001V12.1H11.8001V13.1H13.8001V14.1H11.8001V14.9H14.7001V0.0999756H11.8001ZM0.900024 2.09998V14.9H3.80002V4.09997H1.90002V2.09998H0.900024Z" fill="currentColor"/></svg>
+                <Label htmlFor="dyslexic-mode">Dyslexic friendly</Label>
+              </div>
+              <Switch
+                id="dyslexic-mode"
+                checked={dyslexicMode}
+                onCheckedChange={setDyslexicMode}
+              />
             </div>
           </div>
         </div>
-      </motion.div>
-
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {isDrawerOpen && (
-          <>
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={overlayVariants}
-              transition={{ duration: 0.2 }}
-              onClick={handleOverlayClick}
-            />
-
-            <motion.div
-              className="fixed inset-x-0 w-[95%] mx-auto bottom-3 bg-background border border-border p-4 rounded-xl shadow-lg"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={drawerVariants}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Mobile navigation"
-            >
-              {/* Mobile menu content */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between">
-                  <Link href={logoHref} className="flex items-center gap-3">
-                    <div className="text-lg font-semibold text-primary">{logoText}</div>
-                  </Link>
-                  <button
-                    onClick={toggleDrawer}
-                    className="border border-border rounded-md p-1 cursor-pointer"
-                    aria-label="Close menu"
-                  >
-                    <X className="size-5" />
-                  </button>
-                </div>
-
-                <motion.ul
-                  className="flex flex-col text-sm mb-4 border border-border rounded-md"
-                  variants={drawerMenuContainerVariants}
-                >
-                  <AnimatePresence>
-                    {navLinks.map((item) => (
-                      <motion.li
-                        key={item.id}
-                        className="p-2.5 border-b border-border last:border-b-0"
-                        variants={drawerMenuVariants}
-                      >
-                        <a
-                          href={item.href}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const element = document.getElementById(
-                              item.href.substring(1),
-                            );
-                            element?.scrollIntoView({ behavior: "smooth" });
-                            setIsDrawerOpen(false);
-                          }}
-                          className={`underline-offset-4 hover:text-primary/80 transition-colors ${
-                            activeSection === item.href.substring(1)
-                              ? "text-primary font-medium"
-                              : "text-primary/60"
-                          }`}
-                        >
-                          {item.name}
-                        </a>
-                      </motion.li>
-                    ))}
-                  </AnimatePresence>
-                </motion.ul>
-
-                {/* Action buttons */}
-                <div className="flex flex-col gap-2">
-                  <Link
-                    href={ctaHref}
-                    className="bg-secondary h-8 flex items-center justify-center text-sm font-normal tracking-wide rounded-full text-primary-foreground dark:text-secondary-foreground w-full px-4 shadow-[inset_0_1px_2px_rgba(255,255,255,0.25),0_3px_3px_-1.5px_rgba(16,24,40,0.06),0_1px_1px_rgba(16,24,40,0.08)] border border-white/[0.12] hover:bg-secondary/80 transition-all ease-out active:scale-95"
-                  >
-                    {ctaText}
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </header>
+      </PopoverContent>
+    </Popover>
   );
 }
+
+// Mobile version of the viewing preferences button
+function MobileViewingPreferences() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [dyslexicMode, setDyslexicMode] = useState(false);
+
+  // After mounting, we have access to the theme
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    // Apply OpenDyslexic font if dyslexicMode is enabled
+    if (!mounted) return;
+    
+    if (dyslexicMode) {
+      document.body.classList.add('dyslexic-mode');
+      document.documentElement.classList.add('dyslexic-mode');
+    } else {
+      document.body.classList.remove('dyslexic-mode');
+      document.documentElement.classList.remove('dyslexic-mode');
+    }
+  }, [dyslexicMode, mounted]);
+
+  if (!mounted) return null;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          className="flex items-center justify-center h-8 w-8 ml-4 rounded-full border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-bold md:hidden"
+          aria-label="Toggle viewing preferences"
+        >
+          VP
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-72">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">Viewing Preferences</h4>
+            <p className="text-sm text-muted-foreground">
+              Customise your viewing experience with these options.
+            </p>
+          </div>
+          <div className="grid gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                {theme === "dark" ? <MoonIcon className="h-4 w-4" /> : <SunIcon className="h-4 w-4" />}
+                <Label htmlFor="mobile-theme-mode">Dark Mode</Label>
+              </div>
+              <Switch
+                id="mobile-theme-mode"
+                checked={theme === "dark"}
+                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.60007 2.09998C3.60007 2.70003 4.08235 3.17897 4.72275 3.24449L5.00007 3.26904V2.09998H3.60007ZM5.00007 1.09998V0.0999756H3.50007V1.09998H5.00007ZM6.00007 0.0999756V1.09998L6.60007 1.09998C7.25259 1.09998 7.92308 1.20847 8.54182 1.41333L5.54064 10.4123L6.00007 11.8H8.00007V10.8H6.53384L9.45444 2.09998H10.8001V0.0999756H6.00007ZM11.8001 0.0999756V1.09998H13.8001V2.09998H11.8001V3.09998H13.8001V4.09997H11.8001V5.09997H13.8001V6.09997H11.8001V7.09997H13.8001V8.09997H11.8001V9.09997H13.8001V10.1H11.8001V11.1H13.8001V12.1H11.8001V13.1H13.8001V14.1H11.8001V14.9H14.7001V0.0999756H11.8001ZM0.900024 2.09998V14.9H3.80002V4.09997H1.90002V2.09998H0.900024Z" fill="currentColor"/></svg>
+                <Label htmlFor="mobile-dyslexic-mode">Dyslexic friendly</Label>
+              </div>
+              <Switch
+                id="mobile-dyslexic-mode"
+                checked={dyslexicMode}
+                onCheckedChange={setDyslexicMode}
+              />
+            </div>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+// Role-based navigation paths
+const defaultRoleBasedItems = [
+  {
+    id: 1,
+    label: "Learn how to benefit instantly from AI",
+    href: "/toolkit",
+    description: "Practical guidance for immediate AI adoption"
+  },
+  {
+    id: 2,
+    label: "Learn to build a business with AI",
+    href: "/marketplace",
+    description: "Turn AI skills into entrepreneurial opportunities"
+  },
+  {
+    id: 3,
+    label: "Pay someone to build an app for me",
+    href: "/marketplace",
+    description: "Connect with skilled AI developers"
+  },
+  {
+    id: 4,
+    label: "Teach others how to benefit from AI",
+    href: "/how-it-works",
+    description: "Share your expertise and help others grow"
+  }
+];
+
+// About section navigation
+const defaultAboutItems = [
+  {
+    id: 1,
+    label: "Our Mission",
+    href: "/about",
+    description: "Our mission to democratise AI"
+  },
+  {
+    id: 2,
+    label: "Contact",
+    href: "/contact",
+    description: "Get in touch with our team"
+  }
+];
+
+// User menu items based on role
+const getUserMenuItems = (roles: UserRole[] | undefined) => {
+  const commonItems = [
+    {
+      id: 1,
+      label: "Profile",
+      href: "/profile",
+      description: "Manage your account settings",
+    },
+    {
+      id: 2,
+      label: "Bookings",
+      href: "/bookings",
+      description: "View your scheduled sessions",
+    },
+  ];
+
+  const roleSpecificItems = [];
+
+  if (roles?.includes(UserRole.CLIENT)) {
+    roleSpecificItems.push({
+      id: 3,
+      label: "My Projects",
+      href: "/client-dashboard",
+      description: "Manage your app development projects",
+    },
+    {
+      id: 4,
+      label: "Become a Builder",
+      href: "/builder-profile",
+      description: "Create your builder profile to help others",
+    });
+  }
+  
+  if (roles?.includes(UserRole.BUILDER)) {
+    roleSpecificItems.push({
+      id: 3,
+      label: "Builder Profile",
+      href: "/builder-profile",
+      description: "Manage your builder profile and portfolio",
+    },
+    {
+      id: 4,
+      label: "Builder Dashboard",
+      href: "/builder-dashboard",
+      description: "Manage your services and clients",
+    });
+  }
+  
+  if (roles?.includes(UserRole.ADMIN)) {
+    roleSpecificItems.push({
+      id: 3,
+      label: "Admin Dashboard",
+      href: "/admin",
+      description: "Manage platform settings and users",
+    });
+  }
+
+  return [...commonItems, ...roleSpecificItems];
+};
+
+export function MarketingHeader() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const shouldReduceMotion = useReducedMotion();
+  const { isLoaded, isSignedIn, isAdmin, isBuilder, isClient } = useAuth();
+  const { user, isLoaded: isUserLoaded } = useUser();
+  const signOut = useSignOut();
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+  
+  const isAuthenticated = !!isSignedIn && !!user?.id;
+  
+  // Use state to store navigation items
+  const [navigationItems, setNavigationItems] = useState({
+    roleBasedItems: defaultRoleBasedItems,
+    aboutItems: defaultAboutItems
+  });
+  
+  // After mounting, we can access browser APIs
+  useEffect(() => setMounted(true), []);
+  
+  // Fetch navigation items from API
+  useEffect(() => {
+    const fetchNavigationItems = async () => {
+      try {
+        const response = await fetch('/api/navigation');
+        if (response.ok) {
+          const data = await response.json();
+          setNavigationItems(data);
+        }
+      } catch (error) {
+        console.error('Failed to load navigation items:', error);
+        // Continue with default items if API fails
+      }
+    };
+    
+    fetchNavigationItems();
+  }, []);
+  
+  const mobilenavbarVariant = {
+    initial: {
+      opacity: 0,
+      scale: 1,
+    },
+    animate: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.2,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0.2,
+        delay: 0.2,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const mobileLinkVar = {
+    initial: {
+      y: "-20px",
+      opacity: 0,
+    },
+    open: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const containerVariants = {
+    open: {
+      transition: {
+        staggerChildren: 0.06,
+      },
+    },
+  };
+
+  const [hamburgerMenuIsOpen, setHamburgerMenuIsOpen] = useState(false);
+
+  // Create refs for dropdown menus
+  const rolesDropdownRef = useRef<HTMLDivElement>(null);
+  const aboutDropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+  
+  // State for dropdowns
+  const [rolesDropdownOpen, setRolesDropdownOpen] = useState(false);
+  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  
+  // Click outside handlers for dropdowns - Fix TypeScript errors by casting refs
+  useOnClickOutside(rolesDropdownRef, () => setRolesDropdownOpen(false));
+  useOnClickOutside(aboutDropdownRef, () => setAboutDropdownOpen(false));
+  useOnClickOutside(userDropdownRef, () => setUserDropdownOpen(false));
+  
+  // Handle keyboard navigation for accessibility
+  const handleKeyDown = (e: React.KeyboardEvent, setDropdown: React.Dispatch<React.SetStateAction<boolean>>) => {
+    if (e.key === "Escape") {
+      setDropdown(false);
+    }
+  };
+  
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    const html = document.querySelector("html");
+    if (html) html.classList.toggle("overflow-hidden", hamburgerMenuIsOpen);
+  }, [hamburgerMenuIsOpen]);
+
+  useEffect(() => {
+    const closeHamburgerNavigation = () => setHamburgerMenuIsOpen(false);
+    window.addEventListener("orientationchange", closeHamburgerNavigation);
+    window.addEventListener("resize", closeHamburgerNavigation);
+
+    return () => {
+      window.removeEventListener("orientationchange", closeHamburgerNavigation);
+      window.removeEventListener("resize", closeHamburgerNavigation);
+    };
+  }, [setHamburgerMenuIsOpen]);
+
+  // Handle sign out
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
+
+  // Get user menu items based on role
+  const userMenuItems = getUserMenuItems(user?.roles);
+
+  return (
+    <>
+      <header className="fixed left-0 top-0 z-50 w-full translate-y-[-1rem] animate-fade-in border-b opacity-0 backdrop-blur-[12px] [--animation-delay:600ms]">
+        <div className="container flex h-[3.5rem] items-center justify-between">
+          <Link className="text-md flex items-center font-semibold" href="/">
+            BW
+          </Link>
+
+          {/* Desktop Navigation - Hidden on mobile */}
+          <nav className="mx-4 hidden md:flex space-x-4 items-center">
+            {/* How it works link */}
+            <Link 
+              href="/how-it-works"
+              className={cn(
+                "px-3 py-2 text-sm rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                pathname === "/how-it-works" ? "bg-slate-100 dark:bg-slate-800" : ""
+              )}
+            >
+              How It Works
+            </Link>
+            
+            {/* I would like to... dropdown */}
+            <div ref={rolesDropdownRef} className="relative">
+              <button
+                onClick={() => {
+                  setRolesDropdownOpen(!rolesDropdownOpen);
+                  setAboutDropdownOpen(false);
+                  setUserDropdownOpen(false);
+                }}
+                onKeyDown={(e) => handleKeyDown(e, setRolesDropdownOpen)}
+                className={cn(
+                  "flex items-center gap-1 px-3 py-2 text-sm rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                  rolesDropdownOpen ? "bg-slate-100 dark:bg-slate-800" : ""
+                )}
+                aria-expanded={rolesDropdownOpen}
+                aria-haspopup="true"
+              >
+                I would like to...
+                <ChevronDown size={16} className={cn("transition-transform", rolesDropdownOpen ? "rotate-180" : "")} />
+              </button>
+              <AnimatePresence>
+                {rolesDropdownOpen && (
+                  <motion.div
+                    initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+                    animate={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+                    exit={shouldReduceMotion ? { opacity: 0, y: 0 } : { opacity: 0, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-0 mt-1 w-64 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden z-50"
+                  >
+                    <div className="py-1">
+                      {navigationItems.roleBasedItems.map((item) => (
+                        <Link
+                          key={item.id}
+                          href={item.href}
+                          className={cn(
+                            "block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800",
+                            pathname === item.href ? "bg-slate-100 dark:bg-slate-800" : ""
+                          )}
+                        >
+                          <div className="font-medium">{item.label}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">{item.description}</div>
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Marketplace link */}
+            <Link 
+              href="/marketplace"
+              className={cn(
+                "px-3 py-2 text-sm rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                pathname === "/marketplace" ? "bg-slate-100 dark:bg-slate-800" : ""
+              )}
+            >
+              Marketplace
+            </Link>
+
+            {/* BW Toolkit link */}
+            <Link 
+              href="/toolkit"
+              className={cn(
+                "px-3 py-2 text-sm rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                pathname === "/toolkit" ? "bg-slate-100 dark:bg-slate-800" : ""
+              )}
+            >
+              Free Toolkit
+            </Link>
+
+            {/* About dropdown */}
+            <div ref={aboutDropdownRef} className="relative">
+              <button
+                onClick={() => {
+                  setAboutDropdownOpen(!aboutDropdownOpen);
+                  setRolesDropdownOpen(false);
+                  setUserDropdownOpen(false);
+                }}
+                onKeyDown={(e) => handleKeyDown(e, setAboutDropdownOpen)}
+                className={cn(
+                  "flex items-center gap-1 px-3 py-2 text-sm rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                  aboutDropdownOpen ? "bg-slate-100 dark:bg-slate-800" : ""
+                )}
+                aria-expanded={aboutDropdownOpen}
+                aria-haspopup="true"
+              >
+                About Us
+                <ChevronDown size={16} className={cn("transition-transform", aboutDropdownOpen ? "rotate-180" : "")} />
+              </button>
+              <AnimatePresence>
+                {aboutDropdownOpen && (
+                  <motion.div
+                    initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+                    animate={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+                    exit={shouldReduceMotion ? { opacity: 0, y: 0 } : { opacity: 0, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-0 mt-1 w-64 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden z-50"
+                  >
+                    <div className="py-1">
+                      {navigationItems.aboutItems.map((item) => (
+                        <Link
+                          key={item.id}
+                          href={item.href}
+                          className={cn(
+                            "block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800",
+                            pathname === item.href ? "bg-slate-100 dark:bg-slate-800" : ""
+                          )}
+                        >
+                          <div className="font-medium">{item.label}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">{item.description}</div>
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </nav>
+
+          <div className="ml-auto flex h-full items-center">
+            {/* Viewing Preferences Buttons */}
+            <ViewingPreferences />
+            <MobileViewingPreferences />
+            
+            {isAuthenticated ? (
+              <div ref={userDropdownRef} className="relative ml-2">
+                <button
+                  onClick={() => {
+                    setUserDropdownOpen(!userDropdownOpen);
+                    setRolesDropdownOpen(false);
+                    setAboutDropdownOpen(false);
+                  }}
+                  onKeyDown={(e) => handleKeyDown(e, setUserDropdownOpen)}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                    userDropdownOpen ? "bg-slate-100 dark:bg-slate-800" : ""
+                  )}
+                  aria-expanded={userDropdownOpen}
+                  aria-haspopup="true"
+                >
+                  <User size={18} />
+                  <span className="hidden md:inline">{user?.name || user?.email}</span>
+                  <ChevronDown size={16} className={cn("transition-transform", userDropdownOpen ? "rotate-180" : "")} />
+                </button>
+                <AnimatePresence>
+                  {userDropdownOpen && (
+                    <motion.div
+                      initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+                      animate={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+                      exit={shouldReduceMotion ? { opacity: 0, y: 0 } : { opacity: 0, y: -10 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-1 w-64 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden z-50"
+                    >
+                      <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                        <p className="text-sm font-medium">{user?.name || "User"}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+                      </div>
+                      <div className="py-1">
+                        {userMenuItems.map((item) => (
+                          <Link
+                            key={item.id}
+                            href={item.href}
+                            className={cn(
+                              "block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800",
+                              pathname === item.href ? "bg-slate-100 dark:bg-slate-800" : ""
+                            )}
+                          >
+                            <div className="font-medium">{item.label}</div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400">{item.description}</div>
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="py-1 border-t border-slate-200 dark:border-slate-700">
+                        <button
+                          onClick={handleSignOut}
+                          className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        >
+                          Sign out
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <>
+                <Link
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "mr-6 text-sm"
+                  )}
+                  href="/login"
+                >
+                  Log In
+                </Link>
+                <Link
+                  className={cn(
+                    buttonVariants({ variant: "default" }),
+                    "mr-6 text-sm bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
+                  )}
+                  href="/signup"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+          <button
+            className="ml-6 md:hidden"
+            onClick={() => setHamburgerMenuIsOpen((open) => !open)}
+            aria-label="Toggle mobile menu"
+            aria-expanded={hamburgerMenuIsOpen}
+            aria-controls="mobile-menu"
+          >
+            <span className="sr-only">Toggle menu</span>
+            {hamburgerMenuIsOpen ? <XIcon /> : <AlignJustify />}
+          </button>
+        </div>
+      </header>
+      <AnimatePresence>
+        <motion.nav
+          initial="initial"
+          exit="exit"
+          variants={mobilenavbarVariant}
+          animate={hamburgerMenuIsOpen ? "animate" : "exit"}
+          className={cn(
+            `fixed left-0 top-0 z-50 h-screen w-full overflow-auto bg-background/70 backdrop-blur-[12px] `,
+            {
+              "pointer-events-none": !hamburgerMenuIsOpen,
+            }
+          )}
+          id="mobile-menu"
+          aria-label="Mobile navigation"
+        >
+          <div className="container flex h-[3.5rem] items-center justify-between">
+            <Link className="text-md flex items-center font-semibold" href="/">
+              BW
+            </Link>
+
+            <button
+              className="ml-6 md:hidden"
+              onClick={() => setHamburgerMenuIsOpen((open) => !open)}
+              aria-label="Close mobile menu"
+            >
+              <span className="sr-only">Close menu</span>
+              {hamburgerMenuIsOpen ? <XIcon /> : <AlignJustify />}
+            </button>
+          </div>
+          
+          {/* Mobile Navigation Structure */}
+          <div className="container py-4">
+            {/* User Profile Section (if authenticated) */}
+            {isAuthenticated && (
+              <div className="mb-6">
+                <div className="px-4 py-3 mb-4 rounded-lg bg-slate-100/50 dark:bg-slate-800/50">
+                  <p className="text-md font-medium">{user?.name || "User"}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+                </div>
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 px-2">My Account</h2>
+                <motion.ul
+                  className={`flex flex-col ease-in rounded-lg overflow-hidden bg-slate-100/50 dark:bg-slate-800/50`}
+                  variants={containerVariants}
+                  initial="initial"
+                  animate={hamburgerMenuIsOpen ? "open" : "exit"}
+                >
+                  {userMenuItems.map((item) => (
+                    <motion.li
+                      variants={mobileLinkVar}
+                      key={item.id}
+                      className="border-b border-slate-200 dark:border-slate-700 last:border-none"
+                    >
+                      <Link
+                        className={`hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors ${pathname === item.href ? "bg-slate-200 dark:bg-slate-700" : ""}`}
+                        href={item.href}
+                      >
+                        <span className="font-medium">{item.label}</span>
+                        <span className="text-xs mt-1 text-slate-500 dark:text-slate-400">{item.description}</span>
+                      </Link>
+                    </motion.li>
+                  ))}
+                  <motion.li
+                    variants={mobileLinkVar}
+                    className="border-t border-slate-200 dark:border-slate-700"
+                  >
+                    <button
+                      onClick={handleSignOut}
+                      className="hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors text-left text-red-600 dark:text-red-400"
+                    >
+                      <span className="font-medium">Sign out</span>
+                    </button>
+                  </motion.li>
+                </motion.ul>
+              </div>
+            )}
+            
+            {/* Main Navigation Links */}
+            <div className="mb-6">
+              <motion.ul
+                className={`flex flex-col ease-in rounded-lg overflow-hidden bg-slate-100/50 dark:bg-slate-800/50`}
+                variants={containerVariants}
+                initial="initial"
+                animate={hamburgerMenuIsOpen ? "open" : "exit"}
+              >
+                <motion.li
+                  variants={mobileLinkVar}
+                  className="border-b border-slate-200 dark:border-slate-700"
+                >
+                  <Link
+                    className={`hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors ${pathname === "/how-it-works" ? "bg-slate-200 dark:bg-slate-700" : ""}`}
+                    href="/how-it-works"
+                  >
+                    <span className="font-medium">How it works</span>
+                  </Link>
+                </motion.li>
+                <motion.li
+                  variants={mobileLinkVar}
+                  className="border-b border-slate-200 dark:border-slate-700"
+                >
+                  <Link
+                    className={`hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors ${pathname === "/marketplace" ? "bg-slate-200 dark:bg-slate-700" : ""}`}
+                    href="/marketplace"
+                  >
+                    <span className="font-medium">Marketplace</span>
+                  </Link>
+                </motion.li>
+                <motion.li
+                  variants={mobileLinkVar}
+                  className="border-b border-slate-200 dark:border-slate-700 last:border-none"
+                >
+                  <Link
+                    className={`hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors ${pathname === "/toolkit" ? "bg-slate-200 dark:bg-slate-700" : ""}`}
+                    href="/toolkit"
+                  >
+                    <span className="font-medium">Free Toolkit</span>
+                  </Link>
+                </motion.li>
+              </motion.ul>
+            </div>
+            
+            {/* I would like to... Section */}
+            <div className="mb-6">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 px-2">I would like to...</h2>
+              <motion.ul
+                className={`flex flex-col ease-in rounded-lg overflow-hidden bg-slate-100/50 dark:bg-slate-800/50`}
+                variants={containerVariants}
+                initial="initial"
+                animate={hamburgerMenuIsOpen ? "open" : "exit"}
+              >
+                {navigationItems.roleBasedItems.map((item) => (
+                  <motion.li
+                    variants={mobileLinkVar}
+                    key={item.id}
+                    className="border-b border-slate-200 dark:border-slate-700 last:border-none"
+                  >
+                    <Link
+                      className={`hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors ${pathname === item.href ? "bg-slate-200 dark:bg-slate-700" : ""}`}
+                      href={item.href}
+                    >
+                      <span className="font-medium">{item.label}</span>
+                      <span className="text-xs mt-1 text-slate-500 dark:text-slate-400">{item.description}</span>
+                    </Link>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </div>
+            
+            {/* About Section */}
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 px-2">About</h2>
+              <motion.ul
+                className={`flex flex-col ease-in rounded-lg overflow-hidden bg-slate-100/50 dark:bg-slate-800/50`}
+                variants={containerVariants}
+                initial="initial"
+                animate={hamburgerMenuIsOpen ? "open" : "exit"}
+              >
+                {navigationItems.aboutItems.map((item) => (
+                  <motion.li
+                    variants={mobileLinkVar}
+                    key={item.id}
+                    className="border-b border-slate-200 dark:border-slate-700 last:border-none"
+                  >
+                    <Link
+                      className={`hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors ${pathname === item.href ? "bg-slate-200 dark:bg-slate-700" : ""}`}
+                      href={item.href}
+                    >
+                      <span className="font-medium">{item.label}</span>
+                      <span className="text-xs mt-1 text-slate-500 dark:text-slate-400">{item.description}</span>
+                    </Link>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </div>
+            
+            {/* Accessibility Settings in Mobile Menu */}
+            {!isAuthenticated && (
+              <div className="mt-6 flex flex-col space-y-4">
+                <Link
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "w-full"
+                  )}
+                  href="/login"
+                >
+                  Log In
+                </Link>
+                <Link
+                  className={cn(
+                    buttonVariants({ variant: "default" }),
+                    "w-full bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
+                  )}
+                  href="/signup"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
+        </motion.nav>
+      </AnimatePresence>
+    </>
+  );
+}
+
+export default MarketingHeader;

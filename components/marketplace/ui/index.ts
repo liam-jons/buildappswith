@@ -1,11 +1,8 @@
 /**
- * Marketplace UI Components - Barrel Exports
- * 
- * This file exports all UI components specific to the marketplace domain.
- * Add new component exports here as they are created.
+ * ui components barrel export file
+ * Version: 1.0.0
  */
 
-// Export UI components
+// Export components
+export { default as FilterPanel } from './filter-panel';
 export * from './filter-panel';
-// export * from './sort-controls';
-// export * from './category-selector';

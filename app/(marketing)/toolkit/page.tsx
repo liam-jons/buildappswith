@@ -1,8 +1,20 @@
 import { Metadata } from "next";
 import { ExternalLink, Search, Feather, PenTool, Presentation, BrainCircuit, Layers, Bot, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from "@/components/ui";
+
+
+
 import Link from 'next/link';
 
 export const metadata: Metadata = {

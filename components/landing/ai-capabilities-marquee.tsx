@@ -106,7 +106,7 @@ export function AICapabilitiesMarquee({
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <p className="text-lg text-primary font-medium">
-            Our community of Builders stay ahead and cut through the noise - and they're incentivised to bring you along for the journey - wherever it might take you.
+            Our community of Builders stay ahead and cut through the noise - and they&apos;re incentivised to bring you along for the journey - wherever it might take you.
           </p>
         </motion.div>
 

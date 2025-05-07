@@ -3,9 +3,7 @@
 import { AccessibilityProvider, AccessibilityStyles } from "@/components/landing/accessibility";
 import { AICapabilitiesMarquee } from "@/components/landing/ai-capabilities-marquee";
 import { CTASection } from "@/components/landing/cta-section";
-import { Footer } from "@/components/landing/footer";
 import { HeroSection } from "@/components/landing/hero-section";
-import { Navbar } from "@/components/landing/navbar";
 import { PerformanceMonitor } from "@/components/landing/performance-optimizations";
 import { SkillsTreeSection } from "@/components/landing/skills-tree-section";
 import { TrustedEcosystem } from "@/components/landing/trusted-ecosystem";
@@ -21,11 +19,8 @@ export default function Page() {
       {/* Performance monitoring */}
       <PerformanceMonitor />
       
-      {/* Navigation */}
-      <Navbar />
-      
       {/* Main content */}
-      <main id="main-content">
+      <div id="main-content">
         {/* Hero section */}
         <HeroSection />
         
@@ -46,10 +41,7 @@ export default function Page() {
         
         {/* CTA Section */}
         <CTASection />
-      </main>
-      
-      {/* Footer */}
-      <Footer />
+      </div>
       
       {/* JSON-LD structured data for SEO */}
       <script

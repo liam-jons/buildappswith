@@ -1,6 +1,9 @@
 import { Providers } from "@/components/providers/providers";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
+import {
+  Toaster
+} from "@/components/ui";
+
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";

@@ -1,9 +1,14 @@
 import { auth } from '@clerk/nextjs/server';
 import { SignInButton } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import { db } from '@/lib/db';
 import BookingCalendar from '@/components/scheduling/client/booking-calendar';
-import { Button } from '@/components/ui/button';
+import {
+  Button
+} from "@/components/ui";
+
 
 export const metadata = {
   title: 'Book a Session | Buildappswith',
@@ -45,8 +50,8 @@ export default async function BookingPage({
           <p className="text-gray-500 mb-6">
             The builder you are looking for does not exist or has been removed.
           </p>
-          <Button href="/" variant="default">
-            Return to Home
+          <Button variant="default" asChild>
+            <Link href="/">Return to Home</Link>
           </Button>
         </div>
       </div>
@@ -68,10 +73,12 @@ export default async function BookingPage({
           
           {builderProfile.avatarUrl && (
             <div className="h-16 w-16 rounded-full overflow-hidden">
-              <img 
+              <Image 
                 src={builderProfile.avatarUrl} 
                 alt={`${builderProfile.user.firstName} ${builderProfile.user.lastName}`}
                 className="h-full w-full object-cover"
+                width={64}
+                height={64}
               />
             </div>
           )}

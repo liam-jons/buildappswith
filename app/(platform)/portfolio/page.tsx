@@ -4,14 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useProfile } from "@/lib/contexts/profile-context";
 import { PortfolioGallery } from "@/components/profile/portfolio-gallery";
-import { Button } from "@/components/ui/button";
-import { 
+import {
+  Button,
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogDescription
-} from "@/components/ui/dialog";
+  DialogTitle
+} from "@/components/ui";
+
+
 import { AddProjectForm } from "@/components/profile/add-project-form";
 import { 
   ViewGridIcon, 

@@ -1,9 +1,12 @@
-import { buttonVariants } from "@/components/ui/button";
+
 import { ClerkAuthForm } from "@/components/auth/clerk-auth-form";
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
+import {
+  buttonVariants
+} from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Sign Up | Build Apps With",

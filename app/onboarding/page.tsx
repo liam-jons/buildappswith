@@ -1,17 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+
+
+
 import { SiteHeader } from "@/components/site-header";
 import { useAuth } from "@/lib/auth/hooks";
 import { UserRole } from "@/lib/auth/types";
@@ -22,6 +14,19 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import {
+  Button,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  RadioGroup,
+  RadioGroupItem
+} from "@/components/ui";
 
 const onboardingSchema = z.object({
   name: z.string().min(2, {

@@ -77,6 +77,8 @@ export const MemoizedNavbar = memo(
   ({ children }: { children: React.ReactNode }) => children
 );
 
+MemoizedNavbar.displayName = 'MemoizedNavbar';
+
 // Component that only renders when in viewport
 interface InViewProps {
   children: React.ReactNode;
@@ -200,9 +202,12 @@ export function PerformanceMonitor() {
 export const lazyLoad = (importFn: () => Promise<{ default: React.ComponentType<any> }>, fallback: React.ReactNode = null) => {
   const LazyComponent = lazy(importFn);
   
-  return (props: any) => (
+  const LazyLoadComponent = (props: any) => (
     <Suspense fallback={fallback}>
       <LazyComponent {...props} />
     </Suspense>
   );
+  
+  LazyLoadComponent.displayName = 'LazyLoadComponent';
+  return LazyLoadComponent;
 };

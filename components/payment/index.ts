@@ -1,10 +1,13 @@
 /**
- * Payment components barrel export file
+ * payment components barrel export file
  * Version: 1.0.0
  */
 
-// Export domain-specific components
-// Example: export * from './checkout-form';
+// Export components
+export { PaymentStatusIndicator } from './payment-status-indicator';
+export { StripeProvider } from './stripe-provider';
+export { CheckoutButton } from './checkout-button';
+export { PaymentConfirmation } from './payment-confirmation';
 
-// Export UI components
+// Re-export subdirectory
 export * from './ui';

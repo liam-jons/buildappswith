@@ -5,24 +5,20 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 // UI Components
-import { Button } from "@/components/ui/button";
 import { 
+  Button,
   Card, 
   CardContent, 
   CardDescription, 
   CardFooter, 
   CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { 
+  CardTitle,
   Table, 
   TableBody, 
   TableCell, 
   TableHead, 
   TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import {
+  TableRow,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -30,8 +26,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
+  Badge
+} from "@/components/ui";
 import { Loader2 } from "lucide-react";
 import { SessionTypeForm } from "@/components/admin/session-type-form";
 import { SessionType } from "@/lib/scheduling/types";
