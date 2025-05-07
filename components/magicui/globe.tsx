@@ -72,9 +72,12 @@ export function Globe({
   };
 
   useEffect(() => {
+    let localWidth = 0;
+    let localPhi = 0;
+
     const onResize = () => {
       if (canvasRef.current) {
-        width = canvasRef.current.offsetWidth;
+        localWidth = canvasRef.current.offsetWidth;
       }
     };
 
@@ -83,17 +86,22 @@ export function Globe({
 
     const globe = createGlobe(canvasRef.current!, {
       ...config,
-      width: width * 2,
-      height: width * 2,
+      width: localWidth * 2,
+      height: localWidth * 2,
       onRender: (state) => {
-        if (!pointerInteracting.current) phi += 0.005;
-        state.phi = phi + rs.get();
-        state.width = width * 2;
-        state.height = width * 2;
+        if (!pointerInteracting.current) localPhi += 0.005;
+        state.phi = localPhi + rs.get();
+        state.width = localWidth * 2;
+        state.height = localWidth * 2;
       },
     });
 
-    setTimeout(() => (canvasRef.current!.style.opacity = "1"), 0);
+    setTimeout(() => {
+      if (canvasRef.current) {
+        canvasRef.current.style.opacity = "1";
+      }
+    }, 0);
+    
     return () => {
       globe.destroy();
       window.removeEventListener("resize", onResize);

@@ -31,7 +31,7 @@ export async function Timeline({ initialFilter, className }: TimelineProps) {
     return (
       <div className="p-6 text-center">
         <h2 className="text-xl font-semibold mb-4">Timeline Data Unavailable</h2>
-        <p className="mb-4">We couldn't load the AI capability timeline data at this time.</p>
+        <p className="mb-4">We couldn&apos;t load the AI capability timeline data at this time.</p>
         <Button>Retry</Button>
       </div>
     );

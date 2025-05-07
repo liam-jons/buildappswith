@@ -13,14 +13,11 @@ model User {
   name             String?
   email            String          @unique
   emailVerified    DateTime?
-  image            String? // Keep for backward compatibility
-  imageUrl         String? // New field for Clerk integration
+  image            String?
   isFounder        Boolean         @default(false)
   stripeCustomerId String?
   verified         Boolean         @default(false)
   clerkId          String?         @unique
-  active           Boolean         @default(true)
-  deletedAt        DateTime?
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   roles            UserRole[]      @default([CLIENT])
@@ -69,7 +66,7 @@ model VerificationToken {
 model BuilderProfile {
   id                String         @id @default(cuid())
   userId            String         @unique
-  bio               String?        @db.Text
+  bio               String?
   headline          String?
   hourlyRate        Decimal?       @db.Decimal(10, 2)
   featuredBuilder   Boolean        @default(false)
@@ -83,12 +80,6 @@ model BuilderProfile {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   socialLinks       Json?
-  apps              App[]
-  bookings          Booking[]
-  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skills            BuilderSkill[]
-  sessionTypes      SessionType[]
-  // Marketplace fields
   slug              String?        @unique
   tagline           String?
   displayName       String?
@@ -96,9 +87,15 @@ model BuilderProfile {
   responseRate      Float?
   expertiseAreas    Json?
   featured          Boolean        @default(false)
+  clerkUserId       String?        @unique
   searchable        Boolean        @default(true)
   availability      String         @default("available")
   topSkills         String[]       @default([])
+  apps              App[]
+  bookings          Booking[]
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills            BuilderSkill[]
+  sessionTypes      SessionType[]
 
   @@index([featured])
   @@index([searchable])
@@ -121,7 +118,7 @@ model ClientProfile {
 model App {
   id           String         @id @default(cuid())
   title        String
-  description  String         @db.Text
+  description  String
   imageUrl     String?
   technologies String[]
   status       AppStatus      @default(CONCEPT)
@@ -137,7 +134,7 @@ model Skill {
   id            String          @id @default(cuid())
   name          String
   slug          String          @unique
-  description   String?         @db.Text
+  description   String?
   domain        String
   level         Int
   prerequisites String[]
@@ -166,10 +163,10 @@ model SkillResource {
   id           String       @id @default(cuid())
   skillId      String
   title        String
-  description  String?      @db.Text
+  description  String?
   resourceType ResourceType
   url          String?
-  content      String?      @db.Text
+  content      String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   skill        Skill        @relation(fields: [skillId], references: [id], onDelete: Cascade)
@@ -178,7 +175,7 @@ model SkillResource {
 model Project {
   id           String             @id @default(cuid())
   title        String
-  description  String             @db.Text
+  description  String
   clientId     String
   status       ProjectStatus      @default(DRAFT)
   budget       Decimal?           @db.Decimal(10, 2)
@@ -195,7 +192,7 @@ model ProjectMilestone {
   id           String    @id @default(cuid())
   projectId    String
   title        String
-  description  String?   @db.Text
+  description  String?
   dueDate      DateTime?
   completed    Boolean   @default(false)
   completedAt  DateTime?
@@ -206,49 +203,54 @@ model ProjectMilestone {
 }
 
 model Booking {
-  id              String         @id @default(cuid())
-  builderId       String
-  clientId        String
-  sessionTypeId   String?
-  title           String
-  description     String?        @db.Text
-  startTime       DateTime
-  endTime         DateTime
-  status          BookingStatus  @default(PENDING)
-  paymentStatus   PaymentStatus  @default(UNPAID)
-  amount          Decimal?       @db.Decimal(10, 2)
-  stripeSessionId String?
-  clientTimezone  String?
-  builderTimezone String?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  builder         BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  client          User           @relation("BookingsAsClient", fields: [clientId], references: [id], onDelete: Cascade)
-  sessionType     SessionType?   @relation(fields: [sessionTypeId], references: [id])
+  id                 String         @id @default(cuid())
+  builderId          String
+  clientId           String
+  sessionTypeId      String?
+  title              String
+  description        String?
+  startTime          DateTime
+  endTime            DateTime
+  status             BookingStatus  @default(PENDING)
+  paymentStatus      PaymentStatus  @default(UNPAID)
+  amount             Decimal?       @db.Decimal(10, 2)
+  stripeSessionId    String?
+  clientTimezone     String?
+  builderTimezone    String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  calendlyEventId    String?
+  calendlyEventUri   String?
+  calendlyInviteeUri String?
+  builder            BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  client             User           @relation("BookingsAsClient", fields: [clientId], references: [id], onDelete: Cascade)
+  sessionType        SessionType?   @relation(fields: [sessionTypeId], references: [id])
 }
 
 model SessionType {
-  id              String         @id @default(cuid())
-  builderId       String
-  title           String
-  description     String         @db.Text
-  durationMinutes Int
-  price           Decimal        @db.Decimal(10, 2)
-  currency        String
-  isActive        Boolean        @default(true)
-  color           String?
-  maxParticipants Int?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  bookings        Booking[]
-  builder         BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id                   String         @id @default(cuid())
+  builderId            String
+  title                String
+  description          String
+  durationMinutes      Int
+  price                Decimal        @db.Decimal(10, 2)
+  currency             String
+  isActive             Boolean        @default(true)
+  color                String?
+  maxParticipants      Int?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  calendlyEventTypeId  String?
+  calendlyEventTypeUri String?
+  bookings             Booking[]
+  builder              BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
 }
 
 model AICapability {
   id                    String                  @id @default(cuid())
   date                  DateTime
   title                 String
-  description           String                  @db.Text
+  description           String
   domain                String
   isModelImprovement    Boolean                 @default(false)
   modelName             String?
@@ -267,8 +269,8 @@ model CapabilityExample {
   id             String       @id @default(cuid())
   capabilityId   String
   title          String
-  description    String       @db.Text
-  implementation String?      @db.Text
+  description    String
+  implementation String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   capability     AICapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
@@ -277,7 +279,7 @@ model CapabilityExample {
 model CapabilityLimitation {
   id           String       @id @default(cuid())
   capabilityId String
-  description  String       @db.Text
+  description  String
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   capability   AICapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
@@ -286,70 +288,10 @@ model CapabilityLimitation {
 model CapabilityRequirement {
   id           String       @id @default(cuid())
   capabilityId String
-  description  String       @db.Text
+  description  String
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   capability   AICapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
-}
-
-model WebhookEvent {
-  id              String    @id @default(cuid())
-  svixId          String    @unique
-  type            String
-  payload         Json
-  processed       Boolean   @default(false)
-  processingError String?
-  processingCount Int       @default(0)
-  lastProcessed   DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
-  @@index([type])
-  @@index([processed, processingCount]) // For retry queries
-}
-
-model WebhookMetric {
-  id             String   @id @default(cuid())
-  type           String
-  status         String
-  processingTime Float
-  error          String?
-  timestamp      DateTime @default(now())
-
-  @@index([type])
-  @@index([status])
-  @@index([timestamp])
-}
-
-model AuditLog {
-  id         String   @id @default(cuid())
-  userId     String
-  action     String
-  targetId   String?
-  targetType String?
-  details    Json
-  ipAddress  String?
-  userAgent  String?
-  timestamp  DateTime @default(now())
-
-  @@index([userId])
-  @@index([action])
-  @@index([timestamp])
-  @@index([targetType, targetId])
-}
-
-model Organization {
-  id        String    @id @default(cuid())
-  clerkId   String    @unique
-  name      String
-  slug      String?   @unique
-  imageUrl  String?
-  active    Boolean   @default(true)
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@index([slug])
 }
 
 enum UserRole {

@@ -8,24 +8,22 @@ import { UserRole } from "@/lib/auth/types";
 import * as Sentry from "@sentry/nextjs";
 
 // UI Components
-import { Button } from "@/components/ui/button";
 import { 
+  Button,
   Card, 
   CardContent, 
   CardDescription, 
   CardFooter, 
   CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { 
+  CardTitle,
   Table, 
   TableBody, 
   TableCell, 
   TableHead, 
   TableHeader, 
   TableRow 
-} from "@/components/ui/table";
-import { ValidationTierBadge } from "@/components/profile/validation-tier-badge";
+} from "@/components/ui";
+import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
 
 export default function AdminBuildersPage() {
   const { isLoaded, userId } = useAuth();

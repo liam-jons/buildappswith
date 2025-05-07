@@ -1,9 +1,12 @@
-import { buttonVariants } from "@/components/ui/button";
+
 import { SuspenseUserAuthForm } from "@/components/suspense-user-auth-form";
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
+import {
+  buttonVariants
+} from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Login | Build Apps With",

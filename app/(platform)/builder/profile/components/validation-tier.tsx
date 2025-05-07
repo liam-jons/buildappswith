@@ -1,7 +1,13 @@
 'use client';
 
 import { ValidationTier as TierType } from '@/lib/types/builder';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui";
+
 import { BorderBeam } from '@/components/magicui/border-beam';
 import { TextShimmer } from '@/components/magicui/text-shimmer';
 

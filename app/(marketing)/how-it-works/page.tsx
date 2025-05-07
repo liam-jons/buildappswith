@@ -1,8 +1,16 @@
 import React from 'react';
 import { ArrowRight, Lightbulb, Users, BookOpen, BarChart } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui";
+
+
  
  export default function HowItWorksPage() {
    return (

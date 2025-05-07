@@ -128,4 +128,4 @@ export const accessibilityStyles = `
 // Component to add accessibility-specific styles
 export function AccessibilityStyles() {
   return <style jsx global>{accessibilityStyles}</style>;
-}
+}export default AccessibilityProvider;

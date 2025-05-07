@@ -63,7 +63,14 @@
     "arch:unused": "bash scripts/run-unused-code-analyzer.sh",
     "arch:unused:enhanced": "bash scripts/enhanced-unused-code-analyzer.sh",
     "arch:unused:fix": "bash scripts/enhanced-unused-code-analyzer.sh --fix",
-    "arch:unused:verbose": "bash scripts/enhanced-unused-code-analyzer.sh --verbose"
+    "arch:unused:verbose": "bash scripts/enhanced-unused-code-analyzer.sh --verbose",
+    "check:imports": "node scripts/pre-commit-import-check.js",
+    "fix:imports": "node scripts/pre-commit-import-check.js --fix",
+    "analyze:barrels": "node scripts/analyze-barrel-exports.js",
+    "fix:barrels": "node scripts/analyze-barrel-exports.js --fix",
+    "fix:calendly-migration": "node scripts/verify-calendly-migration.js",
+    "apply:calendly-migration": "bash scripts/apply-calendly-migration.sh",
+    "prepare": "npx husky"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.31.8",
@@ -88,6 +95,7 @@
     "@radix-ui/react-toast": "^1.2.7",
     "@radix-ui/react-tooltip": "^1.2.0",
     "@sentry/nextjs": "^9.14.0",
+    "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -129,12 +137,15 @@
     "dependency-cruiser": "^16.10.1",
     "eslint": "^9.24.0",
     "eslint-config-next": "^15.3.1",
+    "glob": "^11.0.2",
+    "husky": "^9.0.11",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-axe": "^8.0.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-mock-extended": "^3.0.5",
     "jsdom": "^26.1.0",
+    "lint-staged": "^15.2.2",
     "postcss": "^8.5.3",
     "prisma": "^6.6.0",
     "tailwindcss": "3.4.17",
@@ -145,5 +156,16 @@
     "typescript": "^5.8.3",
     "vitest": "^3.1.1",
     "webpack-bundle-analyzer": "^4.10.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "node scripts/pre-commit-import-check.js --fix",
+      "git add"
+    ]
   }
 }

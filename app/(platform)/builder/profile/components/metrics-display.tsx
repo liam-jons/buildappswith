@@ -1,7 +1,14 @@
 'use client';
 
 import { BuilderMetrics } from '@/lib/types/builder';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui";
+
 import Particles from '@/components/magicui/particles';
 import { ArrowDown, ArrowUp, Star } from 'lucide-react';
 

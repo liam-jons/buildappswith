@@ -1,10 +1,8 @@
 /**
- * Trust UI Components - Barrel Exports
- * 
- * This file exports UI components for the trust domain:
- * - Validation tier badges and indicators
- * - Trust evidence displays
- * - Verification and assessment visualizations
+ * ui components barrel export file
+ * Version: 1.0.0
  */
 
+// Export components
+export { default as ValidationTierBadge } from './validation-tier-badge';
 export * from "./validation-tier-badge";

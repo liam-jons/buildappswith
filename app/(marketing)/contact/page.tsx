@@ -1,6 +1,5 @@
 import React from 'react';
-import { TextShimmer } from "@/components/magicui/text-shimmer";
-import { ContactForm } from "@/components/contact/contact-form";
+import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField } from "@/components/ui/core/form";
 
 export const metadata = {
   title: "Contact Us | Buildappswith",
@@ -13,7 +12,7 @@ export default function ContactPage() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-12 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <TextShimmer>Contact Us</TextShimmer>
+            Contact Us
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300">
             We&apos;d love to hear from you
@@ -65,7 +64,7 @@ export default function ContactPage() {
           
           <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-lg">
             <h2 className="text-2xl font-bold mb-6">Send Us a Message</h2>
-            <ContactForm />
+            <p>Our contact form is currently being updated. Please email us directly at hello@buildappswith.app</p>
           </div>
         </div>
 

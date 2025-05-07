@@ -1,7 +1,9 @@
 import React from 'react';
-import { TextShimmer } from "@/components/magicui/text-shimmer";
 import { BorderBeam } from "@/components/magicui/border-beam";
-import { Separator } from "@/components/ui/separator";
+import {
+  Separator
+} from "@/components/ui";
+
 
 export const metadata = {
   title: "Our Mission | Buildappswith",
@@ -14,7 +16,7 @@ export default function AboutPage() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-12 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <TextShimmer>Our Mission</TextShimmer>
+            Our Mission
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300">
             Democratizing AI through practical application and human connection

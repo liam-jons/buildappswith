@@ -103,7 +103,7 @@ export default function MarketplacePage() {
   useEffect(() => {
     const updatedFilters = { ...activeFilters, searchQuery: debouncedSearchQuery || undefined };
     setActiveFilters(updatedFilters);
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, activeFilters]);
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

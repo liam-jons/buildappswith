@@ -1,8 +1,18 @@
 import { Metadata } from "next";
-import { Button } from "@/components/ui/button";
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui";
+
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
+
 import { CalendarIcon, UserIcon, Clock2Icon } from "lucide-react";
 
 export const metadata: Metadata = {

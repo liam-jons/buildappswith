@@ -12,6 +12,7 @@
 import { useAuth as useClerkAuth, useUser as useClerkUser, SignOutResource } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { UserRole, AuthUser, AuthOptions } from '@/lib/auth/types';
+import React from 'react';
 
 /**
  * Enhanced version of Clerk's useAuth hook with role-based functionality
@@ -175,20 +176,19 @@ export function withClientAuth<P extends object>(
     requireAllRoles?: boolean;
   } = {}
 ) {
-  const { 
-    redirectTo = '/login', 
-    loadingComponent = <div>Loading...</div>,
-    requiredRoles = [],
-    requireAllRoles = false,
-  } = options;
-
-  function WithAuth(props: P) {
+  const WithAuth = (props: P) => {
     const router = useRouter();
     const { isSignedIn, isLoaded, roles } = useAuth();
     
+    const redirectTo = options.redirectTo || '/login';
+    const defaultLoading = React.createElement('div', {}, 'Loading...');
+    const loadingComponent = options.loadingComponent || defaultLoading;
+    const requiredRoles = options.requiredRoles || [];
+    const requireAllRoles = options.requireAllRoles || false;
+    
     // Handle loading state
     if (!isLoaded) {
-      return <>{loadingComponent}</>;
+      return React.createElement(React.Fragment, {}, loadingComponent);
     }
     
     // Check if user is authenticated
@@ -216,8 +216,8 @@ export function withClientAuth<P extends object>(
     }
     
     // Render the protected component
-    return <WrappedComponent {...props} />;
-  }
+    return React.createElement(WrappedComponent, props);
+  };
   
   // Set display name for debugging
   WithAuth.displayName = `WithAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
