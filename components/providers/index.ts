@@ -6,5 +6,6 @@
 // Export components
 export { default as providers } from './providers';
 export { default as ClerkProvider } from './clerk-provider';
+export { DatadogRumProvider, retrieveTraceContext, storeTraceContext } from './datadog-rum-provider';
 
 export { default as Providers } from './providers';

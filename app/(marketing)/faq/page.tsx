@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import { FAQAccordion } from "@/components/client/faq-accordion";
 
 export const metadata: Metadata = {
-  title: "Frequently Asked Questions | Buildappswith",
-  description: "Get answers to common questions about Buildappswith",
+  title: "Frequently Asked Questions | Build Apps With",
+  description: "Get answers to common questions about Build Apps With",
 };
 
 export default function FAQPage() {
@@ -12,17 +12,17 @@ export default function FAQPage() {
       <div className="space-y-2 mb-8">
         <h1 className="text-3xl font-bold">Frequently Asked Questions</h1>
         <p className="text-muted-foreground text-lg">
-          Get answers to common questions about using Buildappswith
+          Get answers to common questions about using <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span>
         </p>
       </div>
 
       <FAQAccordion items={[
         {
           id: "item-1",
-          question: "What is Buildappswith?",
+          question: "What is Build Apps With?",
           answer: (
             <p>
-              Buildappswith is a platform designed to democratize AI application development through an innovative
+              <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span> is a platform designed to democratise AI application development through an innovative
               marketplace where users can either commission affordable custom apps or learn to build them alongside
               experienced developers. Our mission is to make AI literacy accessible to everyone while creating a
               community that rewards quality, knowledge-sharing, and tangible outcomes.
@@ -31,7 +31,7 @@ export default function FAQPage() {
         },
         {
           id: "item-2",
-          question: "How can I benefit from using Buildappswith?",
+          question: "How can I benefit from using Build Apps With?",
           answer: (
             <div>
               <p>There are several ways to benefit from our platform:</p>

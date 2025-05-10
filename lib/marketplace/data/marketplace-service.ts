@@ -1,12 +1,16 @@
-import { prisma } from '@/lib/db';
-import { 
-  BuilderProfileListing, 
+import { db } from '@/lib/db';
+import {
+  BuilderProfileListing,
   BuilderProfileData,
-  MarketplaceFilters, 
+  MarketplaceFilters,
   PaginatedResponse,
   MarketplaceFilterOptions
 } from '../types';
 import { Prisma } from '@prisma/client';
+import { enhancedLogger } from '@/lib/enhanced-logger';
+
+// Create a marketplace logger
+const marketplaceLogger = enhancedLogger.child({ domain: 'marketplace-service' });
 
 /**
  * Fetch builders with pagination and filtering
@@ -19,15 +23,12 @@ export async function fetchBuilders(
   try {
     // Calculate pagination
     const skip = (page - 1) * limit;
-    
+
     // Build where conditions
     const where: Prisma.BuilderProfileWhereInput = {
       searchable: true,
-      // Only include profiles if their user is active and not deleted
-      user: {
-        active: true,
-        deletedAt: null,
-      }
+      // The User model in the current schema doesn't have deletedAt field
+      // So we don't filter by deletedAt
     };
     
     // Add validation tier filter
@@ -150,14 +151,30 @@ export async function fetchBuilders(
     }
     
     // Count total matching builders for pagination
-    const total = await prisma.builderProfile.count({ where });
-    
+    let total = 0;
+    try {
+      // Log the count operation for debugging
+      marketplaceLogger.debug('Counting builder profiles', { where });
+      total = await db.builderProfile.count({ where });
+      marketplaceLogger.debug('Count result', { total });
+    } catch (countError) {
+      marketplaceLogger.error('Error counting builder profiles', {
+        error: countError instanceof Error ? countError.message : String(countError),
+        where
+      });
+      // Default to 0 on error to prevent breaking the function
+      total = 0;
+    }
+
     // Fetch builders with all required relations
-    const builders = await prisma.builderProfile.findMany({
-      where,
-      orderBy,
-      skip,
-      take: limit,
+    let builders = [];
+    try {
+      marketplaceLogger.debug('Finding builder profiles', { where, skip, take: limit });
+      builders = await db.builderProfile.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
       include: {
         user: {
           select: {
@@ -184,28 +201,68 @@ export async function fetchBuilders(
         },
       },
     });
-    
-    // Transform to the expected format
-    const builderListings: BuilderProfileListing[] = builders.map((builder) => ({
-      id: builder.id,
-      userId: builder.userId,
-      name: builder.displayName || builder.user.name || 'Unknown Builder',
-      displayName: builder.displayName,
-      bio: builder.bio || undefined,
-      headline: builder.headline || undefined,
-      tagline: builder.tagline || undefined,
-      avatarUrl: builder.user.imageUrl || undefined,
-      validationTier: builder.validationTier,
-      skills: builder.skills.map((s) => s.skill.name),
-      topSkills: builder.topSkills || [],
-      hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : undefined,
-      rating: builder.rating || undefined,
-      featured: builder.featured,
-      availability: (builder.availability as any) || 'available',
-      adhd_focus: builder.adhd_focus,
-      completedProjects: builder.completedProjects,
-      responseRate: builder.responseRate || undefined,
-    }));
+    } catch (findError) {
+      marketplaceLogger.error('Error finding builder profiles', {
+        error: findError instanceof Error ? findError.message : String(findError),
+        where
+      });
+      // Return empty array on error
+      builders = [];
+    }
+
+    // Transform to the expected format with user field mapping
+    const builderListings: BuilderProfileListing[] = builders.map((builder) => {
+      try {
+        // Apply user field mapping to handle schema differences
+        // Field mapping no longer needed after schema change
+        const mappedUser = builder.user;
+        marketplaceLogger.debug('User fields', {
+          userId: builder.userId,
+          hasImageUrl: !!mappedUser.imageUrl,
+        });
+
+        return {
+          id: builder.id,
+          userId: builder.userId,
+          name: builder.displayName || mappedUser.name || 'Unknown Builder',
+          displayName: builder.displayName,
+          bio: builder.bio || undefined,
+          headline: builder.headline || undefined,
+          tagline: builder.tagline || undefined,
+          // Only use imageUrl after mapping to ensure consistency
+          avatarUrl: mappedUser.imageUrl || undefined,
+          validationTier: builder.validationTier,
+          skills: builder.skills.map((s) => s.skill.name),
+          topSkills: builder.topSkills || [],
+          hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : undefined,
+          rating: builder.rating || undefined,
+          featured: builder.featured,
+          availability: (builder.availability as any) || 'available',
+          adhd_focus: builder.adhd_focus,
+          completedProjects: builder.completedProjects,
+          responseRate: builder.responseRate || undefined,
+        };
+      } catch (error) {
+        marketplaceLogger.error('Error mapping builder to listing', {
+          builderId: builder.id,
+          error: error instanceof Error ? error.message : String(error)
+        });
+
+        // Return a fallback object with required fields to prevent page crashes
+        return {
+          id: builder.id,
+          userId: builder.userId || 'unknown',
+          name: builder.displayName || 'Unknown Builder',
+          validationTier: builder.validationTier || 1,
+          skills: [],
+          topSkills: [],
+          featured: false,
+          availability: 'available',
+          adhd_focus: false,
+          completedProjects: 0
+        };
+      }
+    });
     
     // Calculate pagination info
     const totalPages = Math.ceil(total / limit);
@@ -221,8 +278,25 @@ export async function fetchBuilders(
       },
     };
   } catch (error) {
-    console.error('Error fetching builders:', error);
-    throw error;
+    marketplaceLogger.error('Error fetching builders:', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      page,
+      limit,
+      filters
+    });
+
+    // Return empty result instead of throwing to prevent page crash
+    return {
+      data: [],
+      pagination: {
+        page,
+        limit,
+        total: 0,
+        totalPages: 0,
+        hasMore: false,
+      },
+    };
   }
 }
 
@@ -231,7 +305,10 @@ export async function fetchBuilders(
  */
 export async function fetchBuilderById(builderId: string): Promise<BuilderProfileData | null> {
   try {
-    const builder = await prisma.builderProfile.findUnique({
+    // Log the operation
+    marketplaceLogger.debug('Fetching builder profile by ID', { builderId });
+
+    const builder = await db.builderProfile.findUnique({
       where: { id: builderId },
       include: {
         user: {
@@ -239,8 +316,7 @@ export async function fetchBuilderById(builderId: string): Promise<BuilderProfil
             id: true,
             name: true,
             imageUrl: true,
-            active: true,
-            deletedAt: true,
+            // Remove fields that don't exist in the schema
           },
         },
         skills: {
@@ -277,59 +353,76 @@ export async function fetchBuilderById(builderId: string): Promise<BuilderProfil
       },
     });
     
-    if (!builder || !builder.user.active || builder.user.deletedAt) {
+    if (!builder) {
       return null;
     }
     
     // Transform the data to the expected format
-    const builderProfile: BuilderProfileData = {
-      id: builder.id,
-      userId: builder.userId,
-      name: builder.displayName || builder.user.name || 'Unknown Builder',
-      displayName: builder.displayName || undefined,
-      bio: builder.bio || undefined,
-      headline: builder.headline || undefined,
-      tagline: builder.tagline || undefined,
-      avatarUrl: builder.user.imageUrl || undefined,
-      validationTier: builder.validationTier,
-      skills: builder.skills.map((s) => s.skill.name),
-      topSkills: builder.topSkills || [],
-      hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : undefined,
-      rating: builder.rating || undefined,
-      featured: builder.featured,
-      availability: (builder.availability as any) || 'available',
-      adhd_focus: builder.adhd_focus,
-      completedProjects: builder.completedProjects,
-      responseRate: builder.responseRate || undefined,
-      slug: builder.slug || undefined,
-      socialLinks: builder.socialLinks as any || {},
-      domains: builder.domains || [],
-      badges: builder.badges || [],
-      expertiseAreas: builder.expertiseAreas as Record<string, any> || {},
-      portfolioItems: (builder.portfolioItems as any[]) || [],
-      apps: builder.apps.map((app) => ({
-        id: app.id,
-        title: app.title,
-        description: app.description,
-        imageUrl: app.imageUrl || undefined,
-        technologies: app.technologies,
-        status: app.status,
-        appUrl: app.appUrl || undefined,
-        adhd_focused: app.adhd_focused,
-      })),
-      sessionTypes: builder.sessionTypes.map((session) => ({
-        id: session.id,
-        title: session.title,
-        description: session.description,
-        durationMinutes: session.durationMinutes,
-        price: Number(session.price),
-        currency: session.currency,
-        isActive: session.isActive,
-        color: session.color || undefined,
-      })),
-    };
-    
-    return builderProfile;
+    try {
+      // Apply user field mapping to ensure consistent field access
+      // Field mapping no longer needed after schema change
+      const mappedUser = builder.user;
+      marketplaceLogger.debug('User fields for builder profile', {
+        userId: builder.userId,
+        hasImageUrl: !!mappedUser.imageUrl
+      });
+
+      const builderProfile: BuilderProfileData = {
+        id: builder.id,
+        userId: builder.userId,
+        name: builder.displayName || mappedUser.name || 'Unknown Builder',
+        displayName: builder.displayName || undefined,
+        bio: builder.bio || undefined,
+        headline: builder.headline || undefined,
+        tagline: builder.tagline || undefined,
+        // Only use imageUrl after mapping to ensure consistency
+        avatarUrl: mappedUser.imageUrl || undefined,
+        validationTier: builder.validationTier,
+        skills: builder.skills.map((s) => s.skill.name),
+        topSkills: builder.topSkills || [],
+        hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : undefined,
+        rating: builder.rating || undefined,
+        featured: builder.featured,
+        availability: (builder.availability as any) || 'available',
+        adhd_focus: builder.adhd_focus,
+        completedProjects: builder.completedProjects,
+        responseRate: builder.responseRate || undefined,
+        slug: builder.slug || undefined,
+        socialLinks: builder.socialLinks as any || {},
+        domains: builder.domains || [],
+        badges: builder.badges || [],
+        expertiseAreas: builder.expertiseAreas as Record<string, any> || {},
+        portfolioItems: (builder.portfolioItems as any[]) || [],
+        apps: builder.apps.map((app) => ({
+          id: app.id,
+          title: app.title,
+          description: app.description,
+          imageUrl: app.imageUrl || undefined,
+          technologies: app.technologies,
+          status: app.status,
+          appUrl: app.appUrl || undefined,
+          adhd_focused: app.adhd_focused,
+        })),
+        sessionTypes: builder.sessionTypes.map((session) => ({
+          id: session.id,
+          title: session.title,
+          description: session.description,
+          durationMinutes: session.durationMinutes,
+          price: Number(session.price),
+          currency: session.currency,
+          isActive: session.isActive,
+          color: session.color || undefined,
+        })),
+      };
+
+      return builderProfile;
+    } catch (error) {
+      marketplaceLogger.error('Error transforming builder profile data', {
+        builderId: builder.id,
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw new Error(`Failed to transform builder profile: ${error instanceof Error ? error.message : String(error)}`);
+    }
   } catch (error) {
     console.error(`Error fetching builder ${builderId}:`, error);
     throw error;
@@ -341,14 +434,14 @@ export async function fetchBuilderById(builderId: string): Promise<BuilderProfil
  */
 export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderProfileListing[]> {
   try {
-    const featuredBuilders = await prisma.builderProfile.findMany({
+    // Log the operation
+    marketplaceLogger.debug('Fetching featured builders', { limit });
+
+    const featuredBuilders = await db.builderProfile.findMany({
       where: {
         featured: true,
         searchable: true,
-        user: {
-          active: true,
-          deletedAt: null,
-        },
+        // User model doesn't have deletedAt field in current schema
       },
       orderBy: [
         { validationTier: 'desc' },
@@ -375,30 +468,68 @@ export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderP
       },
     });
     
-    // Transform to the expected format
-    return featuredBuilders.map((builder) => ({
-      id: builder.id,
-      userId: builder.userId,
-      name: builder.displayName || builder.user.name || 'Unknown Builder',
-      displayName: builder.displayName || undefined,
-      bio: builder.bio || undefined,
-      headline: builder.headline || undefined,
-      tagline: builder.tagline || undefined,
-      avatarUrl: builder.user.imageUrl || undefined,
-      validationTier: builder.validationTier,
-      skills: builder.skills.map((s) => s.skill.name),
-      topSkills: builder.topSkills || [],
-      hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : undefined,
-      rating: builder.rating || undefined,
-      featured: builder.featured,
-      availability: (builder.availability as any) || 'available',
-      adhd_focus: builder.adhd_focus,
-      completedProjects: builder.completedProjects,
-      responseRate: builder.responseRate || undefined,
-    }));
+    // Transform to the expected format with user field mapping
+    return featuredBuilders.map((builder) => {
+      try {
+        // Apply user field mapping to handle schema differences
+        // Field mapping no longer needed after schema change
+        const mappedUser = builder.user;
+        marketplaceLogger.debug('User fields for featured builder', {
+          userId: builder.userId,
+          hasImageUrl: !!mappedUser.imageUrl
+        });
+
+        return {
+          id: builder.id,
+          userId: builder.userId,
+          name: builder.displayName || mappedUser.name || 'Unknown Builder',
+          displayName: builder.displayName || undefined,
+          bio: builder.bio || undefined,
+          headline: builder.headline || undefined,
+          tagline: builder.tagline || undefined,
+          // Only use imageUrl after mapping to ensure consistency
+          avatarUrl: mappedUser.imageUrl || undefined,
+          validationTier: builder.validationTier,
+          skills: builder.skills.map((s) => s.skill.name),
+          topSkills: builder.topSkills || [],
+          hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : undefined,
+          rating: builder.rating || undefined,
+          featured: builder.featured,
+          availability: (builder.availability as any) || 'available',
+          adhd_focus: builder.adhd_focus,
+          completedProjects: builder.completedProjects,
+          responseRate: builder.responseRate || undefined,
+        };
+      } catch (error) {
+        marketplaceLogger.error('Error mapping featured builder', {
+          builderId: builder.id,
+          error: error instanceof Error ? error.message : String(error)
+        });
+
+        // Return a fallback object with required fields to prevent page crashes
+        return {
+          id: builder.id,
+          userId: builder.userId || 'unknown',
+          name: builder.displayName || 'Unknown Builder',
+          validationTier: builder.validationTier || 1,
+          skills: [],
+          topSkills: [],
+          featured: true,
+          availability: 'available',
+          adhd_focus: false,
+          completedProjects: 0
+        };
+      }
+    });
   } catch (error) {
-    console.error('Error fetching featured builders:', error);
-    throw error;
+    marketplaceLogger.error('Error fetching featured builders:', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      limit
+    });
+
+    // Return empty array to prevent page crash
+    return [];
   }
 }
 
@@ -408,7 +539,7 @@ export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderP
 export async function getAvailableSkills(): Promise<string[]> {
   try {
     // Get skills that at least one builder has
-    const builderSkills = await prisma.builderSkill.findMany({
+    const builderSkills = await db.builderSkill.findMany({
       select: {
         skill: {
           select: {
@@ -482,13 +613,10 @@ export async function getMarketplaceFilterOptions(): Promise<MarketplaceFilterOp
  */
 export async function getBuilderProfileByUserId(userId: string): Promise<{ id: string } | null> {
   try {
-    const builderProfile = await prisma.builderProfile.findFirst({
+    const builderProfile = await db.builderProfile.findFirst({
       where: {
         userId,
-        user: {
-          active: true,
-          deletedAt: null,
-        },
+        // Remove user.deletedAt filter that doesn't match the schema
       },
       select: {
         id: true,

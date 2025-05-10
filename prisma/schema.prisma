@@ -13,7 +13,7 @@ model User {
   name             String?
   email            String          @unique
   emailVerified    DateTime?
-  image            String?
+  imageUrl         String?
   isFounder        Boolean         @default(false)
   stripeCustomerId String?
   verified         Boolean         @default(false)

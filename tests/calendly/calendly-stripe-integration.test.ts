@@ -11,7 +11,20 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createCheckoutSession, handleSuccessfulPayment } from '@/lib/stripe/actions';
 import { CheckoutSessionRequest, PaymentStatus } from '@/lib/stripe/types';
 import { NextRequest } from 'next/server';
-import { AnalyticsEventType } from '@/lib/scheduling/calendly/analytics';
+
+// Mock the analytics module
+vi.mock('@/lib/scheduling/calendly/analytics', () => ({
+  trackBookingEvent: vi.fn(),
+  AnalyticsEventType: {
+    BOOKING_CREATED: 'booking_created',
+    CHECKOUT_INITIATED: 'checkout_initiated',
+    CHECKOUT_SESSION_CREATED: 'checkout_session_created',
+    PAYMENT_COMPLETED: 'payment_completed'
+  }
+}));
+
+// Import after mocking
+import { trackBookingEvent, AnalyticsEventType } from '@/lib/scheduling/calendly/analytics';
 
 // Mock dependencies
 vi.mock('@clerk/nextjs/server', () => ({

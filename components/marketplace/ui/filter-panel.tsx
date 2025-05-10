@@ -13,7 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 // Internal utilities
 import { cn } from "@/lib/utils";
-import { useDebounce } from "@/hooks/marketplace/use-debounce";
+import { useDebounce } from "@/hooks/use-debounce";
 
 // Internal components using barrel exports
 import { Button } from "@/components/ui";

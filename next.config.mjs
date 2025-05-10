@@ -15,12 +15,13 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
  */
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://cdnjs.cloudflare.com https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://npm.clerk.dev https://npm/@clerk;
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.clerk.accounts.dev;
-  img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org https://cdn.magicui.design https://randomuser.me https://placehold.co https://*.clerk.com https://img.clerk.com https://images.clerk.dev;
-  font-src 'self' data: https://fonts.gstatic.com;
-  frame-src 'self' https://js.stripe.com https://*.stripe.com https://*.clerk.accounts.dev;
-  connect-src 'self' https://api.stripe.com https://*.vercel-insights.com http://localhost:* https://localhost:* https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://*.sentry.io https://*.ingest.sentry.io;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://cdnjs.cloudflare.com https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://npm.clerk.dev https://npm/@clerk https://*.calendly.com https://assets.calendly.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.clerk.accounts.dev https://*.calendly.com;
+  img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org https://cdn.magicui.design https://randomuser.me https://placehold.co https://*.clerk.com https://img.clerk.com https://images.clerk.dev https://*.calendly.com;
+  font-src 'self' data: https://fonts.gstatic.com https://*.calendly.com;
+  frame-src 'self' https://js.stripe.com https://*.stripe.com https://*.clerk.accounts.dev https://*.calendly.com;
+  connect-src 'self' https://api.stripe.com https://*.vercel-insights.com http://localhost:* https://localhost:* https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://*.sentry.io https://*.ingest.sentry.io https://*.calendly.com;
+  worker-src 'self' blob:;
   object-src 'none';
 `;
 
@@ -102,6 +103,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'placehold.co',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
       },
       {
         protocol: 'https',
@@ -203,7 +208,26 @@ const nextConfig = {
         })
       );
     }
-    
+
+    // Handle Node.js built-in modules for client-side
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        os: false,
+        path: false,
+        crypto: false,
+        worker_threads: false,
+        perf_hooks: false,
+        tls: false,
+        net: false,
+        dgram: false,
+        dns: false,
+        http2: false,
+        process: false
+      };
+    }
+
     return config;
   },
 };

@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TextShimmer } from "@/components/magicui/text-shimmer";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/core/tabs";
+// Removed TextShimmer import
 import { InfoCircledIcon, LightningBoltIcon, BarChartIcon, LapTimerIcon, RocketIcon } from "@radix-ui/react-icons";
-import { ValidationTier } from "./validation-tier-badge";
+import { ValidationTier } from "@/lib/trust/types";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ui/core/tooltip";
 
 export interface MetricItem {
   label: string;
@@ -164,7 +164,7 @@ function MetricCard({ metric, validationTier }: MetricCardProps) {
             <div className="flex items-baseline gap-1">
               <div className="text-2xl font-bold">
                 {typeof metric.value === 'string' && metric.value.startsWith('+') ? (
-                  <TextShimmer>+{metric.value.substring(1)}</TextShimmer>
+                  <span className="text-primary">+{metric.value.substring(1)}</span>
                 ) : (
                   metric.value
                 )}

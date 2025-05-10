@@ -23,11 +23,11 @@ const footerNavs = [
     label: "For Users",
     items: [
       {
-        href: "/for-clients",
+        href: "/how-it-works",
         name: "Learn how to benefit",
       },
       {
-        href: "/for-learners",
+        href: "/how-it-works",
         name: "Learn how to build",
       },
       {
@@ -35,7 +35,7 @@ const footerNavs = [
         name: "Pay someone to build",
       },
       {
-        href: "/for-builders",
+        href: "/how-it-works",
         name: "Teach someone to build",
       },
     ],
@@ -45,11 +45,7 @@ const footerNavs = [
     items: [
       {
         href: "/toolkit",
-        name: "Toolkit",
-      },
-      {
-        href: "/weekly-sessions",
-        name: "Weekly Sessions",
+        name: "Free Toolkit",
       },
       {
         href: "/faq",
@@ -82,13 +78,8 @@ const footerNavs = [
 
 const footerSocials = [
   {
-    href: "https://discord.gg/buildappswith",
-    name: "Discord",
-    icon: <DiscordLogoIcon className="h-4 w-4" />,
-  },
-  {
     href: "https://twitter.com/buildappswith",
-    name: "Twitter",
+    name: "X (The platform formerly known as Twitter)",
     icon: <TwitterLogoIcon className="h-4 w-4" />,
   },
   {
@@ -112,19 +103,19 @@ export function SiteFooter() {
         <div className="md:flex md:justify-between px-8 p-4 py-16 sm:pb-16 gap-4">
           <div className="mb-12 flex-col flex gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                BW
+              <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+                <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span>
               </span>
             </Link>
             <p className="max-w-xs">Democratising AI application development through accessible education and transparent validation</p>
             <div className="mt-4">
-              <Link href="/for-clients" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mr-2")}>
+              <Link href="/how-it-works" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mr-2")}>
                 For Clients
               </Link>
-              <Link href="/for-learners" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mr-2")}>
+              <Link href="/how-it-works" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mr-2")}>
                 For Learners
               </Link>
-              <Link href="/for-builders" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+              <Link href="/how-it-works" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
                 For Builders
               </Link>
             </div>
@@ -167,9 +158,9 @@ export function SiteFooter() {
 
           </div>
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-            Copyright © {new Date().getFullYear()}{" "}
+            Copyright © 2025{" "}
             <Link href="/" className="cursor-pointer">
-              BW
+              <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span>
             </Link>
             . All Rights Reserved.
           </span>

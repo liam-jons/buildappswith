@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import TextShimmer from "@/components/magicui/text-shimmer";
+// Removed TextShimmer import
 import {
   Card,
   CardContent,
@@ -12,8 +12,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/core/card";
+import { Button } from "@/components/ui/core/button";
 import { ExternalLinkIcon, PlusIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
 // Define the portfolio project type
@@ -155,7 +155,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
           </>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <TextShimmer>{project.title}</TextShimmer>
+            <span className="text-lg font-medium">{project.title}</span>
           </div>
         )}
       </div>

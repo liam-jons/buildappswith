@@ -12,10 +12,10 @@ import {
   FormItem, 
   FormLabel, 
   FormMessage 
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/core/form";
+import { Input } from "@/components/ui/core/input";
+import { Textarea } from "@/components/ui/core/textarea";
+import { Button } from "@/components/ui/core/button";
 import {
   Cross2Icon,
   PlusIcon,
@@ -30,7 +30,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/core/select";
 import { PortfolioProject } from "./portfolio-showcase";
 
 // Form validation schema

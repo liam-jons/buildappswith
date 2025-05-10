@@ -12,10 +12,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/auth';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/core/button';
 import { ProfileHeader } from './ui/profile-header';
 import { ProfileDetails } from './ui/profile-details';
-import { ValidationTierBadge } from './ui/validation-tier-badge';
+import { ValidationTierBadge } from '@/components/trust/ui/validation-tier-badge';
 
 interface UserProfileProps {
   profile: any; // Type should be properly defined based on your schema

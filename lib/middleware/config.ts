@@ -106,11 +106,12 @@ export const getRateLimitConfig = (): RateLimitConfig => {
  */
 export const defaultCspDirectives = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://${getClerkDomains()}`,
-  `frame-src 'self' https://*.clerk.accounts.dev https://${getClerkDomains()}`,
-  "img-src 'self' https://img.clerk.com https://images.clerk.dev data:",
-  `connect-src 'self' https://*.clerk.accounts.dev https://${getClerkDomains()}`,
-  "style-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://${getClerkDomains()} https://*.calendly.com https://assets.calendly.com`,
+  `frame-src 'self' https://*.clerk.accounts.dev https://${getClerkDomains()} https://*.calendly.com`,
+  "img-src 'self' https://img.clerk.com https://images.clerk.dev data: https://*.calendly.com",
+  `connect-src 'self' https://*.clerk.accounts.dev https://${getClerkDomains()} https://*.calendly.com`,
+  "style-src 'self' 'unsafe-inline' https://*.calendly.com",
+  "font-src 'self' data: https://*.calendly.com",
 ];
 
 /**
@@ -230,7 +231,7 @@ export const environmentConfigs: Record<string, Partial<MiddlewareConfig>> = {
       },
       // Simplified security headers for testing
       securityHeaders: {
-        contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'",
+        contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.calendly.com https://assets.calendly.com; style-src 'self' 'unsafe-inline' https://*.calendly.com; font-src 'self' data: https://*.calendly.com; frame-src 'self' https://*.calendly.com; img-src 'self' data: https://*.calendly.com; connect-src 'self' https://*.calendly.com",
         strictTransportSecurity: false,
       },
     },

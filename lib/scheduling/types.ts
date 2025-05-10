@@ -90,3 +90,40 @@ export enum SchedulingIntegrationType {
   NATIVE = 'NATIVE',
   CALENDLY = 'CALENDLY',
 }
+
+/**
+ * Availability rule for weekly schedule
+ */
+export interface AvailabilityRule {
+  id: string;
+  builderId: string;
+  dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0 = Sunday, 6 = Saturday
+  startTime: string; // Format: "HH:MM" in 24-hour format
+  endTime: string; // Format: "HH:MM" in 24-hour format
+  isRecurring: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * Availability exception for specific dates
+ */
+export interface AvailabilityException {
+  id: string;
+  builderId: string;
+  date: string; // Format: "YYYY-MM-DD"
+  isAvailable: boolean;
+  slots?: TimeSlot[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * Time slot for a specific date availability
+ */
+export interface TimeSlot {
+  id?: string;
+  startTime: string; // ISO format
+  endTime: string; // ISO format
+  isBooked: boolean;
+}

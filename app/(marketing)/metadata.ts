@@ -7,8 +7,8 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   // Core metadata
   title: {
-    default: "BuildAppsWith - Learn AI with people, not just prompts",
-    template: "%s | BuildAppsWith"
+    default: "Build Apps With - Learn AI with people, not just prompts",
+    template: "%s | Build Apps With"
   },
   description: "Build real AI skills through human connection. Our community of experienced builders will guide you through the landscape of AI, from fundamentals to implementation.",
   keywords: [
@@ -27,21 +27,21 @@ export const metadata: Metadata = {
   // Open Graph metadata
   openGraph: {
     title: {
-      default: "BuildAppsWith - Learn AI with people, not just prompts",
-      template: "%s | BuildAppsWith"
+      default: "Build Apps With - Learn AI with people, not just prompts",
+      template: "%s | Build Apps With"
     },
     description: "Build real AI skills through human connection. Our community will guide you through AI, from fundamentals to implementation.",
     url: "https://buildappswith.com",
-    siteName: "BuildAppsWith",
+    siteName: "Build Apps With",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "BuildAppsWith - Learn AI with people, not just prompts",
+        alt: "Build Apps With - Learn AI with people, not just prompts",
       },
     ],
-    locale: "en_US",
+    locale: "en_GB",
     type: "website",
   },
   
@@ -49,8 +49,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: {
-      default: "BuildAppsWith - Learn AI with people, not just prompts",
-      template: "%s | BuildAppsWith"
+      default: "Build Apps With - Learn AI with people, not just prompts",
+      template: "%s | Build Apps With"
     },
     description: "Build real AI skills through human connection. Our community will guide you through AI, from fundamentals to implementation.",
     images: ["/og-image.png"],
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://buildappswith.com",
     languages: {
-      'en': 'https://buildappswith.com',
+      'en-GB': 'https://buildappswith.com',
     },
   },
   
@@ -95,13 +95,13 @@ export const metadata: Metadata = {
     ],
   },
   
-  // Theme color
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  // Theme colour
+  themeColour: [
+    { media: '(prefers-color-scheme: light)', colour: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', colour: '#000000' },
   ],
   
   // Application data
-  applicationName: 'BuildAppsWith',
-  publisher: 'BuildAppsWith',
+  applicationName: 'Build Apps With',
+  publisher: 'Build Apps With',
 };

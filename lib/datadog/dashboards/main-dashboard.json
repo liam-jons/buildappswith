@@ -1,0 +1,277 @@
+{
+  "title": "BuildAppsWith Platform Dashboard",
+  "description": "Main dashboard for the BuildAppsWith platform monitoring",
+  "widgets": [
+    {
+      "id": 1,
+      "definition": {
+        "title": "APM Overview",
+        "type": "group",
+        "widgets": [
+          {
+            "id": 2,
+            "definition": {
+              "title": "Request Volume",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "sum:trace.http.request.hits{service:buildappswith-platform}.as_count()",
+                  "style": {
+                    "palette": "cool"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            }
+          },
+          {
+            "id": 3,
+            "definition": {
+              "title": "Response Time (p95)",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "p95:trace.http.request.duration{service:buildappswith-platform}",
+                  "style": {
+                    "palette": "warm"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            }
+          },
+          {
+            "id": 4,
+            "definition": {
+              "title": "Error Rate",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "sum:trace.http.server.errors{service:buildappswith-platform}.as_count() / sum:trace.http.server.request.hits{service:buildappswith-platform}.as_count() * 100",
+                  "style": {
+                    "palette": "orange"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            }
+          }
+        ],
+        "layout_type": "ordered"
+      }
+    },
+    {
+      "id": 5,
+      "definition": {
+        "title": "User Experience",
+        "type": "group",
+        "widgets": [
+          {
+            "id": 6,
+            "definition": {
+              "title": "Page Load Time (p95)",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "p95:rum.page.load{service:buildappswith-platform}",
+                  "style": {
+                    "palette": "purple"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            }
+          },
+          {
+            "id": 7,
+            "definition": {
+              "title": "JavaScript Errors",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "sum:rum.errors{service:buildappswith-platform}.as_count()",
+                  "style": {
+                    "palette": "red"
+                  },
+                  "display_type": "bars"
+                }
+              ]
+            }
+          },
+          {
+            "id": 8,
+            "definition": {
+              "title": "Long Tasks",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "sum:rum.long_task.count{service:buildappswith-platform}.as_count()",
+                  "style": {
+                    "palette": "orange"
+                  },
+                  "display_type": "bars"
+                }
+              ]
+            }
+          }
+        ],
+        "layout_type": "ordered"
+      }
+    },
+    {
+      "id": 9,
+      "definition": {
+        "title": "Critical User Flows",
+        "type": "group",
+        "widgets": [
+          {
+            "id": 10,
+            "definition": {
+              "title": "Auth Flow Performance",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "p95:trace.http.request.duration{service:buildappswith-platform,resource_name:auth.login}",
+                  "name": "Login",
+                  "style": {
+                    "palette": "green"
+                  },
+                  "display_type": "line"
+                },
+                {
+                  "q": "p95:trace.http.request.duration{service:buildappswith-platform,resource_name:auth.signup}",
+                  "name": "Signup",
+                  "style": {
+                    "palette": "blue"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            }
+          },
+          {
+            "id": 11,
+            "definition": {
+              "title": "Booking Flow Performance",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "p95:trace.http.request.duration{service:buildappswith-platform,resource_name:booking.create}",
+                  "style": {
+                    "palette": "purple"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            }
+          },
+          {
+            "id": 12,
+            "definition": {
+              "title": "Payment Processing Time",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "p95:trace.http.request.duration{service:buildappswith-platform,resource_name:payment.process}",
+                  "style": {
+                    "palette": "green"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            }
+          }
+        ],
+        "layout_type": "ordered"
+      }
+    },
+    {
+      "id": 13,
+      "definition": {
+        "title": "Infrastructure",
+        "type": "group",
+        "widgets": [
+          {
+            "id": 14,
+            "definition": {
+              "title": "Memory Usage",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:system.mem.used{service:buildappswith-platform}",
+                  "style": {
+                    "palette": "dog_classic"
+                  },
+                  "display_type": "area"
+                }
+              ]
+            }
+          },
+          {
+            "id": 15,
+            "definition": {
+              "title": "CPU Usage",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:system.cpu.user{service:buildappswith-platform}",
+                  "style": {
+                    "palette": "cool"
+                  },
+                  "display_type": "area"
+                }
+              ]
+            }
+          }
+        ],
+        "layout_type": "ordered"
+      }
+    },
+    {
+      "id": 16,
+      "definition": {
+        "title": "Database Performance",
+        "type": "group",
+        "widgets": [
+          {
+            "id": 17,
+            "definition": {
+              "title": "Database Query Time",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "p95:trace.prisma.query.duration{service:buildappswith-platform-db}",
+                  "style": {
+                    "palette": "dog_classic"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            }
+          },
+          {
+            "id": 18,
+            "definition": {
+              "title": "Database Queries",
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "sum:trace.prisma.query.hits{service:buildappswith-platform-db}.as_count()",
+                  "style": {
+                    "palette": "cool"
+                  },
+                  "display_type": "area"
+                }
+              ]
+            }
+          }
+        ],
+        "layout_type": "ordered"
+      }
+    }
+  ],
+  "template_variables": [],
+  "layout_type": "ordered",
+  "is_read_only": false,
+  "notify_list": []
+}

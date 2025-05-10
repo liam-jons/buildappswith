@@ -1,0 +1,135 @@
+name: Test Database Setup
+
+on:
+  workflow_dispatch:  # Allow manual triggering
+  workflow_call:      # Allow calling from other workflows
+    outputs:
+      database-url:
+        description: "Database URL for tests"
+        value: ${{ jobs.setup-test-database.outputs.database-url }}
+  schedule:
+    # Run weekly on Monday at 2:00 AM UTC
+    - cron: '0 2 * * 1'
+  pull_request:
+    paths:
+      - 'prisma/schema.prisma'
+      - 'prisma/migrations/**'
+      - 'scripts/seed-data/**'
+      - '.github/workflows/test-database.yml'
+
+jobs:
+  setup-test-database:
+    name: Setup Test Database
+    runs-on: ubuntu-latest
+    outputs:
+      database-url: ${{ steps.create-db.outputs.database-url }}
+
+    # Use PostgreSQL service container
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: buildappswith_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup database connection
+        id: create-db
+        run: |
+          DATABASE_URL="postgresql://postgres:postgres@localhost:5432/buildappswith_test"
+          echo "DATABASE_URL=${DATABASE_URL}" >> $GITHUB_ENV
+          echo "database-url=${DATABASE_URL}" >> $GITHUB_OUTPUT
+          echo "DATABASE_URL_DEVELOPMENT=${DATABASE_URL}" >> $GITHUB_ENV
+          echo "DATABASE_URL_TEST=${DATABASE_URL}" >> $GITHUB_ENV
+
+      - name: Validate database schema
+        run: |
+          echo "Validating database schema..."
+          mkdir -p test-results/schema-validation
+          node scripts/db-schema-validation.js
+
+      - name: Apply database migrations
+        run: |
+          echo "Applying database migrations..."
+          pnpm prisma migrate deploy
+
+      - name: Generate Prisma client
+        run: |
+          echo "Generating Prisma client..."
+          pnpm prisma generate
+
+      - name: Provision test users
+        run: |
+          echo "Provisioning test users..."
+          node scripts/seed-data/test-users.js
+        env:
+          CLERK_SECRET_KEY: ${{ secrets.TEST_CLERK_SECRET_KEY }}
+          NODE_ENV: test
+
+      - name: Verify test database setup
+        run: |
+          echo "Verifying test database setup..."
+          # Check if users exist
+          pnpm prisma studio --browser none & sleep 5
+          curl -s http://localhost:5555/model/User | grep -q "client@buildappswith-test.com" && \
+            echo "✅ Test users verified" || \
+            (echo "❌ Test users not found" && exit 1)
+          # Kill prisma studio
+          pkill -f "prisma studio" || true
+
+      - name: Upload schema validation report
+        uses: actions/upload-artifact@v3
+        with:
+          name: schema-validation-report
+          path: test-results/schema-validation/
+          retention-days: 7
+
+      - name: Reset test database for CI
+        run: |
+          echo "Resetting test database (keeping test users)..."
+          node scripts/seed-data/reset-test-db.js --preserve-users
+
+      - name: Setup parallel test schemas
+        run: |
+          echo "Setting up parallel test schemas..."
+          # Setup 3 worker schemas for parallel testing
+          for i in {1..3}; do
+            node scripts/seed-data/reset-test-db.js --schema=test_worker_$i
+          done
+
+      - name: Setup session types for established builders
+        run: |
+          echo "Setting up session types for test builders..."
+          node scripts/seed-data/create-session-types.js
+        env:
+          NODE_ENV: test
+
+      - name: Notify on success
+        if: success()
+        run: echo "✅ Test database setup completed successfully!"

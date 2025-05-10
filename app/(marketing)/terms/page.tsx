@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Buildappswith",
-  description: "Terms of Service for Buildappswith platform",
+  title: "Terms of Service | Build Apps With",
+  description: "Terms of Service for the Build Apps With platform",
 };
 
 export default function TermsPage() {
@@ -11,18 +11,18 @@ export default function TermsPage() {
     <div className="container max-w-6xl py-8">
       <div className="space-y-2 mb-8">
         <h1 className="text-3xl font-bold">Terms of Service</h1>
-        <p className="text-muted-foreground text-lg">Last updated: {new Date().toLocaleDateString()}</p>
+        <p className="text-muted-foreground text-lg">Last updated: 9th May 2025</p>
       </div>
 
       <div className="space-y-6 text-lg">
         <p>
-          This page contains placeholder content for the Terms of Service for Buildappswith.
+          This page contains placeholder content for the Terms of Service for Build Apps With.
           A full terms of service document will be implemented that complies with UK regulations.
         </p>
 
         <h2 className="text-2xl font-semibold mt-8">1. Introduction</h2>
         <p>
-          Welcome to Buildappswith. These Terms of Service govern your use of our platform,
+          Welcome to Build Apps With. These Terms of Service govern your use of our platform,
           including any related services, features, content, or applications (collectively, the &quot;Service&quot;).
         </p>
 
@@ -47,7 +47,7 @@ export default function TermsPage() {
         <h2 className="text-2xl font-semibold mt-8">5. Intellectual Property</h2>
         <p>
           The Service and its original content, features, and functionality are owned by
-          Buildappswith and are protected by international copyright, trademark, and other
+          Build Apps With and are protected by international copyright, trademark, and other
           intellectual property laws.
         </p>
 
@@ -78,7 +78,7 @@ export default function TermsPage() {
 
         <h2 className="text-2xl font-semibold mt-8">9. Limitation of Liability</h2>
         <p>
-          To the maximum extent permitted by law, Buildappswith shall not be liable for any indirect,
+          To the maximum extent permitted by law, Build Apps With shall not be liable for any indirect,
           incidental, special, consequential, or punitive damages, or any loss of profits or revenues,
           whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible
           losses, resulting from your use of the Service.

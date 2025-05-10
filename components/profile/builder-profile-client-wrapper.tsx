@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { BuilderProfile, BuilderProfileData } from "@/components/profile/builder-profile";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/core/button";
 import { 
   Dialog,
   DialogContent,
@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/components/ui/core/dialog";
 import { CalendarIcon, ChatBubbleIcon } from "@radix-ui/react-icons";
 
 interface BuilderProfileClientWrapperProps {

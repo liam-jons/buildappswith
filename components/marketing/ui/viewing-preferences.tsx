@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { Switch } from "@/components/ui/core/switch";
 import { Label } from "@/components/ui/core/label";
@@ -15,7 +15,7 @@ interface ViewingPreferencesProps {
   iconOnly?: boolean;
 }
 
-export function ViewingPreferences({
+function ViewingPreferences({
   variant = "default",
   className,
   buttonClassName,
@@ -25,31 +25,69 @@ export function ViewingPreferences({
   const [mounted, setMounted] = useState(false);
   const [dyslexicMode, setDyslexicMode] = useState(false);
 
-  // After mounting, we have access to the theme and can check stored preferences
+  // Use refs to track the previous state without triggering re-renders
+  const isUpdatingRef = useRef(false);
+  const initialLoadDoneRef = useRef(false);
+
+  // Load initial preferences only once after mounting
   useEffect(() => {
+    if (initialLoadDoneRef.current) return;
+
     setMounted(true);
-    
+
     // Check for stored dyslexic mode preference
-    const storedDyslexicMode = localStorage.getItem("dyslexic-mode");
-    if (storedDyslexicMode) {
-      setDyslexicMode(storedDyslexicMode === "true");
+    if (typeof window !== 'undefined') {
+      try {
+        const storedDyslexicMode = localStorage.getItem("dyslexic-mode");
+        if (storedDyslexicMode) {
+          const isDyslexicMode = storedDyslexicMode === "true";
+          setDyslexicMode(isDyslexicMode);
+
+          // Apply classes directly in the initial effect
+          if (isDyslexicMode) {
+            document.body.classList.add('dyslexic-mode');
+            document.documentElement.classList.add('dyslexic-mode');
+          } else {
+            document.body.classList.remove('dyslexic-mode');
+            document.documentElement.classList.remove('dyslexic-mode');
+          }
+        }
+      } catch (e) {
+        console.error("Error reading dyslexic mode preference:", e);
+      }
+
+      initialLoadDoneRef.current = true;
     }
   }, []);
 
-  // Apply OpenDyslexic font if dyslexicMode is enabled
-  useEffect(() => {
-    if (!mounted) return;
-    
-    if (dyslexicMode) {
-      document.body.classList.add('dyslexic-mode');
-      document.documentElement.classList.add('dyslexic-mode');
-      localStorage.setItem("dyslexic-mode", "true");
-    } else {
-      document.body.classList.remove('dyslexic-mode');
-      document.documentElement.classList.remove('dyslexic-mode');
-      localStorage.setItem("dyslexic-mode", "false");
+  // Memoized handler for dyslexic mode changes to avoid re-creating on every render
+  const handleDyslexicModeChange = useCallback((enabled: boolean) => {
+    if (isUpdatingRef.current) return;
+
+    isUpdatingRef.current = true;
+
+    try {
+      setDyslexicMode(enabled);
+
+      if (enabled) {
+        document.body.classList.add('dyslexic-mode');
+        document.documentElement.classList.add('dyslexic-mode');
+      } else {
+        document.body.classList.remove('dyslexic-mode');
+        document.documentElement.classList.remove('dyslexic-mode');
+      }
+
+      // Store the preference
+      localStorage.setItem("dyslexic-mode", enabled.toString());
+    } catch (e) {
+      console.error("Error updating dyslexic mode:", e);
+    } finally {
+      isUpdatingRef.current = false;
     }
-  }, [dyslexicMode, mounted]);
+  }, []);
+
+  // Separate effect to handle dyslexic mode changes - REMOVED to prevent potential loops
+  // The dyslexic mode is now fully handled by the handleDyslexicModeChange callback
 
   if (!mounted) return null;
 
@@ -149,6 +187,10 @@ function ViewingPreferencesContent({
   dyslexicMode: boolean;
   setDyslexicMode: (enabled: boolean) => void;
 }) {
+  // Memoized handler to avoid recreation on every render
+  const handleDyslexicModeChange = useCallback((enabled: boolean) => {
+    setDyslexicMode(enabled);
+  }, [setDyslexicMode]);
   return (
     <div className="grid gap-4">
       <div className="space-y-2">
@@ -179,10 +221,12 @@ function ViewingPreferencesContent({
           <Switch
             id="dyslexic-mode"
             checked={dyslexicMode}
-            onCheckedChange={setDyslexicMode}
+            onCheckedChange={handleDyslexicModeChange}
           />
         </div>
       </div>
     </div>
   );
 }
+
+export default ViewingPreferences;

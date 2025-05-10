@@ -21,7 +21,7 @@ export interface FeatureGridProps {
   withNumberPrefix?: boolean;
 }
 
-export function FeatureGrid({
+function FeatureGrid({
   title = "Platform Features",
   subtitle = "Everything you need to bring your AI-powered application to life",
   features = [],
@@ -100,3 +100,5 @@ export function FeatureGrid({
     </section>
   );
 }
+
+export default FeatureGrid;

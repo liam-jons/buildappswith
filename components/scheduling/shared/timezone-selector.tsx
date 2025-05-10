@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select';
+} from '@/components/ui/core/select';
 import { getCommonTimezones, detectClientTimezone } from '@/lib/scheduling/utils';
 
 interface TimezoneSelectorProps {

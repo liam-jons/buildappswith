@@ -1,17 +1,46 @@
 /**
- * marketplace components barrel export file
- * Version: 1.0.0
+ * Marketplace module exports
+ *
+ * This is the main entry point for the marketplace components.
+ * It exports all components, hooks and utilities in a way that
+ * prevents circular dependencies.
  */
 
 // Export components
-export * from './builder-list';
-export { default as BuilderImage } from './builder-image';
-export { default as BuilderDashboard } from './builder-dashboard';
-export { default as BuilderCard } from './builder-card';
-export { default as FilterPanel } from './ui/filter-panel';
-export * from './builder-card';
-export * from './builder-image';
-export * from './builder-dashboard';
+export {
+  // Builder components
+  BuilderImage,
+  BuilderCard,
+  BuilderList,
+  BuilderListSkeleton,
 
-// Re-export subdirectory
-export * from './ui';
+  // Filter components
+  FilterPanel,
+
+  // Error Handling
+  MarketplaceErrorBoundary,
+  MarketplaceErrorFallback,
+
+  // Helper components
+  ImageFallback,
+  CardSkeleton
+} from './components';
+
+// Export hooks
+export {
+  useBuilderFilter,
+  useBuilderSearch
+} from './hooks';
+
+// Export utilities
+export {
+  // Image utilities
+  isValidImageUrl,
+  getInitials,
+  getDefaultAvatarUrl,
+
+  // Filter utilities
+  createFilterParams,
+  parseFilterParams,
+  isEmptyFilter
+} from './utils';

@@ -1,0 +1,209 @@
+"use client";
+
+/**
+ * Completely fixed Marketplace Page
+ * 
+ * This version incorporates all fixes for the "Maximum update depth exceeded" error:
+ * 1. Uses Link component instead of window.location redirects
+ * 2. Uses FixedBuilderImage component that avoids complex state management
+ * 3. Correctly handles imageUrl field instead of image
+ * 4. Uses proper error handling
+ */
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { 
+  BuilderProfileListing, 
+  MarketplaceFilterOptions 
+} from "@/lib/marketplace/types";
+import { Card, CardContent, CardHeader } from "@/components/ui/core/card";
+import { Button } from "@/components/ui/core/button";
+import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
+import { FixedBuilderImage } from "@/components/marketplace/fixed-builder-image";
+import { fetchBuilders, fetchMarketplaceFilterOptions } from "@/lib/marketplace/api";
+
+export default function MarketplacePage() {
+  // Basic state
+  const [isLoading, setIsLoading] = useState(true);
+  const [builders, setBuilders] = useState<BuilderProfileListing[]>([]);
+  const [availableFilters, setAvailableFilters] = useState<MarketplaceFilterOptions>({
+    skills: [],
+    validationTiers: [],
+    availability: [],
+    sortOptions: [
+      { value: 'featured', label: 'Featured' },
+      { value: 'rating', label: 'Highest Rated' },
+    ]
+  });
+  
+  // Initial fetch
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchData = async () => {
+      if (!isMounted) return;
+      
+      setIsLoading(true);
+      try {
+        // Get filter options
+        try {
+          const filterOptions = await fetchMarketplaceFilterOptions();
+          if (isMounted) {
+            setAvailableFilters(filterOptions);
+          }
+        } catch (error) {
+          console.error('Failed to load filter options', error);
+        }
+        
+        // Get builders with default sorting
+        const buildersResponse = await fetchBuilders(1, 12, { sortBy: 'featured' });
+        if (isMounted) {
+          setBuilders(buildersResponse.data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Failed to load marketplace data', error);
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+    
+    fetchData();
+    
+    // Cleanup function to prevent setting state on unmounted component
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Function to determine the validation tier string
+  const getTierString = (tier: number): 'basic' | 'verified' | 'expert' => {
+    switch (tier) {
+      case 3:
+        return 'expert';
+      case 2:
+        return 'verified';
+      case 1:
+      default:
+        return 'basic';
+    }
+  };
+
+  return (
+    <div className="container py-8 max-w-7xl">
+      <div className="flex flex-col md:flex-row justify-between items-start mb-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">AI Application Builders</h1>
+          <p className="text-muted-foreground mb-6">
+            Find skilled builders to help bring your AI application ideas to life
+          </p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {isLoading ? (
+          Array(6).fill(0).map((_, i) => (
+            <Card key={i} className="overflow-hidden">
+              <CardHeader className="pb-3">
+                <div className="flex items-center space-x-4">
+                  <div className="h-16 w-16 rounded-full bg-slate-100 animate-pulse"></div>
+                  <div className="space-y-2">
+                    <div className="h-5 w-32 bg-slate-100 rounded animate-pulse"></div>
+                    <div className="h-4 w-24 bg-slate-100 rounded animate-pulse"></div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="h-4 w-full bg-slate-100 rounded animate-pulse"></div>
+                  <div className="h-4 w-full bg-slate-100 rounded animate-pulse"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : builders.length > 0 ? (
+          builders.map(builder => (
+            <Card key={builder.id} className="overflow-hidden flex flex-col h-full">
+              <CardHeader className="pb-3">
+                <div className="flex items-center space-x-4">
+                  {/* Use FixedBuilderImage component */}
+                  <FixedBuilderImage
+                    src={builder.avatarUrl}
+                    alt={builder.name}
+                    fallbackText={builder.name}
+                    size="md"
+                  />
+                  <div>
+                    <div className="flex items-center">
+                      <h3 className="text-lg font-semibold mr-2">{builder.name}</h3>
+                      <ValidationTierBadge tier={getTierString(builder.validationTier)} size="sm" />
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {builder.headline || builder.tagline || (builder.hourlyRate ? `$${builder.hourlyRate}/hr` : '')}
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="text-sm line-clamp-3 mb-3">
+                  {builder.bio || "This builder hasn't added a bio yet."}
+                </p>
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {(builder.skills || []).slice(0, 5).map((skill, index) => (
+                    <span 
+                      key={`${builder.id}-skill-${index}`} 
+                      className="px-2 py-0.5 bg-muted text-xs rounded-full"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+                
+                {/* Availability indicator */}
+                {builder.availability && (
+                  <div className="mt-3 flex items-center">
+                    <span 
+                      className={`w-2 h-2 rounded-full mr-2 ${
+                        builder.availability === 'available' 
+                          ? 'bg-green-500' 
+                          : builder.availability === 'limited' 
+                            ? 'bg-yellow-500' 
+                            : 'bg-red-500'
+                      }`}
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {builder.availability === 'available' 
+                        ? 'Available for hire' 
+                        : builder.availability === 'limited' 
+                          ? 'Limited availability' 
+                          : 'Currently unavailable'}
+                    </span>
+                  </div>
+                )}
+              </CardContent>
+              <div className="p-4 pt-0 mt-auto">
+                {/* Use Link component instead of window.location */}
+                <Link href={`/marketplace/builders/${builder.id}`} passHref>
+                  <Button 
+                    variant="default" 
+                    className="w-full"
+                  >
+                    View Profile
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          ))
+        ) : (
+          <div className="col-span-3 text-center py-12">
+            <h3 className="text-lg font-medium">No builders found</h3>
+            <p className="text-muted-foreground mt-2">
+              Try adjusting your filters or search query
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface BuilderImageProps {
@@ -25,7 +25,9 @@ export function BuilderImage({
   size = 'md',
   className = '',
 }: BuilderImageProps) {
-  const [imageError, setImageError] = useState(false);
+  // Component states
+  const [shouldShowImage, setShouldShowImage] = useState<boolean>(false);
+  const [imageSrc, setImageSrc] = useState<string>('/images/default-avatar.svg');
   
   // Size mappings (diameter in pixels)
   const sizeMap = {
@@ -36,50 +38,69 @@ export function BuilderImage({
   
   // Get initials for fallback
   const getInitials = () => {
-    // Use fallbackText if provided, otherwise extract from alt
     const text = fallbackText || alt;
     return text.charAt(0).toUpperCase();
   };
   
-  // Determine if we should use a local image
-  /* 
-    TODO: In production, implement image mapping to local files:
-    
-    const getLocalImagePath = (externalUrl: string) => {
-      // Map external URLs to local assets
-      const urlMap: Record<string, string> = {
-        'https://randomuser.me/api/portraits/men/22.jpg': '/images/builders/liam-jones.jpg',
-        // Add more mappings as needed
-      };
-      
-      return urlMap[externalUrl] || null;
-    };
-    
-    const localSrc = src ? getLocalImagePath(src) : null;
-  */
-  
-  // For now, we'll just use the external URL but handle errors properly
+  // Handle image loading errors
   const handleImageError = () => {
-    setImageError(true);
+    console.warn(`Failed to load builder image: ${src}`);
+    setShouldShowImage(false);
   };
-  
+
+  // Determine image source once on mount or when src changes
+  useEffect(() => {
+    // Default to showing the initials fallback
+    setShouldShowImage(false);
+    
+    // If no source, use default avatar
+    if (!src) {
+      setImageSrc('/images/default-avatar.svg');
+      return;
+    }
+    
+    // Handle local paths
+    if (src.startsWith('/')) {
+      setImageSrc(src);
+      setShouldShowImage(true);
+      return;
+    }
+    
+    // Validate URL format for external images
+    try {
+      new URL(src);
+      setImageSrc(src);
+      setShouldShowImage(true);
+    } catch (error) {
+      // Invalid URL, use default avatar
+      console.warn(`Invalid builder image URL format: ${src}`);
+      setImageSrc('/images/default-avatar.svg');
+      setShouldShowImage(true);
+    }
+  }, [src]);
+
+  // Render initial fallback
+  const renderInitials = () => (
+    <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+      <span className="text-xl font-semibold text-primary">
+        {getInitials()}
+      </span>
+    </div>
+  );
+
   return (
     <div className={`relative ${sizeMap[size]} rounded-full border border-muted overflow-hidden bg-muted ${className}`}>
-      {(src && !imageError) ? (
+      {shouldShowImage ? (
         <Image
-          src={src}
+          src={imageSrc}
           alt={alt}
           fill
           className="object-cover"
           onError={handleImageError}
-          unoptimized={false} // Set to true as fallback if remotePatterns doesn't work
+          unoptimized={true}
         />
       ) : (
-        <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
-          <span className="text-xl font-semibold text-primary">
-            {getInitials()}
-          </span>
-        </div>
+        renderInitials()
       )}
     </div>
   );

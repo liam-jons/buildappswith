@@ -1,10 +1,10 @@
 /**
  * Booking Button Component
- * 
+ *
  * This component handles the booking initiation process, triggering authentication
  * only at the booking stage for users viewing public profiles.
- * 
- * Version: 1.0.0
+ *
+ * Version: 1.1.0 - Updated with Calendly Integration
  */
 
 'use client';
@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/core/button';
 interface BookingButtonProps {
   builderId: string;
   sessionTypeId?: string;
+  calendlyEventTypeId?: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'outline' | 'primary' | 'secondary';
@@ -30,6 +31,7 @@ interface BookingButtonProps {
 export function BookingButton({
   builderId,
   sessionTypeId,
+  calendlyEventTypeId,
   className,
   size = 'md',
   variant = 'primary',
@@ -42,13 +44,27 @@ export function BookingButton({
   
   const handleBooking = () => {
     setIsLoading(true);
-    
+
     // Build the booking URL with the builder ID and optional session type
     let bookingUrl = `/book/${builderId}`;
+
+    // Add query parameters for session type and Calendly integration
+    const params = new URLSearchParams();
+
     if (sessionTypeId) {
-      bookingUrl += `?sessionTypeId=${sessionTypeId}`;
+      params.append('sessionTypeId', sessionTypeId);
     }
-    
+
+    if (calendlyEventTypeId) {
+      params.append('calendlyEventTypeId', calendlyEventTypeId);
+    }
+
+    // Append query parameters if any exist
+    const queryString = params.toString();
+    if (queryString) {
+      bookingUrl += `?${queryString}`;
+    }
+
     if (!isSignedIn) {
       // For unauthenticated users, redirect to login with return URL to booking
       const returnUrl = encodeURIComponent(bookingUrl);

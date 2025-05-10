@@ -6,8 +6,8 @@ import {
 
 
 export const metadata = {
-  title: "Our Mission | Buildappswith",
-  description: "Our mission to democratize AI application development through connecting clients with validated builders and practical AI education.",
+  title: "Our Mission | Build Apps With",
+  description: "Our mission to democratise AI application development through connecting clients with validated builders and practical AI education.",
 };
 
 export default function AboutPage() {
@@ -35,8 +35,8 @@ export default function AboutPage() {
               human connection.
             </p>
             <p className="text-lg">
-              Buildappswith is working to make this vision a reality by creating a platform that 
-              bridges the gap between advanced AI capabilities and practical application for 
+              <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span> is working to make this vision a reality by creating a platform that
+              bridges the gap between advanced AI capabilities and practical application for
               non-technical users.
             </p>
           </div>
@@ -130,8 +130,8 @@ export default function AboutPage() {
         <div className="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-lg text-center">
           <h2 className="text-2xl font-bold mb-4">Join Our Mission</h2>
           <p className="text-lg mb-6">
-            Whether you&apos;re looking to build an app, learn practical AI skills, or share your expertise, 
-            Buildappswith offers a path forward. Together, we can democratize AI and ensure its benefits 
+            Whether you&apos;re looking to build an app, learn practical AI skills, or share your expertise,
+            <span className="text-primary"> Build </span><span className="text-teal-500">Apps</span><span className="text-primary"> With</span> offers a path forward. Together, we can democratise AI and ensure its benefits
             are accessible to all.
           </p>
           <a 

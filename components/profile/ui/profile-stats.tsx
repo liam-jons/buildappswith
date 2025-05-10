@@ -6,10 +6,14 @@ import { motion, useReducedMotion } from "framer-motion";
 
 // Internal utilities
 import { cn } from "@/lib/utils";
-import { formatNumber } from "@/lib/utils/format-utils";
+
+// Format number for display (e.g. 1234 -> 1,234)
+const formatNumber = (value: number): string => {
+  return new Intl.NumberFormat().format(value);
+};
 
 // Internal components using barrel exports
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/core";
 
 // Types and interfaces
 interface ProfileStat {

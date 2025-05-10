@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { AvailabilityRule } from '@/lib/scheduling/types';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent } from '@/components/ui/core/card';
+import { Button } from '@/components/ui/core/button';
+import { Input } from '@/components/ui/core/input';
+import { Label } from '@/components/ui/core/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/core/tabs';
 import { X, Plus, Clock, AlertTriangle } from 'lucide-react';
-import { getAvailabilityRules, createAvailabilityRule, deleteAvailabilityRule } from '@/lib/api-client/scheduling';
+import { getAvailabilityRules, createAvailabilityRule, deleteAvailabilityRule } from '@/lib/scheduling/actions';
 import { toast } from 'sonner';
 
 interface WeeklyScheduleProps {

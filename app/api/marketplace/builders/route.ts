@@ -2,14 +2,31 @@ import { NextRequest, NextResponse } from 'next/server';
 import { fetchBuilders } from '@/lib/marketplace/data/marketplace-service';
 import { MarketplaceFilters } from '@/lib/marketplace/types';
 import { trackMarketplaceEvent } from '@/lib/marketplace/data/marketplace-service';
+import { enhancedLogger } from '@/lib/enhanced-logger';
+
+// Create a logger for this API route
+const apiLogger = enhancedLogger.child({
+  domain: 'api',
+  route: 'marketplace/builders'
+});
 
 /**
  * GET handler for fetching builders with pagination and filtering
  */
 export async function GET(request: NextRequest) {
+  apiLogger.info('Marketplace builders request received', {
+    url: request.url,
+    method: request.method
+  });
+
   try {
     // Parse query parameters
     const { searchParams } = new URL(request.url);
+
+    // Log search parameters for debugging
+    apiLogger.debug('Search parameters', {
+      params: Object.fromEntries(searchParams.entries())
+    });
     
     // Get pagination parameters
     const page = parseInt(searchParams.get('page') || '1', 10);
@@ -104,11 +121,45 @@ export async function GET(request: NextRequest) {
       });
     }
     
+    // Log success metrics
+    apiLogger.info('Marketplace builders request successful', {
+      totalItems: builders.pagination.total,
+      totalPages: builders.pagination.totalPages,
+      itemsReturned: builders.data.length
+    });
+
     return NextResponse.json(builders);
   } catch (error) {
-    console.error('Error in marketplace builders endpoint:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isPrismaError = errorMessage.includes('Prisma') || errorMessage.includes('prisma');
+
+    apiLogger.error('Error in marketplace builders endpoint:', {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+      isPrismaError
+    });
+
+    // Enhanced error details for debugging
+    const errorDetails = {
+      type: isPrismaError ? 'database_error' : 'server_error',
+      message: errorMessage,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Return a friendly error message with empty data to prevent UI crashes
     return NextResponse.json(
-      { error: 'Failed to fetch builders' },
+      {
+        error: 'Failed to fetch builders',
+        errorDetails: process.env.NODE_ENV === 'development' ? errorDetails : undefined,
+        data: [],
+        pagination: {
+          page: 1,
+          limit: 9,
+          total: 0,
+          totalPages: 0,
+          hasMore: false
+        }
+      },
       { status: 500 }
     );
   }

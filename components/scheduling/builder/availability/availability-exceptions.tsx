@@ -5,13 +5,13 @@ import { PlusCircle, Calendar, Save, Trash2, Plus, X } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { format, addMonths, parseISO } from 'date-fns';
 import { AvailabilityException, TimeSlot } from '@/lib/scheduling/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/core/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/core/card';
+import { Input } from '@/components/ui/core/input';
+import { Label } from '@/components/ui/core/label';
+import { Switch } from '@/components/ui/core/switch';
+import { Calendar as CalendarComponent } from '@/components/ui/core/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/core/popover';
 import { toast } from 'sonner';
 
 interface AvailabilityExceptionsProps {

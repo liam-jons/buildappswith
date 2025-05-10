@@ -4,7 +4,7 @@ import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/core/button";
 import { useReducedMotion } from "framer-motion";
 
 /**

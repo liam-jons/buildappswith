@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
-import { BuilderImage } from "@/components/marketplace/builder-image";
+// Import SimplifiedBuilderImage instead of BuilderImage
+import { SimplifiedBuilderImage } from "@/components/marketplace/simplified-builder-image";
 import {
   Card,
   CardContent,
@@ -44,8 +45,8 @@ export function BuilderCard({ builder }: { builder: BuilderProfileListing }) {
     <Card className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-4">
-          <BuilderImage 
-            src={builder.avatarUrl} 
+          <SimplifiedBuilderImage
+            src={builder.avatarUrl}
             alt={builder.name}
             fallbackText={builder.name}
             size="md"
@@ -107,8 +108,8 @@ export function BuilderCard({ builder }: { builder: BuilderProfileListing }) {
         )}
       </CardContent>
       <CardFooter className="pt-0">
-        <Link 
-          href={`/marketplace/${builder.id}`}
+        <Link
+          href={`/marketplace/builders/${builder.id}`}
           className="w-full"
         >
           <Button 

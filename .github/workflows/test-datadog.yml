@@ -1,0 +1,66 @@
+name: Run Tests with Datadog Reporting
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+    
+    - name: Install dependencies
+      run: pnpm install
+      
+    - name: Install Datadog CLI
+      run: pnpm add -g @datadog/datadog-ci
+    
+    - name: Run tests with coverage
+      run: pnpm test:coverage
+      env:
+        DATADOG_ENABLED: true
+    
+    - name: Upload test results to Datadog
+      if: always()
+      run: |
+        ./node_modules/.bin/datadog-ci junit upload \
+          ./test-results/reports/vitest-results.json \
+          --service buildappswith \
+          --env ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      env:
+        DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+        DATADOG_APP_KEY: ${{ secrets.DATADOG_APP_KEY }}
+        DATADOG_SITE: ${{ secrets.DATADOG_SITE || 'datadoghq.com' }}
+    
+    - name: Upload coverage to Datadog
+      if: always()
+      run: |
+        node ./scripts/datadog/coverage-processor.js
+        ./node_modules/.bin/datadog-ci junit upload \
+          ./test-results/coverage/datadog-coverage.json \
+          --service buildappswith \
+          --type coverage \
+          --env ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      env:
+        DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+        DATADOG_APP_KEY: ${{ secrets.DATADOG_APP_KEY }}
+        DATADOG_SITE: ${{ secrets.DATADOG_SITE || 'datadoghq.com' }}
+    
+    - name: Archive test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          test-results/reports/
+          test-results/coverage/

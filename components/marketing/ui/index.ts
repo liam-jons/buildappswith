@@ -4,7 +4,7 @@
  */
 
 // Export components
-export { default as ViewingPreferences } from './viewing-preferences';
+// ViewingPreferences is imported directly to avoid potential circular references
 export { default as TrustProofCompanies } from './trust-proof-companies';
 export { default as TestimonialCard } from './testimonial-card';
 export { default as NewsletterForm } from './newsletter-form';
