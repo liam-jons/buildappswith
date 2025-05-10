@@ -4,14 +4,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { Settings, Info } from 'lucide-react';
 import { BuilderSchedulingProfile } from '@/lib/scheduling/types';
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
-} from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from '@/components/ui/core/tabs';
+import { Button } from '@/components/ui/core/button';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -19,17 +19,17 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter
-} from '@/components/ui/dialog';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/core/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/core/select';
+import { Switch } from '@/components/ui/core/switch';
+import { Input } from '@/components/ui/core/input';
+import { Label } from '@/components/ui/core/label';
 import { toast } from 'sonner';
 import WeeklyAvailability from './weekly-availability';
 import AvailabilityExceptions from './availability-exceptions';

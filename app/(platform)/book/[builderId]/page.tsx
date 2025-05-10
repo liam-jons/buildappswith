@@ -4,15 +4,15 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { db } from '@/lib/db';
-import BookingCalendar from '@/components/scheduling/client/booking-calendar';
-import {
-  Button
-} from "@/components/ui";
+// Using Calendly integration instead of BookingCalendar
+import { CalendlyEmbed } from '@/components/scheduling/calendly';
+import { createCalendlySchedulingLink } from '@/lib/scheduling/calendly/client-api';
+import { Button } from "@/components/ui/core/button";
 
 
 export const metadata = {
-  title: 'Book a Session | Buildappswith',
-  description: 'Book a session with a builder on Buildappswith',
+  title: 'Book a Session | Build Apps With',
+  description: 'Book a session with a builder on Build Apps With',
 };
 
 async function getBuilderProfile(builderId: string) {
@@ -31,13 +31,17 @@ async function getBuilderProfile(builderId: string) {
   }
 }
 
-export default async function BookingPage({ 
-  params 
-}: { 
-  params: { builderId: string } 
+export default async function BookingPage({
+  params,
+  searchParams
+}: {
+  params: { builderId: string },
+  searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const { userId } = auth();
   const { builderId } = params;
+  const sessionTypeId = searchParams.sessionTypeId as string | undefined;
+  const calendlyEventTypeId = searchParams.calendlyEventTypeId as string | undefined;
   
   // Fetch builder profile
   const builderProfile = await getBuilderProfile(builderId);
@@ -86,7 +90,27 @@ export default async function BookingPage({
       </div>
       
       {userId ? (
-        <BookingCalendar builderId={builderId} />
+        <div className="rounded-lg overflow-hidden shadow-lg">
+          <CalendlyEmbed
+            url={
+              calendlyEventTypeId
+                ? `https://calendly.com/buildappswith/${calendlyEventTypeId}`
+                : `https://calendly.com/buildappswith/${builderId}`
+            }
+            prefill={{
+              name: userId,
+              email: userId, // The Clerk user ID as a placeholder
+              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }}
+            utm={{
+              utmSource: 'buildappswith',
+              utmMedium: 'website',
+              utmCampaign: 'booking',
+              utmContent: sessionTypeId || 'direct'
+            }}
+            className="h-[700px] w-full"
+          />
+        </div>
       ) : (
         <div className="bg-primary/5 border border-primary/20 rounded-lg p-8 text-center">
           <h2 className="text-xl font-semibold mb-4">Sign In to Book a Session</h2>

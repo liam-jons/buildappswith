@@ -5,9 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Resolver } from "react-hook-form";
 import * as z from "zod";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/core/button";
+import { Input } from "@/components/ui/core/input";
+import { Textarea } from "@/components/ui/core/textarea";
 import {
   Form,
   FormControl,
@@ -15,10 +15,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/components/ui/core/form";
+import { Checkbox } from "@/components/ui/core/checkbox";
 import { SessionType } from "@/lib/scheduling/types";
-import { DialogFooter } from "@/components/ui/dialog";
+import { DialogFooter } from "@/components/ui/core/dialog";
 
 // Define the schema for session type form validation
 const sessionTypeSchema = z.object({

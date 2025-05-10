@@ -18,7 +18,7 @@ import {
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "AI Toolkit | Buildappswith",
+  title: "AI Toolkit | Build Apps With",
   description: "Curated collection of AI tools to boost your productivity",
 };
 

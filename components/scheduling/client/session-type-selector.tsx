@@ -2,7 +2,7 @@
 
 import { Clock, Users, ChevronRight } from 'lucide-react';
 import { SessionType } from '@/lib/scheduling/types';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/core/card';
 
 interface SessionTypeSelectorProps {
   sessionTypes: SessionType[];

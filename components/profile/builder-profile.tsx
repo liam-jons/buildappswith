@@ -5,8 +5,8 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { BorderBeam } from "@/components/magicui/border-beam";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/core/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/core/tabs";
 import { 
   CalendarIcon, 
   ChatBubbleIcon, 
@@ -27,7 +27,8 @@ import {
   MagicWandIcon,
   TargetIcon
 } from "@radix-ui/react-icons";
-import { ValidationTierBadge, ValidationTier } from "./validation-tier-badge";
+import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
+import { ValidationTier } from "@/lib/trust/types";
 import { PortfolioShowcase, PortfolioProject } from "./portfolio-showcase";
 import { AppShowcase, AppItem } from "./app-showcase";
 import { SuccessMetricsDashboard, MetricsCategory } from "./success-metrics-dashboard";

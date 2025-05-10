@@ -38,7 +38,11 @@ export default defineConfig({
     outputFile: {
       json: './test-results/reports/vitest-results.json'
     },
-    include: ['**/*.test.{ts,tsx}', '**/*.vitest.test.{ts,tsx}'],
+    include: [
+      '**/*.test.{ts,tsx}',
+      '**/*.vitest.test.{ts,tsx}',
+      '__tests__/**/*.test.{ts,tsx}'
+    ],
     exclude: ['**/node_modules/**', '**/.next/**', '**/dist/**'],
   },
   resolve: {

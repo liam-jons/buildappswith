@@ -25,7 +25,7 @@ export interface MarketingHeroProps {
   headlineRotatingWords?: string[];
 }
 
-export function MarketingHero({
+function MarketingHero({
   badge = "Build Apps With AI",
   badgeIcon = "🚀",
   headline = "Launch your product with expert AI builders",
@@ -41,7 +41,7 @@ export function MarketingHero({
   disableAnimations = false,
   imageLightSrc = "/hero-light.png",
   imageDarkSrc = "/hero-dark.png",
-  imageAlt = "BuildAppsWith Hero",
+  imageAlt = "Build Apps With Hero",
   className,
   headlineRotatingWords,
 }: MarketingHeroProps) {
@@ -118,3 +118,5 @@ export function MarketingHero({
     </section>
   );
 }
+
+export default MarketingHero;

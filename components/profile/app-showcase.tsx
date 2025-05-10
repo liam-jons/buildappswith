@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { TextShimmer } from "@/components/magicui/text-shimmer";
 import {
   Card,
   CardContent,
@@ -12,8 +11,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/core/card";
+import { Button } from "@/components/ui/core/button";
 import { 
   ExternalLinkIcon, 
   PlusIcon, 
@@ -176,7 +175,7 @@ function AppCard({ app }: { app: AppItem }) {
           </>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <TextShimmer>{app.title}</TextShimmer>
+            <span className="text-lg font-bold">{app.title}</span>
           </div>
         )}
         

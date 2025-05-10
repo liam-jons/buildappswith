@@ -3,13 +3,58 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import {
+  getInitializationConfig,
+  configureSentryDataFiltering,
+  configureSentryPerformance
+} from "./lib/sentry";
 
-Sentry.init({
-  dsn: "https://fbc43927da128c3a176f85092ef2bb5c@o4509207749328896.ingest.de.sentry.io/4509207750967376",
+// Safe imports with checks
+let DatadogSentryIntegration: any;
+let createDatadogTraceContext: () => Record<string, any> | null = () => null;
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+// Create a dummy integration if we can't import the real one
+DatadogSentryIntegration = class DummyIntegration implements Sentry.Integration {
+  public static id: string = 'DummyDatadogIntegration';
+  public name: string = DatadogSentryIntegration.id;
+  constructor(private readonly options: any = {}) {}
+  setupOnce(): void {}
+};
 
-  // Setting this option to true will print useful information to the console while you're setting up Sentry.
-  debug: false,
+// Get base config from our central configuration
+const baseConfig = getInitializationConfig();
+
+// Apply sensitive data filtering
+const configWithPrivacyFilters = configureSentryDataFiltering(baseConfig);
+
+// Apply performance monitoring config for server
+const finalConfig = configureSentryPerformance({
+  ...configWithPrivacyFilters,
+  
+  // Add server-specific integrations including Datadog integration
+  integrations: [
+    // Placeholder for Datadog integration - only used server-side
+    ...(typeof window === 'undefined' ? [new DatadogSentryIntegration({ alwaysLinkTraces: true })] : []),
+
+    // Standard HTTP integration for server - only add if available
+    ...(Sentry.Integrations.Http ? [new Sentry.Integrations.Http({ tracing: true })] : []),
+
+    // Node integration
+    new Sentry.Integrations.OnUncaughtException(),
+    new Sentry.Integrations.OnUnhandledRejection(),
+  ],
+  
+  // Add context to all events
+  beforeSend: (event) => {
+    try {
+      // We're simplifying this to avoid Datadog dependencies
+      // If you need to add Datadog context, do it separately
+      return event;
+    } catch (error) {
+      console.error('Error in Sentry beforeSend:', error);
+      return event;
+    }
+  },
 });
+
+Sentry.init(finalConfig);

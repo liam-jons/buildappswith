@@ -4,12 +4,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { PlusCircle, XCircle, Save, Plus, Trash2 } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { AvailabilityRule } from '@/lib/scheduling/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/core/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/core/card';
+import { Input } from '@/components/ui/core/input';
+import { Label } from '@/components/ui/core/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/core/select';
+import { Switch } from '@/components/ui/core/switch';
 import { toast } from 'sonner';
 
 interface WeeklyAvailabilityProps {

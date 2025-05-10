@@ -35,6 +35,15 @@ export const projectFormSchema = z.object({
   })).min(1, "Add at least one outcome"),
 });
 
+// Basic profile data validation schema for test compatibility
+export const validateProfileSchema = z.object({
+  name: z.string().min(2, "Name is required"),
+  email: z.string().email("Must be a valid email"),
+  bio: z.string().min(20, "Bio must be at least 20 characters"),
+  expertise: z.array(z.string()).min(1, "Add at least one area of expertise"),
+  hourlyRate: z.number().positive("Hourly rate must be a positive number"),
+});
+
 // Type definitions for form values
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
 export type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -128,5 +137,67 @@ export function createProjectFromFormValues(formValues: ProjectFormValues): Omit
     projectUrl: formValues.projectUrl || "",
     tags: formValues.tags,
     outcomes: formValues.outcomes,
+  };
+}
+
+/**
+ * Validates profile data against schema
+ * Returns object with validation errors or empty object if valid
+ */
+export function validateProfileData(profileData: any) {
+  try {
+    validateProfileSchema.parse(profileData);
+    return {};
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const errors: Record<string, string> = {};
+      
+      error.errors.forEach((err) => {
+        const field = err.path[0] as string;
+        errors[field] = err.message;
+      });
+      
+      return errors;
+    }
+    
+    return { general: 'An unexpected error occurred' };
+  }
+}
+
+/**
+ * Formats profile data for API submission by removing unnecessary fields
+ */
+export function formatProfileForAPI(profileData: any) {
+  const { name, email, bio, expertise, hourlyRate, socialLinks } = profileData;
+  
+  const formatted = {
+    name,
+    email,
+    bio,
+    expertise,
+    hourlyRate,
+    socialLinks: socialLinks ? { ...socialLinks } : undefined
+  };
+  
+  return formatted;
+}
+
+/**
+ * Parses API profile data for use in forms
+ */
+export function parseProfileFromAPI(apiData: any) {
+  const { id, name, email, bio, expertise, hourlyRate, socialLinks, createdAt, updatedAt, ...rest } = apiData;
+  
+  return {
+    id,
+    name,
+    email,
+    bio,
+    expertise,
+    hourlyRate,
+    socialLinks: socialLinks ? { ...socialLinks } : undefined,
+    createdAt: createdAt ? new Date(createdAt) : undefined,
+    updatedAt: updatedAt ? new Date(updatedAt) : undefined,
+    ...rest
   };
 }

@@ -1,11 +1,11 @@
 /**
  * Builder Profile Wrapper
- * 
+ *
  * This component handles rendering builder profiles with appropriate data access
  * controls based on authentication state. It ensures profiles are publicly viewable
  * while protecting sensitive information.
- * 
- * Version: 1.1.0
+ *
+ * Version: 1.2.0 - Updated with Calendly Integration
  */
 
 'use client';
@@ -13,9 +13,9 @@
 import React from 'react';
 import { useProfileAuth } from './profile-auth-provider';
 import { BuilderProfile } from './builder-profile';
-import { SessionTypeList } from '@/components/scheduling/session-type-list';
+import { CalendlySessionTypeList } from '@/components/scheduling/calendly';
 import { BookingButton } from '@/components/booking/booking-button';
-import { ValidationTierBadge } from './ui/validation-tier-badge';
+import { ValidationTierBadge } from '@/components/trust/ui/validation-tier-badge';
 
 interface BuilderProfileData {
   id: string;
@@ -77,11 +77,10 @@ export function BuilderProfileWrapper({ builder, className }: BuilderProfileWrap
         showContactInfo={permissions.canEdit}
       />
       
-      {/* Session types section */}
+      {/* Session types section - Calendly integration */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold mb-4">Available Sessions</h2>
-        <SessionTypeList 
-          sessions={builder.sessionTypes} 
+        <CalendlySessionTypeList
           builderId={builder.id}
           showBookingButtons={!isOwner}
         />

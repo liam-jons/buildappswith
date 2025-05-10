@@ -2,8 +2,8 @@
 
 import { format, parseISO } from 'date-fns';
 import { TimeSlot } from '@/lib/scheduling/types';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/core/button';
+import { Card } from '@/components/ui/core/card';
 import { Clock } from 'lucide-react';
 
 interface TimeSlotSelectorProps {

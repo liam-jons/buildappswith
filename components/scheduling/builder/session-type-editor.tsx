@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { SessionType } from '@/lib/scheduling/types';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+import { Card, CardContent } from '@/components/ui/core/card';
+import { Button } from '@/components/ui/core/button';
+import { Input } from '@/components/ui/core/input';
+import { Label } from '@/components/ui/core/label';
+import { Textarea } from '@/components/ui/core/textarea';
+import { Switch } from '@/components/ui/core/switch';
 import { X, Plus, Clock, DollarSign, AlertTriangle } from 'lucide-react';
-import { TextShimmer } from '@/components/magicui/text-shimmer';
-import { getSessionTypes, createSessionType, deleteSessionType } from '@/lib/api-client/scheduling';
+import { getSessionTypes, createSessionType, deleteSessionType } from '@/lib/scheduling/actions';
 import { toast } from 'sonner';
 
 interface SessionTypeEditorProps {
@@ -164,7 +163,7 @@ export function SessionTypeEditor({
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <TextShimmer className="text-xl font-semibold">Session Types</TextShimmer>
+            <h2 className="text-xl font-semibold text-primary">Session Types</h2>
             <p className="text-muted-foreground">
               Configure the different types of sessions clients can book with you
             </p>

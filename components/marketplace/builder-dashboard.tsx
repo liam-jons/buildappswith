@@ -15,7 +15,6 @@ import { SuccessMetricsDashboard, MetricIcons } from "@/components/profile/succe
 // import { AvailabilityManagement } from "@/components/scheduling/builder/availability/availability-management";
 import { Button } from "@/components/ui/core/button";
 import { PlusCircle, BarChart, Calendar, Settings, User, Clock, X, Plus } from "lucide-react";
-import { TextShimmer } from "@/components/magicui/text-shimmer";
 import { fetchBuilderById } from "@/lib/marketplace/api";
 import { BuilderProfileData } from "@/lib/marketplace/types";
 import { toast } from "sonner";
@@ -239,7 +238,7 @@ export function BuilderDashboard({ roles }: BuilderDashboardProps) {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">
-            <TextShimmer>Welcome back, {builderProfile?.displayName || builderProfile?.name}</TextShimmer>
+            Welcome back, {builderProfile?.displayName || builderProfile?.name}
           </h2>
           <p className="text-muted-foreground">
             Manage your profile, bookings, and performance metrics from your dashboard.

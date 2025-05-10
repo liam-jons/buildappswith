@@ -50,7 +50,7 @@ export default function Page() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "BuildAppsWith",
+            name: "Build Apps With",
             url: "https://buildappswith.com",
             logo: "https://buildappswith.com/logo.png",
             sameAs: [
@@ -59,7 +59,7 @@ export default function Page() {
               "https://linkedin.com/company/buildappswith",
               "https://discord.gg/buildappswith"
             ],
-            description: "Learn AI with people, not just prompts. Build real AI skills through human connection.",
+            description: "Start learning practical AI skills today.",
           }),
         }}
       />

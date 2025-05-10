@@ -1,0 +1,165 @@
+# Test User Matrix
+
+This document outlines the predefined test users available for testing purposes in the Build Apps With platform. These users are automatically provisioned in the test environment and have specific Clerk IDs for authentication testing.
+
+## Available Test Users
+
+| Type | Role(s) | Clerk ID | Email | Description |
+|------|---------|----------|-------|-------------|
+| Basic Client | CLIENT | `user_2wtz5pWuoIXbbkdndL6n5f0tMLT` | client-test@buildappswith-test.com | Standard client account with basic permissions |
+| Premium Client | CLIENT | `user_2wtzoD4QCQCCYs4Z4MKUFAdMYQq` | premium-client@buildappswith-test.com | Client with premium features unlocked |
+| New Builder | BUILDER | `user_2wu00KHccnL1FoCIIzEQYlzVjpW` | new-builder@buildappswith-test.com | Builder with limited experience and portfolio |
+| Established Builder | BUILDER | `user_2wu07wHNdf7LolavvVZxbrmdEqg` | established-builder@buildappswith-test.com | Experienced builder with full profile and portfolio |
+| Admin User | ADMIN | `user_2wu0TwPYijtMmMrzvdiP7ys5Mmh` | admin@buildappswith-test.com | Administrator with platform management capabilities |
+| Dual Role User | BUILDER, CLIENT | `user_2wu0bNqtVmt4E7WfGwrzlWSxd1k` | dual-role@buildappswith-test.com | User with both builder and client capabilities |
+| Triple Role User | BUILDER, CLIENT, ADMIN | `user_2wu0EluO69r3MDAMSKy5ORgpz1Z` | triple-role@buildappswith-test.com | User with all three role types (super admin) |
+
+## Using Test Users in Tests
+
+### In E2E Tests
+
+```typescript
+import { test } from '@playwright/test';
+import { loginWithClerkUser } from '../utils/e2e-auth-utils';
+
+test('client can view their dashboard', async ({ page }) => {
+  // Log in with a client test user
+  await loginWithClerkUser(page, 'clientOne');
+
+  // Test specific client functionality
+  await page.goto('/dashboard');
+  await expect(page.locator('h1')).toHaveText('Client Dashboard');
+});
+```
+
+### In Integration Tests
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import { setupMockClerk } from '../utils/auth-test-utils';
+import Dashboard from '@/app/(platform)/dashboard/page';
+
+test('dashboard shows correct content for builders', async () => {
+  // Set up mock auth for a builder
+  setupMockClerk('builder');
+
+  // Render the component
+  render(<Dashboard />);
+
+  // Verify builder-specific elements
+  expect(screen.getByText('Builder Dashboard')).toBeInTheDocument();
+});
+```
+
+### In API Tests
+
+```typescript
+import { testClerkIds } from '../utils/models';
+import { withTestTransaction } from '../utils/database/transaction';
+
+test('client can retrieve their own bookings', async () => {
+  await withTestTransaction(async (prisma) => {
+    // Simulate a request with a client user
+    const mockAuth = { userId: testClerkIds.clientOne };
+
+    // Call the API function with the mock auth
+    const result = await getClientBookings(mockAuth);
+
+    // Assertions
+    expect(result.success).toBe(true);
+  });
+});
+```
+
+## Database-Auth Provider Mapping
+
+The following mappings must be maintained between Clerk and the database:
+
+| Clerk Field | Database Field |
+|-------------|----------------|
+| `user.id` | `User.clerkId` |
+| `user.primaryEmailAddress.emailAddress` | `User.email` |
+| `user.firstName + lastName` | `User.name` |
+| `user.imageUrl` | `User.imageUrl` |
+| `user.publicMetadata.roles` | `User.roles` |
+| `user.publicMetadata.verified` | `User.verified` |
+| `user.publicMetadata.stripeCustomerId` | `User.stripeCustomerId` |
+
+## Test Data Consistency
+
+To ensure test data consistency, the following principles are followed:
+
+1. **Idempotent Creation**: Test users are created with the same identifiers to avoid duplication
+2. **Environment Separation**: Clear separation between production, development, and test users
+3. **Email Domain**: Use `buildappswith.com` for all test users to easily identify them
+4. **Consistent Passwords**: Use the pattern `Role123!` for predictable testing access
+5. **Data Reset**: Utilities provided to reset or recreate test users to a known state
+6. **Documentation**: This document serves as the source of truth for test user configuration
+
+## Usage Guidelines
+
+### When to Use Test Users
+
+Test users should be used in the following scenarios:
+
+1. **Automated Tests**: E2E, integration, and certain unit tests requiring authentication
+2. **Manual Testing**: When testing user flows that require authentication
+3. **QA Verification**: For quality assurance of new features or bug fixes
+4. **Staging Environment**: For acceptance testing before production deployment
+
+### Test User Security
+
+Even though these are test users, follow these security practices:
+
+1. **Environment Restriction**: Ensure test users can only be created in non-production environments
+2. **Password Security**: Despite being test users, use strong passwords
+3. **No Sensitive Data**: Never store real personal or payment information
+4. **Regular Rotation**: Periodically update test user credentials
+```
+
+## Test Data Initialization
+
+These test users are automatically provisioned in the test database during CI runs and local test execution. The seeding process is handled by the `__tests__/utils/database/seed-test-users.ts` module.
+
+To reset and re-seed test users in your local development environment:
+
+```bash
+# Run the test user seeding script
+node __tests__/utils/database/seed-test-users.js
+```
+
+## Database-Auth Provider Mapping
+
+The following mappings are maintained between Clerk and the database:
+
+| Clerk Field | Database Field |
+|-------------|----------------|
+| `user.id` | `User.clerkId` |
+| `user.primaryEmailAddress.emailAddress` | `User.email` |
+| `user.firstName + lastName` | `User.name` |
+| `user.imageUrl` | `User.imageUrl` |
+| `user.publicMetadata.roles` | `User.role` |
+
+## Test Data Consistency
+
+To ensure test data consistency, the following principles are followed:
+
+1. **Idempotent Creation**: Test users are created with the same identifiers to avoid duplication
+2. **Environment Separation**: Clear separation between production, development, and test users
+3. **Email Domain**: Use `buildappswith-test.com` for all test users to easily identify them
+4. **Data Reset**: Utilities provided to reset or recreate test users to a known state
+5. **Documentation**: This document serves as the source of truth for test user configuration
+
+## Limitations and Considerations
+
+1. **Authentication Flow Testing**: When testing full authentication flows, these predefined Clerk IDs should be used alongside the test credentials provided in the secure environment variables.
+
+2. **Test Data Isolation**: Each test should operate within a transaction to avoid test interference. Use the `withTestTransaction` utility from `__tests__/utils/database/transaction.ts`.
+
+3. **CI/CD Environment**: In GitHub Actions workflows, these test users are automatically provisioned before test execution.
+
+4. **Local Development**: When running tests locally against a development database, ensure you've run the seeding script to provision these users.
+
+5. **Role-Based Access Control**: Test each permission level appropriately using the corresponding test user type.
+
+6. **Test Account Security**: These test accounts should never be used in production environments as their credentials are publicly documented.

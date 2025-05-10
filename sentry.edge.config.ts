@@ -4,13 +4,32 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { 
+  getInitializationConfig, 
+  configureSentryDataFiltering, 
+  configureSentryPerformance 
+} from "./lib/sentry";
+// Note: Datadog APM is not compatible with Edge Runtime
+// So we don't import Datadog integrations here
 
-Sentry.init({
-  dsn: "https://fbc43927da128c3a176f85092ef2bb5c@o4509207749328896.ingest.de.sentry.io/4509207750967376",
+// Get base config from our central configuration
+const baseConfig = getInitializationConfig();
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+// Apply sensitive data filtering
+const configWithPrivacyFilters = configureSentryDataFiltering(baseConfig);
 
-  // Setting this option to true will print useful information to the console while you're setting up Sentry.
-  debug: false,
+// Apply performance monitoring config for edge
+const finalConfig = configureSentryPerformance({
+  ...configWithPrivacyFilters,
+  
+  // Add edge-specific integrations
+  integrations: [
+    // Edge-specific integrations
+    // Datadog is not used in edge runtime
+  ],
+  
+  // Edge runtime may have different performance requirements
+  tracesSampleRate: 0.2,
 });
+
+Sentry.init(finalConfig);

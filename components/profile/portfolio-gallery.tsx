@@ -4,15 +4,15 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import TextShimmer from "@/components/magicui/text-shimmer";
-import { Button } from "@/components/ui/button";
+// Removed TextShimmer import
+import { Button } from "@/components/ui/core/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
+} from "@/components/ui/core/dialog";
 import {
   Card,
   CardContent,
@@ -20,7 +20,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/core/card";
 import {
   Cross2Icon, 
   ExternalLinkIcon, 
@@ -29,7 +29,7 @@ import {
   ChevronRightIcon,
   ArrowTopRightIcon
 } from "@radix-ui/react-icons";
-import { ValidationTier } from "./validation-tier-badge";
+import { ValidationTier } from "@/lib/trust/types";
 import { PortfolioProject } from "./portfolio-showcase";
 
 interface PortfolioGalleryProps {
@@ -362,7 +362,7 @@ function ProjectCard({ project, validationTier, onClick, isOwner, onEdit, onDele
           </>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <TextShimmer>{project.title}</TextShimmer>
+            <span className="text-lg font-medium">{project.title}</span>
           </div>
         )}
       </div>
