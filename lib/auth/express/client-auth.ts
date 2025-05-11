@@ -1,16 +1,25 @@
 /**
  * Client-Side Authentication Hooks
- * Version: 1.0.0
- * 
+ * Version: 2.0.0
+ *
  * This file provides client-side authentication hooks compatible with
  * the Clerk Express SDK for use in React components.
+ *
+ * Refactored to eliminate circular dependencies and improve initialization.
  */
 
 "use client";
 
 import { useAuth as useClerkAuth, useUser as useClerkUser } from "@clerk/nextjs";
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
-import { UserRole } from "../types";
+import React from 'react';
+
+// Import UserRole enum directly to avoid circular dependencies
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  BUILDER = 'BUILDER',
+  CLIENT = 'CLIENT',
+}
 
 /**
  * Extended user object with our custom fields
@@ -48,41 +57,52 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 /**
- * Auth provider component for Express SDK compatibility
+ * Enhanced user hook that transforms Clerk user data into our application format
+ * Extracted to fix circular dependency
+ * @returns ExtendedUser object or null if not authenticated
  */
-export function ExpressAuthProvider({ children }: { children: ReactNode }) {
-  const authState = useAuth();
+export function useUserInternal(): { user: ExtendedUser | null, isLoaded: boolean } {
+  const { isLoaded: isClerkLoaded, isSignedIn, userId } = useClerkAuth();
+  const { user: clerkUser, isLoaded: isUserLoaded } = useClerkUser();
+  const [user, setUser] = useState<ExtendedUser | null>(null);
 
-  // Use createElement instead of JSX to avoid potential build issues
-  return React.createElement(
-    AuthContext.Provider,
-    { value: authState },
-    children
-  );
-}
+  useEffect(() => {
+    // Only attempt to transform the user when Clerk has loaded the user data
+    if (isClerkLoaded && isUserLoaded && isSignedIn && clerkUser) {
+      // Extract roles from publicMetadata
+      const roles = (clerkUser.publicMetadata?.roles as UserRole[]) || [UserRole.CLIENT];
 
-/**
- * Context hook for auth state access
- */
-export function useAuthContext() {
-  const context = useContext(AuthContext);
-  
-  if (!context) {
-    throw new Error('useAuthContext must be used within an ExpressAuthProvider');
-  }
-  
-  return context;
+      // Create compatible user object
+      setUser({
+        id: clerkUser.id || userId || '',
+        clerkId: clerkUser.id || '',
+        name: clerkUser.fullName || clerkUser.username || '',
+        email: clerkUser.primaryEmailAddress?.emailAddress || '',
+        image: clerkUser.imageUrl || '',
+        roles,
+        verified: clerkUser.primaryEmailAddress?.verification?.status === 'verified',
+        stripeCustomerId: (clerkUser.publicMetadata?.stripeCustomerId as string) || null,
+      });
+    } else if (isClerkLoaded && !isSignedIn) {
+      setUser(null);
+    }
+  }, [isClerkLoaded, isUserLoaded, isSignedIn, clerkUser, userId]);
+
+  return {
+    user,
+    isLoaded: isClerkLoaded && isUserLoaded
+  };
 }
 
 /**
  * Enhanced auth hook compatible with Express SDK backend
  * @returns Enhanced auth object with role helpers
  */
-export function useAuth(): AuthContextType {
+export function useAuthInternal(): AuthContextType {
   const clerk = useClerkAuth();
-  const { user, isLoaded: isUserLoaded } = useUser();
+  const { user, isLoaded: isUserLoaded } = useUserInternal();
   const [roles, setRoles] = useState<UserRole[]>([]);
-  
+
   // Sync roles from Clerk session claims or user metadata
   useEffect(() => {
     async function syncRoles() {
@@ -90,23 +110,23 @@ export function useAuth(): AuthContextType {
         if (clerk.isSignedIn) {
           // Get session token for JWT parsing
           const session = await clerk.getToken();
-          
+
           if (session) {
             try {
               // Parse JWT to get roles from session claims
               const [_header, payload, _signature] = session.split('.');
               const parsedPayload = JSON.parse(atob(payload));
-              
+
               // Try to get roles from various locations in the JWT
-              const extractedRoles = 
-                parsedPayload.roles || 
+              const extractedRoles =
+                parsedPayload.roles ||
                 parsedPayload.public_metadata?.roles ||
                 [];
-                
+
               setRoles(Array.isArray(extractedRoles) ? extractedRoles : []);
             } catch (parseError) {
               console.error('Error parsing JWT for roles:', parseError);
-              
+
               // Fallback to user metadata if available
               if (user) {
                 setRoles(user.roles);
@@ -129,14 +149,14 @@ export function useAuth(): AuthContextType {
 
     syncRoles();
   }, [clerk.isSignedIn, user]);
-  
+
   /**
    * Check if user has a specific role
    */
   const hasRole = (role: UserRole): boolean => {
     return roles.includes(role);
   };
-  
+
   /**
    * Check if user has a specific permission
    * This uses a simple role-based permission model
@@ -149,27 +169,27 @@ export function useAuth(): AuthContextType {
       [UserRole.BUILDER]: ['profile:edit', 'builder:manage'],
       [UserRole.CLIENT]: ['profile:view', 'booking:create'],
     };
-    
+
     // Check if any of the user's roles grant the required permission
     return roles.some(role => {
       const permissions = rolePermissions[role] || [];
       return permissions.includes('*') || permissions.includes(permission);
     });
   };
-  
+
   /**
    * Sign out with optional redirect
    */
   const signOut = async (options?: { callbackUrl?: string }) => {
     await clerk.signOut();
-    
+
     if (options?.callbackUrl) {
       window.location.href = options.callbackUrl;
     }
-    
+
     return { ok: true };
   };
-  
+
   // Return auth context
   return {
     ...clerk,
@@ -186,40 +206,47 @@ export function useAuth(): AuthContextType {
 }
 
 /**
+ * Auth provider component for Express SDK compatibility
+ */
+export function ExpressAuthProvider({ children }: { children: ReactNode }) {
+  const authState = useAuthInternal();
+
+  // Use createElement instead of JSX to avoid potential build issues
+  return React.createElement(
+    AuthContext.Provider,
+    { value: authState },
+    children
+  );
+}
+
+/**
+ * Context hook for auth state access
+ */
+export function useAuthContext() {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error('useAuthContext must be used within an ExpressAuthProvider');
+  }
+
+  return context;
+}
+
+/**
+ * Enhanced auth hook compatible with Express SDK backend - public API
+ * @returns Enhanced auth object with role helpers
+ */
+export function useAuth(): AuthContextType {
+  return useAuthContext();
+}
+
+/**
  * Enhanced user hook that transforms Clerk user data into our application format
  * @returns ExtendedUser object or null if not authenticated
  */
 export function useUser(): { user: ExtendedUser | null, isLoaded: boolean } {
-  const { isLoaded: isClerkLoaded, isSignedIn, userId } = useClerkAuth();
-  const { user: clerkUser, isLoaded: isUserLoaded } = useClerkUser();
-  const [user, setUser] = useState<ExtendedUser | null>(null);
-  
-  useEffect(() => {
-    // Only attempt to transform the user when Clerk has loaded the user data
-    if (isClerkLoaded && isUserLoaded && isSignedIn && clerkUser) {
-      // Extract roles from publicMetadata
-      const roles = (clerkUser.publicMetadata?.roles as UserRole[]) || [UserRole.CLIENT];
-      
-      // Create compatible user object
-      setUser({
-        id: clerkUser.id || userId || '',
-        clerkId: clerkUser.id || '',
-        name: clerkUser.fullName || clerkUser.username || '',
-        email: clerkUser.primaryEmailAddress?.emailAddress || '',
-        image: clerkUser.imageUrl || '',
-        roles,
-        verified: clerkUser.primaryEmailAddress?.verification?.status === 'verified',
-        stripeCustomerId: (clerkUser.publicMetadata?.stripeCustomerId as string) || null,
-      });
-    } else if (isClerkLoaded && !isSignedIn) {
-      setUser(null);
-    }
-  }, [isClerkLoaded, isUserLoaded, isSignedIn, clerkUser, userId]);
-  
-  return { 
-    user,
-    isLoaded: isClerkLoaded && isUserLoaded
-  };
+  const { user, isLoaded } = useAuthContext();
+  return { user, isLoaded };
 }
 
 /**
@@ -228,7 +255,7 @@ export function useUser(): { user: ExtendedUser | null, isLoaded: boolean } {
  * @returns boolean indicating if the user has the role
  */
 export function useHasRole(role: UserRole): boolean {
-  const { hasRole } = useAuth();
+  const { hasRole } = useAuthContext();
   return hasRole(role);
 }
 
@@ -260,7 +287,7 @@ export function useIsClient(): boolean {
  * Check if user has specific permission
  */
 export function usePermission(permission: string) {
-  const { hasPermission } = useAuth();
+  const { hasPermission } = useAuthContext();
   return hasPermission(permission);
 }
 
@@ -269,7 +296,7 @@ export function usePermission(permission: string) {
  * @returns SignOut function that accepts options including callbackUrl
  */
 export function useSignOut() {
-  const { signOut } = useAuth();
+  const { signOut } = useAuthContext();
   return signOut;
 }
 
@@ -278,7 +305,7 @@ export function useSignOut() {
  * @returns Authentication state object with isAuthenticated and isLoading
  */
 export function useAuthStatus() {
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded, isSignedIn } = useAuthContext();
 
   return {
     isAuthenticated: !!isSignedIn,

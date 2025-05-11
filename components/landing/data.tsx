@@ -66,11 +66,11 @@ export const mainNavItems: NavigationItem[] = [
 // Hero Content
 export const heroContent: HeroContent = {
   headline: "Learn AI with [names], not just prompts",
-  subheadline: "Build real AI skills through human connection. Our community of experienced builders will guide you through the landscape of AI, from fundamentals to implementation.",
+  subheadline: "Build real AI skills through creating your own application. Our community of experienced builders will guide you through the landscape of AI as a world of opportunity awaits",
   rotatingNames: [
-    "Liam", "Kenny", "Ryan", "Sheri", "Kemi", "Troy",
-    "your friends", "your community", "your team", "your customers", 
-    "someone you trust"
+    "Liam", "Kenny", "Ryan", "Sheri", "Troy",
+    "Loveable", "Bolt", "Claude", "Gemini", "ChatGPT",
+    "your friends", "your team", "your customers"
   ],
   primaryCTA: {
     text: "Sign Up Now",
@@ -86,12 +86,12 @@ export const heroContent: HeroContent = {
 export const aiCapabilities: Capability[] = [
   { title: "Process natural language text", icon: React.createElement(FileCode, { className: "h-5 w-5" }) },
   { title: "Generate creative content", icon: React.createElement(PenTool, { className: "h-5 w-5" }) },
-  { title: "Analyze data for patterns", icon: React.createElement(BarChart, { className: "h-5 w-5" }) },
+  { title: "Analyse data for patterns", icon: React.createElement(BarChart, { className: "h-5 w-5" }) },
   { title: "Answer questions from context", icon: React.createElement(Mic, { className: "h-5 w-5" }) },
   { title: "Translate between languages", icon: React.createElement(Globe, { className: "h-5 w-5" }) },
-  { title: "Recognize images and content", icon: React.createElement(FileCode, { className: "h-5 w-5" }) },
+  { title: "Recognise images and content", icon: React.createElement(FileCode, { className: "h-5 w-5" }) },
   { title: "Code assistance and generation", icon: React.createElement(Code, { className: "h-5 w-5" }) },
-  { title: "Summarize large documents", icon: React.createElement(FileCode, { className: "h-5 w-5" }) }
+  { title: "Summarise large documents", icon: React.createElement(FileCode, { className: "h-5 w-5" }) }
 ];
 
 export const aiLimitations: Limitation[] = [
@@ -108,42 +108,26 @@ export const aiLimitations: Limitation[] = [
 // Skills Learning Tree
 export const skillsData: SkillNode[] = [
   {
-    title: "AI Foundations",
+    title: "Accelerate",
     level: 1,
     icon: React.createElement(Book, { className: "h-6 w-6" }),
-    description: "Learn the basics of AI, its capabilities, and limitations",
+    description: "Learn how to use AI to help you accelerate your abilities",
     isCompleted: false,
     isActive: true,
   },
   {
-    title: "Prompt Engineering",
+    title: "Pivot",
     level: 2,
     icon: React.createElement(FileCode, { className: "h-6 w-6" }),
-    description: "Master the art of crafting effective prompts for AI systems",
+    description: "Learn how to use AI to find your next opportunity",
     isCompleted: false,
     isActive: false,
   },
   {
-    title: "AI Tools & APIs",
+    title: "Play",
     level: 3,
     icon: React.createElement(Code, { className: "h-6 w-6" }),
-    description: "Use AI tools and APIs to build practical applications",
-    isCompleted: false,
-    isActive: false,
-  },
-  {
-    title: "AI Project Implementation",
-    level: 4,
-    icon: React.createElement(Globe, { className: "h-6 w-6" }),
-    description: "Implement end-to-end AI projects with guidance",
-    isCompleted: false,
-    isActive: false,
-  },
-  {
-    title: "AI Leadership & Strategy",
-    level: 5,
-    icon: React.createElement(Users, { className: "h-6 w-6" }),
-    description: "Lead AI initiatives and develop strategic AI roadmaps",
+    description: "Use AI tools to build - for fun!",
     isCompleted: false,
     isActive: false,
   }

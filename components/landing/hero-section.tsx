@@ -64,7 +64,7 @@ export function HeroSection({
             
             {/* Remaining subheadline text */}
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto text-balance leading-relaxed -mt-4">
-              Whether you want to become more efficient in what you do, pivot to something new, or just to stay up-to-date - Build Apps With, is the only place you&apos;ll need.
+              Whether you want to be better at what you do, pivot to something new, or just to stay up-to-date - Build Apps With, is the only place you&apos;ll need.
             </p>
             
             {/* Updated CTA buttons */}

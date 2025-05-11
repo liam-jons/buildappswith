@@ -4,13 +4,12 @@
  * This file provides standardized hooks for accessing authentication state
  * and role-based functionality throughout the application.
  *
- * Version: 2.0.0 - Updated to use Clerk Express SDK
+ * Version: 3.0.0 - Updated to use Clerk Express SDK with enhanced provider
  */
 
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { UserRole, AuthUser, AuthOptions } from '@/lib/auth/types';
 import React from 'react';
 import {
   useAuth as useExpressAuth,
@@ -20,8 +19,15 @@ import {
   useHasRole as useExpressHasRole,
   useSignOut as useExpressSignOut,
   useAuthStatus as useExpressAuthStatus,
-  useAuthToken as useExpressAuthToken
+  useAuthToken as useExpressAuthToken,
+  UserRole
 } from '@/lib/auth/express/client-auth';
+
+/**
+ * Export UserRole from the Express SDK implementation
+ * This avoids circular dependencies with types.ts
+ */
+export { UserRole };
 
 /**
  * Enhanced auth hook with role-based functionality using Express SDK
