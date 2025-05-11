@@ -8,11 +8,11 @@
 
 import { Prisma } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
-import { enhancedLogger } from './enhanced-logger';
+import { createDomainLogger } from './logger';
 import { DatabaseOperationError } from './db';
 
 // Create a database-specific logger
-const dbErrorLogger = enhancedLogger.child({ domain: 'database-errors' });
+const dbErrorLogger = createDomainLogger('database-errors');
 
 /**
  * Error categories for database operations

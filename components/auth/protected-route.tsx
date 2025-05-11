@@ -1,47 +1,64 @@
 'use client';
 
-import { useAuth } from '@/hooks/auth';
+import { useAuth, useHasAnyRole, useHasAllRoles } from '@/hooks/auth';
 import { UserRole } from '@/lib/auth/types';
 import { useRouter } from 'next/navigation';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 
 interface ProtectedRouteProps {
   children: ReactNode;
   requiredRoles?: UserRole[];
+  requireAll?: boolean;
   redirectUrl?: string;
+  fallback?: ReactNode;
 }
 
 /**
  * A component that protects routes by checking authentication status
  * and roles before rendering children
+ *
+ * Enhanced with Express SDK hooks and optimized performance
+ * Version: 2.0.0
  */
 export default function ProtectedRoute({
   children,
   requiredRoles = [],
-  redirectUrl = '/login'
+  requireAll = false,
+  redirectUrl = '/login',
+  fallback
 }: ProtectedRouteProps) {
-  const { isSignedIn, isLoaded, roles } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const router = useRouter();
+  
+  // Use optimized role checking hooks for better performance
+  const hasRequiredRoles = requireAll 
+    ? useHasAllRoles(requiredRoles) 
+    : useHasAnyRole(requiredRoles);
 
-  const hasAnyRole = (rolesToCheck: UserRole[]) => {
-    return rolesToCheck.some(role => roles.includes(role));
-  };
+  // Memoize authorization check
+  const isAuthorized = useMemo(() => {
+    if (!isLoaded) return false;
+    if (!isSignedIn) return false;
+    return requiredRoles.length === 0 || hasRequiredRoles;
+  }, [isLoaded, isSignedIn, requiredRoles.length, hasRequiredRoles]);
 
   useEffect(() => {
     // Only check after auth is loaded
     if (!isLoaded) return;
 
-    // If not signed in, redirect to login
+    // If not signed in, redirect to login with return URL
     if (!isSignedIn) {
-      router.push(redirectUrl);
+      // Add return URL to login redirect for better UX
+      const returnUrl = encodeURIComponent(window.location.pathname);
+      router.push(`${redirectUrl}?returnUrl=${returnUrl}`);
       return;
     }
 
-    // If roles are required, check if user has any of them
-    if (requiredRoles.length > 0 && !hasAnyRole(requiredRoles)) {
-      router.push('/');
+    // If roles are required but user doesn't have them, redirect to unauthorized page
+    if (requiredRoles.length > 0 && !hasRequiredRoles) {
+      router.push('/unauthorized');
     }
-  }, [isSignedIn, isLoaded, requiredRoles, roles, router, redirectUrl, hasAnyRole]);
+  }, [isSignedIn, isLoaded, requiredRoles, hasRequiredRoles, router, redirectUrl]);
 
   // Show loading state while auth is loading
   if (!isLoaded) {
@@ -55,10 +72,9 @@ export default function ProtectedRoute({
     );
   }
 
-  // If not authenticated or missing required roles, show nothing
-  // (redirect will happen in useEffect)
-  if (!isSignedIn || (requiredRoles.length > 0 && !hasAnyRole(requiredRoles))) {
-    return null;
+  // If not authorized, show fallback or nothing
+  if (!isAuthorized) {
+    return fallback || null;
   }
 
   // If authenticated and has required roles, render children

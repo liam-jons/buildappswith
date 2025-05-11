@@ -4,7 +4,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as Sentry from '@sentry/nextjs';
-import { enhancedLogger, createDomainLogger } from '@/lib/enhanced-logger';
+import { enhancedLogger, createDomainLogger } from '@/lib/logger';
 import { ErrorSeverity, ErrorCategory, handleError } from '@/lib/sentry';
 
 // Mock console methods

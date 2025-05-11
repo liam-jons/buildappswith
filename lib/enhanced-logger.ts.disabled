@@ -1,0 +1,128 @@
+/**
+ * Enhanced logging system with Datadog integration
+ * Currently disabled for production build compatibility
+ */
+import * as ddTrace from 'dd-trace';
+import { getCurrentScope } from '@sentry/nextjs';
+
+// Configure Datadog trace if available
+if (typeof window === 'undefined' && process.env.ENABLE_DATADOG === 'true') {
+  ddTrace.init();
+}
+
+// Logger levels
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+// Logger interface
+interface Logger {
+  debug(message: string, context?: Record<string, any>): void;
+  info(message: string, context?: Record<string, any>): void;
+  warn(message: string, context?: Record<string, any>): void;
+  error(message: string, context?: Record<string, any>): void;
+}
+
+// Enhanced logger implementation
+class EnhancedLogger implements Logger {
+  private namespace: string;
+  
+  constructor(namespace: string) {
+    this.namespace = namespace;
+  }
+  
+  debug(message: string, context: Record<string, any> = {}): void {
+    this.log('debug', message, context);
+  }
+  
+  info(message: string, context: Record<string, any> = {}): void {
+    this.log('info', message, context);
+  }
+  
+  warn(message: string, context: Record<string, any> = {}): void {
+    this.log('warn', message, context);
+  }
+  
+  error(message: string, context: Record<string, any> = {}): void {
+    this.log('error', message, context);
+    
+    // Also capture error in Sentry for error level
+    try {
+      const scope = getCurrentScope();
+      if (scope) {
+        scope.setContext('log', {
+          namespace: this.namespace,
+          ...context
+        });
+        
+        if (context.error instanceof Error) {
+          // If an actual error object is provided, use that
+          // @ts-ignore
+          window.Sentry?.captureException(context.error);
+        } else {
+          // Otherwise capture as message
+          // @ts-ignore
+          window.Sentry?.captureMessage(message, 'error');
+        }
+      }
+    } catch (e) {
+      // Fail silently if Sentry isn't available
+      console.error('Failed to log to Sentry:', e);
+    }
+  }
+  
+  private log(level: LogLevel, message: string, context: Record<string, any> = {}): void {
+    // Always log to console with consistent format
+    const timestamp = new Date().toISOString();
+    const formattedMessage = `[${timestamp}] [${level.toUpperCase()}] [${this.namespace}] ${message}`;
+    
+    // Use appropriate console method based on level
+    switch (level) {
+      case 'debug':
+        console.debug(formattedMessage, context);
+        break;
+      case 'info':
+        console.info(formattedMessage, context);
+        break;
+      case 'warn':
+        console.warn(formattedMessage, context);
+        break;
+      case 'error':
+        console.error(formattedMessage, context);
+        break;
+    }
+  }
+}
+
+// Simple logger implementation for client-side
+const createSimpleLogger = (namespace: string): Logger => ({
+  debug: (message: string, context?: Record<string, any>) => 
+    console.debug(`[DEBUG] [${namespace}]`, message, context || ''),
+  
+  info: (message: string, context?: Record<string, any>) => 
+    console.info(`[INFO] [${namespace}]`, message, context || ''),
+  
+  warn: (message: string, context?: Record<string, any>) => 
+    console.warn(`[WARN] [${namespace}]`, message, context || ''),
+  
+  error: (message: string, context?: Record<string, any>) => {
+    console.error(`[ERROR] [${namespace}]`, message, context || '');
+    
+    // Also capture error in Sentry for error level if available
+    try {
+      // @ts-ignore
+      if (window.Sentry) {
+        // @ts-ignore
+        window.Sentry.captureMessage(message, 'error');
+      }
+    } catch (e) {
+      // Fail silently if Sentry isn't available
+    }
+  }
+});
+
+// Create a logger with the given namespace
+export function createLogger(namespace: string): Logger {
+  return new EnhancedLogger(namespace);
+}
+
+// Default logger for generic application logging
+export const logger = createSimpleLogger('app');

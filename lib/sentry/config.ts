@@ -8,6 +8,9 @@ export const sentryConfig = {
   environment: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV,
   release: process.env.SENTRY_RELEASE || `buildappswith@${process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0'}`,
 
+  // EU region data residency configuration
+  region: process.env.SENTRY_REGION || 'eu',
+
   // Performance monitoring
   tracesSampleRate: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1'),
 
@@ -92,6 +95,7 @@ export function getInitializationConfig() {
     debug: sentryConfig.getEnvironmentConfig().debug || false,
     attachStacktrace: sentryConfig.getEnvironmentConfig().attachStacktrace || false,
     enabled: sentryConfig.isEnabled(),
+    region: sentryConfig.region, // Include EU region configuration
     
     // Configure sampling dynamically
     tracesSampler: (samplingContext) => {

@@ -1,11 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Skip global auth setup
-test.use({ 
-  baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'https://buildappswith.vercel.app',
-  storageState: { cookies: [], origins: [] } // Empty storage state to bypass auth
-});
-
 test.describe('Visual Regression Tests', () => {
   test('homepage visual appearance', async ({ page }) => {
     await page.goto('/');

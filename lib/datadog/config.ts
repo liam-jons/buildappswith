@@ -49,6 +49,11 @@ const datadogConfigBase = {
   criticalTransactions: [
     'auth.signup',
     'auth.login',
+    'auth.verify',
+    'auth.refresh',
+    'auth.protected',
+    'auth.role',
+    'auth.permission',
     'payment.process',
     'booking.create',
     'marketplace.search',
@@ -99,7 +104,9 @@ const datadogConfigBase = {
  * Gets the current environment based on NODE_ENV
  */
 export function getCurrentEnvironment(): DatadogEnvironment {
-  return (process.env.NODE_ENV as DatadogEnvironment) || DatadogEnvironment.DEVELOPMENT;
+  // Use NEXT_PUBLIC env var for client-side compatibility
+  const env = process.env.NEXT_PUBLIC_NODE_ENV || process.env.NODE_ENV;
+  return (env as DatadogEnvironment) || DatadogEnvironment.DEVELOPMENT;
 }
 
 /**

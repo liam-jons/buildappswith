@@ -9,3 +9,6 @@ export * from './api';
 export * from './schemas';
 export * from './types';
 export * from './utils';
+
+// Export state machine
+export * from './state-machine';

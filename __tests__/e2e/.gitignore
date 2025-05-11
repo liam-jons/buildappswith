@@ -1,0 +1,3 @@
+# Ignore Vitest test files in the E2E directory
+# These should be run with Playwright instead
+*.vitest.test.ts

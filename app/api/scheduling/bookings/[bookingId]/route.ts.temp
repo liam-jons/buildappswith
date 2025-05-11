@@ -1,0 +1,111 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/enhanced-logger';
+import { getBookingState } from '@/lib/scheduling/state-machine';
+import { getCurrentUser } from '@/lib/auth/api-auth';
+
+/**
+ * Get booking details
+ * 
+ * This endpoint retrieves the details of a booking including its current state.
+ */
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { bookingId: string } }
+) {
+  try {
+    const { bookingId } = params;
+    if (!bookingId) {
+      return NextResponse.json({ error: 'Booking ID is required' }, { status: 400 });
+    }
+    
+    // Get current user
+    const user = await getCurrentUser();
+    if (!user) {
+      logger.warn('Unauthorized user attempted to get booking details', { bookingId });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    
+    // Get booking details
+    const bookingContext = await getBookingState(bookingId);
+    if (!bookingContext) {
+      logger.error('Booking not found', { bookingId });
+      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+    }
+    
+    // Verify user has permission to view this booking
+    // In a real application, you would check if the user is the client, builder,
+    // or has admin permissions
+    const hasPermission = true; // Simplified for now
+    
+    if (!hasPermission) {
+      logger.warn('User has no permission to view booking', {
+        bookingId,
+        userId: user.id
+      });
+      return NextResponse.json({ error: 'Permission denied' }, { status: 403 });
+    }
+    
+    // Get session type details if available
+    let sessionType = null;
+    if (bookingContext.stateData.sessionTypeId) {
+      try {
+        // Here you would fetch the session type from your database
+        // For now, we'll just return a placeholder
+        sessionType = {
+          id: bookingContext.stateData.sessionTypeId,
+          title: 'Session Type',
+          description: 'Session description',
+          duration: 60,
+          price: 100,
+          currency: 'USD'
+        };
+      } catch (error) {
+        logger.error('Error fetching session type', {
+          error: error instanceof Error ? error.message : String(error),
+          sessionTypeId: bookingContext.stateData.sessionTypeId
+        });
+      }
+    }
+    
+    // Prepare response data
+    const responseData = {
+      id: bookingContext.bookingId,
+      state: bookingContext.state,
+      builderId: bookingContext.stateData.builderId,
+      clientId: bookingContext.stateData.clientId,
+      sessionTypeId: bookingContext.stateData.sessionTypeId,
+      startTime: bookingContext.stateData.startTime,
+      endTime: bookingContext.stateData.endTime,
+      bookingStatus: bookingContext.stateData.bookingStatus,
+      paymentStatus: bookingContext.stateData.paymentStatus,
+      calendlyEventId: bookingContext.stateData.calendlyEventId,
+      calendlyEventUri: bookingContext.stateData.calendlyEventUri,
+      stripeSessionId: bookingContext.stateData.stripeSessionId,
+      stripePaymentIntentId: bookingContext.stateData.stripePaymentIntentId,
+      cancelReason: bookingContext.stateData.cancelReason,
+      cancelledAt: bookingContext.stateData.cancelledAt,
+      refundAmount: bookingContext.stateData.refundAmount,
+      createdAt: bookingContext.stateData.timestamp,
+      sessionType
+    };
+    
+    logger.info('Retrieved booking details', {
+      bookingId,
+      state: bookingContext.state,
+      userId: user.id
+    });
+    
+    return NextResponse.json(responseData);
+    
+  } catch (error) {
+    logger.error('Error retrieving booking details', {
+      error: error instanceof Error ? error.message : String(error),
+      bookingId: params.bookingId
+    });
+    
+    return NextResponse.json(
+      { error: 'Failed to retrieve booking details' },
+      { status: 500 }
+    );
+  }
+}

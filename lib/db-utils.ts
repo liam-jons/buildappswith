@@ -7,9 +7,9 @@
 
 import { db } from './db';
 import { withDatabaseOperation, withDatabaseRetry } from './db-error-handling';
-import { enhancedLogger } from './enhanced-logger';
+import { createDomainLogger } from './logger';
 
-const dbUtilsLogger = enhancedLogger.child({ domain: 'database-utils' });
+const dbUtilsLogger = createDomainLogger('database-utils');
 
 /**
  * Generic type for database queries with a schema

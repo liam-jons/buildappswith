@@ -7,10 +7,10 @@ import {
   MarketplaceFilterOptions
 } from '../types';
 import { Prisma } from '@prisma/client';
-import { enhancedLogger } from '@/lib/enhanced-logger';
+import { createDomainLogger } from '@/lib/logger';
 
 // Create a marketplace logger
-const marketplaceLogger = enhancedLogger.child({ domain: 'marketplace-service' });
+const marketplaceLogger = createDomainLogger('marketplace-service');
 
 /**
  * Fetch builders with pagination and filtering

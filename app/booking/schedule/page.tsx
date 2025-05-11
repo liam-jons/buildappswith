@@ -1,154 +1,84 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useUser } from '@clerk/nextjs'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/core/card'
-import { CalendlyEmbed } from '@/components/scheduling/calendly'
-import { CalendlySessionTypeSelector } from '@/components/scheduling'
-import { startBookingFlow, storeBookingFlowState, BookingFlowState } from '@/lib/scheduling/calendly'
-import { SessionType } from '@/lib/scheduling/types'
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { BookingFlow } from '@/components/scheduling';
+import { BookingFlowProvider } from '@/lib/contexts/booking-flow-context';
+import { fetchSessionTypes } from '@/lib/scheduling/api';
+import { SessionType } from '@/lib/scheduling/types';
+import { logger } from '@/lib/logger';
 
 export default function BookingSchedulePage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { user, isLoaded } = useUser()
-  const [flowState, setFlowState] = useState<BookingFlowState>({ step: 'SELECT_SESSION_TYPE' })
-  
-  // Get builder ID from query parameters
-  const builderId = searchParams.get('builderId')
-  
-  // Set flow state from session storage if available
+  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [sessionTypes, setSessionTypes] = useState<SessionType[]>([]);
+
+  // Get query parameters
+  const builderId = searchParams?.get('builderId') || '';
+  const sessionTypeId = searchParams?.get('sessionTypeId') || '';
+
+  // Fetch session types
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = sessionStorage.getItem('calendly_booking_flow')
-      
-      if (stored) {
-        try {
-          const state = JSON.parse(stored)
-          setFlowState(state)
-        } catch (error) {
-          console.error('Error parsing booking flow state:', error)
-        }
+    async function loadSessionTypes() {
+      if (!builderId) {
+        setError('Builder ID is required');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const types = await fetchSessionTypes(builderId);
+        setSessionTypes(types);
+        setError(null);
+      } catch (err) {
+        logger.error('Error fetching session types', {
+          error: err instanceof Error ? err.message : String(err),
+          builderId
+        });
+        setError('Failed to load session types');
+      } finally {
+        setLoading(false);
       }
     }
-  }, [])
+
+    loadSessionTypes();
+  }, [builderId]);
   
-  // Handle session type selection
-  const handleSelectSessionType = async (sessionType: SessionType) => {
-    if (!user || !isLoaded) return
-    
-    // Start the booking flow
-    const state = await startBookingFlow(
-      sessionType,
-      {
-        id: user.id,
-        name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-        email: user.primaryEmailAddress?.emailAddress || '',
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-      },
-      `${window.location.origin}/booking/confirmation`
-    )
-    
-    // Store the state in session storage
-    storeBookingFlowState(state)
-    
-    // Update local state
-    setFlowState(state)
-  }
-  
-  // If not loaded, show loading state
-  if (!isLoaded) {
+  if (loading) {
     return (
-      <div className="container max-w-6xl mx-auto px-4 py-8">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Loading...</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-center py-10">
-              <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="booking-page-loading flex justify-center items-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
-    )
+    );
   }
-  
-  // If no builder ID, show error
-  if (!builderId) {
+
+  if (error) {
     return (
-      <div className="container max-w-6xl mx-auto px-4 py-8">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Error</CardTitle>
-            <CardDescription>No builder specified</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-center py-4">
-              Please select a builder from the marketplace to book a session.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="booking-page-error p-6 bg-red-50 border border-red-200 rounded-lg">
+        <h2 className="text-xl font-semibold text-red-700 mb-2">Error</h2>
+        <p className="text-red-600">{error}</p>
       </div>
-    )
+    );
   }
   
-  // Show different content based on the flow state
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Book a Session</h1>
-        <p className="text-muted-foreground mt-2">
-          Schedule a session with one of our expert builders
-        </p>
-      </div>
+    <div className="booking-page-container p-4 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">Book a Session</h1>
       
-      {flowState.step === 'SELECT_SESSION_TYPE' && (
-        <CalendlySessionTypeSelector 
+      <BookingFlowProvider
+        initialState={{
+          builderId: builderId || undefined,
+          sessionTypeId: sessionTypeId || undefined
+        }}
+      >
+        <BookingFlow
           builderId={builderId}
-          onSelectSessionType={handleSelectSessionType}
+          sessionTypes={sessionTypes || []}
+          preselectedSessionTypeId={sessionTypeId}
         />
-      )}
-      
-      {flowState.step === 'SCHEDULE_TIME' && flowState.schedulingUrl && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Select a Time</CardTitle>
-            <CardDescription>
-              Choose an available time slot for your {flowState.sessionType?.title} session
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-0">
-            <CalendlyEmbed 
-              url={flowState.schedulingUrl}
-              prefill={{
-                name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
-                email: user?.primaryEmailAddress?.emailAddress || '',
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-              }}
-              utm={{
-                utmSource: 'buildappswith',
-                utmMedium: 'scheduling',
-                utmCampaign: 'booking'
-              }}
-              className="w-full"
-              onEventScheduled={(event) => {
-                console.log('Event scheduled:', event)
-                router.push('/booking/confirmation')
-              }}
-            />
-          </CardContent>
-        </Card>
-      )}
-      
-      {flowState.error && (
-        <Card className="mt-4 border-red-300">
-          <CardContent className="pt-6">
-            <p className="text-red-600">{flowState.error}</p>
-          </CardContent>
-        </Card>
-      )}
+      </BookingFlowProvider>
     </div>
-  )
+  );
 }

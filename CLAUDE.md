@@ -12,6 +12,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Test (specific pattern): `pnpm test -t "pattern"` (runs tests matching pattern)
 - Test coverage: `pnpm test:coverage` (generates test coverage report)
 
+## Testing Environment Notes
+- Test commands will timeout after 2 minutes in the Claude environment however, Liam (the human) can run them successfully in the terminal - STOP IF YOU EXPERIENCE ANY TIMEOUT ISSUES AND ASK LIAM HOW TO PROCEED
+- Always use full explicit paths when running tests, avoid using ellipsis (`...`) in test paths e.g., This won't work - pnpm test __tests__/unit/lib/sentry/..., but this WILL: pnpm test __tests__/unit/lib/sentry/basic-config.test.ts
+- In test files, prefer importing modules directly rather than using relative paths
+- When tests timeout, DO NOT increase the timeout
+- Use direct mock objects when possible instead of complex module mocking
+
 ## Code Style Guidelines
 - **Components**: Follow domain-first organization (`components/[domain]/component-name.tsx`)
 - **Imports**: Use barrel exports (`import { X } from "@/components/domain"`)
@@ -24,4 +31,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Error Handling**: Use Zod for validation, proper error boundaries in UI
 - **Documentation**: Include README.md in each major directory
 
+## System Architecture Notes
+
+### Active Implementation Paths
+- **Authentication and user management**: Clerk-based authentication only (NextAuth.js fully removed)
+- **Booking System**: Calendly integration with state machine (custom calendar removed)
+- **Payment System**: Stripe
+- **Marketplace**: Consolidated implementation with `/marketplace/builders/[id]` routing
+- **Monitoring**: Sentry via instrumentation pattern with EU region data compliance. Datadog integration.
+
+### Feature Flags
+- `UseBuilderImage`: Controls whether to use the fixed BuilderImage component
+- `UseViewingPreferences`: Controls whether to use the ViewingPreferences component
+- `UseClerkAuth`: Controls whether to use Clerk authentication
+- `UseDynamicMarketplace`: Controls whether to use the dynamic marketplace
+
+### Component Usage Guidelines
+- Always use `components/scheduling/calendly` components for booking flows
+- Use `BuilderList` component from `components/marketplace` for builder listings
+- Ensure marketplace builder profiles use the `/marketplace/builders/[id]` route pattern
+
 Always refer to `/docs/engineering/COMPONENT_STYLE_GUIDE.md` and `/docs/engineering/FOLDER_STRUCTURE_GUIDE.md` for detailed guidelines.
+
+ALWAYS CHECK IF FUNCTIONALITY EXISTS FIRST, BEFORE BUILDING SOMETHING NEW - ITS CRITICAL THAT WE DON'T CAUSE UNNECESSARY EFFORT FOR OURSELVES, OR DO ANYTHING THAT WOULD BE UNHELPFUL AND WOULD GO AGAINST BEST PRACTICE, WITHOUT EXPLICIT CONFIRMATION FROM LIAM.

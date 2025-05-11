@@ -7,9 +7,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { checkDatabaseHealth } from '@/lib/db-monitoring';
-import { enhancedLogger } from '@/lib/enhanced-logger';
+import { createDomainLogger } from '@/lib/logger';
 
-const healthLogger = enhancedLogger.child({ domain: 'health-api' });
+const healthLogger = createDomainLogger('health-api');
 
 /**
  * GET /api/health/db

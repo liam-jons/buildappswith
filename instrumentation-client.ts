@@ -3,15 +3,85 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import {
+  getInitializationConfig,
+  configureSentryDataFiltering,
+  configureSentryPerformance
+} from "./lib/sentry";
 
-Sentry.init({
-  dsn: "https://fbc43927da128c3a176f85092ef2bb5c@o4509207749328896.ingest.de.sentry.io/4509207750967376",
+export function register() {
+  try {
+    // Only initialize on client
+    if (typeof window === 'undefined') return;
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+    // Get base config with EU region explicit settings
+    const baseConfig = getInitializationConfig();
 
-  // Setting this option to true will print useful information to the console while you're setting up Sentry.
-  debug: false,
-});
+    // Apply sensitive data filtering
+    const configWithPrivacyFilters = configureSentryDataFiltering(baseConfig);
 
+    // Apply browser-specific performance monitoring
+    const finalConfig = configureSentryPerformance({
+      ...configWithPrivacyFilters,
+      
+      // Set EU region explicitly
+      region: 'eu',
+      
+      integrations: [
+        new Sentry.BrowserTracing({
+          tracePropagationTargets: [
+            "localhost",
+            "buildappswith.com",
+            /^\//,  // All relative URLs
+          ],
+        }),
+      ],
+
+      // Maintain Datadog integration
+      beforeSend: (event) => {
+        try {
+          // If there's a Datadog RUM global context with trace info, add it to Sentry
+          if (
+            window.__DD_RUM__ &&
+            window.__DD_RUM__._getInternalContext
+          ) {
+            const rumContext = window.__DD_RUM__._getInternalContext();
+            if (rumContext && rumContext.application && rumContext.application.id) {
+              event.contexts = {
+                ...event.contexts,
+                datadog_rum: {
+                  application_id: rumContext.application.id,
+                  session_id: rumContext.session.id,
+                  view_id: rumContext.view.id,
+                  rum_version: rumContext.version,
+                }
+              };
+            }
+          }
+          return event;
+        } catch (error) {
+          console.error('Error in Sentry beforeSend:', error);
+          return event;
+        }
+      },
+    });
+
+    // Initialize Sentry with defensive coding
+    Sentry.init(finalConfig);
+  } catch (e) {
+    console.debug('Error initializing Sentry client', e);
+  }
+}
+
+// Add typings for window.__DD_RUM__
+declare global {
+  interface Window {
+    __DD_RUM__?: {
+      _getInternalContext?: () => any;
+    };
+  }
+}
+
+// Export necessary hooks for Next.js
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+export const onRouterTransitionComplete = Sentry.onRouterTransitionComplete;

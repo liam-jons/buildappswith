@@ -10,13 +10,20 @@
 import * as Sentry from '@sentry/nextjs';
 import { getDatadogConfig } from './config';
 
+// Ensure this code only runs on the server side
+const isServer = typeof window === 'undefined';
+
 // This file is server-only - safely import server dependencies
 let tracer = null;
-try {
-  // Safely import dd-trace
-  tracer = require('dd-trace').tracer;
-} catch (error) {
-  console.warn('Failed to import dd-trace for Sentry integration - continuing without tracing');
+if (isServer) {
+  try {
+    // Safely import dd-trace only on server side
+    // Using dynamic import to prevent client-side bundling
+    const ddTrace = require('dd-trace');
+    tracer = ddTrace.tracer;
+  } catch (error) {
+    console.warn('Failed to import dd-trace for Sentry integration - continuing without tracing');
+  }
 }
 
 /**
@@ -32,16 +39,17 @@ export function createDatadogTraceUrl(traceId: string, env = 'production'): stri
  * @returns Context data object or null if no active trace
  */
 export function createDatadogTraceContext(): Record<string, any> | null {
+  // Skip if not server side or tracer not available
+  if (!isServer || !tracer) return null;
+
   try {
-    if (!tracer) return null;
-    
     const span = tracer.scope().active();
     if (!span) return null;
 
     const context = span.context();
     const traceId = context.toTraceId();
     const spanId = context.toSpanId();
-    
+
     if (!traceId || !spanId) return null;
 
     const config = getDatadogConfig();
@@ -77,8 +85,9 @@ export class DatadogSentryIntegration implements Sentry.Integration {
   setupOnce(
     addGlobalEventProcessor: (callback: Sentry.EventProcessor) => void,
   ): void {
-    if (!tracer) return; // Skip if tracer not available
-    
+    // Skip if not server side or tracer not available
+    if (!isServer || !tracer) return;
+
     addGlobalEventProcessor((event: Sentry.Event) => {
       try {
         // Skip if no exception or already has Datadog context
@@ -92,7 +101,7 @@ export class DatadogSentryIntegration implements Sentry.Integration {
         const context = span.context();
         const traceId = context.toTraceId();
         const spanId = context.toSpanId();
-        
+
         if (!traceId || !spanId) return event;
 
         const config = getDatadogConfig();
