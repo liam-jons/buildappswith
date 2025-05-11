@@ -23,7 +23,7 @@ export const mainNavItems: NavigationItem[] = [
       {
         title: "Book a Consultation",
         href: "/book",
-        description: "Get personalized guidance on your AI journey"
+        description: "Get personalisaed guidance on your AI journey"
       },
       {
         title: "Join Weekly Sessions",
@@ -69,7 +69,7 @@ export const heroContent: HeroContent = {
   subheadline: "Build real AI skills through creating your own application. Our community of experienced builders will guide you through the landscape of AI as a world of opportunity awaits",
   rotatingNames: [
     "Liam", "Kenny", "Ryan", "Sheri", "Troy",
-    "Loveable", "Bolt", "Claude", "Gemini", "ChatGPT",
+    "Lovable", "Bolt", "Cursor", "Claude", "Gemini", "ChatGPT",
     "your friends", "your team", "your customers"
   ],
   primaryCTA: {
