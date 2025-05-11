@@ -1,6 +1,6 @@
 /**
  * ui components barrel export file
- * Version: 1.0.0
+ * Version: 1.1.0
  */
 
 // Export components - core UI elements
@@ -12,6 +12,7 @@ export * from './core/switch';
 export * from './core/sonner';
 export * from './core/separator';
 export * from './core/select';
+export * from './core/skeleton';
 export * from './core/radio-group';
 export * from './core/popover';
 export * from './core/loading-spinner';

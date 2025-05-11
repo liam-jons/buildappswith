@@ -6,7 +6,7 @@ import { getRecentDiscussions, getLatestKnowledgeItems, getUpcomingEvents } from
 
 // Import components from barrel exports
 import { KnowledgeBase } from "@/components/community";
-import { DiscussionCard } from "@/components/community/ui";
+import { ServerDiscussionCard } from "@/components/community/ui";
 import { 
   Tabs, 
   TabsContent, 
@@ -118,10 +118,9 @@ async function RecentDiscussions() {
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2">
             {discussions.map(discussion => (
-              <DiscussionCard 
-                key={discussion.id} 
-                discussion={discussion} 
-                onClick={(id) => window.location.href = `/community/discussions/${id}`}
+              <ServerDiscussionCard
+                key={discussion.id}
+                discussion={discussion}
               />
             ))}
           </div>

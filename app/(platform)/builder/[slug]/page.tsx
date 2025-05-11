@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata, ResolvingMetadata } from "next";
 import { getBuilderProfileBySlug } from "@/lib/profile/api";
 import { BuilderProfileClientWrapper } from "@/components/profile/builder-profile-client-wrapper";
-import SessionBookingCard from "@/components/profile/ui/session-booking-card";
+import { SessionBookingCard } from "@/components/profile/ui";
 import { ValidationTier, UserRole, SpecializationArea } from "@/lib/profile/types";
 
 interface BuilderProfilePageProps {

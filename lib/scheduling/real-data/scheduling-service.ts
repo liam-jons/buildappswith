@@ -1,12 +1,23 @@
 /**
  * Scheduling Service Implementation
- * 
+ *
  * This service provides functionality for managing bookings, availability,
  * and time slots in the booking system. It interfaces with the database
  * through Prisma to handle booking operations.
- * 
- * Version: 1.0.0
+ *
+ * It primarily uses Calendly for scheduling but maintains a local data model
+ * for integration with other system components like payments.
+ *
+ * Version: 1.1.0
  */
+
+// Re-export additional session type functions
+export {
+  getSessionTypeById,
+  createSessionType,
+  updateSessionType,
+  deleteSessionType
+} from './scheduling-service-ext';
 
 import { PrismaClient, Prisma } from '@prisma/client';
 import { logger } from '@/lib/logger';
@@ -594,7 +605,7 @@ export async function getCalendlySessionTypes(builderId: string): Promise<Sessio
 
 /**
  * Get all bookings for a user (either as builder or client)
- * 
+ *
  * @param userId - The ID of the user
  * @param role - Whether to get bookings as builder or client
  * @returns Array of bookings
@@ -605,23 +616,23 @@ export async function getUserBookings(
 ): Promise<Booking[]> {
   try {
     let whereClause: Prisma.BookingWhereInput = {};
-    
+
     if (role === 'builder') {
       // Find the builder profile first
       const builderProfile = await prisma.builderProfile.findUnique({
         where: { userId }
       });
-      
+
       if (!builderProfile) {
         throw new Error('Builder profile not found for user');
       }
-      
+
       whereClause = { builderId: builderProfile.id };
     } else {
       // Client role
       whereClause = { clientId: userId };
     }
-    
+
     const bookings = await prisma.booking.findMany({
       where: whereClause,
       include: {
@@ -673,5 +684,684 @@ export async function getUserBookings(
   } catch (error) {
     logger.error('Error retrieving user bookings', { error, userId, role });
     throw new Error('Failed to retrieve user bookings');
+  }
+}
+
+/**
+ * Get availability exceptions for a builder
+ *
+ * @param builderId - The ID of the builder
+ * @param startDate - Optional start date filter (YYYY-MM-DD)
+ * @param endDate - Optional end date filter (YYYY-MM-DD)
+ * @returns Array of availability exceptions
+ */
+export async function getAvailabilityExceptions(
+  builderId: string,
+  startDate?: string,
+  endDate?: string
+): Promise<any[]> {
+  try {
+    // Prepare where clause
+    let whereClause: Prisma.AvailabilityExceptionWhereInput = {
+      builderId
+    };
+
+    // Add date filters if provided
+    if (startDate) {
+      whereClause.date = {
+        gte: startDate
+      };
+    }
+
+    if (endDate) {
+      whereClause.date = {
+        ...whereClause.date,
+        lte: endDate
+      };
+    }
+
+    // Query database
+    const exceptions = await prisma.availabilityException.findMany({
+      where: whereClause,
+      orderBy: {
+        date: 'asc'
+      }
+    });
+
+    // Transform to API type
+    return exceptions.map(exception => ({
+      id: exception.id,
+      builderId: exception.builderId,
+      date: exception.date,
+      isAvailable: exception.isAvailable,
+      slots: exception.slots || [],
+      reason: exception.reason || undefined,
+      createdAt: exception.createdAt.toISOString(),
+      updatedAt: exception.updatedAt.toISOString()
+    }));
+  } catch (error) {
+    logger.error('Error retrieving availability exceptions', { error, builderId });
+    throw new Error('Failed to retrieve availability exceptions');
+  }
+}
+
+/**
+ * Get an availability exception by ID
+ *
+ * @param id - The ID of the availability exception
+ * @returns The availability exception if found, null otherwise
+ */
+export async function getAvailabilityExceptionById(id: string): Promise<any | null> {
+  try {
+    const exception = await prisma.availabilityException.findUnique({
+      where: { id }
+    });
+
+    if (!exception) {
+      return null;
+    }
+
+    // Transform to API type
+    return {
+      id: exception.id,
+      builderId: exception.builderId,
+      date: exception.date,
+      isAvailable: exception.isAvailable,
+      slots: exception.slots || [],
+      reason: exception.reason || undefined,
+      createdAt: exception.createdAt.toISOString(),
+      updatedAt: exception.updatedAt.toISOString()
+    };
+  } catch (error) {
+    logger.error('Error retrieving availability exception by ID', { error, id });
+    throw new Error('Failed to retrieve availability exception');
+  }
+}
+
+/**
+ * Create a new availability exception
+ *
+ * @param data - The availability exception data
+ * @returns The created availability exception
+ */
+export async function createAvailabilityException(data: {
+  builderId: string;
+  date: string;
+  isAvailable: boolean;
+  slots?: { startTime: string; endTime: string; isBooked?: boolean }[];
+  reason?: string;
+}): Promise<any> {
+  try {
+    // Create the exception
+    const exception = await prisma.availabilityException.create({
+      data: {
+        builderId: data.builderId,
+        date: data.date,
+        isAvailable: data.isAvailable,
+        slots: data.slots || [],
+        reason: data.reason
+      }
+    });
+
+    logger.info('Created availability exception', {
+      exceptionId: exception.id,
+      builderId: exception.builderId,
+      date: exception.date
+    });
+
+    // Transform to API type
+    return {
+      id: exception.id,
+      builderId: exception.builderId,
+      date: exception.date,
+      isAvailable: exception.isAvailable,
+      slots: exception.slots || [],
+      reason: exception.reason || undefined,
+      createdAt: exception.createdAt.toISOString(),
+      updatedAt: exception.updatedAt.toISOString()
+    };
+  } catch (error) {
+    logger.error('Error creating availability exception', { error, data });
+    throw new Error('Failed to create availability exception');
+  }
+}
+
+/**
+ * Update an existing availability exception
+ *
+ * @param id - The ID of the availability exception to update
+ * @param data - The partial availability exception data to update
+ * @returns The updated availability exception
+ */
+export async function updateAvailabilityException(
+  id: string,
+  data: Partial<{
+    isAvailable: boolean;
+    slots: { startTime: string; endTime: string; isBooked?: boolean }[];
+    reason: string;
+  }>
+): Promise<any> {
+  try {
+    // Update the exception
+    const exception = await prisma.availabilityException.update({
+      where: { id },
+      data
+    });
+
+    logger.info('Updated availability exception', {
+      exceptionId: exception.id,
+      builderId: exception.builderId,
+      date: exception.date
+    });
+
+    // Transform to API type
+    return {
+      id: exception.id,
+      builderId: exception.builderId,
+      date: exception.date,
+      isAvailable: exception.isAvailable,
+      slots: exception.slots || [],
+      reason: exception.reason || undefined,
+      createdAt: exception.createdAt.toISOString(),
+      updatedAt: exception.updatedAt.toISOString()
+    };
+  } catch (error) {
+    logger.error('Error updating availability exception', { error, id, data });
+    throw new Error('Failed to update availability exception');
+  }
+}
+
+/**
+ * Delete an availability exception
+ *
+ * @param id - The ID of the availability exception to delete
+ * @returns True if deletion was successful
+ */
+export async function deleteAvailabilityException(id: string): Promise<boolean> {
+  try {
+    // Delete the exception
+    await prisma.availabilityException.delete({
+      where: { id }
+    });
+
+    logger.info('Deleted availability exception', { exceptionId: id });
+
+    return true;
+  } catch (error) {
+    logger.error('Error deleting availability exception', { error, id });
+    throw new Error('Failed to delete availability exception');
+  }
+}
+
+/**
+ * Get availability rules for a builder
+ *
+ * @param builderId - The ID of the builder, or 'all' to get all rules
+ * @returns Array of availability rules
+ */
+export async function getAvailabilityRules(builderId: string): Promise<any[]> {
+  try {
+    // For Calendly integration, we're using the Calendly API for scheduling,
+    // so this is mostly a pass-through that returns default rules
+    if (builderId === 'all') {
+      // If requesting all rules, fetch from database
+      const rules = await prisma.availabilityRule.findMany({
+        orderBy: [
+          { dayOfWeek: 'asc' },
+          { startTime: 'asc' }
+        ]
+      });
+
+      // Format and return
+      return rules.map(rule => ({
+        id: rule.id,
+        builderId: rule.builderId,
+        dayOfWeek: rule.dayOfWeek,
+        startTime: rule.startTime,
+        endTime: rule.endTime,
+        isRecurring: rule.isRecurring,
+        createdAt: rule.createdAt.toISOString(),
+        updatedAt: rule.updatedAt.toISOString()
+      }));
+    }
+
+    // Check if the builder uses Calendly integration
+    const builder = await prisma.builderProfile.findUnique({
+      where: { id: builderId },
+      include: {
+        schedulingSettings: true
+      }
+    });
+
+    if (!builder) {
+      throw new Error('Builder not found');
+    }
+
+    // If builder uses Calendly, return empty rules since Calendly manages availability
+    if (builder.schedulingSettings?.useCalendly) {
+      logger.info('Builder uses Calendly for availability', { builderId });
+      return [];
+    }
+
+    // Otherwise get rules from database
+    const rules = await prisma.availabilityRule.findMany({
+      where: { builderId },
+      orderBy: [
+        { dayOfWeek: 'asc' },
+        { startTime: 'asc' }
+      ]
+    });
+
+    return rules.map(rule => ({
+      id: rule.id,
+      builderId: rule.builderId,
+      dayOfWeek: rule.dayOfWeek,
+      startTime: rule.startTime,
+      endTime: rule.endTime,
+      isRecurring: rule.isRecurring,
+      createdAt: rule.createdAt.toISOString(),
+      updatedAt: rule.updatedAt.toISOString()
+    }));
+  } catch (error) {
+    logger.error('Error retrieving availability rules', { error, builderId });
+    throw new Error('Failed to retrieve availability rules');
+  }
+}
+
+/**
+ * Create a new availability rule
+ *
+ * @param data - The availability rule data
+ * @returns The created availability rule
+ */
+export async function createAvailabilityRule(data: {
+  builderId: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  isRecurring?: boolean;
+}): Promise<any> {
+  try {
+    // Check if the builder uses Calendly integration
+    const builder = await prisma.builderProfile.findUnique({
+      where: { id: data.builderId },
+      include: {
+        schedulingSettings: true
+      }
+    });
+
+    if (!builder) {
+      throw new Error('Builder not found');
+    }
+
+    if (builder.schedulingSettings?.useCalendly) {
+      throw new Error('Builder uses Calendly for availability management. Please update availability in Calendly.');
+    }
+
+    // Create the rule
+    const rule = await prisma.availabilityRule.create({
+      data: {
+        builderId: data.builderId,
+        dayOfWeek: data.dayOfWeek,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        isRecurring: data.isRecurring ?? true
+      }
+    });
+
+    logger.info('Created availability rule', {
+      ruleId: rule.id,
+      builderId: rule.builderId,
+      dayOfWeek: rule.dayOfWeek
+    });
+
+    // Transform to API type
+    return {
+      id: rule.id,
+      builderId: rule.builderId,
+      dayOfWeek: rule.dayOfWeek,
+      startTime: rule.startTime,
+      endTime: rule.endTime,
+      isRecurring: rule.isRecurring,
+      createdAt: rule.createdAt.toISOString(),
+      updatedAt: rule.updatedAt.toISOString()
+    };
+  } catch (error) {
+    logger.error('Error creating availability rule', { error, data });
+    throw new Error(error instanceof Error ? error.message : 'Failed to create availability rule');
+  }
+}
+
+/**
+ * Update an existing availability rule
+ *
+ * @param id - The ID of the availability rule to update
+ * @param data - The partial availability rule data to update
+ * @returns The updated availability rule
+ */
+export async function updateAvailabilityRule(
+  id: string,
+  data: Partial<{
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+    isRecurring: boolean;
+    builderId: string;
+  }>
+): Promise<any> {
+  try {
+    // Get the existing rule
+    const existingRule = await prisma.availabilityRule.findUnique({
+      where: { id },
+      include: {
+        builder: {
+          include: {
+            schedulingSettings: true
+          }
+        }
+      }
+    });
+
+    if (!existingRule) {
+      throw new Error('Availability rule not found');
+    }
+
+    // Check if the builder uses Calendly integration
+    if (existingRule.builder?.schedulingSettings?.useCalendly) {
+      throw new Error('Builder uses Calendly for availability management. Please update availability in Calendly.');
+    }
+
+    // Update the rule
+    const rule = await prisma.availabilityRule.update({
+      where: { id },
+      data
+    });
+
+    logger.info('Updated availability rule', {
+      ruleId: rule.id,
+      builderId: rule.builderId,
+      dayOfWeek: rule.dayOfWeek
+    });
+
+    // Transform to API type
+    return {
+      id: rule.id,
+      builderId: rule.builderId,
+      dayOfWeek: rule.dayOfWeek,
+      startTime: rule.startTime,
+      endTime: rule.endTime,
+      isRecurring: rule.isRecurring,
+      createdAt: rule.createdAt.toISOString(),
+      updatedAt: rule.updatedAt.toISOString()
+    };
+  } catch (error) {
+    logger.error('Error updating availability rule', { error, id, data });
+    throw new Error(error instanceof Error ? error.message : 'Failed to update availability rule');
+  }
+}
+
+/**
+ * Delete an availability rule
+ *
+ * @param id - The ID of the availability rule to delete
+ * @returns True if deletion was successful
+ */
+export async function deleteAvailabilityRule(id: string): Promise<boolean> {
+  try {
+    // Get the existing rule
+    const existingRule = await prisma.availabilityRule.findUnique({
+      where: { id },
+      include: {
+        builder: {
+          include: {
+            schedulingSettings: true
+          }
+        }
+      }
+    });
+
+    if (!existingRule) {
+      throw new Error('Availability rule not found');
+    }
+
+    // Check if the builder uses Calendly integration
+    if (existingRule.builder?.schedulingSettings?.useCalendly) {
+      throw new Error('Builder uses Calendly for availability management. Please update availability in Calendly.');
+    }
+
+    // Delete the rule
+    await prisma.availabilityRule.delete({
+      where: { id }
+    });
+
+    logger.info('Deleted availability rule', { ruleId: id });
+
+    return true;
+  } catch (error) {
+    logger.error('Error deleting availability rule', { error, id });
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete availability rule');
+  }
+}
+
+/**
+ * Get available time slots for a builder
+ *
+ * This function will use Calendly for builders with Calendly integration
+ * and fallback to our system for others.
+ *
+ * @param builderId - The ID of the builder
+ * @param startDate - Start date for the search range (YYYY-MM-DD)
+ * @param endDate - End date for the search range (YYYY-MM-DD)
+ * @param sessionTypeId - Optional session type ID for filtering
+ * @param timezone - Optional timezone for the client
+ * @returns Array of available time slots
+ */
+export async function getAvailableTimeSlots(
+  builderId: string,
+  startDate: string,
+  endDate: string,
+  sessionTypeId?: string,
+  timezone?: string
+): Promise<any[]> {
+  try {
+    // Check if the builder exists
+    const builder = await prisma.builderProfile.findUnique({
+      where: { id: builderId },
+      include: {
+        schedulingSettings: true
+      }
+    });
+
+    if (!builder) {
+      throw new Error('Builder not found');
+    }
+
+    // For Calendly integration, delegate to Calendly service
+    if (builder.schedulingSettings?.useCalendly) {
+      logger.info('Using Calendly for time slots', { builderId, sessionTypeId });
+
+      // If no session type provided, we can't get time slots from Calendly
+      if (!sessionTypeId) {
+        logger.warn('Session type ID required for Calendly time slots', { builderId });
+        return [];
+      }
+
+      try {
+        // Get session type to obtain Calendly event type ID
+        const sessionType = await prisma.sessionType.findUnique({
+          where: { id: sessionTypeId }
+        });
+
+        if (!sessionType || !sessionType.calendlyEventTypeId) {
+          logger.warn('Session type not found or not linked to Calendly', { sessionTypeId });
+          return [];
+        }
+
+        // For Calendly integration, we return an empty array as the actual slots
+        // are fetched directly by the Calendly embed on the client side
+        logger.info('Calendly embed will fetch time slots directly', {
+          builderId,
+          sessionTypeId,
+          calendlyEventTypeId: sessionType.calendlyEventTypeId
+        });
+
+        return [];
+      } catch (error) {
+        logger.error('Error getting Calendly session type', { error, sessionTypeId });
+        return [];
+      }
+    }
+
+    // For non-Calendly builders, we would use our own availability system
+    // This is not fully implemented since Calendly is the primary scheduling system
+    logger.warn('Non-Calendly time slot fetching is not fully supported', { builderId });
+
+    // Return empty slots for now
+    return [];
+  } catch (error) {
+    logger.error('Error getting available time slots', {
+      error, builderId, startDate, endDate, sessionTypeId
+    });
+    throw new Error('Failed to get available time slots');
+  }
+}
+
+/**
+ * Get builder scheduling profile and settings
+ *
+ * @param builderId - The ID of the builder
+ * @returns Builder scheduling profile and settings
+ */
+export async function getBuilderSchedulingProfile(builderId: string): Promise<any> {
+  try {
+    // Get the builder profile with scheduling settings
+    const builder = await prisma.builderProfile.findUnique({
+      where: { id: builderId },
+      include: {
+        schedulingSettings: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
+      }
+    });
+
+    if (!builder) {
+      throw new Error('Builder not found');
+    }
+
+    // If no scheduling settings exist, create default settings with Calendly enabled
+    if (!builder.schedulingSettings) {
+      const newSettings = await prisma.schedulingSettings.create({
+        data: {
+          builderId,
+          timezone: 'UTC',
+          bufferBefore: 15,
+          bufferAfter: 15,
+          useCalendly: true
+        }
+      });
+
+      // Return builder with newly created settings
+      return {
+        id: builder.id,
+        userId: builder.userId,
+        name: builder.user.name,
+        email: builder.user.email,
+        schedulingSettings: {
+          timezone: newSettings.timezone,
+          bufferBefore: newSettings.bufferBefore,
+          bufferAfter: newSettings.bufferAfter,
+          useCalendly: newSettings.useCalendly,
+          calendlyUsername: newSettings.calendlyUsername || undefined,
+          calendlyUserId: newSettings.calendlyUserId || undefined,
+          defaultAvailability: newSettings.defaultAvailability || undefined,
+          createdAt: newSettings.createdAt.toISOString(),
+          updatedAt: newSettings.updatedAt.toISOString()
+        }
+      };
+    }
+
+    // Transform to API type
+    return {
+      id: builder.id,
+      userId: builder.userId,
+      name: builder.user.name,
+      email: builder.user.email,
+      schedulingSettings: {
+        timezone: builder.schedulingSettings.timezone,
+        bufferBefore: builder.schedulingSettings.bufferBefore,
+        bufferAfter: builder.schedulingSettings.bufferAfter,
+        useCalendly: builder.schedulingSettings.useCalendly,
+        calendlyUsername: builder.schedulingSettings.calendlyUsername || undefined,
+        calendlyUserId: builder.schedulingSettings.calendlyUserId || undefined,
+        defaultAvailability: builder.schedulingSettings.defaultAvailability || undefined,
+        createdAt: builder.schedulingSettings.createdAt.toISOString(),
+        updatedAt: builder.schedulingSettings.updatedAt.toISOString()
+      }
+    };
+  } catch (error) {
+    logger.error('Error getting builder scheduling profile', { error, builderId });
+    throw new Error('Failed to get builder scheduling profile');
+  }
+}
+
+/**
+ * Update builder scheduling settings
+ *
+ * @param builderId - The ID of the builder
+ * @param settings - The partial settings to update
+ * @returns Updated builder scheduling profile
+ */
+export async function updateBuilderSchedulingSettings(
+  builderId: string,
+  settings: Partial<{
+    timezone: string;
+    bufferBefore: number;
+    bufferAfter: number;
+    useCalendly: boolean;
+    calendlyUsername: string;
+    calendlyUserId: string;
+    defaultAvailability: { dayOfWeek: number; startTime: string; endTime: string }[];
+  }>
+): Promise<any> {
+  try {
+    // Check if settings exist
+    const existingSettings = await prisma.schedulingSettings.findUnique({
+      where: { builderId }
+    });
+
+    if (existingSettings) {
+      // Update existing settings
+      await prisma.schedulingSettings.update({
+        where: { builderId },
+        data: settings
+      });
+    } else {
+      // Create new settings with defaults
+      await prisma.schedulingSettings.create({
+        data: {
+          builderId,
+          timezone: settings.timezone || 'UTC',
+          bufferBefore: settings.bufferBefore ?? 15,
+          bufferAfter: settings.bufferAfter ?? 15,
+          useCalendly: settings.useCalendly ?? true,
+          calendlyUsername: settings.calendlyUsername,
+          calendlyUserId: settings.calendlyUserId,
+          defaultAvailability: settings.defaultAvailability || []
+        }
+      });
+    }
+
+    logger.info('Updated builder scheduling settings', { builderId });
+
+    // Get the updated profile
+    return getBuilderSchedulingProfile(builderId);
+  } catch (error) {
+    logger.error('Error updating builder scheduling settings', { error, builderId, settings });
+    throw new Error('Failed to update builder scheduling settings');
   }
 }

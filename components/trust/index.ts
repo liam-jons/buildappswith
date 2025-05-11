@@ -3,10 +3,9 @@
  * Version: 1.0.0
  */
 
+// Export components
+export { TrustOverview } from './trust-overview';
+export { VerificationDetail } from './verification-detail';
+
 // Re-export subdirectory exports
 export * from './ui';
-
-// Export components
-export * from './ui';
-export { default as ValidationTierBadge } from './ui/validation-tier-badge';
-export * from "./ui";

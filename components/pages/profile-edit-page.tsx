@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/core/button';
 import { Input } from '@/components/ui/core/input';
 import { Textarea } from '@/components/ui/core/textarea';
 import { Label } from '@/components/ui/core/label';
-import { useToast } from 'sonner';
+import { useToast } from '@/components/ui/core/sonner';
 import { updateProfile } from '@/lib/profile/actions';
 import { logger } from '@/lib/logger';
 

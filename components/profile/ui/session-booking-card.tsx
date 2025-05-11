@@ -29,7 +29,7 @@ interface SessionBookingCardProps {
   adhdFocus?: boolean;
 }
 
-export default function SessionBookingCard({
+export function SessionBookingCard({
   builderId,
   builderName,
   sessionTypes,

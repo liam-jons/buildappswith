@@ -1,7 +1,7 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { Toaster as Sonner } from "sonner"
+import { Toaster as Sonner, toast } from "sonner"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
@@ -28,4 +28,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
   )
 }
 
-export { Toaster }
+/**
+ * Custom hook to expose the toast API
+ * @returns The toast interface with consistent styling
+ */
+export function useToast() {
+  return { toast };
+}
+
+export { Toaster, toast }

@@ -4,5 +4,4 @@
  */
 
 // Export components
-export { default as ValidationTierBadge } from './validation-tier-badge';
-export * from "./validation-tier-badge";
+export { ValidationTierBadge } from './validation-tier-badge';

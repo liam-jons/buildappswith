@@ -13,7 +13,7 @@ export function easeOutCubic(x: number): number {
 
 /**
  * Format a date string to a human-readable format
- * 
+ *
  * @param dateString ISO date string to format
  * @param formatStr Optional format string (defaults to 'PPP p')
  * @returns Formatted date string
@@ -26,5 +26,21 @@ export function formatDate(dateString: string, formatStr = 'PPP p') {
   } catch (error) {
     console.error('Error formatting date:', error);
     return dateString;
+  }
+}
+
+/**
+ * Format a date to display time only in 12-hour format
+ *
+ * @param dateObj Date object or string to format
+ * @returns Formatted time string (e.g., "2:30 PM")
+ */
+export function formatTime(dateObj: Date | string) {
+  try {
+    const date = typeof dateObj === 'string' ? parseISO(dateObj) : dateObj;
+    return format(date, 'h:mm a');
+  } catch (error) {
+    console.error('Error formatting time:', error);
+    return '';
   }
 }
