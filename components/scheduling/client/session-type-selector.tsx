@@ -80,4 +80,4 @@ const SessionTypeSelector: React.FC<SessionTypeSelectorProps> = ({
   );
 };
 
-export default SessionTypeSelector;
+export { SessionTypeSelector };

@@ -1,165 +1,351 @@
-# Testing Framework Documentation
+# BuildAppsWith Testing Framework
 
-## Overview
+This document provides an overview of the testing infrastructure implemented for the BuildAppsWith platform.
 
-This directory contains comprehensive documentation for the BuildAppsWith testing framework, including test strategies, patterns, and best practices.
+## Table of Contents
 
-## Master Documentation
+1. [Test Types](#test-types)
+2. [Testing Tools](#testing-tools)
+3. [Directory Structure](#directory-structure)
+4. [Test Configuration](#test-configuration)
+5. [Mock Service Worker (MSW)](#mock-service-worker-msw)
+6. [Authentication Testing](#authentication-testing)
+7. [Database Testing](#database-testing)
+8. [Running Tests](#running-tests)
+9. [Writing New Tests](#writing-new-tests)
+10. [CI/CD Integration](#cicd-integration)
+11. [Common Issues and Solutions](#common-issues-and-solutions)
 
-The [Comprehensive Testing Strategy](./COMPREHENSIVE_TESTING_STRATEGY.md) serves as the central entry point for all testing documentation.
+## Test Types
 
-## Documentation Structure
+The testing framework includes:
 
-### Test Planning & Strategy
+- **Unit Tests**: Test individual functions, hooks, and components in isolation.
+- **Integration Tests**: Test how components and services work together.
+- **API Tests**: Test API endpoints and server routes.
+- **End-to-End Tests**: Test complete user journeys through the application.
+- **Visual Tests**: Test UI components for visual regression.
+- **Accessibility Tests**: Ensure components meet accessibility standards.
 
-- [Comprehensive Testing Strategy](./COMPREHENSIVE_TESTING_STRATEGY.md) - Master testing document
-- [Test Coverage Matrix](./TEST_COVERAGE_MATRIX.md) - Feature coverage map by role and test type
-- [Implementation Roadmap](./IMPLEMENTATION_ROADMAP.md) - Testing implementation plan
+## Testing Tools
 
-### User Role Testing
+The following tools are used in the testing framework:
 
-- [Test User Matrix](./TEST_USER_MATRIX.md) - Standard test users for different roles
-- [Authentication Patterns](./AUTHENTICATION_PATTERNS.md) - Authentication testing guidelines
+- **Vitest**: Fast test runner for unit and integration tests
+- **React Testing Library**: Component testing utilities
+- **Mock Service Worker (MSW)**: API mocking for frontend tests
+- **Playwright**: End-to-end testing framework
+- **Jest-Axe**: Accessibility testing
+- **Datadog**: Test reporting and monitoring
 
-### Test Environment & Setup
+## Directory Structure
 
-- [Test Environment Setup](./TEST_ENVIRONMENT_SETUP.md) - Environment configuration
-- [Database Reset Isolation](./DATABASE_RESET_ISOLATION.md) - Database isolation strategies
-- [Test Data Seeding Strategy](./TEST_DATA_SEEDING_STRATEGY.md) - Data seeding approach
-- [Clerk Database Sync](./CLERK_DATABASE_SYNC.md) - Clerk authentication integration
+```
+__tests__/
+├── api/                      # API route tests
+├── components/               # React component tests
+├── e2e/                      # End-to-end tests using Playwright
+├── integration/              # Integration tests for multiple components
+├── middleware/               # Middleware tests
+├── mocks/                    # Mock data and MSW handlers
+│   ├── auth/                 # Authentication mocks
+│   ├── marketplace/          # Marketplace mocks
+│   ├── profile/              # Profile mocks
+│   ├── scheduling/           # Scheduling mocks
+│   ├── handlers.ts           # Combined MSW handlers
+│   ├── initMocks.ts          # MSW initialization
+│   └── server.ts             # MSW server setup
+├── unit/                     # Unit tests
+└── utils/                    # Test utilities
+    ├── database/             # Database testing utilities
+    ├── factory/              # Test data factories
+    ├── seed/                 # Database seeding utilities
+    ├── api-test-utils.ts     # API testing helpers
+    ├── auth-test-utils.ts    # Authentication testing helpers
+    ├── db-test-utils.ts      # Database testing helpers
+    └── models.ts             # Test data models
+```
 
-### Test Categories & Patterns
+## Test Configuration
 
-- [API Testing Patterns](./API_TESTING_PATTERNS.md) - API testing approach
-- [Accessibility Testing Guidelines](./ACCESSIBILITY_TESTING_GUIDELINES.md) - A11y testing approach
-- [Error Testing Patterns](./ERROR_TESTING_PATTERNS.md) - Error handling testing
-- [Visual Regression Testing](./VISUAL_REGRESSION_TESTING.md) - Visual testing approach
-- [E2E Testing Implementation](./E2E_TESTING_IMPLEMENTATION.md) - End-to-end testing details
+### Vitest Configuration
 
-### Test Tools & Integration
+Vitest is configured in `vitest.config.ts` with the following settings:
 
-- [Testing Tools Reference](./TESTING_TOOLS_REFERENCE.md) - Testing utilities overview
-- [GitHub Actions CI Workflow](./GITHUB_ACTIONS_CI_WORKFLOW.md) - CI integration
-- [Test Pattern Libraries](./TEST_PATTERN_LIBRARIES.md) - Reusable test patterns
-- [LLM Optimized Documentation](./LLM_OPTIMIZED_DOCUMENTATION.md) - AI-assisted testing
+- **Test Environment**: JSDOM for simulating browser environment
+- **Setup Files**: `vitest.setup.ts` for global test configuration
+- **Coverage**: V8 provider with text, JSON, HTML, and JSON-summary reporters
+- **Test Patterns**: Matches files with `.test.ts` and `.test.tsx` extensions
 
-### Specialized Testing Areas
+### MSW Configuration
 
-- [Calendly Test Coverage Analysis](./CALENDLY_TEST_COVERAGE_ANALYSIS.md) - Calendly integration testing
-- [Calendly Critical Path Test](./CALENDLY_CRITICAL_PATH_TEST.md) - Calendly critical flows
-- [Calendly Manual Testing Plan](./CALENDLY_MANUAL_TESTING_PLAN.md) - Calendly manual testing
-- [Sentry Test Plan](./SENTRY_TEST_PLAN.md) - Sentry integration testing
+Mock Service Worker is set up in:
+- `__tests__/mocks/server.ts`: Server instance setup
+- `__tests__/mocks/handlers.ts`: API route handlers
+- `__tests__/mocks/initMocks.ts`: Lifecycle management
 
-### Maintenance & Improvement
+## Mock Service Worker (MSW)
 
-- [Test Failure Solutions](./TEST_FAILURE_SOLUTIONS.md) - Addressing common test failures
-- [Test Infrastructure Fixes](./TEST_INFRASTRUCTURE_FIXES.md) - Infrastructure improvements
-- [Future Investigation Areas](./FUTURE_INVESTIGATION_AREAS.md) - Future testing improvements
+MSW is used to mock API requests in tests. We've implemented comprehensive improvements to our MSW integration - see [MSW Integration Fixes](./MSW_INTEGRATION_FIXES.md) for details on all the enhancements.
 
-## Getting Started
+### Basic Usage
 
-For new team members, start with these resources:
+```typescript
+import { apiMock } from '@/__tests__/utils/api-test-utils';
 
-1. [Comprehensive Testing Strategy](./COMPREHENSIVE_TESTING_STRATEGY.md) - Overview of the testing approach
-2. [Test Environment Setup](./TEST_ENVIRONMENT_SETUP.md) - Setting up your environment
-3. [Test Coverage Matrix](./TEST_COVERAGE_MATRIX.md) - Understanding test coverage
-4. [Specific domain documentation](#test-categories--patterns) - Based on your area of focus
+// In your test setup
+beforeEach(() => {
+  // Mock a GET endpoint
+  apiMock.get('/api/users', [{ id: 1, name: 'Test User' }]);
+
+  // Mock a POST endpoint
+  apiMock.post('/api/users/create', { id: 2, name: 'New User' });
+
+  // Mock an error response
+  apiMock.error('/api/users/invalid', 'get', 'User not found', 404);
+});
+
+// Clean up after tests
+afterEach(() => {
+  apiMock.reset();
+});
+```
+
+### Capturing Request Data
+
+```typescript
+// Capture request data for inspection
+const captureMock = apiMock.capture('/api/users/create', 'post', { id: 3 });
+
+// Make API request in your test
+await userEvent.click(screen.getByText('Submit'));
+
+// Check what was sent in the request
+const requestData = captureMock.getRequestData();
+expect(requestData.name).toBe('Test User');
+
+// Get headers and query parameters
+const headers = captureMock.getRequestHeaders();
+const params = captureMock.getRequestParams();
+```
+
+### Advanced Features
+
+```typescript
+// Add artificial delay to test loading states
+const delayedMock = apiMock.get('/api/slow-endpoint', data, 200, {
+  delayMs: 1000 // 1 second delay
+});
+
+// Simulate network errors
+const errorMock = apiMock.get('/api/unstable', {}, 200, {
+  networkError: true
+});
+
+// Add custom response headers
+const headerMock = apiMock.get('/api/users/me', data, 200, {
+  headers: { 'Cache-Control': 'no-cache' }
+});
+
+// Remember to clean up mocks when done
+delayedMock.cleanup();
+errorMock.cleanup();
+headerMock.cleanup();
+```
+
+### Debugging MSW Issues
+
+For testing issues related to MSW, use our diagnostic tool:
+
+```bash
+# Run basic diagnostics
+node ./scripts/debug-msw.js
+
+# Run with more options
+node ./scripts/debug-msw.js --help
+```
+
+## Authentication Testing
+
+Authentication testing utilities are provided in `__tests__/utils/auth-test-utils.ts` with significant enhancements for reliable testing. See [MSW Integration Fixes](./MSW_INTEGRATION_FIXES.md) for comprehensive details.
+
+```typescript
+import { renderWithAuth, setupMockClerk } from '@/__tests__/utils/auth-test-utils';
+
+// Render a component with authentication context
+const { user, findByRoleAndWait } = renderWithAuth(<ProfilePage />, {
+  userType: 'builder',
+  userOverrides: {
+    roles: ['BUILDER', 'CLIENT']
+  },
+  providers: [ThemeProvider, StoreProvider] // Optional additional providers
+});
+
+// Use the user-event instance for interaction
+await user.click(screen.getByRole('button'));
+
+// Use async helpers
+const element = await findByRoleAndWait('heading', 'Profile');
+
+// For API testing, use setupApiAuth
+const apiAuth = setupApiAuth('builder');
+```
+
+Available user types with consistent Clerk IDs:
+- `client`: Regular client user
+- `premium-client`: Premium client user
+- `builder`: Established builder
+- `new-builder`: New builder account
+- `admin`: Administrator
+- `dual-role`: User with both client and builder roles
+- `triple-role`: User with client, builder, and admin roles
+- `unauthenticated`: Not signed in
+
+Helper functions for role checking:
+```typescript
+import { hasRole, getRolesForUserType } from '@/__tests__/utils/auth-test-utils';
+
+// Check if a user type has a specific role
+if (hasRole('builder', 'BUILDER')) {
+  // Do builder-specific testing
+}
+
+// Get all roles for a user type
+const roles = getRolesForUserType('triple-role'); // ['CLIENT', 'BUILDER', 'ADMIN']
+```
+
+## Database Testing
+
+Database testing utilities are available in `__tests__/utils/db-test-utils.ts`:
+
+```typescript
+import { withTestTransaction } from '@/__tests__/utils/db-test-utils';
+
+it('should create a user in the database', async () => {
+  await withTestTransaction(async (prisma) => {
+    // Your test code here
+    const result = await prisma.user.create({
+      data: { name: 'Test User', email: 'test@example.com' }
+    });
+    
+    expect(result.id).toBeDefined();
+  });
+  // Transaction is automatically rolled back after test
+});
+```
 
 ## Running Tests
 
-### E2E Tests
+The following npm scripts are available for running tests:
 
 ```bash
-# Install Playwright browsers
-pnpm exec playwright install
-
-# Run all E2E tests
-pnpm exec playwright test
-
-# Run specific test domains
-pnpm exec playwright test auth/
-pnpm exec playwright test booking/
-pnpm exec playwright test marketplace/
-
-# Run with specific browser
-pnpm exec playwright test --project=chromium
-
-# Update visual baselines
-pnpm exec playwright test --config=playwright.visual.config.ts --update-snapshots
-```
-
-### Unit and Component Tests
-
-```bash
-# Run all Vitest tests
+# Run all tests
 pnpm test
 
-# Run tests with coverage
+# Run tests in watch mode
+pnpm test:watch
+
+# Generate test coverage report
 pnpm test:coverage
 
-# Run tests in a specific file
-pnpm test path/to/test.test.tsx
+# Run specific test categories
+pnpm test:unit        # Unit tests
+pnpm test:integration # Integration tests
+pnpm test:api         # API tests
+pnpm test:e2e         # End-to-end tests
+pnpm test:middleware  # Middleware tests
 
-# Run tests matching a pattern
-pnpm test -t "pattern"
+# Debug MSW integration
+pnpm test:msw         # Run MSW tests with debug logging
+pnpm test:msw:debug   # Run MSW diagnostic script
 ```
 
-## Test Directory Structure
+## Writing New Tests
 
+### Component Test Example
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Button } from '@/components/ui/button';
+
+describe('Button Component', () => {
+  it('renders correctly', () => {
+    render(<Button>Click Me</Button>);
+    expect(screen.getByRole('button')).toHaveTextContent('Click Me');
+  });
+
+  it('calls onClick handler when clicked', async () => {
+    const handleClick = vi.fn();
+    render(<Button onClick={handleClick}>Click Me</Button>);
+    
+    await userEvent.click(screen.getByRole('button'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
 ```
-buildappswith/
-├── __tests__/
-│   ├── api/                   # API endpoint tests
-│   ├── components/            # Component tests
-│   ├── e2e/                   # End-to-end tests with Playwright
-│   │   ├── auth/
-│   │   ├── booking/
-│   │   ├── marketplace/
-│   │   ├── visual/
-│   │   └── global-setup.ts
-│   ├── integration/           # Integration tests
-│   ├── middleware/            # Middleware tests
-│   ├── mocks/                 # Mock data and functions
-│   ├── unit/                  # Unit tests
-│   └── utils/                 # Test utilities
-├── test-results/              # Test execution results
-│   ├── coverage/
-│   ├── e2e/
-│   ├── reports/
-│   └── visual/
-└── docs/
-    └── testing/               # Testing documentation (this directory)
+
+### API Test Example
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { apiMock, apiExpect } from '@/__tests__/utils/api-test-utils';
+import { fetchUsers } from '@/lib/api-client';
+
+describe('API Client', () => {
+  it('fetches users correctly', async () => {
+    // Mock the API response
+    apiMock.get('/api/users', [
+      { id: 1, name: 'User 1' },
+      { id: 2, name: 'User 2' }
+    ]);
+    
+    // Call the API client function
+    const result = await fetchUsers();
+    
+    // Verify the result
+    expect(result).toHaveLength(2);
+    expect(result[0].name).toBe('User 1');
+  });
+});
 ```
 
-## Contributing to Tests
+## CI/CD Integration
 
-When contributing new tests, please follow these guidelines:
+Tests are integrated into the CI/CD pipeline using GitHub Actions. The workflow is defined in `.github/workflows/test-suite.yml` and includes:
 
-1. Place tests in the appropriate directory based on type (unit, component, e2e, etc.)
-2. Follow the established test patterns for consistency
-3. Ensure tests are isolated and deterministic
-4. Include thorough assertions covering success and error cases
-5. Document any new test utilities or patterns
-6. Run the full test suite locally before submitting a PR
+- Running unit and integration tests
+- Running API tests
+- Generating test coverage reports
+- Executing E2E tests with Playwright
+- Reporting results to Datadog
 
-## Testing Best Practices
+## Common Issues and Solutions
 
-1. **Test Isolation**: Tests should not depend on or affect each other
-2. **Realistic Data**: Use realistic test data that mirrors production scenarios
-3. **Error Handling**: Test both happy path and error scenarios
-4. **Performance**: Optimize tests for speed to keep the feedback loop fast
-5. **Readability**: Write clear, understandable tests that serve as documentation
-6. **Coverage**: Aim for comprehensive coverage but prioritize critical paths
-7. **Maintainability**: Structure tests to be maintainable as the application evolves
+For a comprehensive list of common issues and solutions, see our [MSW Integration Fixes](./MSW_INTEGRATION_FIXES.md) and [MSW Test Fixes Summary](./MSW_TEST_FIXES_SUMMARY.md) documentation.
 
-## Archived Documentation
+### MSW Issues
 
-Superseded testing documentation has been archived and can be found in:
-- [Archived Testing Documentation](/docs/archive/testing)
+- **Unhandled Requests**: Make sure all API endpoints used in tests have corresponding handlers in MSW.
+- **Mock Timing**: Use `waitFor` from Testing Library to handle async operations.
+- **Server Already Running**: The MSW server should only be started once. The implementation handles this automatically.
+- **Environment Variable Dependencies**: Use `vi.stubEnv()` to mock environment variables in tests.
+- **Private Method Testing**: Use type casting to `any` to access private methods in tests.
 
-## Additional Resources
+### Authentication Issues
 
-- [Playwright Documentation](https://playwright.dev/docs/intro)
-- [Vitest Documentation](https://vitest.dev/)
-- [Testing Library Documentation](https://testing-library.com/docs/)
-- [React Testing Best Practices](https://reactjs.org/docs/testing.html)
+- **Missing User Roles**: Ensure you're using the correct `userType` or providing the necessary roles in `userOverrides`.
+- **Clerk API Changes**: If Clerk API changes, update the mock implementations in `auth-test-utils.ts`.
+
+### Database Issues
+
+- **Isolation**: Always use `withTestTransaction` to ensure test isolation.
+- **Test Data**: Use factories and seeds from `__tests__/utils/factory` for consistent test data.
+
+### Debugging Tips
+
+- Enable MSW debugging with `DEBUG_MSW=true` environment variable
+- Run the MSW diagnostic script: `pnpm test:msw:debug`
+- Check test coverage reports in `test-results/coverage`
+EOF < /dev/null

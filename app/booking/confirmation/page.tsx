@@ -1,256 +1,208 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { getCheckoutSessionStatus, createCheckoutSession } from '@/lib/stripe/actions';
-import { PaymentConfirmation } from '@/components/payment';
-import { PaymentStatus } from '@/lib/stripe/types';
-import { Card, CardContent } from '@/components/ui/core/card';
-import { Button } from '@/components/ui/core/button';
-import { useToast } from '@/components/ui/core/sonner';
-import { useAuth } from '@/hooks/auth';
-import { useUser } from '@clerk/nextjs';
-import Link from 'next/link';
-import { LoadingSpinner } from '@/components/ui/core/loading-spinner';
-import { BookingConfirmation } from '@/components/scheduling/calendly';
-import { getBookingFlowState, clearBookingFlowState } from '@/lib/scheduling/calendly';
-import { BookingStatus } from '@/lib/scheduling/types';
+import { useSearchParams } from 'next/navigation';
+import { useBookingFlow } from '@/lib/contexts/booking-flow-context';
+import { useBookingManager } from '@/hooks/scheduling';
+import { BookingStateEnum } from '@/lib/scheduling/state-machine/types';
+import { Card } from '@/components/ui/core';
+import { logger } from '@/lib/logger';
 
-/**
- * Booking Confirmation Page
- * 
- * This page serves two purposes:
- * 1. Shows the confirmation of a Calendly booking before payment (from the Calendly flow)
- * 2. Shows the confirmation status of a booking after payment processing (from the Stripe flow)
- */
 export default function BookingConfirmationPage() {
-  const router = useRouter();
-  const { toast } = useToast();
-  const { isSignedIn, isLoaded: isAuthLoaded } = useAuth();
-  const { user, isLoaded: isUserLoaded } = useUser();
   const searchParams = useSearchParams();
+  const { state } = useBookingFlow();
+  const { 
+    checkPaymentStatus, 
+    getBookingDetails,
+    resetBookingFlow
+  } = useBookingManager();
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sessionData, setSessionData] = useState<any>(null);
-  const [bookingData, setBookingData] = useState<any>(null);
-  const [isCalendlyFlow, setIsCalendlyFlow] = useState(false);
+  const [bookingDetails, setBookingDetails] = useState<any | null>(null);
   
   // Get query parameters
-  const sessionId = searchParams.get('session_id');
-  const status = searchParams.get('status');
-  const bookingId = searchParams.get('booking_id');
+  const bookingId = searchParams?.get('bookingId') || state.bookingId;
+  const step = searchParams?.get('step');
+  const stripeSessionId = searchParams?.get('session_id');
   
-  // Load details when the page loads
   useEffect(() => {
-    async function loadDetails() {
-      // First check if user is authenticated
-      if (!isAuthLoaded || !isUserLoaded) {
-        return; // Wait for auth to load
-      }
-      
-      if (!isSignedIn) {
-        setError('Please sign in to view your booking');
-        setLoading(false);
-        return;
-      }
-      
-      // Determine which flow we're in
-      if (sessionId) {
-        // Stripe payment flow (completed payment)
-        try {
-          // Get checkout session details
-          const result = await getCheckoutSessionStatus(sessionId);
-          
-          if (!result.success) {
-            setError(result.error?.detail || 'Failed to load session details');
-            toast({
-              title: 'Error',
-              description: 'Unable to load payment details',
-              variant: 'destructive'
-            });
-          } else {
-            setSessionData(result.data);
-            
-            // This would normally fetch booking details using a server action
-            // Since we're waiting on the scheduling service implementation, we'll
-            // just show placeholder booking data for now
-            setBookingData({
-              title: 'Consultation Session',
-              description: 'One-on-one consultation with a builder specialist',
-              builder: 'Liam (Builder)',
-              date: new Date().toISOString(),
-              duration: '60 minutes',
-              price: '$150.00'
-            });
-          }
-        } catch (e: any) {
-          setError(e.message || 'An error occurred');
-          toast({
-            title: 'Error',
-            description: 'Something went wrong',
-            variant: 'destructive'
-          });
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        // Calendly flow (needs payment)
-        // Handle status from Calendly redirect
-        if (status === 'cancelled') {
-          setError('Booking was cancelled');
-          setLoading(false);
-          return;
-        }
-        
-        // Get booking state from session storage
-        const state = getBookingFlowState();
-        
-        if (!state || !state.sessionType) {
-          setError('Booking information not found');
-          setLoading(false);
-          return;
-        }
-        
-        // Create a placeholder booking until we get the real one from the API
-        const placeholderBooking = {
-          id: bookingId || 'pending',
-          builderId: state.sessionType.builderId,
-          clientId: user?.id || '',
-          sessionTypeId: state.sessionType.id,
-          title: state.sessionType.title,
-          description: state.sessionType.description,
-          startTime: new Date().toISOString(), // Will be replaced with actual time
-          endTime: new Date(Date.now() + state.sessionType.durationMinutes * 60000).toISOString(),
-          status: BookingStatus.PENDING,
-          paymentStatus: PaymentStatus.UNPAID,
-          amount: state.sessionType.price,
-          calendlyEventTypeId: state.sessionType.calendlyEventTypeId,
-          calendlyEventTypeUri: state.sessionType.calendlyEventTypeUri
-        };
-        
-        setBookingData(placeholderBooking);
-        setSessionData({ sessionType: state.sessionType });
-        setIsCalendlyFlow(true);
-        setLoading(false);
-      }
-    }
-    
-    loadDetails();
-  }, [sessionId, status, bookingId, isSignedIn, isAuthLoaded, isUserLoaded, user?.id, toast]);
-  
-  // Handle proceeding to payment
-  const handleProceedToPayment = async () => {
-    if (!bookingData || !user) return;
-    
-    try {
+    async function handleConfirmation() {
       setLoading(true);
       
-      // Create a checkout session
-      const result = await createCheckoutSession({
-        bookingData: {
-          id: bookingData.id !== 'pending' ? bookingData.id : undefined,
-          builderId: bookingData.builderId,
-          sessionTypeId: bookingData.sessionTypeId,
-          startTime: bookingData.startTime,
-          endTime: bookingData.endTime,
-          clientId: user.id,
-          clientTimezone: bookingData.clientTimezone,
-          // Include Calendly fields if available
-          calendlyEventId: bookingData.calendlyEventId,
-          calendlyEventUri: bookingData.calendlyEventUri,
-          calendlyInviteeUri: bookingData.calendlyInviteeUri
-        },
-        returnUrl: `${window.location.origin}/booking/confirmation`
-      });
-      
-      if (!result.success || !result.data) {
-        setError(result.message || 'Failed to create checkout session');
+      try {
+        // If we have a session ID, check payment status
+        if (stripeSessionId) {
+          logger.info('Checking payment status from URL', { stripeSessionId });
+          const paymentSucceeded = await checkPaymentStatus(stripeSessionId);
+          
+          if (!paymentSucceeded) {
+            setError('Your payment was not completed. Please try again.');
+            setLoading(false);
+            return;
+          }
+        }
+        
+        // Fetch booking details
+        if (bookingId) {
+          const details = await getBookingDetails(bookingId);
+          setBookingDetails(details);
+        } else {
+          setError('Booking ID is missing');
+        }
+      } catch (err) {
+        logger.error('Error handling confirmation', { 
+          error: err instanceof Error ? err.message : String(err),
+          bookingId,
+          stripeSessionId
+        });
+        
+        setError(
+          err instanceof Error 
+            ? err.message 
+            : 'Failed to load booking confirmation'
+        );
+      } finally {
         setLoading(false);
-        return;
       }
-      
-      // Redirect to the checkout session
-      window.location.href = result.data.url;
-    } catch (error: any) {
-      console.error('Error creating checkout session:', error);
-      setError('An unexpected error occurred');
-      setLoading(false);
     }
-  };
+    
+    handleConfirmation();
+  }, [bookingId, stripeSessionId, checkPaymentStatus, getBookingDetails]);
   
-  // Handle cancellation
-  const handleCancel = () => {
-    clearBookingFlowState();
-    router.push('/');
-  };
-  
-  // Show loading state
   if (loading) {
     return (
-      <div className="container py-12">
-        <Card className="max-w-xl mx-auto p-6">
-          <div className="text-center">
-            <LoadingSpinner className="h-8 w-8 mx-auto mb-4" />
-            <p className="text-muted-foreground">Loading booking details...</p>
-          </div>
-        </Card>
+      <div className="confirmation-loading flex justify-center items-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        <p className="ml-4">Processing your booking...</p>
       </div>
     );
   }
   
-  // Show error state
   if (error) {
     return (
-      <div className="container py-12">
-        <Card className="max-w-xl mx-auto p-6">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Booking Confirmation</h1>
-            <div className="p-4 mb-6 bg-red-50 border border-red-200 text-red-700 rounded-md">
-              {error}
+      <div className="confirmation-error p-6 bg-red-50 border border-red-200 rounded-lg">
+        <h2 className="text-xl font-semibold text-red-700 mb-2">Error</h2>
+        <p className="text-red-600">{error}</p>
+        <button
+          onClick={resetBookingFlow}
+          className="mt-4 px-4 py-2 bg-primary text-white rounded"
+        >
+          Return to Booking
+        </button>
+      </div>
+    );
+  }
+  
+  if (state.step === BookingStateEnum.PAYMENT_SUCCEEDED || 
+      state.step === BookingStateEnum.BOOKING_CONFIRMED) {
+    return (
+      <div className="confirmation-success p-4 max-w-4xl mx-auto">
+        <Card className="p-6">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-8 w-8 text-green-600" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M5 13l4 4L19 7" 
+                />
+              </svg>
             </div>
-            <Button asChild>
-              <Link href="/dashboard">Go to Dashboard</Link>
-            </Button>
+            <h1 className="text-2xl font-bold text-green-700">Booking Confirmed!</h1>
+            <p className="text-gray-600">
+              Thank you for your booking. Your session has been scheduled.
+            </p>
+          </div>
+          
+          <div className="booking-details border-t border-gray-200 pt-4">
+            <h2 className="font-semibold text-lg mb-3">Booking Details:</h2>
+            
+            {bookingDetails ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Session Type</p>
+                  <p className="font-medium">{bookingDetails.title}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-gray-500">Date & Time</p>
+                  <p className="font-medium">
+                    {bookingDetails.startTime && 
+                      new Date(bookingDetails.startTime).toLocaleString()}
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-gray-500">Duration</p>
+                  <p className="font-medium">
+                    {bookingDetails.sessionType?.durationMinutes || '-'} minutes
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-gray-500">Status</p>
+                  <p className="font-medium">
+                    <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      {bookingDetails.status}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p>Booking details are not available</p>
+            )}
+          </div>
+          
+          <div className="mt-8 text-center">
+            <button
+              onClick={() => {
+                resetBookingFlow();
+                window.location.href = '/';
+              }}
+              className="px-4 py-2 bg-primary text-white rounded"
+            >
+              Return to Home
+            </button>
+            
+            <button
+              onClick={resetBookingFlow}
+              className="ml-4 px-4 py-2 bg-gray-200 text-gray-800 rounded"
+            >
+              Book Another Session
+            </button>
           </div>
         </Card>
       </div>
     );
   }
-
-  // If this is a Calendly flow (before payment), show the booking confirmation
-  if (isCalendlyFlow) {
-    return (
-      <div className="container max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-8 text-center">Booking Confirmation</h1>
-        
-        <BookingConfirmation
-          booking={bookingData}
-          sessionType={sessionData?.sessionType}
-          isPending={loading}
-          error={error || undefined}
-          onProceedToPayment={handleProceedToPayment}
-          onCancel={handleCancel}
-        />
-      </div>
-    );
-  }
   
-  // Otherwise, this is a Stripe flow (after payment), show the payment confirmation
-  // Use the appropriate payment status based on the Stripe session status
-  const paymentStatus = status === 'success' ? PaymentStatus.PAID : 
-                      status === 'cancelled' ? PaymentStatus.FAILED :
-                      sessionData?.paymentStatus || PaymentStatus.UNPAID;
-  
+  // Default view for other states
   return (
-    <div className="container py-12">
-      {bookingData && (
-        <PaymentConfirmation
-          paymentStatus={paymentStatus}
-          sessionData={bookingData}
-          showAddToCalendar={paymentStatus === PaymentStatus.PAID}
-        />
-      )}
+    <div className="confirmation-default p-4 max-w-4xl mx-auto">
+      <Card className="p-6">
+        <h1 className="text-2xl font-bold mb-6">Booking Status</h1>
+        
+        <p>
+          Your booking is being processed. Current status: {state.step}
+        </p>
+        
+        <div className="mt-8">
+          <button
+            onClick={resetBookingFlow}
+            className="px-4 py-2 bg-primary text-white rounded"
+          >
+            Return to Booking
+          </button>
+        </div>
+      </Card>
     </div>
   );
 }

@@ -3,5 +3,6 @@
  * Version: 1.0.0
  */
 
-// Export scheduling hooks here
-// Example: export * from './use-booking';
+// Export scheduling hooks
+export { default as useBookingManager } from './use-booking-flow';
+export * from './use-booking-flow';

@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { enhancedLogger } from './enhanced-logger'
+import { createDomainLogger } from './logger'
 
 /**
  * PrismaClient is attached to the `global` object in development to prevent
@@ -9,7 +9,7 @@ import { enhancedLogger } from './enhanced-logger'
  */
 
 // Create a database-specific logger instance
-const dbLogger = enhancedLogger.child({ domain: 'database' })
+const dbLogger = createDomainLogger('database')
 
 // Define Prisma client options based on environment
 const prismaOptions = {

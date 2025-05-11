@@ -4,4 +4,4 @@
  */
 
 // Export composite UI components here
-// Example: export * from './card';
+export { FormError } from './form-error';

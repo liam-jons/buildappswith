@@ -1,93 +1,127 @@
 # Testing Implementation: Next Steps
 
-## Current Status and Challenges
-
-We've made significant progress with the testing infrastructure implementation, but have encountered several challenges that need to be addressed:
-
-1. **MSW Integration Issues**: The Mock Service Worker (MSW) dependency has been added, but we're experiencing integration issues with our test framework. Tests that rely on MSW for API mocking are failing because of module resolution issues.
-
-2. **Playwright Configuration Problems**: End-to-end tests using Playwright are failing due to configuration issues, particularly when using `test.use()` to specify authentication. We've started to fix this by creating a separate configuration and using fixtures.
-
-3. **Module Import Errors**: Several tests are failing due to missing modules or incorrect import paths. This indicates a need for better module organization or proper mocking strategies.
-
-4. **Mock Implementation Issues**: Tests that use mock implementations like `mockResolvedValueOnce` are failing because the mocks aren't set up correctly. This suggests a need for standardized mocking patterns.
+This document outlines the next steps for the BuildAppsWith testing infrastructure.
 
 ## Immediate Action Items
 
-1. **Fix MSW Integration**:
-   - Ensure MSW is properly initialized in the test setup
-   - Create a central place for handler definitions
-   - Verify MSW is working with a simple test case
+1. **Fix Remaining Test Failures**
+   - Complete comprehensive test for all booking flow components
+   - ✅ Resolve any remaining MSW integration issues in specific tests
+   - ✅ Fix Calendly service and API client tests
+   - ✅ Create documentation for MSW test fixes and common issues
+   - Fix timing issues in async tests
 
-2. **Update Playwright Configuration**:
-   - Implement the updated configuration with proper project definitions
-   - Update existing tests to use fixtures instead of `test.use()`
-   - Fix the syntax error in the Calendly booking flow test
+2. **Complete Test Coverage for Critical Paths**
+   - Implement missing unit tests for core components
+   - Add integration tests for auth-marketplace interaction
+   - Create E2E tests for booking payment flow
 
-3. **Standardize Mocking Patterns**:
-   - Create clear documentation on how to mock modules
-   - Implement helper functions for common mocking scenarios
-   - Ensure consistent mocking patterns across all tests
+3. **Verify GitHub Actions Workflow**
+   - Test the full CI workflow locally
+   - Ensure proper test database setup in CI
+   - Verify coverage reporting to Datadog
 
-4. **Resolve Module Import Issues**:
-   - Fix import paths for missing modules
-   - Create mock implementations for external dependencies
-   - Ensure proper module resolution in the test environment
+4. **Database Testing Utilities**
+   - Implement proper test data seeding
+   - Enhance transaction isolation for database tests
+   - Create factory functions for all entity types
 
-## Medium-term Goals
+## Medium Term Goals
 
-1. **Expand Test Coverage**:
-   - Implement tests for critical business logic
-   - Cover primary user journeys
-   - Add tests for error cases and edge conditions
+1. **Test Coverage Targets**
+   - Achieve 80% coverage for critical paths
+   - Ensure all API endpoints have corresponding tests
+   - Create visual regression tests for key UI components
 
-2. **Database Testing Improvements**:
-   - Implement transaction isolation for database tests
-   - Create seed data scripts for test scenarios
-   - Ensure proper cleanup after tests
+2. **Clerk Migration**
+   - Migrate from deprecated `@clerk/clerk-sdk-node` to `@clerk/express`
+   - Update mock implementations for new API
+   - Create migration guide for tests using Clerk authentication
 
-3. **CI/CD Integration**:
-   - Set up GitHub Actions workflow for running tests
-   - Implement test reporting and visualization
-   - Create status checks for pull requests
+3. **E2E Testing Enhancement**
+   - Expand Playwright tests for all user journeys
+   - Implement visual comparison testing
+   - Create accessibility testing workflow
 
-## Clerk Migration Planning
+4. **Test Performance Optimization**
+   - Improve test speed through better mocking
+   - Implement parallel test execution where possible
+   - Optimize database reset between tests
 
-1. **Document Current Usage**:
-   - Identify all locations where Clerk SDK is used
-   - Document authentication and authorization patterns
-   - Map out user roles and permissions
+## Documentation Needs
 
-2. **Research Express Migration**:
-   - Understand the new `@clerk/express` API
-   - Identify breaking changes and required updates
-   - Create migration test cases
+1. **Test Patterns Guide**
+   - Document common test patterns for components
+   - Create examples for API testing
+   - Provide guidelines for E2E testing
 
-3. **Implementation Plan**:
-   - Create a detailed timeline for migration
-   - Identify potential risks and mitigations
-   - Develop a phased approach for implementation
+2. **Component Testing Checklist**
+   - Create checklist for component test requirements
+   - Document accessibility testing requirements
+   - Outline visual testing approaches
 
-## Team Coordination
+3. **Mock Data Management**
+   - Document approach to creating and managing mock data
+   - Create standards for test data consistency
+   - Outline factory pattern usage
 
-1. **Knowledge Sharing**:
-   - Document testing patterns and best practices
-   - Hold a short workshop on the testing infrastructure
-   - Create examples of well-tested components
+## Technical Debt to Address
 
-2. **Code Review Guidelines**:
-   - Establish expectations for test coverage
-   - Create checklist for test quality
-   - Ensure tests are reviewed alongside code changes
+1. **Inconsistent Test Patterns**
+   - Standardize test approach across codebase
+   - ✅ Apply dependency injection patterns for better testability
+   - Refactor tests using deprecated patterns
+   - Ensure consistent naming conventions
 
-3. **Monitoring and Maintenance**:
-   - Set up monitoring for test success rates
-   - Schedule regular maintenance of the test suite
-   - Track test performance over time
+2. **Missing Unit Tests**
+   - Add missing tests for utility functions
+   - Create tests for hooks and context providers
+   - Implement tests for Redux/state management
 
-## Timeline
+3. **Outdated Mock Implementations**
+   - ✅ Update mock implementations for Calendly API
+   - ✅ Improve environment variable handling in tests
+   - Create consistent patterns for API mocks
+   - Document mock strategy for external dependencies
 
-1. **Phase 1 (May 2025)**: Fix immediate issues and stabilize the test environment
-2. **Phase 2 (June 2025)**: Expand test coverage to core functionality
-3. **Phase 3 (July 2025)**: Integrate with CI/CD and implement reporting
-4. **Phase 4 (August-December 2025)**: Plan and execute Clerk migration
+## Development Process Integration
+
+1. **Pre-commit Hooks**
+   - Add pre-commit hooks for running affected tests
+   - Enforce test coverage thresholds
+   - Implement lint rules for test files
+
+2. **Pull Request Workflow**
+   - Create PR template with testing checklist
+   - Automate test coverage reporting on PRs
+   - Implement test status badges
+
+3. **Test-Driven Development**
+   - Document TDD approach for new features
+   - Create examples of TDD workflow
+   - Train team on TDD practices
+
+## Clerk SDK Migration Plan
+
+The Clerk SDK migration requires attention before January 2025:
+
+1. **Assessment Phase** (Immediate)
+   - Identify all usages of `@clerk/clerk-sdk-node`
+   - Document API differences between old and new SDKs
+   - Create test cases for verification
+
+2. **Implementation Phase** (Q3 2024)
+   - Migrate to `@clerk/express` in server code
+   - Update authentication middleware
+   - Modify webhook handlers
+
+3. **Testing Phase** (Q4 2024)
+   - Update mock implementations in tests
+   - Verify all auth-dependent tests
+   - Ensure backward compatibility where needed
+
+4. **Verification Phase** (December 2024)
+   - Run all tests with new SDK
+   - Perform manual testing of auth flows
+   - Deploy to staging environment
+EOF < /dev/null

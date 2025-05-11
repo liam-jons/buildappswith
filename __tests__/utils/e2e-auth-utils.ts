@@ -166,15 +166,69 @@ export class AuthUtils {
     // Navigate to the login page
     await page.goto(`${options.baseURL || ''}/login`);
 
-    // Fill in credentials
-    await page.getByLabel(/email/i).fill(user.email);
-    await page.getByLabel(/password/i).fill(user.password);
-    
-    // Submit the form
-    await page.getByRole('button', { name: /log in|sign in/i }).click();
-    
-    // Wait for navigation to complete
-    await page.waitForURL(/.*\/(dashboard|profile|builder|admin)/);
+    // Debug information
+    console.log('Attempting to sign in user:', user.email);
+
+    try {
+      // Wait for the page to load completely
+      await page.waitForLoadState('networkidle');
+
+      // First try the Clerk-specific selectors
+      try {
+        // Look for Clerk-specific email input
+        await page.locator('#identifier-field, input[name="identifier"]').fill(user.email);
+        console.log('Filled email with Clerk selector');
+
+        // Try to find and click the continue button (Clerk's first step)
+        const continueButton = page.locator('button.cl-formButtonPrimary, button.cl-formButton--button, button[data-testid="submit-button"]');
+        if (await continueButton.isVisible()) {
+          await continueButton.click();
+          console.log('Clicked continue button');
+          // Wait for transition or password field to appear
+          await page.waitForTimeout(1000);
+        }
+
+        // Now look for password field with Clerk-specific selectors
+        const passwordField = page.locator('#password-field, input[name="password"], input[type="password"]');
+        await passwordField.fill(user.password);
+        console.log('Filled password with Clerk selector');
+
+        // Click sign in button
+        await page.locator('button[type="submit"], button.cl-formButtonPrimary, button[data-testid="submit-button"]').click();
+        console.log('Clicked submit button');
+      } catch (clerkError) {
+        console.log('Clerk-specific selectors failed, trying generic ones:', clerkError);
+
+        // Fallback to more generic selectors
+        // Fill email
+        await page.getByLabel(/email/i).fill(user.email);
+        console.log('Filled email with generic label selector');
+
+        // Fill password
+        await page.locator('input[type="password"]').fill(user.password);
+        console.log('Filled password with generic type selector');
+
+        // Click submit
+        await page.locator('button[type="submit"]').click();
+        console.log('Clicked generic submit button');
+      }
+
+      // Wait for navigation to complete
+      console.log('Waiting for navigation to complete...');
+      await page.waitForURL(/.*\/(dashboard|profile|builder|admin)/, { timeout: 10000 });
+      console.log('Navigation completed successfully');
+    } catch (error) {
+      console.error('Error during sign in:', error);
+
+      // Take screenshot for debugging
+      await page.screenshot({ path: `auth-error-${userRole}.png` });
+
+      // Capture HTML for debugging
+      const html = await page.content();
+      console.log('Current page HTML structure:', html.substring(0, 500) + '...');
+
+      throw error;
+    }
   }
 
   /**
@@ -243,10 +297,31 @@ export class AuthUtils {
               // Navigate to login page
               await page.goto(`${options.baseURL || ''}/login`);
 
-              // Login with this user
-              await page.getByLabel(/email/i).fill(user.email);
-              await page.getByLabel(/password/i).fill(user.password);
-              await page.getByRole('button', { name: /log in|sign in/i }).click();
+              // Use the same robust sign-in method
+              try {
+                // Look for Clerk-specific email input
+                await page.locator('#identifier-field, input[name="identifier"]').fill(user.email);
+
+                // Try to find and click the continue button (Clerk's first step)
+                const continueButton = page.locator('button.cl-formButtonPrimary, button.cl-formButton--button, button[data-testid="submit-button"]');
+                if (await continueButton.isVisible()) {
+                  await continueButton.click();
+                  // Wait for transition or password field to appear
+                  await page.waitForTimeout(1000);
+                }
+
+                // Now look for password field with Clerk-specific selectors
+                const passwordField = page.locator('#password-field, input[name="password"], input[type="password"]');
+                await passwordField.fill(user.password);
+
+                // Click sign in button
+                await page.locator('button[type="submit"], button.cl-formButtonPrimary, button[data-testid="submit-button"]').click();
+              } catch (clerkError) {
+                // Fallback to more generic selectors
+                await page.getByLabel(/email/i).fill(user.email);
+                await page.locator('input[type="password"]').fill(user.password);
+                await page.locator('button[type="submit"]').click();
+              }
 
               // Wait for navigation to complete
               await page.waitForURL(/.*\/(dashboard|profile|builder|admin)/);

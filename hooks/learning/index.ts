@@ -4,4 +4,4 @@
  */
 
 // Export learning hooks here
-// Example: export * from './use-learning-path';
+export * from './use-learning-state';

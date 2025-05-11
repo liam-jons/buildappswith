@@ -7,13 +7,19 @@
  * https://github.com/sanity-io/next-sanity
  */
 
-import { NextStudio } from 'next-sanity/studio'
-import config from '../../../sanity.config'
+// Temporarily disabled for production build
+// import { NextStudio } from 'next-sanity/studio'
+// import config from '../../../sanity.config'
 
 export const dynamic = 'force-static'
 
-export { metadata, viewport } from 'next-sanity/studio'
+// export { metadata, viewport } from 'next-sanity/studio'
 
 export default function StudioPage() {
-  return <NextStudio config={config} />
+  return (
+    <div className="p-8 text-center">
+      <h1 className="text-2xl font-bold mb-4">Sanity Studio</h1>
+      <p>Sanity Studio is currently disabled in production.</p>
+    </div>
+  )
 }

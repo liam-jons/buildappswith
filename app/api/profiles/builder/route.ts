@@ -1,16 +1,19 @@
 /**
  * Builder Profiles API Route
- * Version: 1.0.0
- * 
+ * Version: 2.0.0
+ *
  * API routes for managing builder profiles
+ * Updated to use Clerk Express SDK protection helpers
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth, withBuilder } from '@/lib/auth/api-auth';
+import { withBuilder } from '@/lib/auth/express/api-auth';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { captureException } from '@sentry/nextjs';
 import { UserRole } from '@/lib/auth/types';
+import { AuthErrorType, createAuthErrorResponse, addAuthPerformanceMetrics } from '@/lib/auth/express/errors';
+import { logger } from '@/lib/logger';
 
 // Schema for builder profile updates
 const builderProfileSchema = z.object({
@@ -29,14 +32,20 @@ const builderProfileSchema = z.object({
 
 /**
  * GET /api/profiles/builder
- * 
+ *
  * Get the authenticated user's builder profile
  */
-export const GET = withBuilder(async (req: NextRequest, user) => {
+export const GET = withBuilder(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
+    logger.debug('Fetching builder profile', { userId, path, method });
+
     // Look up the user in the database
     const dbUser = await db.user.findUnique({
-      where: { clerkId: user.id },
+      where: { clerkId: userId },
       include: {
         builderProfile: {
           include: {
@@ -51,16 +60,26 @@ export const GET = withBuilder(async (req: NextRequest, user) => {
     });
 
     if (!dbUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
+      logger.warn('User not found when fetching builder profile', { userId, path, method });
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHENTICATION,
+        'User not found',
+        404,
+        path,
+        method,
+        userId
       );
     }
 
     if (!dbUser.builderProfile) {
-      return NextResponse.json(
-        { error: 'Builder profile not found' },
-        { status: 404 }
+      logger.warn('Builder profile not found', { userId, path, method });
+      return createAuthErrorResponse(
+        'RESOURCE_NOT_FOUND',
+        'Builder profile not found',
+        404,
+        path,
+        method,
+        userId
       );
     }
 
@@ -71,98 +90,147 @@ export const GET = withBuilder(async (req: NextRequest, user) => {
       category: skill.skill.category,
     }));
 
-    // Return the builder profile
-    return NextResponse.json({
-      id: dbUser.builderProfile.id,
-      userId: dbUser.id,
-      bio: dbUser.builderProfile.bio,
-      headline: dbUser.builderProfile.headline,
-      skills: formattedSkills,
-      availableForHire: dbUser.builderProfile.availableForHire,
-      adhdFocus: dbUser.builderProfile.adhdFocus,
-      validationTier: dbUser.builderProfile.validationTier,
-      socialLinks: dbUser.builderProfile.socialLinks,
-      createdAt: dbUser.builderProfile.createdAt,
-      updatedAt: dbUser.builderProfile.updatedAt,
+    // Return the builder profile with performance metrics
+    const response = NextResponse.json({
+      success: true,
+      data: {
+        id: dbUser.builderProfile.id,
+        userId: dbUser.id,
+        bio: dbUser.builderProfile.bio,
+        headline: dbUser.builderProfile.headline,
+        skills: formattedSkills,
+        availableForHire: dbUser.builderProfile.availableForHire,
+        adhdFocus: dbUser.builderProfile.adhdFocus,
+        validationTier: dbUser.builderProfile.validationTier,
+        socialLinks: dbUser.builderProfile.socialLinks,
+        createdAt: dbUser.builderProfile.createdAt,
+        updatedAt: dbUser.builderProfile.updatedAt,
+      }
     });
+
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
   } catch (error) {
-    console.error('Error fetching builder profile:', error);
+    logger.error('Error fetching builder profile', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId,
+      path,
+      method
+    });
     captureException(error);
-    
-    return NextResponse.json(
-      { error: 'Failed to fetch builder profile' },
-      { status: 500 }
+
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to fetch builder profile',
+      500,
+      path,
+      method,
+      userId
     );
   }
 });
 
 /**
  * POST /api/profiles/builder
- * 
+ *
  * Update the authenticated user's builder profile
  */
-export const POST = withBuilder(async (req: NextRequest, user) => {
+export const POST = withBuilder(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
+    logger.debug('Updating builder profile', { userId, path, method });
+
     // Parse the request body
     const requestBody = await req.json();
-    
+
     // Validate the request body against the schema
     const result = builderProfileSchema.safeParse(requestBody);
-    
+
     if (!result.success) {
-      return NextResponse.json(
-        { 
-          error: 'Invalid request body', 
-          details: result.error.format() 
-        },
-        { status: 400 }
+      logger.warn('Invalid request body for builder profile update', {
+        userId,
+        path,
+        method,
+        validationErrors: result.error.format()
+      });
+
+      return createAuthErrorResponse(
+        'VALIDATION_ERROR',
+        'Invalid request body',
+        400,
+        path,
+        method,
+        userId
       );
     }
-    
+
     const validatedData = result.data;
-    
+
     // First, find the user in our database
     const dbUser = await db.user.findUnique({
-      where: { clerkId: user.id },
+      where: { clerkId: userId },
       include: {
         builderProfile: true
       }
     });
-    
+
     if (!dbUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
+      logger.warn('User not found when updating builder profile', { userId, path, method });
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHENTICATION,
+        'User not found',
+        404,
+        path,
+        method,
+        userId
       );
     }
-    
+
     if (!dbUser.builderProfile) {
       // If no builder profile exists but user has the builder role, create one
       if (dbUser.roles.includes(UserRole.BUILDER)) {
+        logger.info('Creating new builder profile', { userId, path, method });
+
         const newProfile = await db.builderProfile.create({
           data: {
             userId: dbUser.id,
             bio: validatedData.bio || '',
             headline: validatedData.headline || '',
-            availableForHire: validatedData.availableForHire || true,
-            adhdFocus: validatedData.adhdFocus || false,
+            availableForHire: validatedData.availableForHire ?? true,
+            adhdFocus: validatedData.adhdFocus ?? false,
             socialLinks: validatedData.socialLinks || {},
             validationTier: 1,
           },
         });
-        
-        return NextResponse.json({
+
+        const response = NextResponse.json({
+          success: true,
           message: 'Builder profile created successfully',
-          profile: newProfile,
+          data: newProfile,
         });
+
+        return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
       } else {
-        return NextResponse.json(
-          { error: 'User does not have builder role' },
-          { status: 403 }
+        logger.warn('User without builder role attempted to create profile', {
+          userId,
+          roles,
+          path,
+          method
+        });
+
+        return createAuthErrorResponse(
+          AuthErrorType.AUTHORIZATION,
+          'User does not have builder role',
+          403,
+          path,
+          method,
+          userId
         );
       }
     }
-    
+
     // Update the builder profile
     const updateData = {
       ...validatedData.bio !== undefined ? { bio: validatedData.bio } : {},
@@ -171,23 +239,29 @@ export const POST = withBuilder(async (req: NextRequest, user) => {
       ...validatedData.adhdFocus !== undefined ? { adhdFocus: validatedData.adhdFocus } : {},
       ...validatedData.socialLinks !== undefined ? { socialLinks: validatedData.socialLinks } : {},
     };
-    
+
     // Update skills if provided
     if (validatedData.skills && validatedData.skills.length > 0) {
+      logger.debug('Updating builder skills', {
+        userId,
+        profileId: dbUser.builderProfile.id,
+        skillCount: validatedData.skills.length
+      });
+
       // First, remove existing skill connections
       await db.builderSkill.deleteMany({
         where: {
           builderProfileId: dbUser.builderProfile.id
         }
       });
-      
+
       // Then, add new skill connections
       for (const skillName of validatedData.skills) {
         // Find or create the skill
         let skill = await db.skill.findFirst({
           where: { name: skillName }
         });
-        
+
         if (!skill) {
           skill = await db.skill.create({
             data: {
@@ -196,7 +270,7 @@ export const POST = withBuilder(async (req: NextRequest, user) => {
             }
           });
         }
-        
+
         // Create the connection
         await db.builderSkill.create({
           data: {
@@ -206,24 +280,43 @@ export const POST = withBuilder(async (req: NextRequest, user) => {
         });
       }
     }
-    
+
     // Update the builder profile
     const updatedProfile = await db.builderProfile.update({
       where: { id: dbUser.builderProfile.id },
       data: updateData,
     });
-    
-    return NextResponse.json({
-      message: 'Builder profile updated successfully',
-      profile: updatedProfile,
+
+    logger.info('Builder profile updated successfully', {
+      userId,
+      profileId: dbUser.builderProfile.id,
+      path,
+      method
     });
+
+    const response = NextResponse.json({
+      success: true,
+      message: 'Builder profile updated successfully',
+      data: updatedProfile,
+    });
+
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
   } catch (error) {
-    console.error('Error updating builder profile:', error);
+    logger.error('Error updating builder profile', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId,
+      path,
+      method
+    });
     captureException(error);
-    
-    return NextResponse.json(
-      { error: 'Failed to update builder profile' },
-      { status: 500 }
+
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to update builder profile',
+      500,
+      path,
+      method,
+      userId
     );
   }
 });

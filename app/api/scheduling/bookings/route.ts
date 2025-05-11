@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { withAuth } from '@clerk/nextjs/api';
+import { withAuth, withClient } from '@/lib/auth/express/api-auth';
 import { createBooking, getAvailableTimeSlots } from '@/lib/scheduling/real-data/scheduling-service';
 import * as Sentry from '@sentry/nextjs';
-import { parseISO, isWithinInterval } from 'date-fns';
+import { parseISO } from 'date-fns';
+import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
+import { logger } from '@/lib/logger';
+import { UserRole } from '@/lib/auth/types';
 
 // Schema for booking creation
 const createBookingSchema = z.object({
@@ -22,52 +25,61 @@ const createBookingSchema = z.object({
 });
 
 /**
- * Helper function to handle service errors with appropriate responses
- */
-function handleServiceError(error: any, defaultMessage: string): NextResponse {
-  console.error(defaultMessage, error);
-  Sentry.captureException(error);
-  
-  // Extract readable error message if available
-  const errorMessage = error.message || defaultMessage;
-  
-  return NextResponse.json(
-    { error: errorMessage }, 
-    { status: 500 }
-  );
-}
-
-/**
  * POST handler for creating a new booking
+ * Updated to use Express SDK with client role check
  */
-export const POST = withAuth(async (request: NextRequest, auth: any) => {
+export const POST = withClient(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
-    // Check if user is authenticated
-    if (!auth.userId) {
-      return NextResponse.json(
-        { error: 'You must be signed in to book a session' }, 
-        { status: 401 }
-      );
-    }
+    logger.info('Booking creation request received', {
+      path,
+      method,
+      userId
+    });
     
     // Parse and validate the request body
-    const body = await request.json();
+    const body = await req.json();
     const result = createBookingSchema.safeParse(body);
     
     if (!result.success) {
-      return NextResponse.json(
-        { error: 'Invalid booking data', details: result.error.format() }, 
-        { status: 400 }
+      logger.warn('Invalid booking data received', {
+        path,
+        method,
+        userId,
+        validationErrors: result.error.format()
+      });
+      
+      return createAuthErrorResponse(
+        'VALIDATION_ERROR',
+        'Invalid booking data',
+        400,
+        path,
+        method,
+        userId
       );
     }
     
     const bookingData = result.data;
     
     // Verify that the requesting user is the client
-    if (auth.userId !== bookingData.clientId) {
-      return NextResponse.json(
-        { error: 'Not authorized to create bookings for other users' }, 
-        { status: 403 }
+    if (userId !== bookingData.clientId) {
+      logger.warn('User attempted to create booking for another user', {
+        path,
+        method,
+        userId,
+        requestedClientId: bookingData.clientId
+      });
+      
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHORIZATION,
+        'Not authorized to create bookings for other users',
+        403,
+        path,
+        method,
+        userId
       );
     }
     
@@ -101,61 +113,140 @@ export const POST = withAuth(async (request: NextRequest, auth: any) => {
     });
     
     if (!isSlotAvailable) {
-      return NextResponse.json(
-        { error: 'The selected time slot is not available' }, 
-        { status: 400 }
+      logger.warn('Requested time slot not available', {
+        path,
+        method,
+        userId,
+        builderId: bookingData.builderId,
+        startTime: bookingData.startTime,
+        endTime: bookingData.endTime
+      });
+      
+      return createAuthErrorResponse(
+        'VALIDATION_ERROR',
+        'The selected time slot is not available',
+        400,
+        path,
+        method,
+        userId
       );
     }
     
     // Create the booking
     const booking = await createBooking(bookingData);
     
-    return NextResponse.json({ booking });
-    
+    logger.info('Booking created successfully', {
+      path,
+      method,
+      userId,
+      bookingId: booking.id,
+      builderId: bookingData.builderId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+
+    // Create response with standardized format
+    const response = NextResponse.json({
+      success: true,
+      data: { booking }
+    });
+
+    // Add performance metrics to the response
+    return addAuthPerformanceMetrics(
+      response, 
+      startTime, 
+      true, 
+      path, 
+      method, 
+      userId
+    );
   } catch (error) {
-    return handleServiceError(error, 'Error creating booking');
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    logger.error('Error creating booking', {
+      error: errorMessage,
+      path,
+      method,
+      userId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+    
+    Sentry.captureException(error);
+    
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Error creating booking',
+      500,
+      path,
+      method,
+      userId
+    );
   }
 });
 
 /**
  * GET handler for fetching bookings
+ * Updated to use Express SDK with user authentication 
  */
-export const GET = withAuth(async (request: NextRequest, auth: any) => {
+export const GET = withAuth(async (req: NextRequest, userId: string) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
-    // Check if user is authenticated
-    if (!auth.userId) {
-      return NextResponse.json(
-        { error: 'You must be signed in to view bookings' }, 
-        { status: 401 }
-      );
-    }
+    logger.info('Bookings fetch request received', {
+      path,
+      method,
+      userId
+    });
     
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const builderId = searchParams.get('builderId');
     const clientId = searchParams.get('clientId');
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
-    const status = searchParams.get('status') as any;
+    const status = searchParams.get('status');
     
     // Either builderId or clientId must be provided
     if (!builderId && !clientId) {
-      return NextResponse.json(
-        { error: 'Either builderId or clientId is required' }, 
-        { status: 400 }
+      logger.warn('Missing required parameters for booking fetch', {
+        path,
+        method,
+        userId
+      });
+      
+      return createAuthErrorResponse(
+        'VALIDATION_ERROR',
+        'Either builderId or clientId is required',
+        400,
+        path,
+        method,
+        userId
       );
     }
     
     // Ensure the user can only access their own bookings
     // A user can see bookings where they are either the builder or the client
     const isAuthorized = (
-      (builderId && auth.userId === builderId) || 
-      (clientId && auth.userId === clientId)
+      (builderId && userId === builderId) || 
+      (clientId && userId === clientId)
     );
     
     if (!isAuthorized) {
-      return NextResponse.json(
-        { error: 'You are not authorized to view these bookings' }, 
-        { status: 403 }
+      logger.warn('Unauthorized booking access attempt', {
+        path,
+        method,
+        userId,
+        requestedBuilderId: builderId,
+        requestedClientId: clientId
+      });
+      
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHORIZATION,
+        'You are not authorized to view these bookings',
+        403,
+        path,
+        method,
+        userId
       );
     }
     
@@ -171,9 +262,51 @@ export const GET = withAuth(async (request: NextRequest, auth: any) => {
       bookings = await getClientBookings(clientId!, startDate || undefined, endDate || undefined, status || undefined);
     }
     
-    return NextResponse.json({ bookings });
-    
+    logger.info('Bookings retrieved successfully', {
+      path,
+      method,
+      userId,
+      count: bookings.length,
+      builderId: builderId || undefined,
+      clientId: clientId || undefined,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+
+    // Create response with standardized format
+    const response = NextResponse.json({
+      success: true,
+      data: { bookings }
+    });
+
+    // Add performance metrics to the response
+    return addAuthPerformanceMetrics(
+      response, 
+      startTime, 
+      true, 
+      path, 
+      method, 
+      userId
+    );
   } catch (error) {
-    return handleServiceError(error, 'Error fetching bookings');
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    logger.error('Error fetching bookings', {
+      error: errorMessage,
+      path,
+      method,
+      userId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+    
+    Sentry.captureException(error);
+    
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Error fetching bookings',
+      500,
+      path,
+      method,
+      userId
+    );
   }
 });

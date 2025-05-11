@@ -6,10 +6,10 @@
  */
 
 import { db, checkDatabaseConnection } from './db';
-import { enhancedLogger } from './enhanced-logger';
+import { createDomainLogger } from './logger';
 import * as Sentry from '@sentry/nextjs';
 
-const monitoringLogger = enhancedLogger.child({ domain: 'database-monitoring' });
+const monitoringLogger = createDomainLogger('database-monitoring');
 
 /**
  * Database health check result

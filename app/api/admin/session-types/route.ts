@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { withAdmin } from "@/lib/auth/clerk/api-auth";
-import { AuthUser } from "@/lib/auth/clerk/helpers";
+import { withAdmin } from "@/lib/auth/express/api-auth";
 import * as Sentry from "@sentry/nextjs";
-import { UserRole } from "@/lib/auth/types";
 import { z } from "zod";
+import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
+import { logger } from '@/lib/logger';
+import { UserRole } from "@/lib/auth/types";
 
 const prisma = new PrismaClient();
 
@@ -22,9 +23,18 @@ const sessionTypeSchema = z.object({
 });
 
 // GET /api/admin/session-types - Get all session types
-// Updated to use Clerk authentication with admin role check
-export const GET = withAdmin(async (req: NextRequest, user: AuthUser) => {
+// Updated to use Express SDK with admin role check
+export const GET = withAdmin(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
+    logger.info('Admin session types request received', {
+      path,
+      method,
+      userId
+    });
     
     // Get query parameters
     const { searchParams } = new URL(req.url);
@@ -44,24 +54,67 @@ export const GET = withAdmin(async (req: NextRequest, user: AuthUser) => {
       price: Number(st.price),
     }));
     
-    return NextResponse.json({ 
+    logger.info('Session types retrieved successfully', {
+      count: serializedSessionTypes.length,
+      path,
+      method,
+      userId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+
+    // Create response with standardized format
+    const response = NextResponse.json({ 
+      success: true,
       data: serializedSessionTypes,
       count: serializedSessionTypes.length,
     });
+
+    // Add performance metrics to the response
+    return addAuthPerformanceMetrics(
+      response, 
+      startTime, 
+      true, 
+      path, 
+      method, 
+      userId
+    );
   } catch (error) {
-    console.error("Error fetching session types:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    logger.error('Error fetching session types', {
+      error: errorMessage,
+      path,
+      method,
+      userId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+    
     Sentry.captureException(error);
-    return NextResponse.json(
-      { error: "Failed to fetch session types" },
-      { status: 500 }
+    
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to fetch session types',
+      500,
+      path,
+      method,
+      userId
     );
   }
 });
 
 // POST /api/admin/session-types - Create a new session type
-// Updated to use Clerk authentication with admin role check
-export const POST = withAdmin(async (req: NextRequest, user: AuthUser) => {
+// Updated to use Express SDK with admin role check
+export const POST = withAdmin(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
+    logger.info('Admin session type creation request received', {
+      path,
+      method,
+      userId
+    });
     
     // Parse request body
     const body = await req.json();
@@ -69,9 +122,20 @@ export const POST = withAdmin(async (req: NextRequest, user: AuthUser) => {
     // Validate with schema
     const validationResult = sessionTypeSchema.safeParse(body);
     if (!validationResult.success) {
-      return NextResponse.json(
-        { error: "Invalid session type data", details: validationResult.error.format() },
-        { status: 400 }
+      logger.warn('Invalid session type data', {
+        details: validationResult.error.format(),
+        path,
+        method,
+        userId
+      });
+      
+      return createAuthErrorResponse(
+        'VALIDATION_ERROR',
+        'Invalid session type data',
+        400,
+        path,
+        method,
+        userId
       );
     }
     
@@ -97,16 +161,54 @@ export const POST = withAdmin(async (req: NextRequest, user: AuthUser) => {
       price: Number(newSessionType.price),
     };
     
-    return NextResponse.json(
-      { message: "Session type created successfully", data: serializedSessionType },
+    logger.info('Session type created successfully', {
+      sessionTypeId: serializedSessionType.id,
+      builderId: serializedSessionType.builderId,
+      path,
+      method,
+      userId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+
+    // Create response with standardized format
+    const response = NextResponse.json(
+      { 
+        success: true,
+        message: "Session type created successfully", 
+        data: serializedSessionType 
+      },
       { status: 201 }
     );
+
+    // Add performance metrics to the response
+    return addAuthPerformanceMetrics(
+      response, 
+      startTime, 
+      true, 
+      path, 
+      method, 
+      userId
+    );
   } catch (error) {
-    console.error("Error creating session type:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    logger.error('Error creating session type', {
+      error: errorMessage,
+      path,
+      method,
+      userId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+    
     Sentry.captureException(error);
-    return NextResponse.json(
-      { error: "Failed to create session type" },
-      { status: 500 }
+    
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to create session type',
+      500,
+      path,
+      method,
+      userId
     );
   }
 });

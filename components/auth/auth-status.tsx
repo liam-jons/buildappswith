@@ -1,29 +1,46 @@
 /**
  * Authentication Status Component
- * 
- * This component demonstrates the use of the authentication hooks to display
- * the current authentication status and user information.
- * 
- * Version: 1.0.0
+ *
+ * This component demonstrates the use of the Clerk Express SDK authentication hooks
+ * to display the current authentication status and user information.
+ *
+ * Version: 2.0.0 (Updated for Clerk Express SDK)
  */
 
 'use client';
 
-import { useAuth, useUser } from '@/hooks/auth';
+import {
+  useAuth,
+  useUser,
+  useIsAdmin,
+  useIsBuilder,
+  useIsClient,
+  useHasRole,
+  useSignOut,
+  useAuthStatus
+} from '@/hooks/auth';
 import { Button } from '@/components/ui/core/button';
 import { UserRole } from '@/lib/auth/types';
+import { useMemo } from 'react';
 
 interface AuthStatusProps {
   className?: string;
+  compact?: boolean;
 }
 
 /**
  * Component that displays the current authentication status and user information
+ * using the Clerk Express SDK hooks
  */
-export function AuthStatus({ className }: AuthStatusProps) {
-  const { isSignedIn, isLoaded, roles, hasRole, isAdmin, isBuilder, isClient, signOut } = useAuth();
+export function AuthStatus({ className, compact = false }: AuthStatusProps) {
+  // Use Express SDK hooks for improved performance via hooks/auth
+  const { isSignedIn, isLoaded, roles, hasRole } = useAuth();
   const { user } = useUser();
-  
+  const isAdmin = useIsAdmin();
+  const isBuilder = useIsBuilder();
+  const isClient = useIsClient();
+  const signOut = useSignOut();
+
   // Handle loading state
   if (!isLoaded) {
     return (
@@ -32,49 +49,69 @@ export function AuthStatus({ className }: AuthStatusProps) {
       </div>
     );
   }
-  
+
   // Handle unauthenticated state
   if (!isSignedIn) {
     return (
       <div className={`p-4 rounded-md bg-slate-100 ${className}`}>
-        <h3 className="text-lg font-medium mb-2">Not Authenticated</h3>
-        <p className="text-slate-600 mb-4">You are not currently signed in.</p>
+        {!compact && <h3 className="text-lg font-medium mb-2">Not Authenticated</h3>}
+        {!compact && <p className="text-slate-600 mb-4">You are not currently signed in.</p>}
         <div className="flex space-x-4">
-          <Button variant="default" onClick={() => window.location.href = '/login'}>
-            Sign In
+          <Button variant="default" size={compact ? "sm" : "default"} asChild>
+            <a href="/login">Sign In</a>
           </Button>
-          <Button variant="outline" onClick={() => window.location.href = '/sign-up'}>
-            Create Account
-          </Button>
+          {!compact && (
+            <Button variant="outline" asChild>
+              <a href="/sign-up">Create Account</a>
+            </Button>
+          )}
         </div>
       </div>
     );
   }
-  
-  // Handle authenticated state
+
+  // Compact authenticated view for headers/navbars
+  if (compact) {
+    return (
+      <div className={`flex items-center gap-2 ${className}`}>
+        <span className="text-sm font-medium">
+          {user?.name || 'Authenticated User'}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => signOut({ callbackUrl: '/' })}
+        >
+          Sign out
+        </Button>
+      </div>
+    );
+  }
+
+  // Full authenticated state view
   return (
     <div className={`p-4 rounded-md bg-slate-100 ${className}`}>
       <h3 className="text-lg font-medium mb-2">Authentication Status</h3>
-      
+
       <div className="mb-4">
         <p className="text-green-600 font-medium">✓ Authenticated</p>
         <p className="text-slate-600">User ID: {user?.id}</p>
         <p className="text-slate-600">Name: {user?.name}</p>
         <p className="text-slate-600">Email: {user?.email}</p>
       </div>
-      
+
       <div className="mb-4">
         <h4 className="font-medium mb-1">Roles:</h4>
         <div className="flex flex-wrap gap-2">
           {roles.length > 0 ? (
             roles.map((role) => (
-              <span 
-                key={role} 
+              <span
+                key={role}
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  role === UserRole.ADMIN 
-                    ? 'bg-purple-100 text-purple-800' 
-                    : role === UserRole.BUILDER 
-                    ? 'bg-blue-100 text-blue-800' 
+                  role === UserRole.ADMIN
+                    ? 'bg-purple-100 text-purple-800'
+                    : role === UserRole.BUILDER
+                    ? 'bg-blue-100 text-blue-800'
                     : 'bg-green-100 text-green-800'
                 }`}
               >
@@ -86,7 +123,7 @@ export function AuthStatus({ className }: AuthStatusProps) {
           )}
         </div>
       </div>
-      
+
       <div className="mb-4">
         <h4 className="font-medium mb-1">Role Status:</h4>
         <ul className="space-y-1">
@@ -116,24 +153,26 @@ export function AuthStatus({ className }: AuthStatusProps) {
           </li>
         </ul>
       </div>
-      
-      {user?.completedOnboarding !== undefined && (
+
+      {user?.verified !== undefined && (
         <div className="mb-4">
           <h4 className="font-medium mb-1">Profile Status:</h4>
-          <p className="text-slate-600">
-            Onboarding: {user.completedOnboarding ? 'Complete' : 'Incomplete'}
-          </p>
           {user.verified !== undefined && (
             <p className="text-slate-600">
               Verification: {user.verified ? 'Verified' : 'Unverified'}
             </p>
           )}
+          {user.stripeCustomerId && (
+            <p className="text-slate-600">
+              Stripe Customer ID: {user.stripeCustomerId}
+            </p>
+          )}
         </div>
       )}
-      
+
       <div className="mt-4">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => signOut({ callbackUrl: '/' })}
         >
           Sign Out
@@ -147,27 +186,69 @@ export function AuthStatus({ className }: AuthStatusProps) {
  * Protected version of AuthStatus that requires authentication
  */
 export function ProtectedAuthStatus(props: AuthStatusProps) {
-  const { isSignedIn, isLoaded } = useAuth();
-  
-  if (!isLoaded) {
+  const { isAuthenticated, isLoading } = useAuthStatus();
+
+  if (isLoading) {
     return <div>Loading...</div>;
   }
-  
-  if (!isSignedIn) {
+
+  if (!isAuthenticated) {
     return (
       <div className={`p-4 rounded-md bg-slate-100 ${props.className}`}>
         <p className="text-slate-600">
           You must be signed in to view this content.
         </p>
-        <Button 
-          className="mt-2" 
-          onClick={() => window.location.href = '/login'}
+        <Button
+          className="mt-2"
+          asChild
         >
-          Sign In
+          <a href="/login">Sign In</a>
         </Button>
       </div>
     );
   }
-  
+
   return <AuthStatus {...props} />;
+}
+
+/**
+ * Simple auth status component for site header/navigation
+ * Enhanced with improved performance through memoization
+ */
+export function HeaderAuthStatus() {
+  const { isAuthenticated, isLoading } = useAuthStatus();
+  const signOut = useSignOut();
+  const { user } = useUser();
+
+  // Memoize component for performance
+  const content = useMemo(() => {
+    if (isLoading) {
+      return <div className="text-sm">Loading...</div>;
+    }
+  
+    if (!isAuthenticated) {
+      return (
+        <Button variant="ghost" size="sm" asChild>
+          <a href="/login">Sign in</a>
+        </Button>
+      );
+    }
+  
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium">
+          {user?.name || 'Authenticated User'}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => signOut({ callbackUrl: '/' })}
+        >
+          Sign out
+        </Button>
+      </div>
+    );
+  }, [isLoading, isAuthenticated, user, signOut]);
+
+  return content;
 }

@@ -1,17 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { withAdmin } from "@/lib/auth/clerk/api-auth";
-import { AuthUser } from "@/lib/auth/clerk/helpers";
+import { withAdmin } from "@/lib/auth/express/api-auth";
+import { UserRole } from "@/lib/auth/types";
 import * as Sentry from "@sentry/nextjs";
+import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
+import { logger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
 
 // GET /api/admin/builders - Get all builders
-// Version: 1.0.59
-export const GET = withAdmin(async (req: NextRequest, user: AuthUser) => {
+// Updated to use Express SDK with admin role check
+export const GET = withAdmin(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
-    // Using withAdmin middleware which already checks for admin role
-    // No need to check authentication as withAdmin already handles it
+    logger.info('Admin builders list request received', {
+      path,
+      method,
+      userId
+    });
     
     // Fetch builders
     const builders = await prisma.builderProfile.findMany({
@@ -45,16 +54,50 @@ export const GET = withAdmin(async (req: NextRequest, user: AuthUser) => {
       validationTier: builder.validationTier
     }));
     
-    return NextResponse.json({ 
+    logger.info('Builders list retrieved successfully', {
+      count: formattedBuilders.length,
+      path,
+      method,
+      userId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+
+    // Create response with standardized format
+    const response = NextResponse.json({ 
+      success: true,
       data: formattedBuilders,
       count: formattedBuilders.length,
     });
+
+    // Add performance metrics to the response
+    return addAuthPerformanceMetrics(
+      response, 
+      startTime, 
+      true, 
+      path, 
+      method, 
+      userId
+    );
   } catch (error) {
-    console.error("Error fetching builders:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    logger.error('Error fetching builders', {
+      error: errorMessage,
+      path,
+      method,
+      userId,
+      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+    
     Sentry.captureException(error);
-    return NextResponse.json(
-      { error: "Failed to fetch builders" },
-      { status: 500 }
+    
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to fetch builders',
+      500,
+      path,
+      method,
+      userId
     );
   }
 });
