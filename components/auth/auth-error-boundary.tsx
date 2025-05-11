@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSignOut, useAuthToken } from '@/hooks/auth';
+import { useSignOut, useAuthToken } from '@/lib/auth/express/client-auth';
 import { Button } from '@/components/ui/core/button';
 import * as Sentry from '@sentry/nextjs';
 

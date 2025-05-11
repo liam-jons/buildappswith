@@ -9,7 +9,7 @@ const companies = [
   { name: "Vercel", logoUrl: "/logos/vercel-logo.svg" },
   { name: "Supabase", logoUrl: "/logos/supabase-logo.svg" },
   { name: "Neon", logoUrl: "/logos/neon-logo.svg" },
-  { name: "Lovable", logoUrl: "/logos/lovable-logo.svg" },
+  { name: "Loveable", logoUrl: "/logos/loveable-logo.svg" },
   { name: "Stripe", logoUrl: "/logos/stripe-logo.svg" }
 ];
 

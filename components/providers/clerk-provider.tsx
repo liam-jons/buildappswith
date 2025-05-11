@@ -1,12 +1,8 @@
 "use client";
 
-import { ClerkProvider as BaseClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
-import { useTheme } from "next-themes";
+import { EnhancedClerkProvider } from "./enhanced-clerk-provider";
 import { AuthLoadingState } from "../auth/loading-state";
 import { Suspense } from "react";
-// Import Sentry if needed for error monitoring
-import * as Sentry from "@sentry/nextjs";
 
 interface ClerkProviderProps {
   children: React.ReactNode;
@@ -14,44 +10,17 @@ interface ClerkProviderProps {
 
 /**
  * ClerkProvider wrapper component that supports theme switching
+ * This is now a wrapper around EnhancedClerkProvider for backward compatibility
  */
 export function ClerkProvider({ children }: ClerkProviderProps) {
-  const { theme } = useTheme();
-  
-  // Prevent strict mode double-mounting issues by using a stable reference
+  // Use the enhanced provider with consistent behavior across environments
   return (
-    <BaseClerkProvider
-      appearance={{
-        baseTheme: theme === "dark" ? dark : undefined,
-        elements: {
-          formButtonPrimary: 
-            "bg-primary hover:bg-primary/90 text-primary-foreground",
-          card: "bg-background border border-border shadow-sm",
-          formButtonReset: "text-muted-foreground hover:text-foreground",
-          footerActionLink: "text-primary hover:text-primary/90",
-          headerTitle: "text-foreground",
-          headerSubtitle: "text-muted-foreground",
-          socialButtonsBlockButton: 
-            "border border-border hover:bg-muted text-foreground",
-          formFieldLabel: "text-foreground",
-          formFieldInput: 
-            "bg-background border border-input text-foreground rounded-md",
-          identityPreview: "bg-muted-foreground/20",
-          dividerLine: "bg-border",
-          dividerText: "text-muted-foreground",
-        },
-      }}
-      // Setting publishableKey in the component ensures it's properly set on client-side
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-      // Adding observer to catch and report auth errors
-      // New as of v5 of Clerk's SDK
-      telemetry={false}
-    >
+    <EnhancedClerkProvider>
       <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
-        <AuthLoadingState>
+        <AuthLoadingState maxWaitTime={10000}>
           {children}
         </AuthLoadingState>
       </Suspense>
-    </BaseClerkProvider>
+    </EnhancedClerkProvider>
   );
 }

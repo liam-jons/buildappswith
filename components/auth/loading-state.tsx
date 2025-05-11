@@ -2,28 +2,56 @@
 
 import { useAuth } from "@clerk/nextjs";
 import React from "react";
+import ProgressiveLoadingState from "./progressive-loading-state";
 
 interface AuthLoadingStateProps {
   children: React.ReactNode;
+  maxWaitTime?: number;
 }
 
 /**
  * Component to handle authentication loading states
  * Prevents blank pages by showing a loading state while Clerk auth is initializing
+ * Uses a reliable initialization check with connection monitoring and timeout safety
  */
-export function AuthLoadingState({ children }: AuthLoadingStateProps) {
-  const { isLoaded } = useAuth();
+export function AuthLoadingState({
+  children,
+  maxWaitTime = 8000
+}: AuthLoadingStateProps) {
+  const { isLoaded, isSignedIn } = useAuth();
+  const [stage, setStage] = React.useState<'initializing' | 'connecting' | 'timeout'>('initializing');
+  const [forceRender, setForceRender] = React.useState(false);
 
-  if (!isLoaded) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
-          <p className="text-sm text-muted-foreground">Loading authentication...</p>
-        </div>
-      </div>
-    );
+  // Use multiple checks to detect proper loading
+  React.useEffect(() => {
+    // Set initial stage
+    setStage('connecting');
+
+    // Safety timeout for worst-case scenarios
+    // Will force-render content after maxWaitTime
+    const safetyTimer = setTimeout(() => {
+      console.warn('Auth initialization safety timeout reached, forcing render');
+      setForceRender(true);
+    }, maxWaitTime);
+
+    // Show timeout message after 3 seconds
+    const timeoutTimer = setTimeout(() => {
+      if (!isLoaded) {
+        setStage('timeout');
+      }
+    }, 3000);
+
+    return () => {
+      clearTimeout(safetyTimer);
+      clearTimeout(timeoutTimer);
+    };
+  }, [maxWaitTime]);
+
+  // When auth is loaded or we hit the safety timeout, render children
+  if (isLoaded || forceRender) {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  // Show progressive loading UI while waiting
+  return <ProgressiveLoadingState state={stage} />;
 }
