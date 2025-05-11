@@ -1,7 +1,7 @@
 /**
  * Profile server actions
  * Version: 1.0.0
- * 
+ *
  * Server-side actions for profile functionality
  */
 
@@ -465,12 +465,12 @@ export async function updateSessionType(
 export async function deleteSessionType(id: string): Promise<boolean> {
   try {
     const { userId: clerkId } = auth()
-    
+
     if (!clerkId) {
       logger.warn('deleteSessionType: No authenticated user')
       return false
     }
-    
+
     // Get user from database using clerkId
     const user = await prisma.user.findUnique({
       where: { clerkId },
@@ -478,33 +478,294 @@ export async function deleteSessionType(id: string): Promise<boolean> {
         builderProfile: true
       }
     })
-    
+
     if (!user || !user.builderProfile) {
       logger.warn('deleteSessionType: No builder profile found', { clerkId })
       return false
     }
-    
+
     // Verify this session type belongs to the user
     const sessionType = await prisma.sessionType.findUnique({
       where: { id }
     })
-    
+
     if (!sessionType || sessionType.builderId !== user.builderProfile.id) {
       logger.warn('deleteSessionType: Session type not found or not owned by user', { sessionTypeId: id })
       throw new Error('Session type not found or not owned by user')
     }
-    
+
     // Delete session type
     await prisma.sessionType.delete({
       where: { id }
     })
-    
+
     // Revalidate path
     revalidatePath(`/profile/${user.builderProfile.slug || user.id}`)
-    
+
     return true
   } catch (error) {
     logger.error('Error in deleteSessionType', { error, id })
     throw new Error('Failed to delete session type')
+  }
+}
+
+/**
+ * Generic profile update function for general user profile data
+ */
+export async function updateProfile(formData: FormData): Promise<{ success?: boolean; error?: string }> {
+  try {
+    const { userId: clerkId } = auth()
+
+    if (!clerkId) {
+      logger.warn('updateProfile: No authenticated user')
+      return { error: 'Not authenticated' }
+    }
+
+    // Get user from database using clerkId
+    const user = await prisma.user.findUnique({
+      where: { clerkId }
+    })
+
+    if (!user) {
+      logger.warn('updateProfile: User not found', { clerkId })
+      return { error: 'User not found' }
+    }
+
+    // Extract form data
+    const name = formData.get('name') as string
+    const title = formData.get('title') as string
+    const bio = formData.get('bio') as string
+    const location = formData.get('location') as string
+    const website = formData.get('website') as string
+
+    // Validate required fields
+    if (!name) {
+      return { error: 'Name is required' }
+    }
+
+    // Update user record
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name,
+        title: title || null,
+        bio: bio || null,
+        location: location || null,
+        website: website || null
+      }
+    })
+
+    // Revalidate paths
+    revalidatePath('/profile')
+
+    return { success: true }
+  } catch (error) {
+    logger.error('Error in updateProfile', { error })
+    return { error: 'Failed to update profile' }
+  }
+}
+
+/**
+ * Get a user profile by ID
+ *
+ * @param id The user ID
+ * @returns User profile data
+ */
+export async function getUserProfile(id: string): Promise<any | null> {
+  try {
+    if (!id) {
+      logger.warn('getUserProfile: No ID provided')
+      return null
+    }
+
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        builderProfile: true
+      }
+    })
+
+    if (!user) {
+      logger.warn('getUserProfile: User not found', { id })
+      return null
+    }
+
+    // Return user profile data
+    return {
+      id: user.id,
+      clerkId: user.clerkId,
+      name: user.name,
+      email: user.email,
+      title: user.title,
+      bio: user.bio,
+      location: user.location,
+      website: user.website,
+      imageUrl: user.imageUrl,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      builderProfile: user.builderProfile ? {
+        id: user.builderProfile.id,
+        bio: user.builderProfile.bio,
+        headline: user.builderProfile.headline,
+        slug: user.builderProfile.slug,
+        tagline: user.builderProfile.tagline,
+        displayName: user.builderProfile.displayName,
+        validationTier: user.builderProfile.validationTier,
+        domains: user.builderProfile.domains,
+        badges: user.builderProfile.badges,
+        completedProjects: user.builderProfile.completedProjects,
+        responseRate: user.builderProfile.responseRate,
+        hourlyRate: user.builderProfile.hourlyRate?.toNumber(),
+        availableForHire: user.builderProfile.availableForHire,
+        expertiseAreas: user.builderProfile.expertiseAreas,
+        socialLinks: user.builderProfile.socialLinks,
+        portfolioItems: user.builderProfile.portfolioItems,
+        topSkills: user.builderProfile.topSkills
+      } : null
+    }
+  } catch (error) {
+    logger.error('Error in getUserProfile', { error, id })
+    throw new Error('Failed to get user profile')
+  }
+}
+
+/**
+ * Get a public user profile
+ *
+ * @returns Public profile for the current user
+ */
+export async function getPublicUserProfile(): Promise<any | null> {
+  try {
+    const { userId: clerkId } = auth()
+
+    if (!clerkId) {
+      logger.warn('getPublicUserProfile: No authenticated user')
+      return null
+    }
+
+    // Get user from database using clerkId
+    const user = await prisma.user.findUnique({
+      where: { clerkId },
+      include: {
+        builderProfile: true
+      }
+    })
+
+    if (!user) {
+      logger.warn('getPublicUserProfile: User not found', { clerkId })
+      return null
+    }
+
+    // Return public profile data
+    return {
+      id: user.id,
+      name: user.name,
+      title: user.title,
+      bio: user.bio,
+      location: user.location,
+      website: user.website,
+      imageUrl: user.imageUrl,
+      builderProfile: user.builderProfile ? {
+        displayName: user.builderProfile.displayName,
+        tagline: user.builderProfile.tagline,
+        validationTier: user.builderProfile.validationTier,
+        domains: user.builderProfile.domains,
+        badges: user.builderProfile.badges,
+        completedProjects: user.builderProfile.completedProjects,
+        availableForHire: user.builderProfile.availableForHire,
+        topSkills: user.builderProfile.topSkills,
+        socialLinks: user.builderProfile.socialLinks
+      } : null
+    }
+  } catch (error) {
+    logger.error('Error in getPublicUserProfile', { error })
+    throw new Error('Failed to get public user profile')
+  }
+}
+
+/**
+ * Get client profile data
+ *
+ * @param userId - The client user ID
+ * @returns Client profile data with booking stats
+ */
+export async function getClientProfileData(userId: string): Promise<any | null> {
+  try {
+    if (!userId) {
+      logger.warn('getClientProfileData: No userId provided')
+      return null
+    }
+
+    // Get user data
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    })
+
+    if (!user) {
+      logger.warn('getClientProfileData: User not found', { userId })
+      return null
+    }
+
+    // Get booking information
+    const bookings = await prisma.booking.findMany({
+      where: { clientId: userId },
+      include: {
+        builder: true
+      }
+    })
+
+    // Calculate stats from bookings
+    const bookingCount = bookings.length
+
+    // Calculate total hours scheduled
+    const scheduledHours = bookings.reduce((total, booking) => {
+      const start = new Date(booking.startTime)
+      const end = new Date(booking.endTime)
+      const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60)
+      return total + durationHours
+    }, 0)
+
+    // Calculate unique builders worked with
+    const builderSet = new Set(bookings.map(booking => booking.builderId))
+    const builderConnections = builderSet.size
+
+    // Count completed projects (placeholder)
+    const completedProjects = bookings.filter(booking =>
+      booking.status === "COMPLETED").length
+
+    // Format date for member since
+    const memberSince = user.createdAt.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+
+    // Placeholder for interests
+    const interests = user.interests || []
+
+    // Mock values for changes (to be implemented with real trending)
+    const bookingChange = 5
+    const scheduledHoursChange = 2
+    const projectsChange = 1
+
+    return {
+      id: user.id,
+      name: user.name || 'Anonymous User',
+      email: user.email,
+      avatarUrl: user.imageUrl || '/images/default-avatar.svg',
+      memberSince,
+      bookingCount,
+      scheduledHours,
+      builderConnections,
+      completedProjects,
+      interests,
+      bookingChange,
+      scheduledHoursChange,
+      projectsChange
+    }
+  } catch (error) {
+    logger.error('Error in getClientProfileData', { error, userId })
+    throw new Error('Failed to get client profile data')
   }
 }

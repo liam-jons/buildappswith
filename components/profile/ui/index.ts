@@ -4,6 +4,7 @@
  */
 
 // Export components
-export { default as SessionBookingCard } from './session-booking-card';
-export { default as ProfileStats } from './profile-stats';
-export * from "./profile-stats";
+export { SessionBookingCard } from './session-booking-card';
+export { ProfileStats } from './profile-stats';
+export * from './profile-details';
+export * from './profile-header';

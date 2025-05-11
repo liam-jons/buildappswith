@@ -19,7 +19,8 @@ import {
   useIsBuilder as useExpressIsBuilder,
   useHasRole as useExpressHasRole,
   useSignOut as useExpressSignOut,
-  useAuthStatus as useExpressAuthStatus
+  useAuthStatus as useExpressAuthStatus,
+  useAuthToken as useExpressAuthToken
 } from '@/lib/auth/express/client-auth';
 
 /**
@@ -123,6 +124,15 @@ export function useHasAllRoles(roles: UserRole[]) {
 export function useHasAnyRole(roles: UserRole[]) {
   const { hasRole, isLoaded } = useExpressAuth();
   return isLoaded && roles.some(role => hasRole(role));
+}
+
+/**
+ * Hook for accessing and refreshing auth tokens using Express SDK
+ *
+ * @returns Token management functions and state
+ */
+export function useAuthToken() {
+  return useExpressAuthToken();
 }
 
 /**

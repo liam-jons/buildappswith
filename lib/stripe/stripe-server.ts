@@ -1,7 +1,7 @@
 /**
  * Server-side Stripe utilities
  * This file contains utilities for working with Stripe on the server
- * Version: 1.0.130
+ * Version: 1.1.0
  */
 
 import { Stripe } from "stripe";
@@ -69,6 +69,36 @@ const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 
 // Export the typed instance
 export const stripe = stripeInstance;
+
+/**
+ * Creates a typed Stripe client instance
+ *
+ * This is a factory function that ensures proper initialization and configuration
+ * of the Stripe client, including error handling for missing API keys.
+ *
+ * @returns A configured Stripe instance or null if configuration is invalid
+ */
+export function createStripeClient(): Stripe | null {
+  try {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+
+    if (!secretKey) {
+      logger.error('Stripe secret key is missing from environment variables');
+      return null;
+    }
+
+    return new Stripe(secretKey, {
+      apiVersion: '2025-03-31.basil' as const,
+      appInfo: {
+        name: 'Buildappswith',
+        version: '1.0.134',
+      },
+    });
+  } catch (error) {
+    logger.error('Failed to initialize Stripe client', { error });
+    return null;
+  }
+}
 
 /**
  * Helper function to handle Stripe errors consistently

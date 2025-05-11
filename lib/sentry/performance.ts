@@ -1,6 +1,10 @@
 /**
  * Performance monitoring configuration and utilities for Sentry
- * @version 1.0.0
+ * @version 1.1.0
+ *
+ * This module provides a compatible implementation of performance monitoring
+ * that works with current Sentry API versions. It uses defensive programming
+ * to handle API changes and provides fallbacks when needed.
  */
 
 import * as Sentry from '@sentry/nextjs';
@@ -123,8 +127,35 @@ export function createTransaction(options: TransactionOptions): SpanInterface {
           finish: () => {
             // Optionally try to finish the transaction if API exists
             try {
-              if (Sentry && typeof (Sentry as any).finishTransaction === 'function') {
-                (Sentry as any).finishTransaction();
+              // For Sentry v9+, use the compatible API calls if available
+              if (Sentry) {
+                // First try new API if available
+                if (typeof (Sentry as any).getCurrentScope === 'function') {
+                  try {
+                    const scope = (Sentry as any).getCurrentScope();
+                    if (scope && typeof scope.getTransaction === 'function') {
+                      const activeTransaction = scope.getTransaction();
+                      if (activeTransaction && typeof activeTransaction.finish === 'function') {
+                        activeTransaction.finish();
+                        return;
+                      }
+                    }
+                  } catch (e) {
+                    // Silently continue to fallbacks
+                  }
+                }
+
+                // We can't directly access getCurrentHub, so use a fallback approach
+                try {
+                  if (typeof window !== 'undefined' && typeof window.performance === 'object') {
+                    // Use the Web Performance API as a fallback
+                    if (typeof performance.mark === 'function') {
+                      performance.mark(`transaction-end-${name}`);
+                    }
+                  }
+                } catch (e) {
+                  // Silently ignore errors
+                }
               }
             } catch (e) {
               // Silently ignore any errors
@@ -160,12 +191,24 @@ export function createTransaction(options: TransactionOptions): SpanInterface {
     setData: (key: string, value: any) => {},
     setStatus: (status: string) => {},
     finish: () => {},
-    startChild: (options: any) => ({
-      setTag: (key: string, value: string) => {},
-      setData: (key: string, value: any) => {},
-      setStatus: (status: string) => {},
-      finish: () => {},
-    })
+    startChild: (options: any) => {
+      // Create a simple child span with minimal functionality
+      return {
+        setTag: (key: string, value: string) => {},
+        setData: (key: string, value: any) => {},
+        setStatus: (status: string) => {},
+        finish: () => {
+          // Use performance API for basic timing if available
+          if (typeof performance !== 'undefined' && typeof performance.mark === 'function') {
+            try {
+              performance.mark(`${options.name || 'span'}-end`);
+            } catch (e) {
+              // Silently ignore errors
+            }
+          }
+        }
+      };
+    }
   };
 }
 

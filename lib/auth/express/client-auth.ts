@@ -279,9 +279,54 @@ export function useSignOut() {
  */
 export function useAuthStatus() {
   const { isLoaded, isSignedIn } = useAuth();
-  
+
   return {
     isAuthenticated: !!isSignedIn,
     isLoading: !isLoaded
+  };
+}
+
+/**
+ * Hook for accessing and refreshing auth tokens
+ * @returns Token-related functions and state
+ */
+export function useAuthToken() {
+  const clerk = useClerkAuth();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Get the current token
+  const getToken = async () => {
+    try {
+      return await clerk.getToken();
+    } catch (error) {
+      console.error('Error getting auth token:', error);
+      throw error;
+    }
+  };
+
+  // Force token refresh
+  const refreshToken = async () => {
+    try {
+      setIsRefreshing(true);
+
+      // Force token refresh in Clerk
+      await clerk.session?.reload();
+
+      // Get the fresh token
+      const token = await clerk.getToken({ skipCache: true });
+
+      setIsRefreshing(false);
+      return token;
+    } catch (error) {
+      setIsRefreshing(false);
+      console.error('Error refreshing token:', error);
+      throw error;
+    }
+  };
+
+  return {
+    getToken,
+    refreshToken,
+    isRefreshing
   };
 }

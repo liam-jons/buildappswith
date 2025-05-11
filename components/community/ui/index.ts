@@ -4,7 +4,7 @@
  */
 
 // Export components
-export { default as KnowledgeItem } from './knowledge-item';
-export { default as DiscussionCard } from './discussion-card';
-export * from "./discussion-card";
-export * from "./knowledge-item";
+export { KnowledgeItem } from './knowledge-item';
+export { DiscussionCard } from './discussion-card';
+export { ServerDiscussionCard } from './server-discussion-card';
+

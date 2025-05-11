@@ -3,8 +3,6 @@
  * Version: 1.0.0
  */
 
-// Export components
-export { default as TimelineItem } from './timeline-item';
-export { default as TimelineFilter } from './timeline-filter';
-export * from "./timeline-filter";
-export * from "./timeline-item";
+// Export components - use named exports only
+export { TimelineItem } from './timeline-item';
+export { TimelineFilter } from './timeline-filter';

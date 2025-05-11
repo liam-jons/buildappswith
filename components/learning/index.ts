@@ -3,13 +3,6 @@
  * Version: 1.0.0
  */
 
-// Re-export subdirectory exports
+// Re-export subdirectory exports - use named exports only
 export * from './ui';
-
-// Export components
-export * from './ui';
-export * from './timeline';
-export { default as TimelineItem } from './ui/timeline-item';
-export { default as TimelineFilter } from './ui/timeline-filter';
-export * from "./timeline";
-export * from "./ui";
+export { Timeline } from './timeline';

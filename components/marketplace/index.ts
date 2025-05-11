@@ -6,6 +6,9 @@
  * prevents circular dependencies.
  */
 
+// Export dashboard component directly
+export { BuilderDashboard } from './builder-dashboard';
+
 // Export components
 export {
   // Builder components

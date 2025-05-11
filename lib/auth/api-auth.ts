@@ -1,9 +1,11 @@
 /**
  * API Authentication Middleware
- * Version: 1.0.0
- * 
+ * Version: 1.1.0
+ *
  * This file provides middleware functions for protecting API routes
  * with authentication and role-based access control.
+ *
+ * It also includes utility functions for getting the current authenticated user.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -108,4 +110,28 @@ export function withBuilder(handler: RouteHandler) {
  */
 export function withClient(handler: RouteHandler) {
   return withRole(handler, UserRole.CLIENT);
+}
+
+/**
+ * Get the current authenticated user, including roles
+ * This can be used in API routes that don't use the withAuth middleware
+ * but still need to access the authenticated user.
+ *
+ * @returns The authenticated user or null if not authenticated
+ */
+export async function getCurrentUser(): Promise<AuthUser | null> {
+  const { userId, sessionClaims } = auth();
+
+  if (!userId) {
+    return null;
+  }
+
+  // Extract roles from session claims
+  const roles = (sessionClaims?.['public_metadata']?.['roles'] as UserRole[]) || [];
+
+  // Create and return the user object
+  return {
+    id: userId,
+    roles,
+  };
 }

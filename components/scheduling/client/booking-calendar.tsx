@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/core/t
 import { Badge } from '@/components/ui/core/badge';
 import { toast } from 'sonner';
 import TimeSlotSelector from './time-slot-selector';
-import SessionTypeSelector from './session-type-selector';
+import { SessionTypeSelector } from './session-type-selector';
 import BookingForm from './booking-form';
 
 interface BookingCalendarProps {
