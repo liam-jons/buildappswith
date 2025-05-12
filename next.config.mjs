@@ -197,6 +197,9 @@ const nextConfig = {
         destination: '/sign-up',
         permanent: true,
       },
+      // No redirects needed for the auth paths - we'll handle this through middleware
+      // Next.js doesn't allow parentheses in redirect destinations
+      // Instead, we'll rely on the middleware to handle both paths
     ];
   },
   

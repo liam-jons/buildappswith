@@ -11,6 +11,7 @@ export { default as CalendlySessionTypeSelector } from './client/calendly-sessio
 export { default as BookingForm } from './client/booking-form';
 export { default as BookingCalendar } from './client/booking-calendar';
 export { BookingFlow } from './client/booking-flow';
+export { IntegratedBooking } from './client/integrated-booking';
 export { WeeklySchedule } from './builder/weekly-schedule';
 export { SessionTypeEditor } from './builder/session-type-editor';
 export { default as WeeklyAvailability } from './builder/availability/weekly-availability';
