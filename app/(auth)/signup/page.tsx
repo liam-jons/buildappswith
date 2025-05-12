@@ -40,7 +40,7 @@ export default function SignUpPage() {
         <ClerkAuthForm mode="signup" />
         <p className="px-8 text-center text-sm text-muted-foreground">
           <Link
-            href="/login"
+            href="/sign-in"
             className="hover:text-brand underline underline-offset-4"
           >
             Already have an account? Sign in

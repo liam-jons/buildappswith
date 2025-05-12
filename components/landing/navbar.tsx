@@ -281,15 +281,15 @@ export function Navbar({ className }: NavbarProps) {
             <div className="flex items-center gap-2 md:gap-4">
               <ViewingPreferences />
               
-              <Link 
-                href="/signin" 
+              <Link
+                href="/sign-in"
                 className="hidden md:block text-primary/70 hover:text-primary transition-colors border border-border rounded-lg px-4 py-2"
               >
                 Sign In
               </Link>
               
               <Link
-                href="/signup"
+                href="/sign-up"
                 className="bg-primary text-white hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
               >
                 Get Started
@@ -370,14 +370,14 @@ export function Navbar({ className }: NavbarProps) {
                   <ViewingPreferences isMobile={true} />
                   
                   <Link
-                    href="/signin"
+                    href="/sign-in"
                     className="text-center py-2 text-primary/80 hover:text-primary transition-colors border border-border rounded-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign In
                   </Link>
                   <Link
-                    href="/signup"
+                    href="/sign-up"
                     className="bg-primary text-white hover:bg-primary/90 text-center py-3 rounded-lg font-medium transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

@@ -2,11 +2,16 @@ import {withSentryConfig} from '@sentry/nextjs';
 /**
  * @type {import('next').NextConfig}
  * Enhanced configuration for Buildappswith platform with security and performance optimizations
- * Version: 0.1.78
+ * Version: 0.1.83
  */
 
 // Import the BundleAnalyzerPlugin for webpack bundle analysis
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+// Convert ESM URL to file path
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Define Content Security Policy directives
@@ -158,15 +163,25 @@ const nextConfig = {
         destination: '/book/liam-jons',
         permanent: true,
       },
-      // Handle legacy NextAuth routes
+      // Handle standardized auth routes
+      {
+        source: '/login',
+        destination: '/sign-in',
+        permanent: true,
+      },
       {
         source: '/signin',
-        destination: '/login',
+        destination: '/sign-in',
         permanent: true,
       },
       {
         source: '/signup',
-        destination: '/login',
+        destination: '/sign-up',
+        permanent: true,
+      },
+      {
+        source: '/register',
+        destination: '/sign-up',
         permanent: true,
       },
     ];
@@ -211,21 +226,84 @@ const nextConfig = {
 
     // Handle Node.js built-in modules for client-side
     if (!isServer) {
+      // Path to our mock implementations
+      const nodeModuleMocks = path.join(__dirname, 'lib/datadog/mocks/node-modules.js');
+      
+      // Define module fallbacks
       config.resolve.fallback = {
         ...config.resolve.fallback,
-        fs: false,
-        os: false,
-        path: false,
+        // Node.js core modules - provide empty mocks
+        fs: nodeModuleMocks,
+        os: nodeModuleMocks,
+        path: nodeModuleMocks,
         crypto: false,
+        async_hooks: nodeModuleMocks,
+        diagnostics_channel: nodeModuleMocks,
         worker_threads: false,
         perf_hooks: false,
-        tls: false,
-        net: false,
-        dgram: false,
+        module: false,
+        child_process: false,
+        v8: nodeModuleMocks,
+
+        // Additional Node.js modules
+        buffer: false,
+        util: false,
+        stream: false,
+        zlib: false,
+        https: false,
+        http: false,
+        events: false,
+        assert: false,
+        constants: false,
+        domain: false,
         dns: false,
+        dgram: false,
+        net: false,
+        tls: false,
         http2: false,
-        process: false
+        process: false,
+        readline: false,
+        string_decoder: false,
+        timers: false,
+        tty: false,
+        url: false,
+        vm: false
       };
+
+      // Create aliases for dd-trace and related modules to use our stub implementations
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'dd-trace': path.join(__dirname, 'lib/datadog/client/empty-tracer.client.js'),
+        
+        // Add direct aliases for the problematic Node.js modules
+        'fs': nodeModuleMocks,
+        'os': nodeModuleMocks,
+        'path': nodeModuleMocks,
+        'v8': nodeModuleMocks,
+        'async_hooks': nodeModuleMocks,
+        'diagnostics_channel': nodeModuleMocks
+      };
+
+      // Add a plugin to handle Node.js module resolution correctly
+      config.plugins.push({
+        apply(compiler) {
+          // For webpack 5, we need to use this hook differently
+          compiler.hooks.normalModuleFactory.tap('NodeModulesMock', factory => {
+            // Hook into the factory resolver
+            factory.hooks.resolve.tap('NodeModulesMock', (data) => {
+              // Check for Node.js modules in the request
+              const nodeModules = ['fs', 'os', 'path', 'v8', 'async_hooks', 'diagnostics_channel'];
+              
+              // If this is a Node.js module request coming from node_modules
+              if (data && data.request && nodeModules.includes(data.request) && 
+                  (data.context && data.context.includes('node_modules'))) {
+                // Point to our mock implementation (don't return, modify)
+                data.request = nodeModuleMocks;
+              }
+            });
+          });
+        }
+      });
     }
 
     return config;

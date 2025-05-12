@@ -1,22 +1,19 @@
 /**
  * Enhanced logger utility for server-side environments
- * @version 3.0.0 (Server-only)
+ * @version 4.0.0 (Server-only)
+ * 
+ * NOTE: Datadog integration temporarily disabled to resolve build issues
  */
 
 import * as Sentry from '@sentry/nextjs';
 import { ErrorSeverity, ErrorCategory, ErrorMetadata, handleError } from './sentry';
-import { getDatadogConfig } from './datadog/config';
 
-// Only import tracer on server-side
-let ddtracer: any;
-if (typeof window === 'undefined') {
-  try {
-    const ddTrace = require('dd-trace');
-    ddtracer = ddTrace;
-  } catch (err) {
-    console.warn('Failed to import dd-trace (normal in client runtime)');
-  }
-}
+// NOTE: Datadog imports temporarily disabled
+// import { getDatadogConfig } from './datadog/config';
+// import { tracer, isServer } from './datadog';
+
+// Define isServer for local use
+const isServer = typeof window === 'undefined';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -111,10 +108,10 @@ export class EnhancedLogger {
         console.log(JSON.stringify(logObject));
     }
 
-    // Send to Datadog (server-side)
-    if (typeof window === 'undefined') {
-      this.sendToDatadog(level, message, metadata, error);
-    }
+    // Datadog logging temporarily disabled
+    // if (isServer) {
+    //   this.sendToDatadog(level, message, metadata, error);
+    // }
   }
 
   /**
@@ -124,15 +121,15 @@ export class EnhancedLogger {
     try {
       if (error) {
         // Map log level to error severity
-        const severity = level === 'error' 
-          ? ErrorSeverity.HIGH 
+        const severity = level === 'error'
+          ? ErrorSeverity.HIGH
           : ErrorSeverity.MEDIUM;
-        
+
         // Map log level to error category
         const category = level === 'error'
           ? ErrorCategory.SYSTEM
           : ErrorCategory.SYSTEM;
-          
+
         // Create a partial error metadata object
         const errorMetadata: Partial<ErrorMetadata> = {
           severity,
@@ -145,10 +142,11 @@ export class EnhancedLogger {
           retryable: metadata.retryable !== undefined ? metadata.retryable : false,
         };
 
-        // Add Datadog trace info if available
-        if (ddtracer) {
+        // Add Datadog trace info - temporarily disabled
+        /*
+        if (isServer) {
           try {
-            const span = ddtracer.scope().active();
+            const span = tracer.scope().active();
             if (span) {
               const context = span.context();
               errorMetadata.datadogTraceId = context.toTraceId();
@@ -158,7 +156,8 @@ export class EnhancedLogger {
             console.error('Failed to get Datadog trace info:', traceError);
           }
         }
-        
+        */
+
         // Use the error handling function from the classification system
         handleError(error, message, errorMetadata);
       } else {
@@ -172,10 +171,11 @@ export class EnhancedLogger {
           // Add log level as tag
           scope.setTag('log_level', level);
 
-          // Add Datadog trace info if available
-          if (ddtracer) {
+          // Add Datadog trace info - temporarily disabled
+          /*
+          if (isServer) {
             try {
-              const span = ddtracer.scope().active();
+              const span = tracer.scope().active();
               if (span) {
                 const context = span.context();
                 scope.setTag('datadog.trace_id', context.toTraceId());
@@ -185,6 +185,7 @@ export class EnhancedLogger {
               console.error('Failed to get Datadog trace info:', traceError);
             }
           }
+          */
 
           // Capture message with safe severity mapping
           const severityMap = {
@@ -211,49 +212,11 @@ export class EnhancedLogger {
 
   /**
    * Send log data to Datadog (server-side)
+   * NOTE: Temporarily disabled to resolve build issues
    */
   private sendToDatadog(level: LogLevel, message: string, metadata: LogMetadata, error?: Error) {
-    if (!ddtracer) return;
-
-    const config = getDatadogConfig();
-    if (!config.enabled) return;
-
-    try {
-      const logData = {
-        level,
-        message,
-        ...metadata,
-        error: error ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-        } : undefined,
-        date: new Date().toISOString(),
-      };
-
-      // Server-side logging via dd-trace
-      // dd-trace automatically injects logs when using console methods
-      // We add Datadog-specific context to improve log correlation
-
-      // Get current span if available for log correlation
-      const span = ddtracer.scope().active();
-      if (span) {
-        // Add trace context to logs
-        const traceId = span.context().toTraceId();
-        const spanId = span.context().toSpanId();
-        
-        // These properties will be automatically picked up by dd-trace
-        logData.dd = {
-          trace_id: traceId,
-          span_id: spanId,
-          service: config.service,
-          env: config.env,
-          version: config.version,
-        };
-      }
-    } catch (datadogError) {
-      console.error('Failed to send to Datadog:', datadogError);
-    }
+    // Temporarily disabled
+    // Implementation will be restored once build issues are resolved
   }
 
   /**

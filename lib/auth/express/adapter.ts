@@ -35,7 +35,7 @@ export function createClerkExpressMiddleware() {
       const middleware = clerkExpressMiddleware({
         publishableKey: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
         secretKey: process.env.CLERK_SECRET_KEY,
-        signInUrl: '/login',
+        signInUrl: '/sign-in',
         apiVersion: 'v1', // Ensure consistent API version
         apiKey: process.env.CLERK_API_KEY, // Optional if using secretKey
         cookieName: 'build_auth', // Custom cookie name for our app
@@ -83,7 +83,7 @@ export function createClerkExpressMiddleware() {
             method: req.method,
           });
           
-          const signIn = new URL('/login', req.url);
+          const signIn = new URL('/sign-in', req.url);
           signIn.searchParams.set('redirect_url', req.url);
           return NextResponse.redirect(signIn);
         }
@@ -91,7 +91,10 @@ export function createClerkExpressMiddleware() {
         // If user is authenticated but on auth pages, redirect to dashboard
         if (auth?.userId && (
           req.nextUrl.pathname.startsWith('/login') ||
-          req.nextUrl.pathname.startsWith('/signup')
+          req.nextUrl.pathname.startsWith('/signup') ||
+          req.nextUrl.pathname.startsWith('/signin') ||
+          req.nextUrl.pathname.startsWith('/sign-in') ||
+          req.nextUrl.pathname.startsWith('/sign-up')
         )) {
           const dashboard = new URL('/dashboard', req.url);
           return NextResponse.redirect(dashboard);

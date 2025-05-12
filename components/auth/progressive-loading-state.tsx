@@ -74,8 +74,7 @@ export default function ProgressiveLoadingState({ state = 'initializing' }: Prog
               Authentication is taking longer than expected.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              This may be due to network conditions or service availability.
-              The application will continue to load when ready.
+              Don't worry, it will continue to load when ready.
             </p>
           </div>
         )}

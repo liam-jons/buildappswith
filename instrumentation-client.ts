@@ -1,16 +1,36 @@
-// This file configures the initialization of Sentry on the client.
-// Uses settings from sentry.client.config.ts but adapted for instrumentation.
-// https://docs.sentry.io/platforms/javascript/guides/nextjs/
+/**
+ * Client-side instrumentation
+ * This file only runs in the browser environment
+ */
 
 import * as Sentry from "@sentry/nextjs";
-import { getInitializationConfig } from "./lib/sentry";
 
 export function register() {
   // Only run in browser
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+    console.debug('Client instrumentation skipped on server');
+    return;
+  }
 
-  // Use existing Sentry configuration
-  // This instrumentation file is just a compatibility layer
+  try {
+    // Use existing Sentry configuration from sentry.client.config.ts
+
+    // Initialize Datadog RUM for client-side monitoring
+    // Use dynamic import to load only client-specific module
+    setTimeout(() => {
+      import('./lib/datadog/client')
+        .then(({ initializeRum }) => {
+          if (typeof initializeRum === 'function') {
+            initializeRum();
+          }
+        })
+        .catch(error => {
+          console.warn('Failed to initialize RUM:', error);
+        });
+    }, 0);
+  } catch (error) {
+    console.error('Error initializing client monitoring:', error);
+  }
 }
 
 // Export router transition hooks with defensive compatibility

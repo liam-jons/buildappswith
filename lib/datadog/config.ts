@@ -43,7 +43,7 @@ export interface DatadogConfig {
 const datadogConfigBase = {
   service: 'buildappswith-platform',
   version: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
-  site: process.env.DATADOG_SITE || 'datadoghq.com',
+  site: process.env.DATADOG_SITE || 'datadoghq.eu',
 
   // Critical transactions to always trace (100% sampling)
   criticalTransactions: [
