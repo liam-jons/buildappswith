@@ -4,7 +4,8 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSignOut, useAuthToken } from '@/lib/auth/express/client-auth';
 import { Button } from '@/components/ui/core/button';
-import * as Sentry from '@sentry/nextjs';
+// Removed static import of Sentry
+// import * as Sentry from '@sentry/nextjs';
 
 interface AuthErrorBoundaryProps {
   children: ReactNode;
@@ -23,8 +24,8 @@ interface AuthErrorBoundaryProps {
  * 
  * Version: 2.0.0 (Enhanced for Express SDK)
  */
-export function AuthErrorBoundary({ 
-  children, 
+export function AuthErrorBoundary({
+  children,
   fallback,
   onError
 }: AuthErrorBoundaryProps) {
@@ -33,9 +34,29 @@ export function AuthErrorBoundary({
     message: 'An authentication error occurred',
     retryable: true
   });
+  // Add state for Sentry client
+  const [sentryClient, setSentryClient] = useState<any>(null);
   const { signOut } = useSignOut();
   const { refreshToken } = useAuthToken();
   const router = useRouter();
+
+  // Dynamically load Sentry client
+  useEffect(() => {
+    // Only load in client environment and when in production
+    if (typeof window !== 'undefined') {
+      const loadSentry = async () => {
+        try {
+          const SentryModule = await import('@sentry/nextjs');
+          setSentryClient(SentryModule);
+        } catch (err) {
+          // Silent failure for Sentry loading
+          console.warn('Sentry client failed to load:', err);
+        }
+      };
+
+      loadSentry();
+    }
+  }, []);
 
   // Reset error state when navigating
   useEffect(() => {
@@ -51,13 +72,18 @@ export function AuthErrorBoundary({
       const error = customEvent.detail?.error;
       
       if (!error) return;
-      
-      // Report to Sentry
-      Sentry.captureException(error, {
-        tags: { source: 'auth-error-boundary' },
-        level: 'warning'
-      });
-      
+
+      // Report to Sentry if loaded
+      if (sentryClient) {
+        sentryClient.captureException(error, {
+          tags: { source: 'auth-error-boundary' },
+          level: 'warning'
+        });
+      } else {
+        // Fallback error logging when Sentry is not available
+        console.error('[Auth Error]', error.name, error.message);
+      }
+
       if (onError) {
         onError(error);
       }
