@@ -17,16 +17,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /**
  * Define Content Security Policy directives
  * Carefully configured to allow necessary resources while maintaining security
- * Updated for Clerk authentication (v1.0.59)
+ * Updated for Clerk authentication with custom domain support (v1.0.60)
  */
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://cdnjs.cloudflare.com https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://npm.clerk.dev https://npm/@clerk https://*.calendly.com https://assets.calendly.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://cdnjs.cloudflare.com https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://npm.clerk.dev https://npm/@clerk https://*.calendly.com https://assets.calendly.com https://clerk.buildappswith.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.clerk.accounts.dev https://*.calendly.com;
-  img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org https://cdn.magicui.design https://randomuser.me https://placehold.co https://*.clerk.com https://img.clerk.com https://images.clerk.dev https://*.calendly.com;
+  img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org https://cdn.magicui.design https://randomuser.me https://placehold.co https://*.clerk.com https://img.clerk.com https://images.clerk.dev https://*.calendly.com https://i.pravatar.cc https://images.unsplash.com;
   font-src 'self' data: https://fonts.gstatic.com https://*.calendly.com;
   frame-src 'self' https://js.stripe.com https://*.stripe.com https://*.clerk.accounts.dev https://*.calendly.com;
-  connect-src 'self' https://api.stripe.com https://*.vercel-insights.com http://localhost:* https://localhost:* https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://*.sentry.io https://*.ingest.sentry.io https://ingest.sentry.io https://*.calendly.com;
+  connect-src 'self' https://api.stripe.com https://*.vercel-insights.com http://localhost:* https://localhost:* https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://*.sentry.io https://*.ingest.sentry.io https://ingest.sentry.io https://*.calendly.com https://clerk.buildappswith.com;
   worker-src 'self' blob:;
   object-src 'none';
 `;
@@ -129,6 +129,18 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'images.clerk.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'clerk.buildappswith.com',
       }
     ],
   },
