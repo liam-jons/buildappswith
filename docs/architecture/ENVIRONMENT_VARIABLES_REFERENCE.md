@@ -23,7 +23,7 @@ This document provides a comprehensive reference for all environment variables u
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Yes | - | Clerk public API key for client-side auth | All |
 | `CLERK_SECRET_KEY` | Yes | - | Clerk secret key for server-side operations | All |
 | `CLERK_WEBHOOK_SECRET` | Yes | - | Secret for validating Clerk webhook requests | All |
-| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Yes | `/login` | URL path for sign-in page | All |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Yes | `/sign-in` | URL path for sign-in page | All |
 | `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | Yes | `/sign-up` | URL path for sign-up page | All |
 | `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` | Yes | `/dashboard` | Redirect URL after successful sign-in | All |
 | `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` | Yes | `/onboarding` | Redirect URL after successful sign-up | All |

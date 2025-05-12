@@ -473,7 +473,7 @@ export function SiteHeader() {
                     buttonVariants({ variant: "outline" }),
                     "mr-6 text-sm"
                   )}
-                  href="/login"
+                  href="/sign-in"
                 >
                   Log In
                 </Link>
@@ -482,7 +482,7 @@ export function SiteHeader() {
                     buttonVariants({ variant: "default" }),
                     "mr-6 text-sm bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
                   )}
-                  href="/signup"
+                  href="/sign-up"
                 >
                   Sign Up
                 </Link>
@@ -685,7 +685,7 @@ export function SiteHeader() {
                     buttonVariants({ variant: "outline" }),
                     "w-full"
                   )}
-                  href="/login"
+                  href="/sign-in"
                 >
                   Log In
                 </Link>
@@ -694,7 +694,7 @@ export function SiteHeader() {
                     buttonVariants({ variant: "default" }),
                     "w-full bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
                   )}
-                  href="/signup"
+                  href="/sign-up"
                 >
                   Sign Up
                 </Link>

@@ -36,7 +36,7 @@ export function getRumConfiguration(): RumConfig {
     enabled: config.enabled,
     applicationId: process.env.NEXT_PUBLIC_DATADOG_RUM_APPLICATION_ID || '',
     clientToken: process.env.NEXT_PUBLIC_DATADOG_RUM_CLIENT_TOKEN || '',
-    site: process.env.NEXT_PUBLIC_DATADOG_SITE || 'datadoghq.com',
+    site: process.env.NEXT_PUBLIC_DATADOG_SITE || 'datadoghq.eu',
     service: config.service,
     env: config.env,
     version: config.version,

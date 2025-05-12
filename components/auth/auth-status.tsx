@@ -58,7 +58,7 @@ export function AuthStatus({ className, compact = false }: AuthStatusProps) {
         {!compact && <p className="text-slate-600 mb-4">You are not currently signed in.</p>}
         <div className="flex space-x-4">
           <Button variant="default" size={compact ? "sm" : "default"} asChild>
-            <a href="/login">Sign In</a>
+            <a href="/sign-in">Sign In</a>
           </Button>
           {!compact && (
             <Button variant="outline" asChild>
@@ -202,7 +202,7 @@ export function ProtectedAuthStatus(props: AuthStatusProps) {
           className="mt-2"
           asChild
         >
-          <a href="/login">Sign In</a>
+          <a href="/sign-in">Sign In</a>
         </Button>
       </div>
     );
@@ -229,7 +229,7 @@ export function HeaderAuthStatus() {
     if (!isAuthenticated) {
       return (
         <Button variant="ghost" size="sm" asChild>
-          <a href="/login">Sign in</a>
+          <a href="/sign-in">Sign in</a>
         </Button>
       );
     }

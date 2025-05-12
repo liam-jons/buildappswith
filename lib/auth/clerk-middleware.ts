@@ -8,6 +8,12 @@ export const publicRoutes = [
   "/",
   "/login",
   "/signup",
+  "/signin",
+  "/sign-in",
+  "/sign-in/(.*)",
+  "/sign-up",
+  "/sign-up/(.*)",
+  "/sso-callback",
   "/verify",
   "/api/auth/(.+)",
   "/api/webhook/(.+)",
@@ -53,8 +59,10 @@ export const clerkMiddleware = authMiddleware({
 
       // If the user is trying to access auth pages while logged in, redirect to dashboard
       if (auth.userId && (
-        req.nextUrl.pathname.startsWith('/login') || 
-        req.nextUrl.pathname.startsWith('/signup')
+        req.nextUrl.pathname.startsWith('/login') ||
+        req.nextUrl.pathname.startsWith('/signup') ||
+        req.nextUrl.pathname.startsWith('/sign-in') ||
+        req.nextUrl.pathname.startsWith('/sign-up')
       )) {
         const dashboard = new URL('/dashboard', req.url);
         return NextResponse.redirect(dashboard);

@@ -2,12 +2,13 @@
  * Datadog Context Propagation
  *
  * Utilities for propagating trace context between client and server
- * 
+ *
  * NOTE: This module is designed to work in both client and server environments
  * by using feature detection to determine which functionality is available.
  */
 
 import { getDatadogConfig } from './config';
+import { extractTraceContext as extractTraceContextFromInit } from './init';
 
 /**
  * Represents the essential trace context information
@@ -23,30 +24,19 @@ export interface TraceContext {
 /**
  * Extracts the current trace context for client propagation
  * This is used to continue traces across client/server boundaries
- * 
+ *
  * Note: This function only works on the server side
  */
 export function extractTraceContext(): TraceContext | null {
-  // Skip if in browser environment
-  if (typeof window !== 'undefined') {
-    return null;
-  }
-
-  try {
-    // Dynamically load server-only tracer
-    const { extractServerTraceContext } = require('./server-tracer');
-    return extractServerTraceContext();
-  } catch (error) {
-    console.error('Failed to extract trace context:', error);
-    return null;
-  }
+  // Use the centralized function from init.ts
+  return extractTraceContextFromInit();
 }
 
 /**
  * Injects trace context into HTTP headers for distributed tracing
- * 
+ *
  * Note: This function only works on the server side
- * 
+ *
  * @param headers Existing headers object to inject into
  * @returns Headers with trace context injected
  */
@@ -59,16 +49,12 @@ export function injectTraceContextIntoHeaders(
   }
 
   try {
-    // Try to load the server-only module
-    let tracer;
-    try {
-      tracer = require('./server-tracer').tracer;
-    } catch (e) {
-      return headers;
-    }
-    
+    // Use the centralized tracer instance
+    const { getServerTracer } = require('./init');
+    const tracer = getServerTracer();
+
     if (!tracer) return headers;
-    
+
     const span = tracer.scope().active();
     if (!span) return headers;
 
@@ -84,9 +70,9 @@ export function injectTraceContextIntoHeaders(
 
 /**
  * Extracts trace context from headers and creates a child span
- * 
+ *
  * Note: This function only works on the server side
- * 
+ *
  * @param headers The headers containing trace context
  * @param spanName The name of the new span to create
  * @returns The created span or null if extraction failed
@@ -104,14 +90,10 @@ export function extractTraceContextFromHeaders(
     const config = getDatadogConfig();
     if (!config.enabled) return null;
 
-    // Try to load the server-only module
-    let tracer;
-    try {
-      tracer = require('./server-tracer').tracer;
-    } catch (e) {
-      return null;
-    }
-    
+    // Use the centralized tracer instance
+    const { getServerTracer } = require('./init');
+    const tracer = getServerTracer();
+
     if (!tracer) return null;
 
     // Extract the trace context from headers
