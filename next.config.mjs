@@ -1,9 +1,9 @@
-// Temporarily disable Sentry
-// import {withSentryConfig} from '@sentry/nextjs';
+// Re-enabled Sentry with optimized configuration
+import {withSentryConfig} from '@sentry/nextjs';
 /**
  * @type {import('next').NextConfig}
  * Enhanced configuration for Buildappswith platform with security and performance optimizations
- * Version: 0.1.83
+ * Version: 0.1.84
  */
 
 // Import the BundleAnalyzerPlugin for webpack bundle analysis
@@ -26,7 +26,7 @@ const ContentSecurityPolicy = `
   img-src 'self' blob: data: https://*.stripe.com https://api.placeholder.org https://cdn.magicui.design https://randomuser.me https://placehold.co https://*.clerk.com https://img.clerk.com https://images.clerk.dev https://*.calendly.com;
   font-src 'self' data: https://fonts.gstatic.com https://*.calendly.com;
   frame-src 'self' https://js.stripe.com https://*.stripe.com https://*.clerk.accounts.dev https://*.calendly.com;
-  connect-src 'self' https://api.stripe.com https://*.vercel-insights.com http://localhost:* https://localhost:* https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://*.sentry.io https://*.ingest.sentry.io https://*.calendly.com;
+  connect-src 'self' https://api.stripe.com https://*.vercel-insights.com http://localhost:* https://localhost:* https://*.clerk.accounts.dev https://clerk.io https://*.clerk.com https://*.sentry.io https://*.ingest.sentry.io https://ingest.sentry.io https://*.calendly.com;
   worker-src 'self' blob:;
   object-src 'none';
 `;
@@ -311,40 +311,46 @@ const nextConfig = {
   },
 };
 
-// Temporarily disable Sentry config to fix build issues
-export default nextConfig;
-
-// Will re-enable once the build is fixed
-/*
+// Configure Sentry with optimized settings for App Router and catch-all routes
 export default withSentryConfig(nextConfig, {
-// For all available options, see:
-// https://www.npmjs.com/package/@sentry/webpack-plugin#options
+  // For all available options, see:
+  // https://www.npmjs.com/package/@sentry/webpack-plugin#options
+  org: "build-apps-with",
+  project: "javascript-nextjs",
 
-org: "build-apps-with",
-project: "javascript-nextjs",
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
 
-// Only print logs for uploading source maps in CI
-silent: !process.env.CI,
+  // For all available options, see:
+  // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
-// For all available options, see:
-// https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+  // Upload a larger set of source maps for prettier stack traces (increases build time)
+  widenClientFileUpload: true,
 
-// Upload a larger set of source maps for prettier stack traces (increases build time)
-widenClientFileUpload: true,
+  // Automatically tree-shake Sentry logger statements to reduce bundle size
+  disableLogger: true,
 
-// Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-// This can increase your server load as well as your hosting bill.
-// Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-// side errors will fail.
-// tunnelRoute: "/monitoring",
+  // Enables automatic instrumentation of Vercel Cron Monitors
+  automaticVercelMonitors: true,
 
-// Automatically tree-shake Sentry logger statements to reduce bundle size
-disableLogger: true,
+  // Critical configuration for catch-all routes
+  transpileClientSDK: true, // Transpile the Sentry client SDK
+  hideSourceMaps: false, // Keep source maps available for debugging
 
-// Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-// See the following for more information:
-// https://docs.sentry.io/product/crons/
-// https://vercel.com/docs/cron-jobs
-automaticVercelMonitors: true,
+  // Optimized webpack configuration for memory usage
+  webpack: {
+    // Optimize memory usage during source map generation
+    devtool: 'source-map',
+    // Reduce parallel compilation to avoid memory pressure
+    parallel: 2
+  }
+}, {
+  // Runtime configuration
+  // This ensures dynamic imports work properly in both client and server components
+
+  // Silent runtime configuration for better performance
+  silent: true,
+
+  // Adjust memory usage for better build performance
+  memoryLimit: 2048
 });
-*/
