@@ -1,9 +1,9 @@
 /**
  * Client-side instrumentation
- * This file only runs in the browser environment
+ * Temporarily disabled for troubleshooting build issues
  */
 
-import * as Sentry from "@sentry/nextjs";
+// import * as Sentry from "@sentry/nextjs";
 
 export function register() {
   // Only run in browser
@@ -13,10 +13,12 @@ export function register() {
   }
 
   try {
-    // Use existing Sentry configuration from sentry.client.config.ts
+    // Sentry is temporarily disabled to troubleshoot build issues
 
-    // Initialize Datadog RUM for client-side monitoring
-    // Use dynamic import to load only client-specific module
+    // Datadog RUM is also temporarily disabled
+    console.log('NOTE: Client monitoring is temporarily disabled to resolve build issues');
+
+    /* Temporarily disabled
     setTimeout(() => {
       import('./lib/datadog/client')
         .then(({ initializeRum }) => {
@@ -28,32 +30,17 @@ export function register() {
           console.warn('Failed to initialize RUM:', error);
         });
     }, 0);
+    */
   } catch (error) {
     console.error('Error initializing client monitoring:', error);
   }
 }
 
-// Export router transition hooks with defensive compatibility
+// Router transition hooks temporarily disabled
 export const onRouterTransitionStart = (context) => {
-  try {
-    if (typeof Sentry.captureRouterTransitionStart === 'function') {
-      return Sentry.captureRouterTransitionStart(context);
-    }
-  } catch (e) {
-    // Silently ignore errors in the transition hooks
-  }
   return undefined;
 };
 
-// Default implementation for router transitions that works with any version
 export const onRouterTransitionComplete = (context) => {
-  try {
-    if (typeof Sentry.captureException === 'function') {
-      // At minimum, we can capture any exceptions that might occur
-      // This avoids depending on specific Sentry APIs that might change
-    }
-  } catch (e) {
-    // Silently ignore errors in the transition hooks
-  }
   return undefined;
 };

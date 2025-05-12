@@ -7,6 +7,10 @@ import { cn } from "@/lib/utils";
 
 interface ClerkAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   mode?: "signin" | "signup";
+  routing?: "path" | "hash" | "virtual";
+  path?: string;
+  signInUrl?: string;
+  signUpUrl?: string;
 }
 
 /**
@@ -15,6 +19,10 @@ interface ClerkAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
 export function ClerkAuthForm({
   className,
   mode = "signin",
+  routing = "path",
+  path,
+  signInUrl = "/sign-in",
+  signUpUrl = "/sign-up",
   ...props
 }: ClerkAuthFormProps) {
   const { theme } = useTheme();
@@ -41,12 +49,26 @@ export function ClerkAuthForm({
     },
   };
 
+  // Default paths if not provided
+  const signInPath = path || "/sign-in";
+  const signUpPath = path || "/sign-up";
+
   return (
     <div className={cn("flex justify-center", className)} {...props}>
       {mode === "signin" ? (
-        <SignIn appearance={appearanceConfig} />
+        <SignIn
+          appearance={appearanceConfig}
+          routing={routing}
+          path={signInPath}
+          signUpUrl={signUpUrl}
+        />
       ) : (
-        <SignUp appearance={appearanceConfig} />
+        <SignUp
+          appearance={appearanceConfig}
+          routing={routing}
+          path={signUpPath}
+          signInUrl={signInUrl}
+        />
       )}
     </div>
   );
