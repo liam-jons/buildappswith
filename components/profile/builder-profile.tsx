@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { Button } from "@/components/ui/core/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/core/tabs";
+import { IntegratedBooking } from "@/components/scheduling/client/integrated-booking";
 import { 
   CalendarIcon, 
   ChatBubbleIcon, 
@@ -71,6 +72,14 @@ export interface BuilderProfileData {
   apps?: AppItem[];
   metrics?: MetricsCategory[];
   expertiseAreas?: ExpertiseAreas;
+  sessionTypes?: Array<{
+    id: string;
+    name: string;
+    description?: string;
+    duration: number;
+    price?: number;
+    calendlyEventTypeUri?: string;
+  }>;
 }
 
 interface BuilderProfileProps {
@@ -225,12 +234,14 @@ export function BuilderProfile({
           <div className="flex gap-3 mt-4 md:mt-0">
             {!isOwner && (
               <>
-                {onScheduleSession && (
-                  <Button variant="default" onClick={onScheduleSession} className="gap-1.5">
-                    <CalendarIcon className="h-4 w-4" />
-                    Schedule
-                  </Button>
-                )}
+                <IntegratedBooking
+                  builderId={profile.id}
+                  sessionTypes={profile.sessionTypes || []}
+                  className="gap-1.5"
+                >
+                  <CalendarIcon className="h-4 w-4" />
+                  Schedule
+                </IntegratedBooking>
                 {onSendMessage && (
                   <Button variant="outline" onClick={onSendMessage} className="gap-1.5">
                     <ChatBubbleIcon className="h-4 w-4" />

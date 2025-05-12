@@ -159,9 +159,15 @@ To further improve authentication reliability:
 4. **Enable Debug Mode** in development to catch CSRF issues early
 5. **Set Proper CORS Headers** for cross-origin requests
 
+## Current Status
+
+**Update (May 12, 2025)**: The security validation fixes have been implemented, but the "Sign up unsuccessful due to failed security validations" error persists during new user registration. However, user accounts can be successfully added through the admin dashboard. This suggests that there may be additional factors contributing to the sign-up validation issues beyond the middleware configuration and CSRF handling.
+
+Further investigation may be required with the Clerk team directly. In the meantime, the workaround of adding users through the admin dashboard allows development to continue with authenticated users.
+
 ## Conclusion
 
-These fixes address the root causes of the "Sign up unsuccessful due to failed security validations" error by aligning our implementation with Clerk's recommended patterns, particularly for CSRF validation. The standardized approach will improve reliability and make future Clerk updates smoother.
+These fixes address potential root causes of the "Sign up unsuccessful due to failed security validations" error by aligning our implementation with Clerk's recommended patterns, particularly for CSRF validation. The standardized approach improves reliability and should make future Clerk updates smoother.
 
 ## References
 

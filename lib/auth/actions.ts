@@ -243,41 +243,108 @@ export async function removeRoleFromUser(userId: string, role: UserRole): Promis
 }
 
 /**
- * Get user roles for the current user
+ * Get user roles for the current user with enhanced logging
+ * Returns user roles and determined primary role
  */
 export async function getUserRoles() {
   try {
+    // Get current user with detailed data
     const user = await getCurrentUser();
-    
+
+    // Enhanced logging for debugging role issues
     if (!user) {
+      logger.warn('getUserRoles called but no user found');
+
       return {
         roles: [],
-        primaryRole: null
+        primaryRole: null,
+        userId: null,
+        status: 'unauthenticated',
+        debug: { message: 'No authenticated user found' }
       };
     }
-    
+
+    // Check for empty roles array and automatically fix it
+    if (!user.roles || user.roles.length === 0) {
+      logger.warn('User found with empty roles array, attempting to fix', { userId: user.id });
+
+      // Default to CLIENT role if no roles are present
+      const defaultRole = UserRole.CLIENT;
+
+      try {
+        // Attempt to update the user with a default role
+        await db.user.update({
+          where: { id: user.id },
+          data: { roles: [defaultRole] }
+        });
+
+        // Also update Clerk metadata
+        if (user.clerkId) {
+          await clerkClient.users.updateUser(user.clerkId, {
+            publicMetadata: { roles: [defaultRole] }
+          });
+        }
+
+        logger.info('Successfully added default role to user', { userId: user.id, role: defaultRole });
+
+        // Return the updated roles
+        return {
+          roles: [defaultRole],
+          primaryRole: defaultRole,
+          userId: user.id,
+          status: 'fixed',
+          debug: { message: 'User had no roles, assigned default CLIENT role' }
+        };
+      } catch (roleUpdateError) {
+        logger.error('Failed to update user with default role', {
+          userId: user.id,
+          error: roleUpdateError instanceof Error ? roleUpdateError.message : 'Unknown error'
+        });
+      }
+    }
+
     // Determine primary role (prioritize ADMIN > BUILDER > CLIENT)
     let primaryRole = null;
+
     if (user.roles.includes(UserRole.ADMIN)) {
-      primaryRole = 'ADMIN';
+      primaryRole = UserRole.ADMIN;
     } else if (user.roles.includes(UserRole.BUILDER)) {
-      primaryRole = 'BUILDER';
+      primaryRole = UserRole.BUILDER;
     } else if (user.roles.includes(UserRole.CLIENT)) {
-      primaryRole = 'CLIENT';
+      primaryRole = UserRole.CLIENT;
     }
-    
-    return {
+
+    logger.debug('User roles determined successfully', {
+      userId: user.id,
       roles: user.roles,
       primaryRole
+    });
+
+    return {
+      roles: user.roles,
+      primaryRole,
+      userId: user.id,
+      status: 'success',
+      debug: {
+        hasBuilderProfile: Boolean(user.builderProfile),
+        hasClientProfile: Boolean(user.clientProfile)
+      }
     };
   } catch (error) {
-    logger.error('Error getting user roles', { 
-      error: error instanceof Error ? error.message : 'Unknown error'
+    logger.error('Error getting user roles', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
     });
-    
+
     return {
       roles: [],
-      primaryRole: null
+      primaryRole: null,
+      userId: null,
+      status: 'error',
+      debug: {
+        message: 'Error retrieving user roles',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }
     };
   }
 }
