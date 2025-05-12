@@ -1,8 +1,9 @@
 /**
- * Clerk Express SDK Adapter for Next.js - Fixed Version
+ * Clerk Express SDK Adapter for Next.js
+ * Version: 1.0.0
  * 
  * This adapter bridges the Clerk Express SDK with Next.js middleware functionality,
- * with fixes for CSRF and security validation issues.
+ * providing improved performance and more flexible authentication handling.
  */
 
 import { clerkMiddleware as clerkExpressMiddleware, getAuth } from "@clerk/express";
@@ -30,15 +31,19 @@ export function createClerkExpressMiddleware() {
         nextCalled = true;
       };
 
-      // Initialize Clerk Express middleware with default cookie settings
-      // FIXED: Removed custom cookie name and settings to use Clerk defaults
+      // Initialize Clerk Express middleware
       const middleware = clerkExpressMiddleware({
         publishableKey: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
         secretKey: process.env.CLERK_SECRET_KEY,
         signInUrl: '/sign-in',
-        // REMOVED custom cookie configuration
-        // REMOVED apiVersion to use default
-        // REMOVED apiKey to use secretKey only
+        apiVersion: 'v1', // Ensure consistent API version
+        apiKey: process.env.CLERK_API_KEY, // Optional if using secretKey
+        cookieName: 'build_auth', // Custom cookie name for our app
+        cookieOptions: {
+          // Ensure proper cookie security
+          sameSite: 'lax',
+          secure: process.env.NODE_ENV === 'production',
+        },
         // Set EU data residency if required
         ...(process.env.CLERK_DATA_RESIDENCY === 'eu' && { frontendApi: process.env.NEXT_PUBLIC_CLERK_FRONTEND_API }),
         debug: process.env.NODE_ENV === 'development',
@@ -101,16 +106,20 @@ export function createClerkExpressMiddleware() {
 
       // Attach auth information to response headers for server components
       if (auth?.userId) {
-        response.headers.set('x-clerk-user-id', auth.userId);
-        response.headers.set('x-clerk-session-id', auth.sessionId || '');
+        response.headers.set('x-clerk-auth-user-id', auth.userId);
+        response.headers.set('x-clerk-auth-session-id', auth.sessionId || '');
         
         // Add role information from session claims if available
         const roles = auth.sessionClaims?.roles || auth.sessionClaims?.['public_metadata']?.roles;
         if (roles) {
-          response.headers.set('x-clerk-user-roles', 
+          response.headers.set('x-clerk-auth-user-roles', 
             typeof roles === 'string' ? roles : JSON.stringify(roles));
         }
       }
+
+      // Add performance timing header
+      const startTime = Date.now();
+      response.headers.set('x-server-timing', `auth;dur=${Date.now() - startTime}`);
 
       return response;
     } catch (error) {
@@ -128,7 +137,6 @@ export function createClerkExpressMiddleware() {
 
 /**
  * Adapts Next.js request to Express-compatible request format
- * with enhanced CSRF handling
  * @param req Next.js request object
  * @returns Express-compatible request object
  */
@@ -136,19 +144,10 @@ export function adaptNextRequestToExpress(req: NextRequest) {
   // Create a minimal Express-compatible request object
   const url = new URL(req.url);
 
-  // FIXED: Enhanced headers handling to ensure CSRF headers are correctly passed
-  const headers = Object.fromEntries(req.headers.entries());
-  
-  // FIXED: Ensure CSRF token from headers is properly passed through
-  const csrfToken = req.headers.get('x-csrf-token') || req.headers.get('csrf-token');
-  if (csrfToken) {
-    headers['x-csrf-token'] = csrfToken;
-  }
-
   return {
     url: req.url,
     method: req.method,
-    headers,
+    headers: Object.fromEntries(req.headers.entries()),
     cookies: Object.fromEntries(
       req.cookies.getAll().map(cookie => [cookie.name, cookie.value])
     ),
@@ -194,4 +193,17 @@ export function createMockExpressResponse() {
     sendStatus: (code: number) => { statusCode = code; },
     contentType: (type: string) => {},
   };
+}
+
+/**
+ * Authentication error class for auth middleware
+ */
+export class AuthenticationError extends Error {
+  statusCode: number;
+  
+  constructor(message: string = 'Authentication required', statusCode: number = 401) {
+    super(message);
+    this.name = 'AuthenticationError';
+    this.statusCode = statusCode;
+  }
 }
