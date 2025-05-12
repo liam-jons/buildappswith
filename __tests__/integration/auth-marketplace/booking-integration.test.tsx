@@ -141,8 +141,10 @@ describe('Booking Integration', () => {
       // Verify the URL format matches what we expect the sign-in page to handle
       await waitFor(() => {
         const redirectUrl = mockLocationAssign.mock.calls[0][0];
-        // Test that the URL starts with /sign-in - middleware will handle the actual redirection
-        expect(redirectUrl).toMatch(/\/sign-in\?returnUrl=.+marketplace\/builders\/test-builder-id/);
+        // Test that the URL uses the (auth) route group pattern and proper URL structure
+        expect(redirectUrl).toContain('/(auth)/sign-in');
+        expect(redirectUrl).toContain('returnUrl=');
+        expect(redirectUrl).toContain('marketplace/builders/test-builder-id');
       });
     });
   });

@@ -123,6 +123,9 @@ export function EnhancedClerkProvider({ children }: { children: ReactNode }) {
         },
       }}
       publishableKey={publishableKey}
+      // Configure routing paths to use route groups
+      signInUrl="/(auth)/sign-in"
+      signUpUrl="/(auth)/sign-up"
       // Using the same settings across all environments
       telemetry={false}
     >

@@ -9,9 +9,7 @@ The authentication system has been standardized to use consistent routes:
 - `/(auth)/sign-in/[[...sign-in]]` - Primary sign-in route
 - `/(auth)/sign-up/[[...sign-up]]` - Primary sign-up route
 
-Old routes (`/sign-in` and `/sign-up`) are redirected to the new ones via middleware.
-
-Duplicated routes in the `(auth)` directory have been removed to provide a single source of truth for authentication flows.
+The only routes used are the ones under the `/(auth)` route group. This eliminates any issues with parallel routes and provides a cleaner route structure.
 
 ## Middleware Configuration
 
@@ -21,15 +19,11 @@ The middleware has been updated to correctly handle public and protected routes:
 // Public routes configuration
 const publicRoutes = [
   "/",
-  // Both old and new paths need to be public
-  "/sign-in",
-  "/sign-in/(.*)",
-  "/sign-up",
-  "/sign-up/(.*)",
-  "/(auth)/sign-in",
-  "/(auth)/sign-in/(.*)",
-  "/(auth)/sign-up",
-  "/(auth)/sign-up/(.*)",
+  // Only route group auth routes - using escaped parentheses
+  "/\\(auth\\)/sign-in",
+  "/\\(auth\\)/sign-in/(.*)",
+  "/\\(auth\\)/sign-up",
+  "/\\(auth\\)/sign-up/(.*)",
   "/sso-callback",
   "/verify",
   // API routes
@@ -62,6 +56,7 @@ The middleware is configured to:
 1. Make marketplace routes publicly accessible
 2. Protect booking and user-specific actions
 3. Use standard Clerk auth configuration for optimal security
+4. Properly escape parentheses in route group paths
 
 ## Integrated Booking Component
 
@@ -95,7 +90,7 @@ The booking flow integrates with authentication in the following ways:
 
 ### Implementation Details
 
-The booking flow checks authentication status using the Clerk auth hook:
+The booking flow checks authentication status using the Clerk auth hook and directly references the (auth) route group:
 
 ```tsx
 const { isSignedIn, isLoaded } = useAuth();
@@ -107,8 +102,14 @@ const handleBookingClick = () => {
   if (!isSignedIn) {
     // Redirect to sign-in with return URL
     const returnUrl = `/marketplace/builders/${builderId}`;
-    // Use standard path - middleware will handle redirection to /(auth)/sign-in
-    window.location.href = `/sign-in?returnUrl=${encodeURIComponent(returnUrl)}`;
+
+    // Create URL object to properly handle route group paths
+    const baseUrl = window.location.origin;
+    const signInUrl = new URL('/(auth)/sign-in', baseUrl);
+    signInUrl.searchParams.set('returnUrl', returnUrl);
+
+    // Use assign for more predictable behavior with route groups
+    window.location.assign(signInUrl.toString());
     return;
   }
 
@@ -117,37 +118,11 @@ const handleBookingClick = () => {
 };
 ```
 
-The middleware handles redirection from old auth routes to new ones:
-
-```typescript
-// In middleware.ts
-afterAuth(auth, req, evt) {
-  // Standard auth handling
-  if (!auth.userId && !auth.isPublicRoute) {
-    const signInUrl = new URL('/(auth)/sign-in', req.url);
-    signInUrl.searchParams.set('redirect_url', req.url);
-    evt.redirectTo(signInUrl);
-    return;
-  }
-
-  // Special case for old auth routes
-  const url = new URL(req.url);
-  const path = url.pathname;
-
-  // Redirect old auth routes to new ones under /(auth)
-  if (path === '/sign-in') {
-    const params = new URLSearchParams(url.search);
-    const newUrl = new URL('/(auth)/sign-in', req.url);
-
-    // Copy all query parameters
-    params.forEach((value, key) => {
-      newUrl.searchParams.set(key, value);
-    });
-
-    evt.redirectTo(newUrl);
-  }
-}
-```
+This approach:
+1. Uses a single auth route under the `/(auth)` route group
+2. Properly handles URL creation for route groups
+3. Provides a cleaner user experience with no redirects
+4. Prevents issues with Clerk middleware's handling of route groups
 
 ## Dashboard Visibility
 
@@ -180,7 +155,7 @@ This tests:
 2. **Preserve Context**: Use return URLs to maintain user context through authentication
 3. **Handle Edge Cases**: Ensure proper error handling for authentication failures
 4. **Role-Based Content**: Show appropriate content based on user roles
-5. **Clean Routes**: Maintain a single source of truth for authentication routes
+5. **Clean Routes**: Maintain a single source of truth for authentication routes (the `/(auth)` route group)
 
 ## Future Improvements
 
