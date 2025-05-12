@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { 
-  BuilderList, 
-  FilterPanel, 
+import {
+  BuilderListClient,
+  FilterPanel,
   MarketplaceErrorBoundary,
   useBuilderSearch
 } from '@/components/marketplace';
@@ -64,11 +64,11 @@ export default function MarketplacePage() {
             </div>
             
             {/* Builder list grid */}
-            <BuilderList 
-              builders={builders} 
+            <BuilderListClient
+              builders={builders}
               isLoading={isLoading}
               emptyMessage={
-                error 
+                error
                   ? "There was an error loading builders. Please try again."
                   : "No builders match your criteria. Try adjusting your filters."
               }
