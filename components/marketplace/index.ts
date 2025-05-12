@@ -15,6 +15,7 @@ export {
   BuilderImage,
   BuilderCard,
   BuilderList,
+  BuilderListClient,
   BuilderListSkeleton,
 
   // Filter components
