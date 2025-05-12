@@ -11,6 +11,7 @@ interface ClerkAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   path?: string;
   signInUrl?: string;
   signUpUrl?: string;
+  redirectUrl?: string | null;
 }
 
 /**
@@ -23,6 +24,7 @@ export function ClerkAuthForm({
   path,
   signInUrl = "/sign-in",
   signUpUrl = "/sign-up",
+  redirectUrl,
   ...props
 }: ClerkAuthFormProps) {
   const { theme } = useTheme();
@@ -53,6 +55,9 @@ export function ClerkAuthForm({
   const signInPath = path || "/sign-in";
   const signUpPath = path || "/sign-up";
 
+  // Prepare the redirect URL if provided
+  const redirectConfig = redirectUrl ? { redirectUrl } : {};
+
   return (
     <div className={cn("flex justify-center", className)} {...props}>
       {mode === "signin" ? (
@@ -61,6 +66,7 @@ export function ClerkAuthForm({
           routing={routing}
           path={signInPath}
           signUpUrl={signUpUrl}
+          {...redirectConfig}
         />
       ) : (
         <SignUp
@@ -68,6 +74,7 @@ export function ClerkAuthForm({
           routing={routing}
           path={signUpPath}
           signInUrl={signInUrl}
+          {...redirectConfig}
         />
       )}
     </div>

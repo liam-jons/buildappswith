@@ -165,9 +165,118 @@ To further improve authentication reliability:
 
 Further investigation may be required with the Clerk team directly. In the meantime, the workaround of adding users through the admin dashboard allows development to continue with authenticated users.
 
+**Update (May 13, 2025)**: Additional fixes have been implemented to resolve redirect loop issues with authentication:
+
+1. Fixed middleware configuration to properly handle all auth routes
+2. Improved URL construction in the `IntegratedBooking` component to correctly handle route groups
+3. Enhanced sign-in and sign-up pages to properly process and maintain the `returnUrl` parameter
+4. Updated the authentication flow to use Clerk's recommended catch-all route pattern
+
+These changes address issues with the authentication flow when users are redirected from protected content, particularly in the marketplace builder booking flow.
+
+**Update (May 13, 2025 - Afternoon)**: Further improvements have been made to fully align with Clerk's best practices:
+
+1. Replaced custom auth pages with Clerk's recommended catch-all route pattern (`[[...sign-in]]` and `[[...sign-up]]`)
+2. Simplified middleware configuration to focus on the route group approach
+3. Removed redirect configuration in favor of Clerk's native routing
+4. Enhanced the integration between IntegratedBooking and Clerk's authentication flow
+
+These changes ensure we're following Clerk's recommended authentication patterns which provide better support for all authentication flows including social login, passwordless authentication, and multi-factor authentication.
+
+## Auth Redirect Loop Fix
+
+The latest changes (May 13, 2025) focus specifically on fixing redirect loops that occurred in the authentication flow, particularly when users were redirected from protected content to sign in or sign up.
+
+### Key Changes
+
+1. **Comprehensive Public Routes in Middleware**
+
+   Added all variations of auth routes to the public routes list in middleware:
+
+   ```typescript
+   const publicRoutes = [
+     // Original auth routes
+     "/sign-in", "/sign-in/(.*)",
+     "/sign-up", "/sign-up/(.*)",
+
+     // Route group auth routes with escaped parentheses
+     "/\\(auth\\)/sign-in", "/\\(auth\\)/sign-in/(.*)",
+     "/\\(auth\\)/sign-up", "/\\(auth\\)/sign-up/(.*)",
+
+     // Legacy auth route variants for compatibility
+     "/login", "/login/(.*)",
+     "/signin", "/signin/(.*)",
+     "/signup", "/signup/(.*)",
+     "/register", "/register/(.*)",
+     // ...other routes
+   ];
+   ```
+
+2. **Improved URL Construction in IntegratedBooking**
+
+   Enhanced URL construction in the IntegratedBooking component to properly handle route groups:
+
+   ```typescript
+   // Create URL with proper parameter encoding
+   const returnUrl = `${window.location.origin}/marketplace/builders/${builderId}`;
+   const signInPath = '/(auth)/sign-in';
+   const signInUrl = `${window.location.origin}${signInPath}?returnUrl=${encodeURIComponent(returnUrl)}`;
+   window.location.replace(signInUrl);
+   ```
+
+3. **Client-Side Auth Pages with returnUrl Support**
+
+   Modified sign-in and sign-up pages to properly handle the returnUrl parameter:
+
+   ```typescript
+   // Get returnUrl from search params and pass to Clerk component
+   const searchParams = useSearchParams();
+   const returnUrl = searchParams?.get('returnUrl');
+
+   <ClerkAuthForm
+     mode="signin"
+     routing="path"
+     path="/(auth)/sign-in"
+     signUpUrl="/(auth)/sign-up"
+     redirectUrl={returnUrl}
+   />
+   ```
+
+4. **Enhanced ClerkAuthForm Component**
+
+   Updated the ClerkAuthForm component to support the redirectUrl parameter:
+
+   ```typescript
+   // Add redirectUrl parameter to props interface
+   interface ClerkAuthFormProps {
+     // ...existing props
+     redirectUrl?: string | null;
+   }
+
+   // Use redirectUrl in Clerk component
+   const redirectConfig = redirectUrl ? { redirectUrl } : {};
+
+   <SignIn
+     {...otherProps}
+     {...redirectConfig}
+   />
+   ```
+
+### Testing the Fix
+
+To test the auth redirect flow:
+
+1. Log out completely
+2. Visit a builder profile and click "Schedule" to trigger a booking
+3. You should be redirected to the sign-in page
+4. After signing in, you should return to the builder profile
+5. The booking dialog should open automatically
+
 ## Conclusion
 
 These fixes address potential root causes of the "Sign up unsuccessful due to failed security validations" error by aligning our implementation with Clerk's recommended patterns, particularly for CSRF validation. The standardized approach improves reliability and should make future Clerk updates smoother.
+
+Additionally, the latest changes to fix auth redirect loops enhance the user experience by ensuring seamless transitions between protected content and authentication flows, particularly in the booking experience.
 
 ## References
 

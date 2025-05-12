@@ -41,11 +41,27 @@ export function IntegratedBooking({
     if (!isLoaded) return; // Wait until auth is loaded
 
     if (!isSignedIn) {
-      // Redirect to sign-in with return URL
-      const returnUrl = `/marketplace/builders/${builderId}`;
-      // Use the original URL format - middleware will handle the redirection
-      window.location.href = `/sign-in?returnUrl=${encodeURIComponent(returnUrl)}`;
-      return;
+      try {
+        // Create a return URL for after successful authentication
+        // This should be the marketplace builder profile the user was viewing
+        const returnUrl = `/marketplace/builders/${builderId}`;
+
+        // Use Clerk's catch-all route within the (auth) route group
+        // This follows Clerk's best practices for authentication routes
+        const signInPath = '/(auth)/sign-in';
+
+        // Construct the URL with the returnUrl parameter
+        const signInUrl = `${signInPath}?returnUrl=${encodeURIComponent(returnUrl)}`;
+
+        // Redirect to the sign-in page
+        window.location.href = signInUrl;
+        return;
+      } catch (error) {
+        console.error('Error during auth redirect:', error);
+        // Fallback to the base sign-in page
+        window.location.href = '/(auth)/sign-in';
+        return;
+      }
     }
 
     setIsOpen(true);
