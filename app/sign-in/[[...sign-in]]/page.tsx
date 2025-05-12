@@ -1,16 +1,12 @@
-import { SignIn } from "@clerk/nextjs";
+"use client";
+
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
-import { Metadata } from "next";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/core/button";
-import { useTheme } from "next-themes";
-import { dark } from "@clerk/themes";
+import { ClerkAuthForm } from "@/components/auth/clerk-auth-form";
 
-export const metadata: Metadata = {
-  title: "Sign In | Build Apps With",
-  description: "Sign in to your account",
-};
+// Metadata is moved to a separate route segment file since this is a client component
 
 export default function SignInPage() {
   return (
@@ -34,26 +30,8 @@ export default function SignInPage() {
           </h1>
           <p className="text-sm text-muted-foreground">Sign in to your account</p>
         </div>
-        <SignIn
-          appearance={{
-            elements: {
-              formButtonPrimary: 
-                "bg-primary hover:bg-primary/90 text-primary-foreground",
-              card: "bg-background border border-border shadow-sm",
-              formButtonReset: "text-muted-foreground hover:text-foreground",
-              footerActionLink: "text-primary hover:text-primary/90",
-              headerTitle: "text-foreground",
-              headerSubtitle: "text-muted-foreground",
-              socialButtonsBlockButton: 
-                "border border-border hover:bg-muted text-foreground",
-              formFieldLabel: "text-foreground",
-              formFieldInput: 
-                "bg-background border border-input text-foreground rounded-md",
-              identityPreview: "bg-muted-foreground/20",
-              dividerLine: "bg-border",
-              dividerText: "text-muted-foreground",
-            },
-          }}
+        <ClerkAuthForm
+          mode="signin"
           routing="path"
           path="/sign-in"
           signUpUrl="/sign-up"

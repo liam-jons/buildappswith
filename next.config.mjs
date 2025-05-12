@@ -1,4 +1,5 @@
-import {withSentryConfig} from '@sentry/nextjs';
+// Temporarily disable Sentry
+// import {withSentryConfig} from '@sentry/nextjs';
 /**
  * @type {import('next').NextConfig}
  * Enhanced configuration for Buildappswith platform with security and performance optimizations
@@ -310,6 +311,11 @@ const nextConfig = {
   },
 };
 
+// Temporarily disable Sentry config to fix build issues
+export default nextConfig;
+
+// Will re-enable once the build is fixed
+/*
 export default withSentryConfig(nextConfig, {
 // For all available options, see:
 // https://www.npmjs.com/package/@sentry/webpack-plugin#options
@@ -341,3 +347,4 @@ disableLogger: true,
 // https://vercel.com/docs/cron-jobs
 automaticVercelMonitors: true,
 });
+*/
