@@ -35,6 +35,7 @@ import { AppShowcase, AppItem } from "./app-showcase";
 import { SuccessMetricsDashboard, MetricsCategory } from "./success-metrics-dashboard";
 import { MultiRoleBadge } from "./role-badges";
 import { UserRole } from "@prisma/client";
+import { DemoBadge } from '@/components/marketplace/ui/demo-badge';
 import { 
   SpecializationArea, 
   SpecializationContent,
@@ -58,6 +59,7 @@ export interface BuilderProfileData {
   roles?: UserRole[];
   isFounder?: boolean;
   adhdFocus?: boolean;
+  isDemo?: boolean; // Flag indicating a demo account
   availability?: {
     status: "available" | "limited" | "unavailable";
     nextAvailable?: Date;
@@ -190,6 +192,9 @@ export function BuilderProfile({
             <div className="flex flex-wrap items-center gap-3 mb-1">
               <h1 className="text-2xl md:text-3xl font-bold">{profile.name}</h1>
               <ValidationTierBadge tier={profile.validationTier} />
+              
+              {/* Demo Account Badge */}
+              {profile.isDemo && <DemoBadge size="medium" />}
               
               {/* ADHD Focus Badge */}
               {profile.adhdFocus && (

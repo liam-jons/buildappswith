@@ -35,6 +35,7 @@ export interface BuilderProfileListing {
   adhd_focus: boolean;
   completedProjects: number;
   responseRate?: number;
+  isDemo?: boolean; // Flag indicating if this is a demo account
 }
 
 // Response for paginated builder listings
@@ -69,6 +70,7 @@ export interface MarketplaceFilters {
   sortBy?: string;
   minHourlyRate?: number;
   maxHourlyRate?: number;
+  excludeDemo?: boolean; // Option to exclude demo accounts from results
 }
 
 // Available filter options for UI

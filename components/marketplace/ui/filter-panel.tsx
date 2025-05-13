@@ -19,6 +19,8 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { Button } from "@/components/ui";
 import { Badge } from "@/components/ui/core";
 import { Input } from "@/components/ui";
+import { Switch } from "@/components/ui/core/switch";
+import { Label } from "@/components/ui/core/label";
 
 // Types and interfaces
 interface FilterPanelProps {
@@ -50,10 +52,12 @@ export function FilterPanel({
   // Parse current filters from URL
   const currentCategory = searchParams.get("category") || "";
   const currentSearch = searchParams.get("q") || "";
+  const currentExcludeDemo = searchParams.get("excludeDemo") === "true";
   
   // Local state
   const [search, setSearch] = useState(currentSearch);
   const [category, setCategory] = useState(currentCategory);
+  const [excludeDemo, setExcludeDemo] = useState(currentExcludeDemo);
   const [isOpen, setIsOpen] = useState(false);
   
   // Debounce search to prevent excessive URL updates
@@ -75,8 +79,14 @@ export function FilterPanel({
       params.delete("category");
     }
     
+    if (excludeDemo) {
+      params.set("excludeDemo", "true");
+    } else {
+      params.delete("excludeDemo");
+    }
+    
     router.push(`?${params.toString()}`);
-  }, [debouncedSearch, category, router, searchParams]);
+  }, [debouncedSearch, category, excludeDemo, router, searchParams]);
   
   // Handle category selection
   const handleCategoryChange = (categoryId: string) => {
@@ -88,6 +98,11 @@ export function FilterPanel({
     setSearch(e.target.value);
   };
   
+  // Handle exclude demo accounts change
+  const handleExcludeDemoChange = (checked: boolean) => {
+    setExcludeDemo(checked);
+  };
+  
   // Handle mobile filter toggle
   const toggleFilters = () => {
     setIsOpen(prev => !prev);
@@ -97,6 +112,7 @@ export function FilterPanel({
   const resetFilters = () => {
     setSearch("");
     setCategory("");
+    setExcludeDemo(false);
   };
   
   // Main render
@@ -107,7 +123,7 @@ export function FilterPanel({
         <Button variant="outline" onClick={toggleFilters}>
           {isOpen ? "Hide Filters" : "Show Filters"}
         </Button>
-        {(search || category) && (
+        {(search || category || excludeDemo) && (
           <Button variant="ghost" size="sm" onClick={resetFilters}>
             Reset
           </Button>
@@ -147,9 +163,26 @@ export function FilterPanel({
           </div>
         </div>
         
+        {/* Account type options */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium">Account Options</h3>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch 
+                id="exclude-demo" 
+                checked={excludeDemo}
+                onCheckedChange={handleExcludeDemoChange}
+              />
+              <Label htmlFor="exclude-demo">
+                Hide demo accounts
+              </Label>
+            </div>
+          </div>
+        </div>
+        
         {/* Reset button - desktop */}
         <div className="hidden lg:block">
-          {(search || category) && (
+          {(search || category || excludeDemo) && (
             <Button variant="outline" size="sm" onClick={resetFilters}>
               Reset Filters
             </Button>

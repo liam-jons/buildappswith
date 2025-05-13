@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/core/card";
 import { Button } from "@/components/ui/core/button";
 import { BuilderProfileListing } from '@/lib/marketplace/types';
+import { DemoBadge } from '@/components/marketplace/ui/demo-badge';
 import Link from 'next/link';
 
 /**
@@ -55,6 +56,7 @@ export function BuilderCard({ builder }: { builder: BuilderProfileListing }) {
             <div className="flex items-center">
               <h3 className="text-lg font-semibold mr-2">{builder.name}</h3>
               <ValidationTierBadge tier={tierString} size="sm" />
+              {builder.isDemo && <DemoBadge size="small" className="ml-2" />}
             </div>
             <p className="text-sm text-muted-foreground">
               {builder.headline || builder.tagline || formatHourlyRate(builder.hourlyRate)}
