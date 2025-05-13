@@ -22,8 +22,9 @@ const publicRoutes = [
   "/api/webhook/(.+)",
   // Public API endpoints
   "/api/marketplace/builders",
+  "/api/marketplace/builders/(.+)", // Also include builder ID endpoints
   "/api/marketplace/featured",
-  "/api/marketplace/filters", 
+  "/api/marketplace/filters",
   "/api/timeline/(.+)",
   // Public pages
   "/toolkit",
@@ -35,7 +36,7 @@ const publicRoutes = [
   "/terms",
   "/liam",
   "/builder-profile/(.+)",
-  "/auth-test", 
+  "/auth-test",
   // Marketplace pages should be public
   "/marketplace",
   "/marketplace/(.*)",

@@ -11,20 +11,39 @@ import Link from "next/link";
 
 interface BuilderProfile {
   id: string;
+  userId: string;
   name: string;
-  title: string;
-  bio: string;
-  avatarUrl: string | null;
-  validationTier: 'basic' | 'verified' | 'expert';
+  displayName?: string;
+  headline?: string;
+  bio?: string;
+  tagline?: string;
+  avatarUrl?: string | null;
+  validationTier: number;
   skills: string[];
+  topSkills?: string[];
   hourlyRate?: number;
-  portfolio?: any[];
+  rating?: number;
+  featured?: boolean;
+  availability?: string;
+  adhd_focus?: boolean;
+  completedProjects?: number;
+  responseRate?: number;
+  portfolioItems?: any[];
   socialLinks?: {
     website?: string;
     linkedin?: string;
     github?: string;
     twitter?: string;
   };
+  sessionTypes?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    durationMinutes: number;
+    price: number;
+    currency: string;
+    isActive: boolean;
+  }>;
 }
 
 export function BuilderProfileClient({ builderId }: { builderId: string }) {
@@ -37,15 +56,26 @@ export function BuilderProfileClient({ builderId }: { builderId: string }) {
         // For the MVP, we'll use a direct API call
         // In a real implementation, we would use SWR or React Query
         const response = await fetch(`/api/marketplace/builders/${builderId}`);
-        
+
         if (response.ok) {
           const data = await response.json();
-          setBuilder(data);
+
+          // The API returns { success: true, data: builderData }
+          // We need to extract the builder data from the response
+          if (data.success && data.data) {
+            setBuilder(data.data);
+          } else {
+            console.error("API response missing builder data", data);
+            // Set builder to null if no valid data
+            setBuilder(null);
+          }
         } else {
           console.error("Failed to fetch builder profile");
+          setBuilder(null);
         }
       } catch (error) {
         console.error("Error fetching builder:", error);
+        setBuilder(null);
       } finally {
         setIsLoading(false);
       }
@@ -115,10 +145,10 @@ export function BuilderProfileClient({ builderId }: { builderId: string }) {
         {/* Builder Info */}
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-3xl font-bold">{builder.name}</h1>
-            <ValidationTierBadge tier={builder.validationTier} />
+            <h1 className="text-3xl font-bold">{builder.displayName || builder.name || "Unknown Builder"}</h1>
+            <ValidationTierBadge tier={builder.validationTier === 1 ? 'basic' : builder.validationTier === 2 ? 'verified' : 'expert'} />
           </div>
-          <p className="text-lg text-muted-foreground">{builder.title}</p>
+          <p className="text-lg text-muted-foreground">{builder.headline || builder.tagline || ""}</p>
           
           {/* Skills */}
           <div className="flex flex-wrap gap-2 mt-3">
@@ -252,9 +282,9 @@ export function BuilderProfileClient({ builderId }: { builderId: string }) {
         
         {/* Portfolio Tab */}
         <TabsContent value="portfolio" className="space-y-6">
-          {builder.portfolio && builder.portfolio.length > 0 ? (
+          {builder.portfolioItems && builder.portfolioItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {builder.portfolio.map((item: any, index: number) => (
+              {builder.portfolioItems.map((item: any, index: number) => (
                 <Card key={index} className="overflow-hidden">
                   {item.imageUrl && (
                     <div className="relative h-48 w-full">
@@ -281,9 +311,9 @@ export function BuilderProfileClient({ builderId }: { builderId: string }) {
                         ))}
                       </div>
                     )}
-                    {item.projectUrl && (
+                    {item.demoUrl && (
                       <a
-                        href={item.projectUrl}
+                        href={item.demoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
