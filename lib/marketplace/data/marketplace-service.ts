@@ -8,6 +8,7 @@ import {
 } from '../types';
 import { Prisma } from '@prisma/client';
 import { createDomainLogger } from '@/lib/logger';
+import { addDemoAccountFilters, enhanceWithDemoStatus } from './demo-account-handler';
 
 // Create a marketplace logger
 const marketplaceLogger = createDomainLogger('marketplace-service');
@@ -25,11 +26,14 @@ export async function fetchBuilders(
     const skip = (page - 1) * limit;
 
     // Build where conditions
-    const where: Prisma.BuilderProfileWhereInput = {
+    let where: Prisma.BuilderProfileWhereInput = {
       searchable: true,
       // The User model in the current schema doesn't have deletedAt field
       // So we don't filter by deletedAt
     };
+    
+    // Apply demo account filtering
+    where = addDemoAccountFilters(where, filters);
     
     // Add validation tier filter
     if (filters?.validationTiers && filters.validationTiers.length > 0) {
@@ -181,6 +185,7 @@ export async function fetchBuilders(
             id: true,
             name: true,
             imageUrl: true,
+            isDemo: true,
           },
         },
         skills: {
@@ -221,27 +226,31 @@ export async function fetchBuilders(
           hasImageUrl: !!mappedUser.imageUrl,
         });
 
-        return {
-          id: builder.id,
-          userId: builder.userId,
-          name: builder.displayName || mappedUser.name || 'Unknown Builder',
-          displayName: builder.displayName,
-          bio: builder.bio || undefined,
-          headline: builder.headline || undefined,
-          tagline: builder.tagline || undefined,
-          // Only use imageUrl after mapping to ensure consistency
-          avatarUrl: mappedUser.imageUrl || undefined,
-          validationTier: builder.validationTier,
-          skills: builder.skills.map((s) => s.skill.name),
-          topSkills: builder.topSkills || [],
-          hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : undefined,
-          rating: builder.rating || undefined,
-          featured: builder.featured,
-          availability: (builder.availability as any) || 'available',
-          adhd_focus: builder.adhd_focus,
-          completedProjects: builder.completedProjects,
-          responseRate: builder.responseRate || undefined,
-        };
+        // Create base builder profile
+      const baseProfile = {
+        id: builder.id,
+        userId: builder.userId,
+        name: builder.displayName || mappedUser.name || 'Unknown Builder',
+        displayName: builder.displayName,
+        bio: builder.bio || undefined,
+        headline: builder.headline || undefined,
+        tagline: builder.tagline || undefined,
+        // Only use imageUrl after mapping to ensure consistency
+        avatarUrl: mappedUser.imageUrl || undefined,
+        validationTier: builder.validationTier,
+        skills: builder.skills.map((s) => s.skill.name),
+        topSkills: builder.topSkills || [],
+        hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : undefined,
+        rating: builder.rating || undefined,
+        featured: builder.featured,
+        availability: (builder.availability as any) || 'available',
+        adhd_focus: builder.adhd_focus,
+        completedProjects: builder.completedProjects,
+        responseRate: builder.responseRate || undefined,
+      };
+      
+      // Add demo status information
+      return enhanceWithDemoStatus(baseProfile, mappedUser);
       } catch (error) {
         marketplaceLogger.error('Error mapping builder to listing', {
           builderId: builder.id,
@@ -259,7 +268,8 @@ export async function fetchBuilders(
           featured: false,
           availability: 'available',
           adhd_focus: false,
-          completedProjects: 0
+          completedProjects: 0,
+          isDemo: false // Default to not a demo account
         };
       }
     });
@@ -367,7 +377,8 @@ export async function fetchBuilderById(builderId: string): Promise<BuilderProfil
         hasImageUrl: !!mappedUser.imageUrl
       });
 
-      const builderProfile: BuilderProfileData = {
+      // Create base builder profile data
+      const baseProfile: BuilderProfileData = {
         id: builder.id,
         userId: builder.userId,
         name: builder.displayName || mappedUser.name || 'Unknown Builder',
@@ -415,7 +426,8 @@ export async function fetchBuilderById(builderId: string): Promise<BuilderProfil
         })),
       };
 
-      return builderProfile;
+      // Add demo status information
+      return enhanceWithDemoStatus(baseProfile, mappedUser);
     } catch (error) {
       marketplaceLogger.error('Error transforming builder profile data', {
         builderId: builder.id,
@@ -454,6 +466,7 @@ export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderP
             id: true,
             name: true,
             imageUrl: true,
+            isDemo: true,
           },
         },
         skills: {
@@ -479,7 +492,8 @@ export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderP
           hasImageUrl: !!mappedUser.imageUrl
         });
 
-        return {
+        // Create base builder profile
+        const baseProfile = {
           id: builder.id,
           userId: builder.userId,
           name: builder.displayName || mappedUser.name || 'Unknown Builder',
@@ -500,6 +514,9 @@ export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderP
           completedProjects: builder.completedProjects,
           responseRate: builder.responseRate || undefined,
         };
+        
+        // Add demo status information
+        return enhanceWithDemoStatus(baseProfile, mappedUser);
       } catch (error) {
         marketplaceLogger.error('Error mapping featured builder', {
           builderId: builder.id,
@@ -517,7 +534,8 @@ export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderP
           featured: true,
           availability: 'available',
           adhd_focus: false,
-          completedProjects: 0
+          completedProjects: 0,
+          isDemo: false // Default to not a demo account
         };
       }
     });
