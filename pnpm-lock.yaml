@@ -258,6 +258,9 @@ importers:
       msw:
         specifier: ^2.2.2
         version: 2.2.2(typescript@5.8.3)
+      node-fetch:
+        specifier: '2'
+        version: 2.7.0
       postcss:
         specifier: ^8.5.3
         version: 8.5.3

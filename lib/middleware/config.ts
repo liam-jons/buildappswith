@@ -125,6 +125,7 @@ export const defaultPublicRoutes: RoutePattern[] = [
   "/api/auth/(.+)",
   "/api/webhook/(.+)",
   "/api/marketplace/builders",
+  "/api/marketplace/builders/(.+)", // Make sure builder ID endpoints are public too
   "/api/marketplace/featured",
   "/api/marketplace/filters",
   "/api/timeline/(.+)",

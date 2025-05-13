@@ -9,20 +9,23 @@ import { logger } from '@/lib/logger';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
 
+  // Await params properly to fix the Next.js warning
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const builderId = resolvedParams.id;
+
   logger.info('Marketplace builder profile request received', {
     path,
     method,
-    builderId: params.id
+    builderId
   });
 
   try {
-    const builderId = params.id;
 
     if (!builderId) {
       logger.warn('Missing builder ID in request', { path, method });
