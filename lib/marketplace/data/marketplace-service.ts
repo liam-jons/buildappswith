@@ -24,6 +24,10 @@ export async function fetchBuilders(
   try {
     // Calculate pagination
     const skip = (page - 1) * limit;
+    
+    console.log('[PROD DEBUG] Environment:', process.env.NODE_ENV);
+    console.log('[PROD DEBUG] Database URL (redacted):', process.env.DATABASE_URL?.substring(0, 15) + '...');
+    console.log('[PROD DEBUG] Filters received:', JSON.stringify(filters));
 
     // Build where conditions
     let where: Prisma.BuilderProfileWhereInput = {
@@ -159,13 +163,27 @@ export async function fetchBuilders(
     try {
       // Log the count operation for debugging
       marketplaceLogger.debug('Counting builder profiles', { where });
+      console.log('[PROD DEBUG] Count where clause:', JSON.stringify(where));
+      
+      // Check if the schema has the fields we're querying for
+      const schemaInfo = await db.$queryRaw`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'BuilderProfile'
+        AND table_schema = 'public'
+      `;
+      console.log('[PROD DEBUG] BuilderProfile schema fields:', JSON.stringify(schemaInfo));
+      
       total = await db.builderProfile.count({ where });
       marketplaceLogger.debug('Count result', { total });
+      console.log('[PROD DEBUG] Count result:', total);
     } catch (countError) {
       marketplaceLogger.error('Error counting builder profiles', {
         error: countError instanceof Error ? countError.message : String(countError),
         where
       });
+      console.log('[PROD DEBUG] Count error:', countError instanceof Error ? countError.message : String(countError));
+      console.log('[PROD DEBUG] Count error stack:', countError instanceof Error ? countError.stack : 'No stack');
       // Default to 0 on error to prevent breaking the function
       total = 0;
     }
@@ -174,6 +192,32 @@ export async function fetchBuilders(
     let builders = [];
     try {
       marketplaceLogger.debug('Finding builder profiles', { where, skip, take: limit });
+      console.log('[PROD DEBUG] FindMany where clause:', JSON.stringify(where));
+      console.log('[PROD DEBUG] FindMany orderBy:', JSON.stringify(orderBy));
+      
+      // Check if any builder profiles exist at all
+      const allProfiles = await db.builderProfile.findMany({
+        take: 1,
+        select: { id: true, userId: true, searchable: true }
+      });
+      console.log('[PROD DEBUG] Sample profile check:', JSON.stringify(allProfiles));
+      
+      // Check if Liam's profile exists specifically
+      const liamProfile = await db.builderProfile.findFirst({
+        where: {
+          user: {
+            name: { contains: 'Liam', mode: 'insensitive' }
+          }
+        },
+        select: { 
+          id: true, 
+          userId: true, 
+          searchable: true,
+          featured: true,
+          displayName: true
+        }
+      });
+      console.log('[PROD DEBUG] Liam profile check:', JSON.stringify(liamProfile));
       
       builders = await db.builderProfile.findMany({
         where,
@@ -212,8 +256,17 @@ export async function fetchBuilders(
         error: findError instanceof Error ? findError.message : String(findError),
         where
       });
+      console.log('[PROD DEBUG] FindMany error:', findError instanceof Error ? findError.message : String(findError));
+      console.log('[PROD DEBUG] FindMany error stack:', findError instanceof Error ? findError.stack : 'No stack');
       // Return empty array on error
       builders = [];
+    }
+    
+    console.log('[PROD DEBUG] Raw builders result length:', builders.length);
+    if (builders.length > 0) {
+      console.log('[PROD DEBUG] First builder ID:', builders[0].id);
+      console.log('[PROD DEBUG] First builder userId:', builders[0].userId);
+      console.log('[PROD DEBUG] First builder has user?:', !!builders[0].user);
     }
 
     // Transform to the expected format with user field mapping
@@ -277,6 +330,15 @@ export async function fetchBuilders(
     
     // Calculate pagination info
     const totalPages = Math.ceil(total / limit);
+    
+    console.log('[PROD DEBUG] Final builder listings length:', builderListings.length);
+    console.log('[PROD DEBUG] Pagination info:', JSON.stringify({
+      page,
+      limit,
+      total,
+      totalPages,
+      hasMore: page < totalPages
+    }));
     
     return {
       data: builderListings,
