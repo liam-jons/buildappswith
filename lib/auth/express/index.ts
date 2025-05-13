@@ -11,7 +11,6 @@ export {
   createClerkExpressMiddleware,
   adaptNextRequestToExpress,
   createMockExpressResponse,
-  AuthenticationError,
 } from './adapter';
 
 // Export middleware
@@ -69,7 +68,8 @@ export {
 // Export error types
 export {
   AuthError,
-  AuthenticationError as AuthenticationErrorType,
+  AuthenticationError,
+  AuthenticationError as AuthenticationErrorType, // Keep backward compatibility
   AuthorizationError,
   AuthConfigurationError,
   AuthRateLimitError,
