@@ -174,6 +174,7 @@ export async function fetchBuilders(
     let builders = [];
     try {
       marketplaceLogger.debug('Finding builder profiles', { where, skip, take: limit });
+      
       builders = await db.builderProfile.findMany({
         where,
         orderBy,
