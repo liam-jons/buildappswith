@@ -70,8 +70,10 @@ export function enhanceWithDemoStatus<T extends BuilderProfileListing | BuilderP
   builder: T,
   user: { isDemo?: boolean }
 ): T & { isDemo: boolean } {
+  const isDemo = user?.isDemo || false;
+  
   return {
     ...builder,
-    isDemo: user?.isDemo || false
+    isDemo: isDemo
   };
 }
