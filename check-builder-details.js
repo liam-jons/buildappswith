@@ -1,59 +1,82 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function checkBuilderDetails() {
+async function run() {
   try {
-    // Count by searchable and featured flags
-    const flagCounts = await prisma.$queryRaw`
-      SELECT 
-        "searchable", 
-        "featured", 
-        COUNT(*) as count
-      FROM "BuilderProfile"
-      GROUP BY "searchable", "featured"
-      ORDER BY "searchable", "featured";
-    `;
+    // Query users with builder profiles
+    console.log('Querying users with builder profiles...');
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        clerkId: true,
+        roles: true,
+        builderProfile: {
+          select: {
+            id: true,
+            searchable: true
+          }
+        }
+      }
+    });
+
+    console.log('Total users:', users.length);
+    console.log('Users with builder role:', users.filter(u => u.roles && u.roles.includes('BUILDER')).length);
+    console.log('Users with builder profile:', users.filter(u => u.builderProfile).length);
     
-    console.log('Builder Profile Flag Counts:');
-    console.log(flagCounts);
+    // Print details of users with builder profiles
+    console.log('\nBuilder Profile Details:');
+    for (const user of users.filter(u => u.builderProfile)) {
+      console.log(`User ${user.name || 'Unknown'} (${user.id}): Builder Profile ID ${user.builderProfile.id} | searchable: ${user.builderProfile.searchable} | clerk ID: ${user.clerkId || 'None'}`);
+    }
+
+    // Query builder profiles directly
+    console.log('\nSearchable Builder Profiles:');
+    const searchableBuilders = await prisma.builderProfile.findMany({
+      where: {
+        searchable: true
+      },
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            clerkId: true
+          }
+        },
+        sessionTypes: {
+          select: {
+            id: true
+          }
+        }
+      }
+    });
     
-    // Get summary of validation tiers
-    const validationTiers = await prisma.$queryRaw`
-      SELECT 
-        "validationTier", 
-        COUNT(*) as count
-      FROM "BuilderProfile"
-      GROUP BY "validationTier"
-      ORDER BY "validationTier";
-    `;
+    console.log('Total searchable builder profiles:', searchableBuilders.length);
     
-    console.log('\nBuilder Profile Validation Tiers:');
-    console.log(validationTiers);
+    // Check if builders have session types
+    const buildersWithSessionTypes = searchableBuilders.filter(b => b.sessionTypes.length > 0);
+    console.log('Builders with session types:', buildersWithSessionTypes.length);
     
-    // Check skills association
-    const skillCounts = await prisma.$queryRaw`
-      SELECT 
-        bp.id, 
-        bp."userId",
-        COALESCE(u.name, bp."displayName", 'Unknown') as name,
-        bp."searchable",
-        bp."featured", 
-        COUNT(bs.id) as skill_count
-      FROM "BuilderProfile" bp
-      LEFT JOIN "User" u ON bp."userId" = u.id
-      LEFT JOIN "BuilderSkill" bs ON bp.id = bs."builderId"
-      GROUP BY bp.id, bp."userId", u.name, bp."displayName", bp."searchable", bp."featured"
-      ORDER BY skill_count;
-    `;
+    for (const builder of searchableBuilders) {
+      console.log(`Builder Profile ${builder.id}: User ${builder.user.name || 'Unknown'} | Session Types: ${builder.sessionTypes.length} | Clerk ID: ${builder.user.clerkId || 'None'}`);
+    }
+
+    // Check for clerk users
+    console.log('\nUsers with Clerk IDs:');
+    const clerkUsers = users.filter(u => u.clerkId);
+    console.log('Total users with Clerk ID:', clerkUsers.length);
     
-    console.log('\nBuilder Profile Skill Counts:');
-    console.log(skillCounts);
-    
+    for (const user of clerkUsers) {
+      console.log(`User ${user.name || 'Unknown'} (${user.id}): Clerk ID ${user.clerkId} | Has Builder Profile: ${user.builderProfile ? 'Yes' : 'No'}`);
+    }
+
   } catch (error) {
-    console.error('Error querying database:', error);
+    console.error('Error:', error);
   } finally {
     await prisma.$disconnect();
   }
 }
 
-checkBuilderDetails();
+run();
