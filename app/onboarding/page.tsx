@@ -4,7 +4,7 @@
 
 
 
-import { SiteHeader } from "@/components/site-header";
+import { PlatformHeader } from "@/components/ui";
 import { useAuth } from "@/lib/auth/hooks";
 import { UserRole } from "@/lib/auth/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -94,7 +94,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
+      <PlatformHeader />
       <main className="flex-1 pt-16">
         <div className="container py-12">
           <div className="mx-auto max-w-md">

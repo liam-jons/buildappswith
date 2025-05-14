@@ -1,5 +1,8 @@
 # Component Dependency Map
 
+**Last Updated:** May 14, 2025  
+**Note:** This document has been updated to reflect the header unification changes. The previously separate MarketingHeader component has been removed in favor of a unified SiteHeader component.
+
 This document maps the component dependencies and import/export patterns for the marketing page and related components, with a focus on the recent updates in the feature/updated-landing-page branch.
 
 ## Marketing Page Component Hierarchy
@@ -18,7 +21,7 @@ graph TD
     
     G --> I[Marquee]
     
-    J[app/(marketing)/layout.tsx] --> K[MarketingHeader]
+    J[app/(marketing)/layout.tsx] --> K[SiteHeader]
     J --> L[MarketingFooter]
     
     subgraph marketing-components ["Marketing Components (@/components/marketing)"]

@@ -1,6 +1,5 @@
 "use client";
 
-import { AccessibilityProvider, AccessibilityStyles } from "@/components/landing/accessibility";
 import { AICapabilitiesMarquee } from "@/components/landing/ai-capabilities-marquee";
 import { CTASection } from "@/components/landing/cta-section";
 import { HeroSection } from "@/components/landing/hero-section";
@@ -12,10 +11,7 @@ import { SkillsCarousel } from "@/components/landing/skills-carousel";
 
 export default function Page() {
   return (
-    <AccessibilityProvider>
-      {/* Add accessibility styles */}
-      <AccessibilityStyles />
-      
+    <>
       {/* Performance monitoring */}
       <PerformanceMonitor />
       
@@ -63,6 +59,6 @@ export default function Page() {
           }),
         }}
       />
-    </AccessibilityProvider>
+    </>
   );
 }

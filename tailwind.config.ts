@@ -169,7 +169,8 @@ const config = {
   	}
   },
   plugins: [
-    require("tailwindcss-animate")
+    require("tailwindcss-animate"),
+    require("./lib/tailwind-dyslexic-plugin")
   ],
 } satisfies Config;
 

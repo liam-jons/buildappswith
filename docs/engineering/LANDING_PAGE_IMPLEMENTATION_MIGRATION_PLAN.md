@@ -2,6 +2,8 @@ Comprehensive migration plan for the landing page implementation:
 
   Landing Page Implementation Migration Plan
 
+  **Note (May 14, 2025):** This plan references MarketingHeader which has been unified into SiteHeader. Use SiteHeader for all page navigation needs.
+
   1. Component Mapping
 
   *Note: Components with asterisks need custom implementation as direct replacements don't exist.

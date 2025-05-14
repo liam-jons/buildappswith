@@ -175,7 +175,7 @@ Based on the user's specified components, we will integrate the following Magic 
 
 | Component | Variant | Primary Domain | Purpose | Wrapper Component |
 |-----------|---------|----------------|---------|-------------------|
-| Header | 2 | Marketing | Main navigation for landing pages | MarketingHeader |
+| Header | 2 | Site-wide | Main navigation for all pages | SiteHeader |
 | Hero | 1 | Marketing | Primary landing page banner | MarketingHero |
 | Social Proof Companies | 1 (with logos from 4) | Marketing, Trust | Display trusted companies | TrustProofCompanies |
 | Stats | 2 | Marketing | Display key statistics | MarketingStats |
@@ -263,7 +263,7 @@ We will create domain-specific wrapper components around Magic UI Pro components
 
 | Component | Base Component | Purpose | Key Functionality |
 |-----------|---------------|---------|-------------------|
-| MarketingHeader | Header 2 | Main navigation for landing pages | Navigation, authentication state, responsive design |
+| SiteHeader | Header 2 | Main navigation for all pages | Navigation, authentication state, responsive design |
 | MarketingHero | Hero 1 | Primary landing page banner | Customizable content, CTA buttons, animations |
 | MarketingStats | Stats 2 | Display key statistics | Data integration, number formatting, animations |
 | FeatureShowcase | Feature Scroll 1 | Showcase platform features | Feature highlight, smooth scrolling, responsive layout |

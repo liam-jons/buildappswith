@@ -18,6 +18,7 @@ export { default as BentoSection } from './bento-section';
 export { default as AiStats } from './ai-stats';
 export { default as AiCapabilitiesMarquee } from './ai-capabilities-marquee';
 export { default as Accessibility } from './accessibility';
+export { BrandWordRotate } from './brand-word-rotate';
 
 // Export data
 export * from './data';

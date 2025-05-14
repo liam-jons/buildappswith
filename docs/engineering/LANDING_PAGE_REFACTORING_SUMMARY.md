@@ -1,5 +1,7 @@
 # Landing Page & Marketing Setup Refactoring Summary
 
+**Note (May 14, 2025):** Some of the changes documented below have been reversed as part of our header unification effort. Specifically, the separation of SiteHeader and MarketingHeader has been reverted to use a unified SiteHeader component across all pages. See [Header Unification Decision](../../docs/architecture/decisions/header-unification-2025-05-14.md) for details.
+
 This document summarizes the refactoring done to improve the organization and structure of the landing page and marketing components.
 
 ## Completed Changes

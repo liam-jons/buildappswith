@@ -3,6 +3,10 @@
 ## [Unreleased]
 
 ### Changed
+- Unified header components across the platform - removed separate MarketingHeader in favor of a single SiteHeader
+- Created architectural decision record for header unification
+- Updated documentation to reflect header consolidation
+- Simplified component structure by eliminating redundant header implementations
 - Identified 202 potentially unused components for removal (76% of total components)
 - Created comprehensive codebase cleanup strategy in docs/architecture/analysis
 - Generated detailed component usage analysis to support cleanup efforts

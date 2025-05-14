@@ -1,24 +1,30 @@
 # Component Content Requirements Matrix
 
-**Version:** 1.0  
-**Date:** May 3, 2025  
+**Version:** 1.1  
+**Date:** May 14, 2025  
 **Purpose:** Map content requirements to each component for consistent content integration
 
-## Marketing Domain Components
+## Site-Wide Components
 
-### MarketingHeader
+### SiteHeader
 **Content Requirements:**
 - Navigation labels (UK English)
-- CTA button text
+- CTA button text (context-specific)
 - Logo alt text
 - Mobile menu labels
+- User menu items (when authenticated)
 
 **Default Content:**
 - "Sign in" (not "Login")
-- "Get Started" (main CTA)
+- "Get Started" (main CTA for marketing pages)
+- "Dashboard" (main CTA for authenticated users)
 - "Buildappswith logo" (alt text)
 
 **Accessibility:** ARIA labels in UK English
+
+**Note:** As of May 14, 2025, the SiteHeader has been unified across all pages. Previously separate MarketingHeader component has been removed.
+
+## Marketing Domain Components
 
 ### MarketingHero
 **Content Requirements:**

@@ -12,7 +12,6 @@ The Marketing domain includes components used across marketing pages of the plat
 - Navigation for marketing pages
 
 ### Key Components
-- `MarketingHeader`: The main navigation header for marketing pages
 - `MarketingFooter`: The footer for marketing pages
 - `MarketingHero`: Hero components for marketing pages
 - `FeatureShowcase`: Component for showcasing features
@@ -47,7 +46,8 @@ In the future, the following refactoring should be considered:
 4. Improve component documentation to clarify usage contexts
 
 ## Usage Guidelines
-- For site-wide navigation, use `MarketingHeader` and `MarketingFooter`
+- For site-wide navigation, use the unified `SiteHeader` component (see Header Unification Decision)
+- For marketing page footers, use `MarketingFooter`
 - For landing page-specific sections, use components from the landing domain
 - For reusable marketing components that appear across multiple pages, use the marketing domain
 - When in doubt, prefer the more generic marketing components over landing-specific ones

@@ -1,6 +1,6 @@
 /**
  * ui components barrel export file
- * Version: 1.1.0
+ * Version: 1.2.0
  */
 
 // Export components - core UI elements
@@ -28,6 +28,10 @@ export * from './core/badge';
 export * from './core/avatar';
 export * from './core/alert';
 export * from './core/accordion';
+
+// Export platform UI components (imported from platform domain)
+export { PlatformHeader } from '../platform';
+export { ViewingPreferences } from '../platform';
 
 // Re-export subdirectory
 export * from './core';

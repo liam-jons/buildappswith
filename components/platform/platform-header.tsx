@@ -2,164 +2,16 @@
 
 import { buttonVariants } from "@/components/ui/core/button";
 import { useTheme } from "next-themes";
-import { Switch } from "@/components/ui/core/switch";
-import { Label } from "@/components/ui/core/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/core/popover";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { AlignJustify, XIcon, ChevronDown, User, MoonIcon, SunIcon } from "lucide-react";
+import { AlignJustify, XIcon, ChevronDown, User } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 import { useAuth, useUser, useSignOut } from "@/lib/auth/hooks";
 import { UserRole } from "@/lib/auth/types";
-
-function ViewingPreferences() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [dyslexicMode, setDyslexicMode] = useState(false);
-
-  // After mounting, we have access to the theme
-  useEffect(() => setMounted(true), []);
-
-  useEffect(() => {
-    // Apply OpenDyslexic font if dyslexicMode is enabled
-    if (!mounted) return;
-    
-    if (dyslexicMode) {
-      document.body.classList.add('dyslexic-mode');
-      document.documentElement.classList.add('dyslexic-mode');
-    } else {
-      document.body.classList.remove('dyslexic-mode');
-      document.documentElement.classList.remove('dyslexic-mode');
-    }
-  }, [dyslexicMode, mounted]);
-
-  if (!mounted) return null;
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          className={cn(
-            buttonVariants({ variant: "outline" }),
-            "ml-4 h-8 text-sm md:flex hidden bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
-          )}
-          aria-label="Toggle viewing preferences"
-        >
-          Viewing Preferences
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-72">
-        <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="font-medium leading-none">Viewing Preferences</h4>
-            <p className="text-sm text-muted-foreground">
-              Customise your viewing experience with these options.
-            </p>
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                {theme === "dark" ? <MoonIcon className="h-4 w-4" /> : <SunIcon className="h-4 w-4" />}
-                <Label htmlFor="theme-mode">Dark Mode</Label>
-              </div>
-              <Switch
-                id="theme-mode"
-                checked={theme === "dark"}
-                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.60007 2.09998C3.60007 2.70003 4.08235 3.17897 4.72275 3.24449L5.00007 3.26904V2.09998H3.60007ZM5.00007 1.09998V0.0999756H3.50007V1.09998H5.00007ZM6.00007 0.0999756V1.09998L6.60007 1.09998C7.25259 1.09998 7.92308 1.20847 8.54182 1.41333L5.54064 10.4123L6.00007 11.8H8.00007V10.8H6.53384L9.45444 2.09998H10.8001V0.0999756H6.00007ZM11.8001 0.0999756V1.09998H13.8001V2.09998H11.8001V3.09998H13.8001V4.09997H11.8001V5.09997H13.8001V6.09997H11.8001V7.09997H13.8001V8.09997H11.8001V9.09997H13.8001V10.1H11.8001V11.1H13.8001V12.1H11.8001V13.1H13.8001V14.1H11.8001V14.9H14.7001V0.0999756H11.8001ZM0.900024 2.09998V14.9H3.80002V4.09997H1.90002V2.09998H0.900024Z" fill="currentColor"/></svg>
-                <Label htmlFor="dyslexic-mode">Dyslexic friendly</Label>
-              </div>
-              <Switch
-                id="dyslexic-mode"
-                checked={dyslexicMode}
-                onCheckedChange={setDyslexicMode}
-              />
-            </div>
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-// Mobile version of the viewing preferences button
-function MobileViewingPreferences() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [dyslexicMode, setDyslexicMode] = useState(false);
-
-  // After mounting, we have access to the theme
-  useEffect(() => setMounted(true), []);
-
-  useEffect(() => {
-    // Apply OpenDyslexic font if dyslexicMode is enabled
-    if (!mounted) return;
-    
-    if (dyslexicMode) {
-      document.body.classList.add('dyslexic-mode');
-      document.documentElement.classList.add('dyslexic-mode');
-    } else {
-      document.body.classList.remove('dyslexic-mode');
-      document.documentElement.classList.remove('dyslexic-mode');
-    }
-  }, [dyslexicMode, mounted]);
-
-  if (!mounted) return null;
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          className="flex items-center justify-center h-8 w-8 ml-4 rounded-full border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-bold md:hidden"
-          aria-label="Toggle viewing preferences"
-        >
-          VP
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-72">
-        <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="font-medium leading-none">Viewing Preferences</h4>
-            <p className="text-sm text-muted-foreground">
-              Customise your viewing experience with these options.
-            </p>
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                {theme === "dark" ? <MoonIcon className="h-4 w-4" /> : <SunIcon className="h-4 w-4" />}
-                <Label htmlFor="mobile-theme-mode">Dark Mode</Label>
-              </div>
-              <Switch
-                id="mobile-theme-mode"
-                checked={theme === "dark"}
-                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.60007 2.09998C3.60007 2.70003 4.08235 3.17897 4.72275 3.24449L5.00007 3.26904V2.09998H3.60007ZM5.00007 1.09998V0.0999756H3.50007V1.09998H5.00007ZM6.00007 0.0999756V1.09998L6.60007 1.09998C7.25259 1.09998 7.92308 1.20847 8.54182 1.41333L5.54064 10.4123L6.00007 11.8H8.00007V10.8H6.53384L9.45444 2.09998H10.8001V0.0999756H6.00007ZM11.8001 0.0999756V1.09998H13.8001V2.09998H11.8001V3.09998H13.8001V4.09997H11.8001V5.09997H13.8001V6.09997H11.8001V7.09997H13.8001V8.09997H11.8001V9.09997H13.8001V10.1H11.8001V11.1H13.8001V12.1H11.8001V13.1H13.8001V14.1H11.8001V14.9H14.7001V0.0999756H11.8001ZM0.900024 2.09998V14.9H3.80002V4.09997H1.90002V2.09998H0.900024Z" fill="currentColor"/></svg>
-                <Label htmlFor="mobile-dyslexic-mode">Dyslexic friendly</Label>
-              </div>
-              <Switch
-                id="mobile-dyslexic-mode"
-                checked={dyslexicMode}
-                onCheckedChange={setDyslexicMode}
-              />
-            </div>
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
+import ViewingPreferences from "@/components/platform/viewing-preferences";
 
 // Role-based navigation paths
 const defaultRoleBasedItems = [
@@ -266,7 +118,7 @@ const getUserMenuItems = (roles: UserRole[] | undefined) => {
   return [...commonItems, ...roleSpecificItems];
 };
 
-export function MarketingHeader() {
+export function PlatformHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
@@ -278,32 +130,14 @@ export function MarketingHeader() {
   
   const isAuthenticated = !!isSignedIn && !!user?.id;
   
-  // Use state to store navigation items
-  const [navigationItems, setNavigationItems] = useState({
+  // Use navigation items directly - no API calls
+  const navigationItems = {
     roleBasedItems: defaultRoleBasedItems,
     aboutItems: defaultAboutItems
-  });
+  };
   
   // After mounting, we can access browser APIs
   useEffect(() => setMounted(true), []);
-  
-  // Fetch navigation items from API
-  useEffect(() => {
-    const fetchNavigationItems = async () => {
-      try {
-        const response = await fetch('/api/navigation');
-        if (response.ok) {
-          const data = await response.json();
-          setNavigationItems(data);
-        }
-      } catch (error) {
-        console.error('Failed to load navigation items:', error);
-        // Continue with default items if API fails
-      }
-    };
-    
-    fetchNavigationItems();
-  }, []);
   
   const mobilenavbarVariant = {
     initial: {
@@ -363,7 +197,7 @@ export function MarketingHeader() {
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   
-  // Click outside handlers for dropdowns - Fix TypeScript errors by casting refs
+  // Click outside handlers for dropdowns
   useOnClickOutside(rolesDropdownRef, () => setRolesDropdownOpen(false));
   useOnClickOutside(aboutDropdownRef, () => setAboutDropdownOpen(false));
   useOnClickOutside(userDropdownRef, () => setUserDropdownOpen(false));
@@ -540,13 +374,13 @@ export function MarketingHeader() {
             </div>
           </nav>
 
-          <div className="ml-auto flex h-full items-center">
-            {/* Viewing Preferences Buttons */}
-            <ViewingPreferences />
-            <MobileViewingPreferences />
+          {/* ViewingPreferences and Auth buttons grouped together */}
+          <div className="ml-auto flex h-full items-center gap-2">
+            {/* ViewingPreferences integrated directly into header */}
+            <ViewingPreferences className="hidden md:block" />
             
             {isAuthenticated ? (
-              <div ref={userDropdownRef} className="relative ml-2">
+              <div ref={userDropdownRef} className="relative">
                 <button
                   onClick={() => {
                     setUserDropdownOpen(!userDropdownOpen);
@@ -610,7 +444,7 @@ export function MarketingHeader() {
                 <Link
                   className={cn(
                     buttonVariants({ variant: "outline" }),
-                    "mr-6 text-sm"
+                    "text-sm"
                   )}
                   href="/sign-in"
                 >
@@ -619,7 +453,7 @@ export function MarketingHeader() {
                 <Link
                   className={cn(
                     buttonVariants({ variant: "default" }),
-                    "mr-6 text-sm bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
+                    "text-sm bg-black text-white hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
                   )}
                   href="/sign-up"
                 >
@@ -640,6 +474,8 @@ export function MarketingHeader() {
           </button>
         </div>
       </header>
+      
+      {/* Mobile Navigation */}
       <AnimatePresence>
         <motion.nav
           initial="initial"
@@ -748,7 +584,7 @@ export function MarketingHeader() {
                 </motion.li>
                 <motion.li
                   variants={mobileLinkVar}
-                  className="border-b border-slate-200 dark:border-slate-700 last:border-none"
+                  className="border-b border-slate-200 dark:border-slate-700"
                 >
                   <Link
                     className={`hover:bg-slate-200 dark:hover:bg-slate-700 flex w-full flex-col p-4 transition-colors ${pathname === "/toolkit" ? "bg-slate-200 dark:bg-slate-700" : ""}`}
@@ -756,6 +592,16 @@ export function MarketingHeader() {
                   >
                     <span className="font-medium">Free Toolkit</span>
                   </Link>
+                </motion.li>
+                
+                {/* ViewingPreferences in mobile menu */}
+                <motion.li
+                  variants={mobileLinkVar}
+                  className="border-b border-slate-200 dark:border-slate-700 last:border-none"
+                >
+                  <div className="p-4">
+                    <ViewingPreferences variant="minimal" />
+                  </div>
                 </motion.li>
               </motion.ul>
             </div>
@@ -814,7 +660,7 @@ export function MarketingHeader() {
               </motion.ul>
             </div>
             
-            {/* Accessibility Settings in Mobile Menu */}
+            {/* Login/Signup buttons for non-authenticated users */}
             {!isAuthenticated && (
               <div className="mt-6 flex flex-col space-y-4">
                 <Link
@@ -844,4 +690,4 @@ export function MarketingHeader() {
   );
 }
 
-export default MarketingHeader;
+export default PlatformHeader;
