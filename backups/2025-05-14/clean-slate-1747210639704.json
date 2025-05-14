@@ -1,0 +1,1993 @@
+{
+  "timestamp": "2025-05-14T08:17:19.695Z",
+  "users": [
+    {
+      "id": "cmamilpyo000a8of4i6k88dhy",
+      "name": "Jordan Rivera",
+      "email": "jordan.rivera@buildappswith.com",
+      "emailVerified": null,
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": false,
+      "createdAt": "2025-05-13T12:55:35.857Z",
+      "updatedAt": "2025-05-13T12:55:35.857Z",
+      "roles": [
+        "BUILDER",
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": null,
+      "isDemo": true,
+      "builderProfile": {
+        "id": "cmamilq3p000c8of49cgyz315",
+        "userId": "cmamilpyo000a8of4i6k88dhy",
+        "bio": "AI literacy educator and consultant helping businesses understand and implement generative AI.",
+        "headline": "AI Literacy Specialist",
+        "hourlyRate": null,
+        "featuredBuilder": false,
+        "domains": [],
+        "badges": [],
+        "rating": null,
+        "portfolioItems": [],
+        "validationTier": 3,
+        "availableForHire": true,
+        "createdAt": "2025-05-13T12:55:36.037Z",
+        "updatedAt": "2025-05-13T12:55:36.037Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": true,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmamilqbj000f8of46iyenw65",
+      "name": "Morgan Chen",
+      "email": "morgan.chen@buildappswith.com",
+      "emailVerified": null,
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": false,
+      "createdAt": "2025-05-13T12:55:36.319Z",
+      "updatedAt": "2025-05-13T12:55:36.319Z",
+      "roles": [
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": null,
+      "isDemo": true,
+      "builderProfile": {
+        "id": "cmamilqgn000h8of4qi82bq6o",
+        "userId": "cmamilqbj000f8of46iyenw65",
+        "bio": "Full-stack developer specializing in AI integrations for startups and SMBs.",
+        "headline": "AI Integration Developer",
+        "hourlyRate": null,
+        "featuredBuilder": false,
+        "domains": [],
+        "badges": [],
+        "rating": null,
+        "portfolioItems": [],
+        "validationTier": 2,
+        "availableForHire": true,
+        "createdAt": "2025-05-13T12:55:36.503Z",
+        "updatedAt": "2025-05-13T12:55:36.503Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmamilqnt000k8of47ykoi53b",
+      "name": "Jamie Wilson",
+      "email": "jamie.wilson@buildappswith.com",
+      "emailVerified": null,
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": false,
+      "createdAt": "2025-05-13T12:55:36.761Z",
+      "updatedAt": "2025-05-13T12:55:36.761Z",
+      "roles": [
+        "BUILDER",
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": null,
+      "isDemo": true,
+      "builderProfile": {
+        "id": "cmamilqsr000m8of4rx228r60",
+        "userId": "cmamilqnt000k8of47ykoi53b",
+        "bio": "AI strategy consultant specializing in business process optimization and workflow redesign.",
+        "headline": "AI Process Optimization Expert",
+        "hourlyRate": null,
+        "featuredBuilder": false,
+        "domains": [],
+        "badges": [],
+        "rating": null,
+        "portfolioItems": [],
+        "validationTier": 2,
+        "availableForHire": true,
+        "createdAt": "2025-05-13T12:55:36.939Z",
+        "updatedAt": "2025-05-13T12:55:36.939Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmacatrby00008o9eby4bthl4",
+      "name": "Liam Jons",
+      "email": "liam@buildappswith.com",
+      "emailVerified": "2025-05-06T09:20:12.186Z",
+      "imageUrl": "/images/builders-test/builder.png",
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-06T09:20:12.190Z",
+      "updatedAt": "2025-05-13T06:58:45.254Z",
+      "roles": [
+        "CLIENT",
+        "BUILDER",
+        "ADMIN"
+      ],
+      "isFounder": true,
+      "clerkId": "user_2wBNHJwI9cJdILyvlRnv4zxu090",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmacaujmz00018oa34hehwic1",
+        "userId": "cmacatrby00008o9eby4bthl4",
+        "bio": "Founder of Build Apps With, helping individuals and businesses leverage AI to build applications that solve real problems. Specialized in productivity strategies and creating value through thoughtful AI integration.",
+        "headline": "AI Application Builder",
+        "hourlyRate": "150",
+        "featuredBuilder": true,
+        "domains": [
+          "AI",
+          "Web Development",
+          "Productivity"
+        ],
+        "badges": [
+          "Verified",
+          "Expert"
+        ],
+        "rating": 4.9,
+        "portfolioItems": [
+          {
+            "id": "project1",
+            "tags": [
+              "ADHD",
+              "Productivity",
+              "AI"
+            ],
+            "title": "ADHD Task Manager",
+            "demoUrl": "https://adhd-task-manager.buildappswith.ai",
+            "featured": true,
+            "imageUrl": "/images/portfolio/adhd-task-manager.jpg",
+            "description": "Custom productivity application designed specifically for ADHD users, featuring distraction management, time boxing, and dopamine-driven task completion.",
+            "technologies": [
+              "React",
+              "TypeScript",
+              "OpenAI"
+            ]
+          },
+          {
+            "id": "project2",
+            "tags": [
+              "Education",
+              "AI Literacy"
+            ],
+            "title": "AI Literacy Learning Portal",
+            "demoUrl": "https://literacy.buildappswith.ai",
+            "imageUrl": "/images/portfolio/ai-literacy.jpg",
+            "description": "Interactive learning platform to help users understand and effectively work with AI tools across different domains.",
+            "technologies": [
+              "Next.js",
+              "Tailwind CSS",
+              "Anthropic API"
+            ]
+          },
+          {
+            "id": "project3",
+            "tags": [
+              "Business",
+              "ROI",
+              "Analytics"
+            ],
+            "title": "Business Value Calculator",
+            "imageUrl": "/images/portfolio/value-calculator.jpg",
+            "description": "Tool for businesses to quantify the potential value of AI integration in their workflows.",
+            "technologies": [
+              "Vue.js",
+              "Chart.js",
+              "GPT-4"
+            ]
+          }
+        ],
+        "validationTier": 3,
+        "availableForHire": true,
+        "createdAt": "2025-05-06T09:20:48.875Z",
+        "updatedAt": "2025-05-13T16:03:28.203Z",
+        "socialLinks": {
+          "github": "https://github.com/buildappswith",
+          "twitter": "https://twitter.com/buildappswith",
+          "website": "https://buildappswith.ai",
+          "linkedin": "https://linkedin.com/in/liamjones"
+        },
+        "adhd_focus": true,
+        "searchable": true,
+        "featured": true,
+        "displayName": "Liam Jons",
+        "tagline": "Building AI applications with focus on productivity and business value",
+        "topSkills": [
+          "AI",
+          "React",
+          "TypeScript",
+          "NextJS",
+          "Node.js"
+        ],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 87,
+        "responseRate": 98
+      }
+    },
+    {
+      "id": "cmai0mchy00009kzoyfcarjm9",
+      "name": "Client One",
+      "email": "client-test1@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:07.266Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:07.269Z",
+      "updatedAt": "2025-05-10T09:21:07.269Z",
+      "roles": [
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_test1_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0mctb00039kzolrsa8xyk",
+      "name": "Client Two",
+      "email": "client-test2@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:07.678Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:07.679Z",
+      "updatedAt": "2025-05-10T09:21:07.679Z",
+      "roles": [
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_test2_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0mcz000069kzomftguo03",
+      "name": "Client Three",
+      "email": "client-test3@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:07.884Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:07.885Z",
+      "updatedAt": "2025-05-10T09:21:07.885Z",
+      "roles": [
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_test3_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0md5p00099kzo8inlqw54",
+      "name": "Premium One",
+      "email": "premium-client-test1@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:08.124Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_premium_client1",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:08.125Z",
+      "updatedAt": "2025-05-10T09:21:08.125Z",
+      "roles": [
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": "test_premium_client_test1_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0mddx000c9kzouhaoxrl7",
+      "name": "Premium Two",
+      "email": "premium-client-test2@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:08.420Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_premium_client2",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:08.421Z",
+      "updatedAt": "2025-05-10T09:21:08.421Z",
+      "roles": [
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": "test_premium_client_test2_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0mdjh000f9kzol0njpa71",
+      "name": "Premium Three",
+      "email": "premium-client-test3@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:08.621Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_premium_client3",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:08.622Z",
+      "updatedAt": "2025-05-10T09:21:08.622Z",
+      "roles": [
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": "test_premium_client_test3_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0mdq6000i9kzodxjdlk0d",
+      "name": "New Builder1",
+      "email": "new-builder1@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:08.861Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:08.862Z",
+      "updatedAt": "2025-05-10T09:21:08.862Z",
+      "roles": [
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_new_builder1_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mdvo000k9kzoylyyxqev",
+        "userId": "cmai0mdq6000i9kzodxjdlk0d",
+        "bio": "Just getting started as a builder on the platform, focusing on front-end development.",
+        "headline": "Junior Front-End Developer",
+        "hourlyRate": "45",
+        "featuredBuilder": false,
+        "domains": [
+          "Web Development"
+        ],
+        "badges": [],
+        "rating": null,
+        "portfolioItems": [],
+        "validationTier": 1,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:09.060Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmai0me3r000l9kzo5y67q1mk",
+      "name": "New Builder2",
+      "email": "new-builder2@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:09.350Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:09.351Z",
+      "updatedAt": "2025-05-10T09:21:09.351Z",
+      "roles": [
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_new_builder2_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0megv000n9kzowslbaok5",
+        "userId": "cmai0me3r000l9kzo5y67q1mk",
+        "bio": "New builder with a background in mobile application development.",
+        "headline": "Mobile App Developer",
+        "hourlyRate": "55",
+        "featuredBuilder": false,
+        "domains": [
+          "Mobile Development"
+        ],
+        "badges": [],
+        "rating": null,
+        "portfolioItems": [],
+        "validationTier": 1,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:09.824Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmai0metj000o9kzoso2qwlc4",
+      "name": "New Builder3",
+      "email": "new-builder3@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:10.278Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:10.279Z",
+      "updatedAt": "2025-05-10T09:21:10.279Z",
+      "roles": [
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_new_builder3_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mewu000q9kzo7ho77577",
+        "userId": "cmai0metj000o9kzoso2qwlc4",
+        "bio": "New back-end developer transitioning to full-stack development.",
+        "headline": "Back-End to Full-Stack Developer",
+        "hourlyRate": "60",
+        "featuredBuilder": false,
+        "domains": [
+          "Back-End Development"
+        ],
+        "badges": [],
+        "rating": null,
+        "portfolioItems": [],
+        "validationTier": 1,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:10.399Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmai0mf25000r9kzoaem13tha",
+      "name": "Established Builder1",
+      "email": "established-builder1@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:10.588Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_established_builder1",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:10.589Z",
+      "updatedAt": "2025-05-10T09:21:10.589Z",
+      "roles": [
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_established_builder1_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mf5e000t9kzob1iyxd5v",
+        "userId": "cmai0mf25000r9kzoaem13tha",
+        "bio": "Experienced developer specializing in AI-powered web applications with over 5 years of professional experience.",
+        "headline": "Senior Full Stack AI Developer",
+        "hourlyRate": "150",
+        "featuredBuilder": false,
+        "domains": [
+          "Web Development",
+          "AI Integration"
+        ],
+        "badges": [
+          "Top Rated",
+          "Quick Responder"
+        ],
+        "rating": 4.9,
+        "portfolioItems": [
+          {
+            "tags": [
+              "AI",
+              "Web Development",
+              "CRM"
+            ],
+            "title": "AI-Powered CRM",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=AI+CRM+Project",
+            "outcomes": [
+              {
+                "label": "Lead Conversion",
+                "trend": "up",
+                "value": "+45%"
+              }
+            ],
+            "description": "Custom CRM with AI features for lead scoring and automated follow-ups."
+          },
+          {
+            "tags": [
+              "Machine Learning",
+              "E-commerce"
+            ],
+            "title": "E-commerce Recommendation Engine",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=ML+Recommendation+Engine",
+            "outcomes": [
+              {
+                "label": "Sales Increase",
+                "trend": "up",
+                "value": "+28%"
+              }
+            ],
+            "description": "Machine learning recommendation system for an e-commerce platform."
+          }
+        ],
+        "validationTier": 3,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:10.706Z",
+        "updatedAt": "2025-05-10T09:21:10.706Z",
+        "socialLinks": {
+          "github": "https://github.com/established-builder1",
+          "website": "https://established-builder1.dev",
+          "linkedin": "https://linkedin.com/in/established-builder1"
+        },
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": true,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 25,
+        "responseRate": 98.5
+      }
+    },
+    {
+      "id": "cmai0mfbi000u9kzou4h1dj4z",
+      "name": "Established Builder2",
+      "email": "established-builder2@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:10.925Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_established_builder2",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:10.926Z",
+      "updatedAt": "2025-05-10T09:21:10.926Z",
+      "roles": [
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_established_builder2_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mfe5000w9kzorp8h6m04",
+        "userId": "cmai0mfbi000u9kzou4h1dj4z",
+        "bio": "Specialized in blockchain and web3 development with a focus on DeFi applications.",
+        "headline": "Blockchain & Web3 Developer",
+        "hourlyRate": "175",
+        "featuredBuilder": false,
+        "domains": [
+          "Blockchain",
+          "Web3",
+          "DeFi"
+        ],
+        "badges": [
+          "Web3 Expert",
+          "Fast Delivery"
+        ],
+        "rating": 4.7,
+        "portfolioItems": [
+          {
+            "tags": [
+              "Blockchain",
+              "DeFi",
+              "Smart Contracts"
+            ],
+            "title": "DeFi Lending Platform",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=DeFi+Lending",
+            "description": "Decentralized lending platform with automated interest adjustments."
+          }
+        ],
+        "validationTier": 3,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:11.021Z",
+        "updatedAt": "2025-05-10T09:21:11.021Z",
+        "socialLinks": {
+          "github": "https://github.com/established-builder2",
+          "website": "https://established-builder2.dev",
+          "linkedin": "https://linkedin.com/in/established-builder2"
+        },
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 18,
+        "responseRate": 94.5
+      }
+    },
+    {
+      "id": "cmai0mfhi000x9kzo0ino082j",
+      "name": "Established Builder3",
+      "email": "established-builder3@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:11.142Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_established_builder3",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:11.143Z",
+      "updatedAt": "2025-05-10T09:21:11.143Z",
+      "roles": [
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_established_builder3_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mfkv000z9kzoqkni3efj",
+        "userId": "cmai0mfhi000x9kzo0ino082j",
+        "bio": "UX/UI specialist with extensive experience in design systems and accessible interfaces.",
+        "headline": "UX/UI Designer & Developer",
+        "hourlyRate": "135",
+        "featuredBuilder": false,
+        "domains": [
+          "UX/UI Design",
+          "Front-End Development"
+        ],
+        "badges": [
+          "Design Expert",
+          "Accessibility Advocate"
+        ],
+        "rating": 4.8,
+        "portfolioItems": [
+          {
+            "tags": [
+              "UX/UI",
+              "Accessibility",
+              "Healthcare"
+            ],
+            "title": "Healthcare Portal Redesign",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=UX+Design",
+            "description": "Complete UX/UI redesign of healthcare portal with a focus on accessibility."
+          }
+        ],
+        "validationTier": 2,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:11.263Z",
+        "updatedAt": "2025-05-10T09:21:11.263Z",
+        "socialLinks": {
+          "github": "https://github.com/established-builder3",
+          "website": "https://established-builder3.dev",
+          "linkedin": "https://linkedin.com/in/established-builder3"
+        },
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": true,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 32,
+        "responseRate": 97
+      }
+    },
+    {
+      "id": "cmai0mfot00109kzoyb2ntn2g",
+      "name": "Admin One",
+      "email": "admin-test1@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:11.404Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:11.405Z",
+      "updatedAt": "2025-05-10T09:21:11.405Z",
+      "roles": [
+        "ADMIN"
+      ],
+      "isFounder": true,
+      "clerkId": "test_admin_test1_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0mfqy00119kzox20nrhr5",
+      "name": "Admin Two",
+      "email": "admin-test2@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:11.481Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:11.482Z",
+      "updatedAt": "2025-05-10T09:21:11.482Z",
+      "roles": [
+        "ADMIN"
+      ],
+      "isFounder": false,
+      "clerkId": "test_admin_test2_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0mftp00129kzo7092nj6f",
+      "name": "Admin Three",
+      "email": "admin-test3@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:11.581Z",
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:11.582Z",
+      "updatedAt": "2025-05-10T09:21:11.582Z",
+      "roles": [
+        "ADMIN"
+      ],
+      "isFounder": false,
+      "clerkId": "test_admin_test3_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": null
+    },
+    {
+      "id": "cmai0mfwl00139kzojcon0uqw",
+      "name": "Dual Role1",
+      "email": "client.builder-test1@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:11.685Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_multirole1",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:11.685Z",
+      "updatedAt": "2025-05-10T09:21:11.685Z",
+      "roles": [
+        "CLIENT",
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_builder_test1_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mg2600179kzo9jr2vu6h",
+        "userId": "cmai0mfwl00139kzojcon0uqw",
+        "bio": "Professional developer who also hires other builders for larger projects.",
+        "headline": "Full Stack Developer & Consultant",
+        "hourlyRate": "100",
+        "featuredBuilder": false,
+        "domains": [
+          "Web Development",
+          "Mobile Development"
+        ],
+        "badges": [
+          "Verified Professional"
+        ],
+        "rating": 4.7,
+        "portfolioItems": [
+          {
+            "tags": [
+              "React",
+              "Node.js",
+              "Security"
+            ],
+            "title": "Client Portal Application",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=Client+Portal",
+            "description": "Secure client portal for document sharing and collaboration."
+          }
+        ],
+        "validationTier": 2,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:11.886Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmai0mg6p00189kzoyh2uudli",
+      "name": "Dual Role2",
+      "email": "client.builder-test2@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:12.048Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_multirole2",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:12.049Z",
+      "updatedAt": "2025-05-10T09:21:12.049Z",
+      "roles": [
+        "CLIENT",
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_builder_test2_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mgdq001c9kzohlg9y9fg",
+        "userId": "cmai0mg6p00189kzoyh2uudli",
+        "bio": "Marketing specialist who builds websites while also hiring developers for complex projects.",
+        "headline": "WordPress Developer & Digital Marketer",
+        "hourlyRate": "85",
+        "featuredBuilder": false,
+        "domains": [
+          "WordPress",
+          "Digital Marketing"
+        ],
+        "badges": [
+          "Marketing Expert"
+        ],
+        "rating": 4.6,
+        "portfolioItems": [
+          {
+            "tags": [
+              "WordPress",
+              "Marketing",
+              "E-commerce"
+            ],
+            "title": "E-commerce Marketing Site",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=WordPress+Marketing",
+            "description": "WordPress-based marketing site with integrated analytics."
+          }
+        ],
+        "validationTier": 2,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:12.302Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmai0mgh2001d9kzoqjrxadgg",
+      "name": "Dual Role3",
+      "email": "client.builder-test3@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:12.422Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_multirole3",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:12.423Z",
+      "updatedAt": "2025-05-10T09:21:12.423Z",
+      "roles": [
+        "CLIENT",
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_builder_test3_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mglj001h9kzoqhkxmjws",
+        "userId": "cmai0mgh2001d9kzoqjrxadgg",
+        "bio": "Education technology specialist who both builds and contracts learning platforms.",
+        "headline": "EdTech Developer & Consultant",
+        "hourlyRate": "110",
+        "featuredBuilder": false,
+        "domains": [
+          "Education Technology",
+          "Web Development"
+        ],
+        "badges": [
+          "EdTech Specialist"
+        ],
+        "rating": 4.5,
+        "portfolioItems": [
+          {
+            "tags": [
+              "Education",
+              "React",
+              "Python"
+            ],
+            "title": "Interactive Learning Platform",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=EdTech+Platform",
+            "description": "Customizable learning platform for educational institutions."
+          }
+        ],
+        "validationTier": 2,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:12.583Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmai0mgpj001i9kzodmwpn7g9",
+      "name": "Triple Role1",
+      "email": "client.builder.admin-test1@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:12.727Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_triplerole1",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:12.728Z",
+      "updatedAt": "2025-05-10T09:21:12.728Z",
+      "roles": [
+        "CLIENT",
+        "BUILDER",
+        "ADMIN"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_builder_admin_test1_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mgw4001m9kzo04ylmm0i",
+        "userId": "cmai0mgpj001i9kzodmwpn7g9",
+        "bio": "Platform expert with multiple roles as developer, client, and administrator.",
+        "headline": "Full Stack Platform Architect",
+        "hourlyRate": "175",
+        "featuredBuilder": false,
+        "domains": [
+          "Full Stack Development",
+          "DevOps",
+          "System Architecture"
+        ],
+        "badges": [
+          "Platform Expert",
+          "System Architect"
+        ],
+        "rating": 4.9,
+        "portfolioItems": [
+          {
+            "tags": [
+              "SaaS",
+              "Enterprise",
+              "Architecture"
+            ],
+            "title": "Enterprise SaaS Platform",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=SaaS+Platform",
+            "description": "Scalable SaaS platform with multi-tenant architecture."
+          }
+        ],
+        "validationTier": 3,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:12.964Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmai0mgze001n9kzodnk0kmgb",
+      "name": "Triple Role2",
+      "email": "client.builder.admin-test2@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:13.082Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_triplerole2",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:13.083Z",
+      "updatedAt": "2025-05-10T09:21:13.083Z",
+      "roles": [
+        "CLIENT",
+        "BUILDER",
+        "ADMIN"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_builder_admin_test2_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mh4e001r9kzob0ex4uvf",
+        "userId": "cmai0mgze001n9kzodnk0kmgb",
+        "bio": "Fintech specialist with experience across development, operations, and administration.",
+        "headline": "Fintech Solutions Architect",
+        "hourlyRate": "165",
+        "featuredBuilder": false,
+        "domains": [
+          "Fintech",
+          "Security",
+          "Cloud Architecture"
+        ],
+        "badges": [
+          "Fintech Expert",
+          "Security Specialist"
+        ],
+        "rating": 4.8,
+        "portfolioItems": [
+          {
+            "tags": [
+              "Finance",
+              "Security",
+              "Analytics"
+            ],
+            "title": "Financial Data Dashboard",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=Financial+Dashboard",
+            "description": "Secure financial analytics platform with real-time data visualization."
+          }
+        ],
+        "validationTier": 3,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:13.262Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmai0mh89001s9kzo8nq9ajqj",
+      "name": "Triple Role3",
+      "email": "client.builder.admin-test3@buildappswith.com",
+      "emailVerified": "2025-05-10T09:21:13.400Z",
+      "imageUrl": null,
+      "stripeCustomerId": "cus_test_triplerole3",
+      "verified": true,
+      "createdAt": "2025-05-10T09:21:13.401Z",
+      "updatedAt": "2025-05-10T09:21:13.401Z",
+      "roles": [
+        "CLIENT",
+        "BUILDER",
+        "ADMIN"
+      ],
+      "isFounder": false,
+      "clerkId": "test_client_builder_admin_test3_buildappswith_com",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "cmai0mhed001w9kzoqx9xy6eq",
+        "userId": "cmai0mh89001s9kzo8nq9ajqj",
+        "bio": "Healthcare tech specialist with experience in development, operations, and compliance.",
+        "headline": "Healthcare Solutions Developer",
+        "hourlyRate": "140",
+        "featuredBuilder": false,
+        "domains": [
+          "Healthcare Technology",
+          "Compliance",
+          "Web Development"
+        ],
+        "badges": [
+          "Healthcare Expert",
+          "HIPAA Compliant"
+        ],
+        "rating": 4.7,
+        "portfolioItems": [
+          {
+            "tags": [
+              "Healthcare",
+              "Security",
+              "Compliance"
+            ],
+            "title": "Patient Portal System",
+            "imageUrl": "https://placehold.co/600x400/5271ff/white?text=Healthcare+Portal",
+            "description": "HIPAA-compliant patient portal with secure messaging and record access."
+          }
+        ],
+        "validationTier": 2,
+        "availableForHire": true,
+        "createdAt": "2025-05-10T09:21:13.621Z",
+        "updatedAt": "2025-05-13T09:16:56.219Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmamilp1g00008of4qe6rj4dc",
+      "name": "Alex Taylor",
+      "email": "alex.taylor@buildappswith.com",
+      "emailVerified": null,
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": false,
+      "createdAt": "2025-05-13T12:55:34.661Z",
+      "updatedAt": "2025-05-13T12:55:34.661Z",
+      "roles": [
+        "BUILDER",
+        "CLIENT"
+      ],
+      "isFounder": false,
+      "clerkId": null,
+      "isDemo": true,
+      "builderProfile": {
+        "id": "cmamilpao00028of4672wn8oe",
+        "userId": "cmamilp1g00008of4qe6rj4dc",
+        "bio": "AI application specialist with expertise in conversational agents and knowledge management.",
+        "headline": "AI & Automation Expert",
+        "hourlyRate": null,
+        "featuredBuilder": false,
+        "domains": [],
+        "badges": [],
+        "rating": null,
+        "portfolioItems": [],
+        "validationTier": 2,
+        "availableForHire": true,
+        "createdAt": "2025-05-13T12:55:34.992Z",
+        "updatedAt": "2025-05-13T12:55:34.992Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": true,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    },
+    {
+      "id": "cmamilplp00058of4ogo3kfni",
+      "name": "Sam Johnson",
+      "email": "sam.johnson@buildappswith.com",
+      "emailVerified": null,
+      "imageUrl": null,
+      "stripeCustomerId": null,
+      "verified": false,
+      "createdAt": "2025-05-13T12:55:35.389Z",
+      "updatedAt": "2025-05-13T12:55:35.389Z",
+      "roles": [
+        "BUILDER"
+      ],
+      "isFounder": false,
+      "clerkId": null,
+      "isDemo": true,
+      "builderProfile": {
+        "id": "cmamilpr700078of4n2mv38qv",
+        "userId": "cmamilplp00058of4ogo3kfni",
+        "bio": "Specializing in ADHD-focused productivity tools and AI assistants for neurodivergent workflows.",
+        "headline": "Productivity Systems Designer",
+        "hourlyRate": null,
+        "featuredBuilder": false,
+        "domains": [],
+        "badges": [],
+        "rating": null,
+        "portfolioItems": [],
+        "validationTier": 1,
+        "availableForHire": true,
+        "createdAt": "2025-05-13T12:55:35.588Z",
+        "updatedAt": "2025-05-13T12:55:35.588Z",
+        "socialLinks": null,
+        "adhd_focus": false,
+        "searchable": true,
+        "featured": false,
+        "displayName": null,
+        "tagline": null,
+        "topSkills": [],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "availability": "available",
+        "completedProjects": 0,
+        "responseRate": null
+      }
+    }
+  ],
+  "sessionTypes": [
+    {
+      "id": "cmai105gj00099k7rktbdquvu",
+      "builderId": "cmai0mf5e000t9kzob1iyxd5v",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:51.331Z",
+      "updatedAt": "2025-05-10T09:31:51.331Z"
+    },
+    {
+      "id": "cmai105il000b9k7r35frbzo9",
+      "builderId": "cmai0mf5e000t9kzob1iyxd5v",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:51.406Z",
+      "updatedAt": "2025-05-10T09:31:51.406Z"
+    },
+    {
+      "id": "cmai105l1000d9k7ru2bx1j51",
+      "builderId": "cmai0mfe5000w9kzorp8h6m04",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:51.493Z",
+      "updatedAt": "2025-05-10T09:31:51.493Z"
+    },
+    {
+      "id": "cmai105o5000f9k7rt8uyjhr3",
+      "builderId": "cmai0mfe5000w9kzorp8h6m04",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:51.605Z",
+      "updatedAt": "2025-05-10T09:31:51.605Z"
+    },
+    {
+      "id": "cmai105qv000h9k7rwmhlck6x",
+      "builderId": "cmai0mfkv000z9kzoqkni3efj",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:51.703Z",
+      "updatedAt": "2025-05-10T09:31:51.703Z"
+    },
+    {
+      "id": "cmai105u7000j9k7rcacsi6f4",
+      "builderId": "cmai0mfkv000z9kzoqkni3efj",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:51.823Z",
+      "updatedAt": "2025-05-10T09:31:51.823Z"
+    },
+    {
+      "id": "cmai105wo000l9k7ri77kotvp",
+      "builderId": "cmai0mg2600179kzo9jr2vu6h",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:51.912Z",
+      "updatedAt": "2025-05-10T09:31:51.912Z"
+    },
+    {
+      "id": "cmai10600000n9k7rc19cwwl4",
+      "builderId": "cmai0mg2600179kzo9jr2vu6h",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.032Z",
+      "updatedAt": "2025-05-10T09:31:52.032Z"
+    },
+    {
+      "id": "cmai10635000p9k7rznsvxfvl",
+      "builderId": "cmai0mgdq001c9kzohlg9y9fg",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.146Z",
+      "updatedAt": "2025-05-10T09:31:52.146Z"
+    },
+    {
+      "id": "cmai10661000r9k7rq86ckl3w",
+      "builderId": "cmai0mgdq001c9kzohlg9y9fg",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.249Z",
+      "updatedAt": "2025-05-10T09:31:52.249Z"
+    },
+    {
+      "id": "cmai10696000t9k7r4ujd99wu",
+      "builderId": "cmai0mglj001h9kzoqhkxmjws",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.363Z",
+      "updatedAt": "2025-05-10T09:31:52.363Z"
+    },
+    {
+      "id": "cmai106dq000v9k7rupne0k67",
+      "builderId": "cmai0mglj001h9kzoqhkxmjws",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.526Z",
+      "updatedAt": "2025-05-10T09:31:52.526Z"
+    },
+    {
+      "id": "cmai106gf000x9k7rqlc92av5",
+      "builderId": "cmai0mgw4001m9kzo04ylmm0i",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.623Z",
+      "updatedAt": "2025-05-10T09:31:52.623Z"
+    },
+    {
+      "id": "cmai106j7000z9k7rmiae6nxt",
+      "builderId": "cmai0mgw4001m9kzo04ylmm0i",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.723Z",
+      "updatedAt": "2025-05-10T09:31:52.723Z"
+    },
+    {
+      "id": "cmai106m000119k7r9ee6znvn",
+      "builderId": "cmai0mh4e001r9kzob0ex4uvf",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.824Z",
+      "updatedAt": "2025-05-10T09:31:52.824Z"
+    },
+    {
+      "id": "cmai106ov00139k7rc8wrmsul",
+      "builderId": "cmai0mh4e001r9kzob0ex4uvf",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:52.928Z",
+      "updatedAt": "2025-05-10T09:31:52.928Z"
+    },
+    {
+      "id": "cmai106ra00159k7r274dbpf2",
+      "builderId": "cmai0mhed001w9kzoqx9xy6eq",
+      "title": "Initial Consultation",
+      "description": "Discuss your project requirements and explore potential solutions.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4F46E5",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:53.015Z",
+      "updatedAt": "2025-05-10T09:31:53.015Z"
+    },
+    {
+      "id": "cmai106u900179k7rnw73ohkv",
+      "builderId": "cmai0mhed001w9kzoqx9xy6eq",
+      "title": "Development Planning",
+      "description": "Detailed planning session to outline technical implementation and architecture.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#0891B2",
+      "maxParticipants": null,
+      "createdAt": "2025-05-10T09:31:53.122Z",
+      "updatedAt": "2025-05-10T09:31:53.122Z"
+    },
+    {
+      "id": "cmam5uy0k00018ohmcqrpcjw3",
+      "builderId": "cmacaujmz00018oa34hehwic1",
+      "title": "Quick Strategy Session",
+      "description": "A brief session to quickly address specific questions or challenges.",
+      "durationMinutes": 30,
+      "price": "75",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#2196F3",
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T06:58:51.188Z",
+      "updatedAt": "2025-05-13T06:58:51.188Z"
+    },
+    {
+      "id": "cmam5uy3600038ohma784n403",
+      "builderId": "cmacaujmz00018oa34hehwic1",
+      "title": "AI Strategy Consultation",
+      "description": "A focused session to strategize your AI implementation and identify the best approaches for your specific needs.",
+      "durationMinutes": 60,
+      "price": "150",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#4CAF50",
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T06:58:51.283Z",
+      "updatedAt": "2025-05-13T06:58:51.283Z"
+    },
+    {
+      "id": "cmam5uy4e00058ohmo4qv32xq",
+      "builderId": "cmacaujmz00018oa34hehwic1",
+      "title": "Business AI Assessment",
+      "description": "Comprehensive evaluation of your business needs and AI implementation opportunities.",
+      "durationMinutes": 90,
+      "price": "250",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#FF9800",
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T06:58:51.326Z",
+      "updatedAt": "2025-05-13T06:58:51.326Z"
+    },
+    {
+      "id": "cmam5uy5d00078ohm6t8x5npo",
+      "builderId": "cmacaujmz00018oa34hehwic1",
+      "title": "AI Literacy Workshop",
+      "description": "Educational session to build AI literacy and understanding for teams and individuals.",
+      "durationMinutes": 120,
+      "price": "300",
+      "currency": "USD",
+      "isActive": true,
+      "color": "#9C27B0",
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T06:58:51.362Z",
+      "updatedAt": "2025-05-13T06:58:51.362Z"
+    },
+    {
+      "id": "cmamilpao00038of4pydl94pg",
+      "builderId": "cmamilpao00028of4672wn8oe",
+      "title": "Initial Consultation",
+      "description": "Introductory session to discuss your needs and how I can help.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:34.992Z",
+      "updatedAt": "2025-05-13T12:55:34.992Z"
+    },
+    {
+      "id": "cmamilpao00048of44b2cb8ce",
+      "builderId": "cmamilpao00028of4672wn8oe",
+      "title": "Strategy Session",
+      "description": "In-depth strategy discussion for your AI implementation.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:34.992Z",
+      "updatedAt": "2025-05-13T12:55:34.992Z"
+    },
+    {
+      "id": "cmamilpr800088of4vnr17n5n",
+      "builderId": "cmamilpr700078of4n2mv38qv",
+      "title": "Initial Consultation",
+      "description": "Introductory session to discuss your needs and how I can help.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:35.588Z",
+      "updatedAt": "2025-05-13T12:55:35.588Z"
+    },
+    {
+      "id": "cmamilpr800098of4u31fioq1",
+      "builderId": "cmamilpr700078of4n2mv38qv",
+      "title": "Strategy Session",
+      "description": "In-depth strategy discussion for your AI implementation.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:35.588Z",
+      "updatedAt": "2025-05-13T12:55:35.588Z"
+    },
+    {
+      "id": "cmamilq3p000d8of4uvkvctpf",
+      "builderId": "cmamilq3p000c8of49cgyz315",
+      "title": "Initial Consultation",
+      "description": "Introductory session to discuss your needs and how I can help.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:36.037Z",
+      "updatedAt": "2025-05-13T12:55:36.037Z"
+    },
+    {
+      "id": "cmamilq3p000e8of4vnxy134x",
+      "builderId": "cmamilq3p000c8of49cgyz315",
+      "title": "Strategy Session",
+      "description": "In-depth strategy discussion for your AI implementation.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:36.037Z",
+      "updatedAt": "2025-05-13T12:55:36.037Z"
+    },
+    {
+      "id": "cmamilqgn000i8of4czjezifn",
+      "builderId": "cmamilqgn000h8of4qi82bq6o",
+      "title": "Initial Consultation",
+      "description": "Introductory session to discuss your needs and how I can help.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:36.503Z",
+      "updatedAt": "2025-05-13T12:55:36.503Z"
+    },
+    {
+      "id": "cmamilqgn000j8of4qjkfhypp",
+      "builderId": "cmamilqgn000h8of4qi82bq6o",
+      "title": "Strategy Session",
+      "description": "In-depth strategy discussion for your AI implementation.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:36.503Z",
+      "updatedAt": "2025-05-13T12:55:36.503Z"
+    },
+    {
+      "id": "cmamilqsr000n8of4i189krg2",
+      "builderId": "cmamilqsr000m8of4rx228r60",
+      "title": "Initial Consultation",
+      "description": "Introductory session to discuss your needs and how I can help.",
+      "durationMinutes": 30,
+      "price": "0",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:36.939Z",
+      "updatedAt": "2025-05-13T12:55:36.939Z"
+    },
+    {
+      "id": "cmamilqsr000o8of4gyemlwys",
+      "builderId": "cmamilqsr000m8of4rx228r60",
+      "title": "Strategy Session",
+      "description": "In-depth strategy discussion for your AI implementation.",
+      "durationMinutes": 60,
+      "price": "99.99",
+      "currency": "USD",
+      "isActive": true,
+      "color": null,
+      "maxParticipants": null,
+      "createdAt": "2025-05-13T12:55:36.939Z",
+      "updatedAt": "2025-05-13T12:55:36.939Z"
+    }
+  ]
+}

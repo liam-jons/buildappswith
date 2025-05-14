@@ -1,7 +1,7 @@
 "use client";
 
 import { EnhancedClerkProvider } from "./enhanced-clerk-provider";
-import { AuthLoadingState } from "../auth/loading-state";
+import { OptimizedAuthLoadingState } from "../auth/optimized-loading-state";
 import { Suspense } from "react";
 
 interface ClerkProviderProps {
@@ -10,16 +10,16 @@ interface ClerkProviderProps {
 
 /**
  * ClerkProvider wrapper component that supports theme switching
- * This is now a wrapper around EnhancedClerkProvider for backward compatibility
+ * Updated to use optimized loading state for better public page performance
  */
 export function ClerkProvider({ children }: ClerkProviderProps) {
   // Use the enhanced provider with consistent behavior across environments
   return (
     <EnhancedClerkProvider>
       <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
-        <AuthLoadingState maxWaitTime={10000}>
+        <OptimizedAuthLoadingState maxWaitTime={5000}>
           {children}
-        </AuthLoadingState>
+        </OptimizedAuthLoadingState>
       </Suspense>
     </EnhancedClerkProvider>
   );

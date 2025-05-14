@@ -1,0 +1,80 @@
+name: Database Sync Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      sync_type:
+        description: 'Type of sync to perform'
+        required: true
+        default: 'verify'
+        type: choice
+        options:
+          - verify
+          - backup
+          - sync-schema
+          - sync-data
+          - full-sync
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  database-sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+      
+      - name: Generate Prisma Client
+        run: npx prisma generate
+      
+      - name: Verify Development Database
+        if: ${{ inputs.sync_type == 'verify' || inputs.sync_type == 'full-sync' }}
+        env:
+          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+        run: node scripts/verify-database-connection.js
+      
+      - name: Backup Production Database
+        if: ${{ inputs.sync_type == 'backup' || inputs.sync_type == 'full-sync' }}
+        env:
+          PRODUCTION_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: node scripts/backup-production-raw.js
+      
+      - name: Sync Schema to Production
+        if: ${{ inputs.sync_type == 'sync-schema' || inputs.sync_type == 'full-sync' }}
+        env:
+          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+          PRODUCTION_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: node scripts/sync-schema-to-production.js
+      
+      - name: Copy Data to Production
+        if: ${{ inputs.sync_type == 'sync-data' || inputs.sync_type == 'full-sync' }}
+        env:
+          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+          PRODUCTION_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: node scripts/copy-dev-to-prod.js
+      
+      - name: Verify Production Marketplace
+        if: ${{ inputs.sync_type == 'verify' || inputs.sync_type == 'full-sync' }}
+        env:
+          PRODUCTION_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: node scripts/verify-production-marketplace.js
+      
+      - name: Upload Backup Artifacts
+        if: ${{ inputs.sync_type == 'backup' || inputs.sync_type == 'full-sync' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-backup-${{ github.run_number }}
+          path: backups/production/
+          retention-days: 30

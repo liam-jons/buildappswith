@@ -1,0 +1,289 @@
+{
+  "timestamp": "2025-05-14T10:21:13.345Z",
+  "databaseName": "production",
+  "users": [
+    {
+      "id": "75677d90-bf2f-409f-8019-312fd182b3e6",
+      "name": "Liam Jons",
+      "email": "liam@buildappswith.com",
+      "emailVerified": null,
+      "imageUrl": "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ3aVBtQUpNU2tzUzIzdTJIb0VDSGtlZEVhSSJ9",
+      "stripeCustomerId": null,
+      "verified": true,
+      "createdAt": "2025-05-06T20:52:46.733Z",
+      "updatedAt": "2025-05-13T13:49:53.859Z",
+      "roles": "{BUILDER,ADMIN}",
+      "isFounder": true,
+      "clerkId": "user_2wBNHJwI9cJdILyvlRnv4zxu090",
+      "isDemo": false,
+      "builderProfile": {
+        "id": "fa6b7133-005a-4988-a111-b4f148ec8b6d",
+        "userId": "75677d90-bf2f-409f-8019-312fd182b3e6",
+        "bio": "Founder of BuildAppsWith, helping individuals and businesses leverage AI to build applications that solve real problems. Specialized in ADHD productivity strategies and creating value through thoughtful AI integration.",
+        "headline": "AI Application Builder & ADHD Productivity Specialist",
+        "hourlyRate": "250.00",
+        "featuredBuilder": true,
+        "domains": [
+          "AI Development",
+          "ADHD Productivity",
+          "Business Strategy",
+          "AI Literacy"
+        ],
+        "badges": [
+          "Founder",
+          "AI Expert",
+          "Verified"
+        ],
+        "rating": null,
+        "portfolioItems": [
+          {
+            "id": "project1",
+            "tags": [
+              "ADHD",
+              "Productivity",
+              "AI"
+            ],
+            "title": "ADHD Task Manager",
+            "demoUrl": "https://adhd-task-manager.buildappswith.ai",
+            "featured": true,
+            "imageUrl": "/images/portfolio/adhd-task-manager.jpg",
+            "description": "Custom productivity application designed specifically for ADHD users.",
+            "technologies": [
+              "React",
+              "TypeScript",
+              "OpenAI"
+            ]
+          },
+          {
+            "id": "project2",
+            "tags": [
+              "Education",
+              "AI Literacy"
+            ],
+            "title": "AI Literacy Learning Portal",
+            "imageUrl": "/images/portfolio/ai-literacy.jpg",
+            "description": "Interactive learning platform to help users understand and use AI tools.",
+            "technologies": [
+              "Next.js",
+              "Tailwind CSS",
+              "Anthropic API"
+            ]
+          },
+          {
+            "id": "project3",
+            "tags": [
+              "Business",
+              "ROI",
+              "Analytics"
+            ],
+            "title": "Business Value Calculator",
+            "imageUrl": "/images/portfolio/value-calculator.jpg",
+            "description": "Tool for businesses to quantify the potential value of AI integration.",
+            "technologies": [
+              "Vue.js",
+              "Chart.js",
+              "GPT-4"
+            ]
+          }
+        ],
+        "validationTier": 3,
+        "availableForHire": true,
+        "createdAt": "2025-05-06T20:52:46.903Z",
+        "updatedAt": "2025-05-13T13:49:54.032Z",
+        "socialLinks": {
+          "github": "https://github.com/buildappswith",
+          "twitter": "https://twitter.com/buildappswith",
+          "website": "https://buildappswith.ai",
+          "linkedin": "https://linkedin.com/in/liamjons"
+        },
+        "adhd_focus": true,
+        "searchable": true,
+        "featured": true,
+        "topSkills": [
+          "AI Integration",
+          "Next.js",
+          "React",
+          "TypeScript"
+        ],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "displayName": "Liam Jons",
+        "tagline": "Turning ideas into AI-powered solutions",
+        "availability": "available",
+        "completedProjects": 50,
+        "responseRate": "0.95"
+      },
+      "clientProfile": null,
+      "sessionTypes": []
+    }
+  ],
+  "rawData": {
+    "users": [
+      {
+        "id": "75677d90-bf2f-409f-8019-312fd182b3e6",
+        "name": "Liam Jons",
+        "email": "liam@buildappswith.com",
+        "emailVerified": null,
+        "imageUrl": "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ3aVBtQUpNU2tzUzIzdTJIb0VDSGtlZEVhSSJ9",
+        "stripeCustomerId": null,
+        "verified": true,
+        "createdAt": "2025-05-06T20:52:46.733Z",
+        "updatedAt": "2025-05-13T13:49:53.859Z",
+        "roles": "{BUILDER,ADMIN}",
+        "isFounder": true,
+        "clerkId": "user_2wBNHJwI9cJdILyvlRnv4zxu090",
+        "isDemo": false
+      }
+    ],
+    "builderProfiles": [
+      {
+        "id": "fa6b7133-005a-4988-a111-b4f148ec8b6d",
+        "userId": "75677d90-bf2f-409f-8019-312fd182b3e6",
+        "bio": "Founder of BuildAppsWith, helping individuals and businesses leverage AI to build applications that solve real problems. Specialized in ADHD productivity strategies and creating value through thoughtful AI integration.",
+        "headline": "AI Application Builder & ADHD Productivity Specialist",
+        "hourlyRate": "250.00",
+        "featuredBuilder": true,
+        "domains": [
+          "AI Development",
+          "ADHD Productivity",
+          "Business Strategy",
+          "AI Literacy"
+        ],
+        "badges": [
+          "Founder",
+          "AI Expert",
+          "Verified"
+        ],
+        "rating": null,
+        "portfolioItems": [
+          {
+            "id": "project1",
+            "tags": [
+              "ADHD",
+              "Productivity",
+              "AI"
+            ],
+            "title": "ADHD Task Manager",
+            "demoUrl": "https://adhd-task-manager.buildappswith.ai",
+            "featured": true,
+            "imageUrl": "/images/portfolio/adhd-task-manager.jpg",
+            "description": "Custom productivity application designed specifically for ADHD users.",
+            "technologies": [
+              "React",
+              "TypeScript",
+              "OpenAI"
+            ]
+          },
+          {
+            "id": "project2",
+            "tags": [
+              "Education",
+              "AI Literacy"
+            ],
+            "title": "AI Literacy Learning Portal",
+            "imageUrl": "/images/portfolio/ai-literacy.jpg",
+            "description": "Interactive learning platform to help users understand and use AI tools.",
+            "technologies": [
+              "Next.js",
+              "Tailwind CSS",
+              "Anthropic API"
+            ]
+          },
+          {
+            "id": "project3",
+            "tags": [
+              "Business",
+              "ROI",
+              "Analytics"
+            ],
+            "title": "Business Value Calculator",
+            "imageUrl": "/images/portfolio/value-calculator.jpg",
+            "description": "Tool for businesses to quantify the potential value of AI integration.",
+            "technologies": [
+              "Vue.js",
+              "Chart.js",
+              "GPT-4"
+            ]
+          }
+        ],
+        "validationTier": 3,
+        "availableForHire": true,
+        "createdAt": "2025-05-06T20:52:46.903Z",
+        "updatedAt": "2025-05-13T13:49:54.032Z",
+        "socialLinks": {
+          "github": "https://github.com/buildappswith",
+          "twitter": "https://twitter.com/buildappswith",
+          "website": "https://buildappswith.ai",
+          "linkedin": "https://linkedin.com/in/liamjons"
+        },
+        "adhd_focus": true,
+        "searchable": true,
+        "featured": true,
+        "topSkills": [
+          "AI Integration",
+          "Next.js",
+          "React",
+          "TypeScript"
+        ],
+        "expertiseAreas": {
+          "AI": [
+            "Large Language Models",
+            "AI Integration",
+            "Prompt Engineering"
+          ],
+          "Web": [
+            "Next.js",
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "Architecture": [
+            "System Design",
+            "API Design",
+            "Database Modeling"
+          ]
+        },
+        "displayName": "Liam Jons",
+        "tagline": "Turning ideas into AI-powered solutions",
+        "availability": "available",
+        "completedProjects": 50,
+        "responseRate": "0.95"
+      }
+    ],
+    "clientProfiles": [],
+    "sessionTypes": [
+      {
+        "id": "cmammq65g00018oryoo6j5gea",
+        "builderId": "fa6b7133-005a-4988-a111-b4f148ec8b6d",
+        "title": "1:1 \"Vibe Coding\" Consultation",
+        "description": "Get personalised guidance on your AI development projects.",
+        "durationMinutes": 60,
+        "price": "150.00",
+        "currency": "GBP",
+        "isActive": true,
+        "color": "#4F46E5",
+        "maxParticipants": null,
+        "createdAt": "2025-05-13T13:51:01.924Z",
+        "updatedAt": "2025-05-13T13:51:01.924Z",
+        "calendlyEventTypeId": null,
+        "calendlyEventTypeUri": null
+      }
+    ]
+  }
+}

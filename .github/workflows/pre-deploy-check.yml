@@ -1,0 +1,39 @@
+name: Pre-Deploy Database Check
+
+on:
+  pull_request:
+    paths:
+      - 'prisma/**'
+      - 'scripts/**'
+
+jobs:
+  verify-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Verify Schema Consistency
+        run: pnpm db:verify
+        env:
+          DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+          PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          
+      - name: Comment on PR
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Schema verification failed! Production and development databases are out of sync.'
+            })

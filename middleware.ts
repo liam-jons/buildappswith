@@ -42,6 +42,10 @@ const publicRoutes = [
   "/marketplace/(.*)",
   "/marketplace/builders",
   "/marketplace/builders/(.*)",
+  // Static resources and images
+  "/images/(.*)",
+  "/fonts/(.*)",
+  "/static/(.*)",
 ];
 
 // Routes where Clerk authentication doesn't run at all
@@ -49,6 +53,11 @@ const ignoredRoutes = [
   // Standard Clerk paths (we use route groups instead)
   "/sign-in(.*)",
   "/sign-up(.*)",
+  // Static file routes that should be completely ignored
+  "/_next/(.*)",
+  "/favicon.ico",
+  "/robots.txt",
+  "/sitemap.xml",
 ];
 
 export default authMiddleware({
