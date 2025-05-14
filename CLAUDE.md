@@ -47,6 +47,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Marketplace**: Consolidated implementation with `/marketplace/builders/[id]` routing
 - **Monitoring**: Sentry via instrumentation pattern with EU region data compliance. Datadog integration.
 
+### Middleware Configuration
+- **Public Resources**: All static assets (images, logos, fonts) must be listed in `publicRoutes` array
+- **Pattern Matching**: Use `(.*)` for directory wildcards in Clerk middleware
+- **Testing**: Run `node scripts/test-public-access.js` to verify public access
+- **Documentation**: See `/docs/engineering/MIDDLEWARE_PUBLIC_ACCESS.md` for detailed configuration
+
 ### Feature Flags
 - `UseBuilderImage`: Controls whether to use the fixed BuilderImage component
 - `UseViewingPreferences`: Controls whether to use the ViewingPreferences component

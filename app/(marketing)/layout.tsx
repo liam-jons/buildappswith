@@ -1,4 +1,5 @@
-import { MarketingHeader, MarketingFooter } from "@/components/marketing";
+import { PlatformHeader } from "@/components/ui";
+import { MarketingFooter } from "@/components/marketing";
 
 interface MarketingLayoutProps {
   children: React.ReactNode;
@@ -9,7 +10,7 @@ export default async function MarketingLayout({
 }: MarketingLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
-      <MarketingHeader />
+      <PlatformHeader />
       <main className="flex-1 pt-[3.5rem] overflow-hidden">{children}</main>
       <MarketingFooter />
     </div>

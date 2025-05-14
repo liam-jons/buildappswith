@@ -10,22 +10,26 @@ import { authMiddleware } from "@clerk/nextjs";
 // List of public routes that don't require authentication
 const publicRoutes = [
   "/",
+  
   // Auth routes with route groups (using Clerk's catch-all pattern)
   "/\\(auth\\)/sign-in",
   "/\\(auth\\)/sign-in/(.*)",
   "/\\(auth\\)/sign-up",
   "/\\(auth\\)/sign-up/(.*)",
+  
   // Other auth-related paths
   "/sso-callback",
   "/verify",
   "/api/auth/(.+)",
   "/api/webhook/(.+)",
+  
   // Public API endpoints
   "/api/marketplace/builders",
-  "/api/marketplace/builders/(.+)", // Also include builder ID endpoints
+  "/api/marketplace/builders/(.+)",
   "/api/marketplace/featured",
   "/api/marketplace/filters",
   "/api/timeline/(.+)",
+  
   // Public pages
   "/toolkit",
   "/how-it-works",
@@ -37,15 +41,31 @@ const publicRoutes = [
   "/liam",
   "/builder-profile/(.+)",
   "/auth-test",
-  // Marketplace pages should be public
+  
+  // Marketplace pages (public)
   "/marketplace",
   "/marketplace/(.*)",
   "/marketplace/builders",
   "/marketplace/builders/(.*)",
-  // Static resources and images
+  
+  // Static resources - CRITICAL FOR PUBLIC ACCESS
+  "/hero-light.png",
+  "/hero-dark.png",
+  "/favicon.ico",
+  "/robots.txt",
+  "/sitemap.xml",
+  
+  // Pattern-based static routes
+  "/logos/(.*)",
   "/images/(.*)",
   "/fonts/(.*)",
+  "/public/(.*)",
+  "/assets/(.*)",
   "/static/(.*)",
+  
+  // Next.js static resources
+  "/_next/static/(.*)",
+  "/_next/image/(.*)",
 ];
 
 // Routes where Clerk authentication doesn't run at all
@@ -67,10 +87,12 @@ export default authMiddleware({
   // This follows best practices for Clerk integration
 });
  
-// Recommended matcher configuration from Clerk documentation
+// Enhanced matcher configuration for proper public asset handling
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/((?!.*\\..*|_next).*)",
+    "/",
+    "/(api|trpc)(.*)",
   ],
 };

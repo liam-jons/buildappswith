@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { SiteHeader } from "@/components/site-header";
+import { PlatformHeader } from "@/components/ui";
 import { SiteFooter } from "@/components/site-footer";
 import { ProfileProvider } from "@/lib/contexts/profile-context";
 
@@ -19,7 +19,7 @@ export default function PlatformLayout({
   return (
     <ProfileProvider>
       <div className="min-h-screen flex flex-col">
-        <SiteHeader />
+        <PlatformHeader />
         {/* Added pt-[3.5rem] to account for the fixed header height */}
         <main className="flex-1 pt-[3.5rem]">
           {children}

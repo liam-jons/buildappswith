@@ -68,8 +68,8 @@ export const heroContent: HeroContent = {
   headline: "Learn AI with [names], not just prompts",
   subheadline: "Build real AI skills through creating your own application. Our community of experienced builders will guide you through the landscape of AI as a world of opportunity awaits",
   rotatingNames: [
+    "Claude", "ChatGPT", "Gemini", "Cursor", "Lovable", "Bolt",
     "Liam", "Kenny", "Ryan", "Sheri", "Troy",
-    "Lovable", "Bolt", "Cursor", "Claude", "Gemini", "ChatGPT",
     "your friends", "your team", "your customers"
   ],
   primaryCTA: {

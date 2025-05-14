@@ -1,5 +1,7 @@
 # Landing Page Updates Documentation
 
+**Note (May 14, 2025):** This document references the removal of MarketingHeader which has since been reversed. We now use a unified SiteHeader component across all pages. See [Header Unification Decision](./architecture/decisions/header-unification-2025-05-14.md) for details.
+
 ## Overview
 This document outlines recent updates to the landing page of the BuildAppsWith platform. These changes were implemented to improve the user experience, fix duplicated UI elements, and enhance the visual design of the page.
 

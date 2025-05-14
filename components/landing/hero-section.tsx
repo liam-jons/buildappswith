@@ -1,11 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { WordRotate } from "@/components/magicui/word-rotate";
+import { BrandWordRotate } from "./brand-word-rotate";
 import { HeroContent, HeroSectionProps } from "./types";
 import { heroContent } from "./data.tsx";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { AuroraText } from "@/components/magicui/aurora-text";
 
 export function HeroSection({ 
   className, 
@@ -39,12 +40,12 @@ export function HeroSection({
             <div className="space-y-2">
               {/* First row - "Build apps with" */}
               <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-balance">
-                Build <span className="text-teal-500">apps</span> with
+                Build <AuroraText className="inline-block">apps</AuroraText> with
               </h1>
               
-              {/* Second row - Word rotation in purple */}
-              <h2 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-purple-600 dark:text-purple-400">
-                <WordRotate
+              {/* Second row - Word rotation with brand colors */}
+              <h2 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight">
+                <BrandWordRotate
                   words={rotatingNames}
                   duration={2000}
                   motionProps={{
