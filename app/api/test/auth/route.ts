@@ -11,13 +11,6 @@ import * as Sentry from '@sentry/nextjs';
 export const GET = withAuth(async (request: NextRequest, user: AuthUser) => {
   try {
     // Log the authenticated user for debugging
-    console.log('Authenticated user in test route:', {
-      id: user.id,
-      clerkId: user.clerkId,
-      roles: user.roles,
-      email: user.email
-    });
-    
     // Return the authenticated user data
     return NextResponse.json({
       message: 'Authentication successful',

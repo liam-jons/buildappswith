@@ -28,14 +28,9 @@ export function addDemoAccountFilters(
   // Check if we should exclude demo accounts
   const shouldExcludeDemo = filters?.excludeDemo;
   
-  console.log('[PROD DEBUG DEMO] Environment:', process.env.NODE_ENV);
-  console.log('[PROD DEBUG DEMO] excludeDemo filter:', shouldExcludeDemo);
-  console.log('[PROD DEBUG DEMO] Initial where clause:', JSON.stringify(where));
-  
   // Only apply filter in production if excludeDemo is explicitly set
   if (process.env.NODE_ENV === 'production' && shouldExcludeDemo) {
     demoLogger.debug('Excluding demo accounts in production environment');
-    console.log('[PROD DEBUG DEMO] Adding isDemo:false filter in production');
     
     return {
       ...where,
@@ -49,11 +44,8 @@ export function addDemoAccountFilters(
   // In non-production environments, use feature flag to determine behavior
   const useServerFlags = getServerFeatureFlag(FeatureFlag.UseDynamicMarketplace);
   
-  console.log('[PROD DEBUG DEMO] Dynamic marketplace flag:', useServerFlags);
-  
   if (useServerFlags && shouldExcludeDemo) {
     demoLogger.debug('Excluding demo accounts based on feature flag');
-    console.log('[PROD DEBUG DEMO] Adding isDemo:false filter based on feature flag');
     
     return {
       ...where,
@@ -65,7 +57,6 @@ export function addDemoAccountFilters(
   }
   
   // Default: no demo account filtering
-  console.log('[PROD DEBUG DEMO] Not adding any demo filters, returning original where clause');
   return where;
 }
 
@@ -80,7 +71,6 @@ export function enhanceWithDemoStatus<T extends BuilderProfileListing | BuilderP
   user: { isDemo?: boolean; id?: string }
 ): T & { isDemo: boolean } {
   const isDemo = user?.isDemo || false;
-  console.log('[PROD DEBUG DEMO] Enhancing builder with isDemo:', isDemo, 'for user:', user?.id || 'unknown');
   
   return {
     ...builder,

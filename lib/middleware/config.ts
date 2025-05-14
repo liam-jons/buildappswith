@@ -106,10 +106,10 @@ export const getRateLimitConfig = (): RateLimitConfig => {
  */
 export const defaultCspDirectives = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://${getClerkDomains()} https://*.calendly.com https://assets.calendly.com`,
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://flying-troll-12.clerk.accounts.dev https://clerk.io https://*.clerk.com https://${getClerkDomains()} https://*.calendly.com https://assets.calendly.com`,
   `frame-src 'self' https://*.clerk.accounts.dev https://${getClerkDomains()} https://*.calendly.com`,
-  "img-src 'self' https://img.clerk.com https://images.clerk.dev data: https://*.calendly.com",
-  `connect-src 'self' https://*.clerk.accounts.dev https://${getClerkDomains()} https://*.calendly.com`,
+  "img-src 'self' https://*.clerk.com https://img.clerk.com https://images.clerk.dev https://clerk.buildappswith.com data: https://*.calendly.com",
+  `connect-src 'self' https://*.clerk.accounts.dev https://flying-troll-12.clerk.accounts.dev https://clerk.io https://*.clerk.com https://${getClerkDomains()} https://*.calendly.com`,
   "style-src 'self' 'unsafe-inline' https://*.calendly.com",
   "font-src 'self' data: https://*.calendly.com",
 ];

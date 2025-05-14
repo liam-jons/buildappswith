@@ -2,6 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Critical Database Setup
+- **ALWAYS CHECK DATABASE CONNECTION FIRST** - See `/docs/database/CRITICAL_DATABASE_GUIDE.md`
+- Development and Production are SEPARATE databases (not branches)
+- Production email: `liam@buildappswith.com` (NOT .ai)
+- For database operations, ALWAYS run: `node scripts/verify-database-connection.js`
+- For collaboration insights: See `/docs/COLLABORATION_INSIGHTS.md`
+
 ## Build/Test/Lint Commands
 - Build: `pnpm build` (generates Prisma client and builds Next.js)
 - Dev: `pnpm dev` (starts development server)
@@ -53,4 +60,4 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Always refer to `/docs/engineering/COMPONENT_STYLE_GUIDE.md` and `/docs/engineering/FOLDER_STRUCTURE_GUIDE.md` for detailed guidelines.
 
-ALWAYS CHECK IF FUNCTIONALITY EXISTS FIRST, BEFORE BUILDING SOMETHING NEW - ITS CRITICAL THAT WE DON'T CAUSE UNNECESSARY EFFORT FOR OURSELVES, OR DO ANYTHING THAT WOULD BE UNHELPFUL AND WOULD GO AGAINST BEST PRACTICE, WITHOUT EXPLICIT CONFIRMATION FROM LIAM.
+ALWAYS CHECK IF FUNCTIONALITY EXISTS FIRST, BEFORE BUILDING SOMETHING NEW - ITS CRITICAL THAT WE DON'T CAUSE UNNECESSARY EFFORT FOR OURSELVES, OR DO ANYTHING THAT WOULD BE UNHELPFUL AND WOULD GO AGAINST BEST PRACTICE, UNLESS THERE IS EXPLICIT CONFIRMATION FROM LIAM.
