@@ -6,7 +6,7 @@ import { BookingStateEnum } from '@/lib/scheduling/state-machine/types';
 import { SessionType } from '@/lib/scheduling/types';
 import { useBookingFlow } from '@/lib/contexts/booking-flow-context';
 import { useBookingManager } from '@/hooks/scheduling';
-import { CalendlyEmbed } from '../calendly';
+import { CalendlyCalendar } from '../calendly/calendly-calendar';
 import { SessionTypeSelector } from './session-type-selector';
 import { SessionTypeCategory } from './session-type-category';
 import { PathwaySelector } from './pathway-selector';
@@ -351,7 +351,7 @@ export function BookingFlow({
               />
             )}
             
-            {isSignedIn && groupedSessions.specialized.length > 0 && (
+            {groupedSessions.specialized.length > 0 && (
               <SessionTypeCategory
                 title="Specialized Sessions"
                 sessions={groupedSessions.specialized}
@@ -390,21 +390,47 @@ export function BookingFlow({
         // Generate a booking ID for anonymous users if needed
         const bookingId = state.bookingId || uuidv4();
         
+        // Use API-based calendar instead of iframe
+        // Get the Calendly event type ID from the URI or use the ID directly
+        let eventTypeUri = '';
+        
+        if (selectedSessionType.calendlyEventTypeId) {
+          // Use the event type ID to construct the API URI
+          eventTypeUri = `https://api.calendly.com/event_types/${selectedSessionType.calendlyEventTypeId}`;
+        } else if (selectedSessionType.calendlyEventTypeUri) {
+          // Extract the event type ID from the URI if needed
+          const uriParts = selectedSessionType.calendlyEventTypeUri.split('/');
+          const eventSlug = uriParts[uriParts.length - 1];
+          // For now, we'll use the full URI format that matches the API
+          eventTypeUri = `https://api.calendly.com/event_types/${eventSlug}`;
+        }
+        
         return (
-          <CalendlyEmbed
-            url={selectedSessionType.calendlyEventTypeUri}
-            prefill={{
-              name: '',
-              email: '',
-              customAnswers: {
-                a1: bookingId,
-                ...(state.pathway && { pathway: state.pathway })
-              }
+          <CalendlyCalendar
+            eventTypeUri={eventTypeUri}
+            sessionType={{
+              title: selectedSessionType.title,
+              duration: selectedSessionType.durationMinutes || 30,
+              price: selectedSessionType.price || 0
             }}
-            utmParams={{
-              utmContent: bookingId,
+            onSelectTimeSlot={async (slot) => {
+              // Create booking with selected time slot
+              const event = {
+                uri: slot.schedulingUrl,
+                invitee: {
+                  uri: '',
+                  email: state.userEmail || '',
+                  name: state.userName || ''
+                },
+                start_time: slot.startTime.toISOString(),
+                end_time: slot.endTime.toISOString(),
+                event_type_uuid: selectedSessionType.calendlyEventTypeId || '',
+                questions_and_answers: []
+              };
+              
+              // Handle the booking creation
+              await handleCalendlyEvent(event);
             }}
-            onEventScheduled={handleCalendlyEvent}
           />
         );
       

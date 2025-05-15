@@ -143,6 +143,57 @@ export class CalendlyService {
   }
 
   /**
+   * Get available time slots for an event type
+   * 
+   * @param eventTypeUri Calendly event type URI
+   * @param startDate Start date for searching available times
+   * @param endDate End date for searching available times (max 7 days)
+   * @returns Array of available time slots
+   */
+  async getAvailableTimeSlots(
+    eventTypeUri: string,
+    startDate: Date,
+    endDate: Date
+  ): Promise<Array<{
+    startTime: Date;
+    endTime: Date;
+    schedulingUrl: string;
+    inviteesRemaining: number;
+  }>> {
+    try {
+      const response = await this.client.getEventTypeAvailableTimes(
+        eventTypeUri,
+        startDate,
+        endDate
+      );
+
+      // Get event type details to know the duration
+      const eventType = await this.client.getEventType(eventTypeUri);
+      const durationMinutes = eventType.resource.duration;
+
+      return response.collection.map(slot => {
+        const startTime = new Date(slot.start_time);
+        const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
+
+        return {
+          startTime,
+          endTime,
+          schedulingUrl: slot.scheduling_url,
+          inviteesRemaining: slot.invitees_remaining
+        };
+      });
+    } catch (error) {
+      logger.error('Error fetching available time slots', {
+        eventTypeUri,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        error
+      });
+      throw error;
+    }
+  }
+
+  /**
    * Process an event created webhook
    * 
    * @param payload Event created payload

@@ -66,11 +66,33 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
   const embedRef = useRef<HTMLDivElement>(null)
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
   const [isWidgetLoaded, setIsWidgetLoaded] = useState(false)
+  const [attemptCount, setAttemptCount] = useState(0)
   
   // Function to initialize Calendly widget
   const initCalendly = () => {
+    console.log('initCalendly called', {
+      hasRef: !!embedRef.current,
+      hasCalendly: !!window.Calendly,
+      isScriptLoaded,
+      url,
+      embedRefDetails: embedRef.current,
+      attemptCount
+    });
+    
     if (!embedRef.current || !window.Calendly || !isScriptLoaded) {
-      console.log('Calendly init skipped:', { hasRef: !!embedRef.current, hasCalendly: !!window.Calendly, isScriptLoaded });
+      console.log('Calendly init skipped:', { 
+        hasRef: !!embedRef.current, 
+        hasCalendly: !!window.Calendly, 
+        isScriptLoaded,
+        refDetails: embedRef.current 
+      });
+      
+      // Retry a few times if the ref isn't ready yet
+      if (attemptCount < 5 && isScriptLoaded && embedRef.current && !window.Calendly) {
+        console.log(`Retrying Calendly initialization (attempt ${attemptCount + 1})`);
+        setAttemptCount(prev => prev + 1);
+        setTimeout(() => initCalendly(), 500);
+      }
       return;
     }
     
@@ -112,13 +134,43 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
       });
     }
     
-    // Initialize the widget
-    window.Calendly.initInlineWidget({
-      url: url,
+    // Log what we're passing to Calendly
+    console.log('Initializing Calendly with:', {
+      url,
       parentElement: embedRef.current,
       prefill: prefillData,
       utm: utmParamsObject
-    })
+    });
+    
+    // Initialize the widget
+    try {
+      // Ensure URL has correct format
+      const fullUrl = url.startsWith('http') 
+        ? url 
+        : url.startsWith('/')
+          ? `https://calendly.com/liam-buildappswith${url}`
+          : `https://calendly.com/${url}`;
+      
+      console.log('Initializing with full URL:', fullUrl);
+      
+      window.Calendly.initInlineWidget({
+        url: fullUrl,
+        parentElement: embedRef.current,
+        prefill: prefillData,
+        utm: utmParamsObject,
+        // Add embed parameters to ensure it shows only the widget
+        embedType: 'Inline',
+        hideEventTypeDetails: false,
+        hideLandingPageDetails: true,
+        hideGdprBanner: true,
+        backgroundColor: 'ffffff',
+        textColor: '000000',
+        primaryColor: '0066cc'
+      });
+      console.log('Calendly initialized successfully');
+    } catch (error) {
+      console.error('Calendly initialization error:', error);
+    }
     
     // Set loaded state
     setIsWidgetLoaded(true)
@@ -157,18 +209,43 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
   
   // Initialize widget when script loads or URL changes
   useEffect(() => {
-    if (isScriptLoaded) {
-      initCalendly()
+    if (isScriptLoaded && url) {
+      // Reset attempt count when URL changes
+      setAttemptCount(0);
+      
+      // Add a small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        // Check if Calendly will auto-initialize with data-url
+        if (window.Calendly && window.Calendly.initInlineWidget) {
+          initCalendly();
+        } else {
+          console.log('Calendly auto-initialization via data-url');
+          // The widget should auto-initialize with data-url attribute
+          setIsWidgetLoaded(true);
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
-  }, [isScriptLoaded, url, prefill])
+  }, [isScriptLoaded, url])
 
   return (
     <>
       {/* Load Calendly script */}
       <Script 
         src="https://assets.calendly.com/assets/external/widget.js" 
-        onLoad={() => setIsScriptLoaded(true)}
-        strategy="lazyOnload"
+        onLoad={() => {
+          console.log('Calendly script loaded, checking for window.Calendly');
+          // Add a delay to ensure Calendly is fully initialized
+          setTimeout(() => {
+            console.log('window.Calendly available:', !!window.Calendly);
+            setIsScriptLoaded(true);
+          }, 100);
+        }}
+        onError={(e) => {
+          console.error('Failed to load Calendly script:', e);
+        }}
+        strategy="afterInteractive"
       />
       
       {/* Widget container */}
@@ -184,6 +261,7 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
           <div 
             ref={embedRef} 
             className="calendly-inline-widget" 
+            data-url={url.startsWith('http') ? url : url.startsWith('/') ? `https://calendly.com/liam-buildappswith${url}` : `https://calendly.com/${url}`}
             style={{ minHeight: '600px', height: '100%', width: '100%' }}
           />
         </CardContent>
