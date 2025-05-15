@@ -12,6 +12,7 @@ import { SessionTypeCategory } from './session-type-category';
 import { PathwaySelector } from './pathway-selector';
 import { useSearchParams } from 'next/navigation';
 import { logger } from '@/lib/logger';
+import { v4 as uuidv4 } from 'uuid';
 
 interface BookingFlowProps {
   builderId?: string;
@@ -25,7 +26,7 @@ export function BookingFlow({
   preselectedSessionTypeId
 }: BookingFlowProps) {
   const { isSignedIn } = useAuth();
-  const { state, selectPathway, setCustomQuestionResponse } = useBookingFlow();
+  const { state, dispatch, selectPathway, setCustomQuestionResponse } = useBookingFlow();
   const {
     initializeBooking,
     startCalendlyScheduling,
@@ -164,7 +165,10 @@ export function BookingFlow({
     
     // For unauthenticated users or authenticated without pathway requirements
     if (!isSignedIn) {
-      // Don't initialize booking for unauthenticated users yet
+      // For unauthenticated users, we need to set up the state without creating a booking
+      const tempBookingId = uuidv4();
+      
+      // Set up the booking state for unauthenticated users
       dispatch({ 
         type: 'SELECT_SESSION_TYPE', 
         payload: { 
@@ -173,8 +177,14 @@ export function BookingFlow({
         } 
       });
       
-      // Directly start Calendly scheduling
-      await startCalendlyScheduling();
+      // Initialize the booking state with a temporary ID
+      dispatch({
+        type: 'INITIATE_CALENDLY',
+        payload: { bookingId: tempBookingId }
+      });
+      
+      // Directly start Calendly embed (not through state machine)
+      return;
     } else {
       // For authenticated users, initialize booking first
       const bookingId = await initializeBooking(sessionType, builderId);
