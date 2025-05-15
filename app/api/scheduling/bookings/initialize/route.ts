@@ -18,15 +18,12 @@ const InitializeBookingSchema = z.object({
  * Initialize a booking with the state machine
  * 
  * This endpoint creates a new booking and initializes the state machine.
+ * Supports both authenticated and unauthenticated users.
  */
 export async function POST(req: NextRequest) {
   try {
-    // Get current user
+    // Get current user if authenticated (optional)
     const user = await getCurrentUser();
-    if (!user) {
-      logger.warn('Unauthorized user attempted to initialize booking');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
     
     // Parse request body
     const body = await req.json();
@@ -34,8 +31,8 @@ export async function POST(req: NextRequest) {
     try {
       const data = InitializeBookingSchema.parse(body);
       
-      // Use client ID from authenticated user if not provided
-      const clientId = data.clientId || user.id;
+      // Use client ID from authenticated user if available, otherwise from request
+      const clientId = data.clientId || user?.id || 'anonymous';
       
       // Initialize booking with state machine
       const bookingContext = await createBooking({
@@ -49,7 +46,8 @@ export async function POST(req: NextRequest) {
       logger.info('Booking initialized with state machine', {
         bookingId: bookingContext.bookingId,
         state: bookingContext.state,
-        userId: user.id
+        userId: user?.id || 'anonymous',
+        isAuthenticated: !!user
       });
       
       return NextResponse.json({
@@ -61,7 +59,7 @@ export async function POST(req: NextRequest) {
     } catch (validationError) {
       logger.error('Validation error when initializing booking', {
         error: validationError,
-        userId: user.id
+        userId: user?.id || 'anonymous'
       });
       
       return NextResponse.json(

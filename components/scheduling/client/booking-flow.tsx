@@ -154,6 +154,7 @@ export function BookingFlow({
     
     // Check if session requires pathway selection
     if (isSignedIn && sessionType.eventTypeCategory === 'pathway' && !state.pathway) {
+      // For authenticated users with pathway sessions
       const bookingId = await initializeBooking(sessionType, builderId);
       if (bookingId) {
         setShowPathwaySelector(true);
@@ -161,10 +162,26 @@ export function BookingFlow({
       return;
     }
     
-    const bookingId = await initializeBooking(sessionType, builderId);
-    
-    if (bookingId) {
+    // For unauthenticated users or authenticated without pathway requirements
+    if (!isSignedIn) {
+      // Don't initialize booking for unauthenticated users yet
+      dispatch({ 
+        type: 'SELECT_SESSION_TYPE', 
+        payload: { 
+          sessionType, 
+          builderId 
+        } 
+      });
+      
+      // Directly start Calendly scheduling
       await startCalendlyScheduling();
+    } else {
+      // For authenticated users, initialize booking first
+      const bookingId = await initializeBooking(sessionType, builderId);
+      
+      if (bookingId) {
+        await startCalendlyScheduling();
+      }
     }
   };
   
@@ -185,6 +202,50 @@ export function BookingFlow({
     
     // Extract custom question responses if available
     const customQuestionResponse = event?.questions_and_answers;
+    
+    // If unauthenticated user, create the booking now
+    if (!isSignedIn && !state.bookingId) {
+      const selectedSession = sessionTypes.find(s => s.id === state.sessionTypeId);
+      
+      if (selectedSession && builderId) {
+        try {
+          // Create booking through the new create endpoint
+          const response = await fetch('/api/scheduling/bookings/create', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              builderId,
+              sessionTypeId: selectedSession.id,
+              calendlyEventUri,
+              calendlyInviteeUri,
+              startTime,
+              endTime,
+              customQuestionResponse,
+              clientEmail: invitee?.email,
+              clientName: invitee?.name
+            })
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to create booking');
+          }
+          
+          const data = await response.json();
+          
+          // Update state with the booking ID
+          dispatch({ 
+            type: 'INITIATE_CALENDLY', 
+            payload: { bookingId: data.bookingId }
+          });
+          
+        } catch (error) {
+          logger.error('Error creating anonymous booking', { error });
+        }
+      }
+    }
     
     // Store custom question response
     if (customQuestionResponse) {
@@ -316,6 +377,9 @@ export function BookingFlow({
           );
         }
         
+        // Generate a booking ID for anonymous users if needed
+        const bookingId = state.bookingId || uuidv4();
+        
         return (
           <CalendlyEmbed
             url={selectedSessionType.calendlyEventTypeUri}
@@ -323,12 +387,12 @@ export function BookingFlow({
               name: '',
               email: '',
               customAnswers: {
-                a1: state.bookingId || '',
+                a1: bookingId,
                 ...(state.pathway && { pathway: state.pathway })
               }
             }}
             utmParams={{
-              utmContent: state.bookingId || '',
+              utmContent: bookingId,
             }}
             onEventScheduled={handleCalendlyEvent}
           />
