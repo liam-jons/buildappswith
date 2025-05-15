@@ -27,9 +27,9 @@ export function SimplifiedBuilderImage({
   
   // Size classes mapping - ensuring perfect circles with aspect-square
   const sizeMap = {
-    sm: 'h-12 w-12 aspect-square',
-    md: 'h-16 w-16 aspect-square',
-    lg: 'h-24 w-24 aspect-square',
+    sm: 'h-12 w-12',
+    md: 'h-16 w-16',
+    lg: 'h-24 w-24',
   };
 
   // Use default avatar if no src or if there's an error
@@ -43,7 +43,8 @@ export function SimplifiedBuilderImage({
   return (
     <div 
       className={cn(
-        `relative ${sizeMap[size]} rounded-full border border-muted overflow-hidden bg-muted flex-shrink-0`,
+        'relative aspect-square rounded-full border border-muted overflow-hidden bg-muted flex-shrink-0',
+        sizeMap[size],
         className
       )}
     >

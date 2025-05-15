@@ -91,7 +91,7 @@ export default authMiddleware({
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/((?!.*\\..*|_next).*)",
     "/",
     "/(api|trpc)(.*)",
   ],

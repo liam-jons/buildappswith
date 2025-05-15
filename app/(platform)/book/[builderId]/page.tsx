@@ -43,7 +43,7 @@ async function getUser(userId: string | null) {
   try {
     const user = await db.user.findUnique({
       where: { clerkId: userId },
-      select: { id: true, email: true, firstName: true, lastName: true }
+      select: { id: true, email: true, name: true }
     });
     return user;
   } catch (error) {
@@ -93,24 +93,35 @@ export default async function BookingPage({
   // Check if this is a dummy profile (no Calendly URL)
   const isDummyProfile = !selectedSessionType?.calendlyEventTypeUri || !builderProfile.sessionTypes.length;
   
+  // Debug logging
+  console.log('Builder profile debug:', {
+    builderId,
+    userName: builderProfile.user.name,
+    isDemo: builderProfile.user.isDemo,
+    sessionTypesCount: builderProfile.sessionTypes.length,
+    selectedSessionType: selectedSessionType?.title,
+    calendlyUri: selectedSessionType?.calendlyEventTypeUri,
+    isDummyProfile
+  });
+  
   return (
     <div className="container max-w-5xl py-12">
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">
-              Book a Session with {builderProfile.user.firstName} {builderProfile.user.lastName}
+              Book a Session with {builderProfile.user.name}
             </h1>
             <p className="text-gray-500 mt-2">
-              {builderProfile.title}
+              {builderProfile.headline || builderProfile.tagline || ''}
             </p>
           </div>
           
-          {builderProfile.avatarUrl && (
+          {(builderProfile.user.imageUrl || builderProfile.avatarUrl) && (
             <div className="h-16 w-16 rounded-full overflow-hidden">
               <Image 
-                src={builderProfile.avatarUrl} 
-                alt={`${builderProfile.user.firstName} ${builderProfile.user.lastName}`}
+                src={builderProfile.user.imageUrl || builderProfile.avatarUrl || ''} 
+                alt={builderProfile.user.name || 'Builder'}
                 className="h-full w-full object-cover"
                 width={64}
                 height={64}
@@ -176,7 +187,7 @@ export default async function BookingPage({
                   <CalendlyEmbed
                     url={selectedSessionType.calendlyEventTypeUri}
                     prefill={{
-                      name: currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '',
+                      name: currentUser?.name || '',
                       email: currentUser?.email || '',
                       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
                     }}
@@ -197,7 +208,7 @@ export default async function BookingPage({
         <div className="bg-primary/5 border border-primary/20 rounded-lg p-8 text-center">
           <h2 className="text-xl font-semibold mb-4">Sign In to Book a Session</h2>
           <p className="text-gray-600 mb-6">
-            You need to be signed in to book a session with {builderProfile.user.firstName}.
+            You need to be signed in to book a session with {builderProfile.user.name}.
           </p>
           <SignInButton mode="modal">
             <Button size="lg">

@@ -20,7 +20,7 @@ export const AnimatedSpan = ({
     initial={{ opacity: 0, y: -5 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.3, delay: delay / 1000 }}
-    className={cn("grid text-sm font-normal tracking-tight", className)}
+    className={cn("grid text-sm font-mono tracking-tight text-green-400", className)}
     {...props}
   >
     {children}
@@ -83,7 +83,7 @@ export const TerminalTypingAnimation = ({
   return (
     <MotionComponent
       ref={elementRef}
-      className={cn("text-sm font-normal tracking-tight", className)}
+      className={cn("text-sm font-mono tracking-tight text-green-400", className)}
       {...props}
     >
       {displayedText}
@@ -100,19 +100,19 @@ export const Terminal = ({ children, className }: TerminalProps) => {
   return (
     <div
       className={cn(
-        "z-0 h-full max-h-[400px] w-full max-w-lg rounded-xl border border-border bg-background",
+        "z-0 h-full max-h-[400px] w-full max-w-lg rounded-xl border border-gray-800 bg-black",
         className,
       )}
     >
-      <div className="flex flex-col gap-y-2 border-b border-border p-4">
+      <div className="flex flex-col gap-y-2 border-b border-gray-800 p-4 bg-gray-950">
         <div className="flex flex-row gap-x-2">
           <div className="h-2 w-2 rounded-full bg-red-500"></div>
           <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
         </div>
       </div>
-      <pre className="p-4">
-        <code className="grid gap-y-1 overflow-auto">{children}</code>
+      <pre className="p-4 text-green-400 font-mono">
+        <code className="grid gap-y-1 overflow-auto text-green-400">{children}</code>
       </pre>
     </div>
   );
