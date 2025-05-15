@@ -39,7 +39,10 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
   
   // Function to initialize Calendly widget
   const initCalendly = () => {
-    if (!embedRef.current || !window.Calendly || !isScriptLoaded) return
+    if (!embedRef.current || !window.Calendly || !isScriptLoaded) {
+      console.log('Calendly init skipped:', { hasRef: !!embedRef.current, hasCalendly: !!window.Calendly, isScriptLoaded });
+      return;
+    }
     
     // Clear any existing widget
     embedRef.current.innerHTML = ''
@@ -108,7 +111,7 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
       <Card className={className}>
         <CardContent className="p-0 min-h-[600px] relative">
           {!isWidgetLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
+            <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
               <LoadingSpinner className="h-8 w-8" />
               <span className="ml-2">Loading calendar...</span>
             </div>
@@ -130,7 +133,7 @@ export default CalendlyEmbed
 // Add TypeScript types for Calendly
 declare global {
   interface Window {
-    Calendly: {
+    Calendly?: {
       initInlineWidget: (options: {
         url: string;
         parentElement: HTMLElement;

@@ -3,6 +3,7 @@ import { BorderBeam } from "@/components/magicui/border-beam";
 import {
   Separator
 } from "@/components/ui";
+import { AuroraText } from "@/components/magicui/aurora-text";
 
 
 export const metadata = {
@@ -35,7 +36,7 @@ export default function AboutPage() {
               human connection.
             </p>
             <p className="text-lg">
-              <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span> is working to make this vision a reality by creating a platform that
+              <span className="text-primary">Build</span> <AuroraText className="inline-block mx-1">Apps</AuroraText> <span className="text-primary">With</span> is working to make this vision a reality by creating a platform that
               bridges the gap between advanced AI capabilities and practical application for
               non-technical users.
             </p>
@@ -131,7 +132,7 @@ export default function AboutPage() {
           <h2 className="text-2xl font-bold mb-4">Join Our Mission</h2>
           <p className="text-lg mb-6">
             Whether you&apos;re looking to build an app, learn practical AI skills, or share your expertise,
-            <span className="text-primary"> Build </span><span className="text-teal-500">Apps</span><span className="text-primary"> With</span> offers a path forward. Together, we can democratise AI and ensure its benefits
+            <span className="text-primary"> Build </span><AuroraText className="inline-block mx-1">Apps</AuroraText><span className="text-primary"> With</span> offers a path forward. Together, we can democratise AI and ensure its benefits
             are accessible to all.
           </p>
           <a 

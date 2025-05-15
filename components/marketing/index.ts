@@ -6,7 +6,6 @@
 // Export components - use named exports only
 export { TestimonialSection } from './testimonial-section';
 export { MarketingHero } from './marketing-hero';
-export { MarketingFooter } from './marketing-footer';
 export { MarketingCTA } from './marketing-cta';
 export { FeatureShowcase } from './feature-showcase';
 export { FeatureGrid } from './feature-grid';

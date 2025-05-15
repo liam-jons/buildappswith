@@ -11,7 +11,6 @@ export { default as SkillsCarousel } from './skills-carousel';
 export { default as PerformanceOptimizations } from './performance-optimizations';
 export { default as Navbar } from './navbar';
 export { default as HeroSection } from './hero-section';
-export { default as Footer } from './footer';
 export { default as FeatureScroll } from './feature-scroll';
 export { default as CtaSection } from './cta-section';
 export { default as BentoSection } from './bento-section';

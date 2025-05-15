@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui";
+import { AuroraText } from "@/components/magicui/aurora-text";
 
 
  
@@ -16,7 +17,7 @@ import {
    return (
      <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6">How <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span> Works</h1>
+        <h1 className="text-4xl font-bold mb-6">How <span className="text-primary">Build</span> <AuroraText className="inline-block mx-1">Apps</AuroraText> <span className="text-primary">With</span> Works</h1>
         
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>

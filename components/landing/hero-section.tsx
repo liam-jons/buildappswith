@@ -37,7 +37,7 @@ export function HeroSection({
           {/* Content */}
           <div className="flex flex-col items-center text-center space-y-8">
             {/* Two-row headline */}
-            <div className="space-y-2">
+            <div className="space-y-6">
               {/* First row - "Build apps with" */}
               <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-balance">
                 Build <AuroraText className="inline-block">apps</AuroraText> with
