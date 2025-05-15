@@ -20,14 +20,14 @@ export const AnimatedSpan = ({
     initial={{ opacity: 0, y: -5 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.3, delay: delay / 1000 }}
-    className={cn("grid text-sm font-mono tracking-tight text-green-400", className)}
+    className={cn("block text-sm font-mono tracking-tight", className)}
     {...props}
   >
     {children}
   </motion.div>
 );
 
-interface TerminalTypingAnimationProps extends MotionProps {
+interface TypingAnimationProps extends MotionProps {
   children: string;
   className?: string;
   duration?: number;
@@ -35,16 +35,16 @@ interface TerminalTypingAnimationProps extends MotionProps {
   as?: React.ElementType;
 }
 
-export const TerminalTypingAnimation = ({
+export const TypingAnimation = ({
   children,
   className,
-  duration = 60,
+  duration = 80, // Slowed down from 60 to 80
   delay = 0,
   as: Component = "span",
   ...props
-}: TerminalTypingAnimationProps) => {
+}: TypingAnimationProps) => {
   if (typeof children !== "string") {
-    throw new Error("TerminalTypingAnimation: children must be a string. Received:");
+    throw new Error("TypingAnimation: children must be a string. Received:");
   }
 
   const MotionComponent = motion.create(Component, {
@@ -83,7 +83,7 @@ export const TerminalTypingAnimation = ({
   return (
     <MotionComponent
       ref={elementRef}
-      className={cn("text-sm font-mono tracking-tight text-green-400", className)}
+      className={cn("text-sm font-mono tracking-tight", className)}
       {...props}
     >
       {displayedText}
@@ -94,26 +94,35 @@ export const TerminalTypingAnimation = ({
 interface TerminalProps {
   children: React.ReactNode;
   className?: string;
+  height?: string; // Added height prop for customization
 }
 
-export const Terminal = ({ children, className }: TerminalProps) => {
+export const Terminal = ({ 
+  children, 
+  className,
+  height = "500px" // Increased default height
+}: TerminalProps) => {
   return (
     <div
       className={cn(
-        "z-0 h-full max-h-[400px] w-full max-w-lg rounded-xl border border-gray-800 bg-black",
+        "z-0 w-full max-w-2xl rounded-lg border border-slate-200 shadow-sm bg-white dark:bg-slate-900 dark:border-slate-700",
         className,
       )}
+      style={{ height }}
     >
-      <div className="flex flex-col gap-y-2 border-b border-gray-800 p-4 bg-gray-950">
-        <div className="flex flex-row gap-x-2">
-          <div className="h-2 w-2 rounded-full bg-red-500"></div>
-          <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-          <div className="h-2 w-2 rounded-full bg-green-500"></div>
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-t-lg">
+        <div className="flex gap-1.5">
+          <div className="h-3 w-3 rounded-full bg-red-500"></div>
+          <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+          <div className="h-3 w-3 rounded-full bg-green-500"></div>
+        </div>
+        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Terminal</span>
+      </div>
+      <div className="p-4 overflow-auto h-[calc(100%-48px)]">
+        <div className="space-y-2 font-mono text-sm">
+          {children}
         </div>
       </div>
-      <pre className="p-4 text-green-400 font-mono">
-        <code className="grid gap-y-1 overflow-auto text-green-400">{children}</code>
-      </pre>
     </div>
   );
 };

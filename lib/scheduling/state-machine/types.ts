@@ -102,6 +102,10 @@ export interface BookingStateData {
   refundAmount?: number;
   stripeRefundId?: string;
   
+  // Pathway data
+  pathway?: string;
+  customQuestionResponse?: any;
+  
   // Error tracking
   error?: {
     code?: string;
@@ -201,6 +205,8 @@ export interface ClientBookingState {
   startTime?: string;
   endTime?: string;
   recoveryUrl?: string;
+  pathway?: string;
+  customQuestionResponse?: any;
 }
 
 /**

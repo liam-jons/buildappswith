@@ -7,7 +7,7 @@ import { heroContent } from "./data.tsx";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AuroraText } from "@/components/magicui/aurora-text";
-import { Terminal, TerminalTypingAnimation, AnimatedSpan } from "@/components/magicui/terminal";
+import { Terminal, TypingAnimation, AnimatedSpan } from "@/components/magicui/terminal";
 
 export function HeroSection({ 
   className, 
@@ -100,39 +100,39 @@ export function HeroSection({
           {/* Terminal component */}
           <div className="mt-16 flex justify-center">
             <Terminal className="w-full max-w-3xl">
-              <AnimatedSpan delay={0}>
+              <AnimatedSpan delay={0} className="text-slate-900 dark:text-slate-100">
                 $ buildappswith --help
               </AnimatedSpan>
-              <AnimatedSpan delay={100}>
+              <AnimatedSpan delay={100} className="text-green-500">
                 Welcome to Build Apps With - Your AI App Development Platform
               </AnimatedSpan>
               <AnimatedSpan delay={200}>
                 
               </AnimatedSpan>
-              <AnimatedSpan delay={300}>
+              <AnimatedSpan delay={300} className="text-blue-500">
                 Available commands:
               </AnimatedSpan>
-              <AnimatedSpan delay={400}>
+              <AnimatedSpan delay={400} className="text-slate-700 dark:text-slate-300">
                   accelerate    - Boost your AI development skills
               </AnimatedSpan>
-              <AnimatedSpan delay={500}>
+              <AnimatedSpan delay={500} className="text-slate-700 dark:text-slate-300">
                   pivot         - Transition to AI-powered roles
               </AnimatedSpan>
-              <AnimatedSpan delay={600}>
+              <AnimatedSpan delay={600} className="text-slate-700 dark:text-slate-300">
                   play          - Explore AI tools and experiments
               </AnimatedSpan>
-              <AnimatedSpan delay={700}>
+              <AnimatedSpan delay={700} className="text-slate-700 dark:text-slate-300">
                   marketplace   - Find AI builders and experts
               </AnimatedSpan>
               <AnimatedSpan delay={800}>
                 
               </AnimatedSpan>
-              <AnimatedSpan delay={900}>
+              <AnimatedSpan delay={900} className="text-slate-900 dark:text-slate-100">
                 $ buildappswith accelerate
               </AnimatedSpan>
-              <TerminalTypingAnimation delay={1000} duration={40}>
+              <TypingAnimation delay={1000} duration={40} className="text-slate-600 dark:text-slate-400">
                 Connecting you with AI experts to accelerate your learning...
-              </TerminalTypingAnimation>
+              </TypingAnimation>
             </Terminal>
           </div>
         </div>

@@ -42,6 +42,9 @@ const publicRoutes = [
   "/builder-profile/(.+)",
   "/auth-test",
   
+  // Booking pages (public)
+  "/book/(.*)",
+  
   // Marketplace pages (public)
   "/marketplace",
   "/marketplace/(.*)",

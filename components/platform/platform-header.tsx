@@ -59,7 +59,7 @@ const defaultAboutItems = [
 ];
 
 // User menu items based on role
-const getUserMenuItems = (roles: UserRole[] | undefined) => {
+const getUserMenuItems = (roles: UserRole[] | undefined, userId?: string) => {
   const commonItems = [
     {
       id: 1,
@@ -69,9 +69,9 @@ const getUserMenuItems = (roles: UserRole[] | undefined) => {
     },
     {
       id: 2,
-      label: "Bookings",
-      href: "/bookings",
-      description: "View your scheduled sessions",
+      label: "Dashboard",
+      href: "/dashboard",
+      description: "View your dashboard",
     },
   ];
 
@@ -81,28 +81,28 @@ const getUserMenuItems = (roles: UserRole[] | undefined) => {
     roleSpecificItems.push({
       id: 3,
       label: "My Projects",
-      href: "/client-dashboard",
+      href: "/dashboard",
       description: "Manage your app development projects",
     },
     {
       id: 4,
       label: "Become a Builder",
-      href: "/builder-profile",
-      description: "Create your builder profile to help others",
+      href: "/marketplace",
+      description: "Explore the marketplace and become a builder",
     });
   }
   
   if (roles?.includes(UserRole.BUILDER)) {
     roleSpecificItems.push({
       id: 3,
-      label: "Builder Profile",
-      href: "/builder-profile",
-      description: "Manage your builder profile and portfolio",
+      label: "My Builder Profile",
+      href: `/marketplace/builders/${userId}`,
+      description: "View your public builder profile",
     },
     {
       id: 4,
       label: "Builder Dashboard",
-      href: "/builder-dashboard",
+      href: "/dashboard",
       description: "Manage your services and clients",
     });
   }
@@ -233,7 +233,7 @@ export function PlatformHeader() {
   };
 
   // Get user menu items based on role
-  const userMenuItems = getUserMenuItems(user?.roles);
+  const userMenuItems = getUserMenuItems(user?.roles, user?.builderProfile?.id || user?.id);
 
   return (
     <>
