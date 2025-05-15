@@ -4,6 +4,7 @@ import { SignIn } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 /**
  * Clerk SignIn Page Using Catch-All Routes
@@ -14,7 +15,17 @@ import { useSearchParams } from "next/navigation";
 export default function SignInPage() {
   const { theme } = useTheme();
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams?.get('returnUrl') || undefined;
+  const [redirectUrl, setRedirectUrl] = useState<string | undefined>();
+  
+  useEffect(() => {
+    // Check for various redirect parameters that might be set
+    const redirect = searchParams?.get('redirect_url') || 
+                    searchParams?.get('redirectUrl') ||
+                    searchParams?.get('returnUrl') ||
+                    searchParams?.get('return_url');
+    
+    setRedirectUrl(redirect || undefined);
+  }, [searchParams]);
 
   // Clerk appearance customization
   const appearance = {
@@ -44,7 +55,9 @@ export default function SignInPage() {
       <SignIn
         appearance={appearance}
         path="/sign-in"
+        routing="path"
         signUpUrl="/sign-up"
+        afterSignInUrl={redirectUrl || '/dashboard'}
         redirectUrl={redirectUrl}
       />
     </div>

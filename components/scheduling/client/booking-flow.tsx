@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { BookingStateEnum } from '@/lib/scheduling/state-machine/types';
 import { SessionType } from '@/lib/scheduling/types';
 import { useBookingFlow } from '@/lib/contexts/booking-flow-context';
 import { useBookingManager } from '@/hooks/scheduling';
 import { CalendlyEmbed } from '../calendly';
 import { SessionTypeSelector } from './session-type-selector';
+import { SessionTypeCategory } from './session-type-category';
+import { PathwaySelector } from './pathway-selector';
 import { useSearchParams } from 'next/navigation';
 import { logger } from '@/lib/logger';
 
@@ -21,7 +24,8 @@ export function BookingFlow({
   sessionTypes = [],
   preselectedSessionTypeId
 }: BookingFlowProps) {
-  const { state } = useBookingFlow();
+  const { isSignedIn } = useAuth();
+  const { state, selectPathway, setCustomQuestionResponse } = useBookingFlow();
   const {
     initializeBooking,
     startCalendlyScheduling,
@@ -31,8 +35,61 @@ export function BookingFlow({
     resetBookingFlow
   } = useBookingManager();
   
+  // Debug logging
+  React.useEffect(() => {
+    console.log('BookingFlow Debug:', {
+      builderId,
+      sessionTypesCount: sessionTypes.length,
+      isSignedIn,
+      sessionTypes: sessionTypes.map(s => ({
+        id: s.id,
+        title: s.title,
+        requiresAuth: s.requiresAuth,
+        category: s.eventTypeCategory,
+        price: s.price
+      }))
+    });
+  }, [builderId, sessionTypes, isSignedIn]);
+  
   const searchParams = useSearchParams();
   const [isRecovering, setIsRecovering] = useState(false);
+  const [showPathwaySelector, setShowPathwaySelector] = useState(false);
+  
+  // Filter sessions based on authentication status
+  const availableSessions = sessionTypes.filter(session => {
+    if (isSignedIn) {
+      return true; // Authenticated users can see all sessions
+    }
+    return !session.requiresAuth; // Unauthenticated users can only see public sessions
+  });
+  
+  // Debug available sessions
+  console.log('Available sessions for user:', {
+    isSignedIn,
+    availableCount: availableSessions.length,
+    available: availableSessions.map(s => s.title)
+  });
+  
+  // Group sessions by category
+  const groupedSessions = React.useMemo(() => {
+    const groups: Record<string, SessionType[]> = {
+      free: [],
+      pathway: [],
+      specialized: [],
+      other: []
+    };
+    
+    availableSessions.forEach(session => {
+      const category = session.eventTypeCategory || 'other';
+      if (groups[category]) {
+        groups[category].push(session);
+      } else {
+        groups.other.push(session);
+      }
+    });
+    
+    return groups;
+  }, [availableSessions]);
   
   // Handle URL parameters for recovery
   useEffect(() => {
@@ -62,6 +119,12 @@ export function BookingFlow({
         const sessionType = sessionTypes.find(st => st.id === preselectedSessionTypeId);
         
         if (sessionType) {
+          // Check if session requires pathway selection
+          if (isSignedIn && sessionType.eventTypeCategory === 'pathway' && !state.pathway) {
+            setShowPathwaySelector(true);
+            return;
+          }
+          
           const bookingId = await initializeBooking(sessionType, builderId);
           
           if (bookingId) {
@@ -77,13 +140,24 @@ export function BookingFlow({
     builderId, 
     sessionTypes, 
     initializeBooking, 
-    startCalendlyScheduling
+    startCalendlyScheduling,
+    isSignedIn,
+    state.pathway
   ]);
   
   // Handle session type selection
   const handleSelectSessionType = async (sessionType: SessionType) => {
     if (!builderId) {
       logger.error('Missing builder ID for booking flow');
+      return;
+    }
+    
+    // Check if session requires pathway selection
+    if (isSignedIn && sessionType.eventTypeCategory === 'pathway' && !state.pathway) {
+      const bookingId = await initializeBooking(sessionType, builderId);
+      if (bookingId) {
+        setShowPathwaySelector(true);
+      }
       return;
     }
     
@@ -94,33 +168,53 @@ export function BookingFlow({
     }
   };
   
+  // Handle pathway selection
+  const handlePathwaySelect = async (pathway: string) => {
+    selectPathway(pathway);
+    setShowPathwaySelector(false);
+    await startCalendlyScheduling();
+  };
+  
   // Handle Calendly event scheduling
-  const handleCalendlyEvent = async (
-    calendlyEventUri: string,
-    calendlyInviteeUri: string,
-    startTime?: string,
-    endTime?: string
-  ) => {
+  const handleCalendlyEvent = async (event: any) => {
+    // Extract event details
+    const { uri: calendlyEventUri, invitee } = event || {};
+    const calendlyInviteeUri = invitee?.uri;
+    const startTime = event?.start_time;
+    const endTime = event?.end_time;
+    
+    // Extract custom question responses if available
+    const customQuestionResponse = event?.questions_and_answers;
+    
+    // Store custom question response
+    if (customQuestionResponse) {
+      setCustomQuestionResponse(customQuestionResponse);
+    }
+    
     await handleCalendlyScheduled(
       calendlyEventUri,
       calendlyInviteeUri,
       startTime,
-      endTime
+      endTime,
+      customQuestionResponse
     );
     
-    // Start payment process
-    await startPaymentProcess();
+    // Only continue to payment if the session requires it
+    const selectedSession = sessionTypes.find(s => s.id === state.sessionTypeId);
+    if (selectedSession && selectedSession.price > 0) {
+      await startPaymentProcess();
+    }
   };
   
   // Render error state
   if (state.error) {
     return (
-      <div className="booking-flow-error">
-        <h3>Error</h3>
-        <p>{state.error.message}</p>
+      <div className="booking-flow-error p-6 bg-red-50 rounded-lg">
+        <h3 className="text-lg font-semibold text-red-900">Error</h3>
+        <p className="text-red-700">{state.error.message}</p>
         <button
           onClick={resetBookingFlow}
-          className="bg-primary text-white px-4 py-2 rounded"
+          className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
           Start Over
         </button>
@@ -131,11 +225,27 @@ export function BookingFlow({
   // Render loading state
   if (state.loading || isRecovering) {
     return (
-      <div className="booking-flow-loading">
+      <div className="booking-flow-loading flex flex-col items-center justify-center p-8">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-        <p className="mt-4">
+        <p className="mt-4 text-muted-foreground">
           {isRecovering ? 'Recovering session...' : 'Loading...'}
         </p>
+      </div>
+    );
+  }
+  
+  // Render pathway selector if needed
+  if (showPathwaySelector) {
+    return (
+      <div className="booking-flow-pathway-selector p-6">
+        <h2 className="text-2xl font-bold mb-4">Select Your Learning Pathway</h2>
+        <p className="text-muted-foreground mb-6">
+          Choose the pathway that best aligns with your goals
+        </p>
+        <PathwaySelector
+          onSelect={handlePathwaySelect}
+          selectedPathway={state.pathway}
+        />
       </div>
     );
   }
@@ -145,10 +255,47 @@ export function BookingFlow({
     switch (state.step) {
       case BookingStateEnum.IDLE:
         return (
-          <SessionTypeSelector
-            sessionTypes={sessionTypes}
-            onSelect={handleSelectSessionType}
-          />
+          <div className="space-y-8">
+            {!isSignedIn && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-amber-900">
+                  Sign in to access all session types and learning pathways
+                </p>
+              </div>
+            )}
+            
+            {groupedSessions.free.length > 0 && (
+              <SessionTypeCategory
+                title="Free Sessions"
+                sessions={groupedSessions.free}
+                onSelect={handleSelectSessionType}
+              />
+            )}
+            
+            {isSignedIn && groupedSessions.pathway.length > 0 && (
+              <SessionTypeCategory
+                title="Learning Pathway Sessions"
+                sessions={groupedSessions.pathway}
+                onSelect={handleSelectSessionType}
+              />
+            )}
+            
+            {isSignedIn && groupedSessions.specialized.length > 0 && (
+              <SessionTypeCategory
+                title="Specialized Sessions"
+                sessions={groupedSessions.specialized}
+                onSelect={handleSelectSessionType}
+              />
+            )}
+            
+            {groupedSessions.other.length > 0 && (
+              <SessionTypeCategory
+                title="Other Sessions"
+                sessions={groupedSessions.other}
+                onSelect={handleSelectSessionType}
+              />
+            )}
+          </div>
         );
       
       case BookingStateEnum.SESSION_TYPE_SELECTED:
@@ -157,11 +304,11 @@ export function BookingFlow({
         
         if (!selectedSessionType || !selectedSessionType.calendlyEventTypeUri) {
           return (
-            <div className="booking-flow-error">
-              <p>Session type not found or Calendly URL not configured.</p>
+            <div className="booking-flow-error p-6 bg-yellow-50 rounded-lg">
+              <p className="text-yellow-900">Session type not found or Calendly URL not configured.</p>
               <button
                 onClick={resetBookingFlow}
-                className="bg-primary text-white px-4 py-2 rounded"
+                className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
               >
                 Start Over
               </button>
@@ -177,6 +324,7 @@ export function BookingFlow({
               email: '',
               customAnswers: {
                 a1: state.bookingId || '',
+                ...(state.pathway && { pathway: state.pathway })
               }
             }}
             utmParams={{
@@ -189,17 +337,17 @@ export function BookingFlow({
       case BookingStateEnum.PAYMENT_SUCCEEDED:
       case BookingStateEnum.BOOKING_CONFIRMED:
         return (
-          <div className="booking-success">
-            <h3>Booking Confirmed!</h3>
-            <p>Your session has been scheduled successfully.</p>
+          <div className="booking-success p-6 bg-green-50 rounded-lg">
+            <h3 className="text-lg font-semibold text-green-900">Booking Confirmed!</h3>
+            <p className="text-green-700">Your session has been scheduled successfully.</p>
             {state.startTime && (
-              <p>
+              <p className="text-green-600 mt-2">
                 Start time: {new Date(state.startTime).toLocaleString()}
               </p>
             )}
             <button
               onClick={resetBookingFlow}
-              className="bg-primary text-white px-4 py-2 rounded mt-4"
+              className="bg-green-600 text-white px-4 py-2 rounded mt-4 hover:bg-green-700"
             >
               Book Another Session
             </button>
@@ -208,20 +356,20 @@ export function BookingFlow({
       
       case BookingStateEnum.PAYMENT_FAILED:
         return (
-          <div className="booking-flow-error">
-            <h3>Payment Failed</h3>
-            <p>
+          <div className="booking-flow-error p-6 bg-red-50 rounded-lg">
+            <h3 className="text-lg font-semibold text-red-900">Payment Failed</h3>
+            <p className="text-red-700">
               We couldn't process your payment. Please try again or contact support.
             </p>
             <button
               onClick={() => startPaymentProcess()}
-              className="bg-primary text-white px-4 py-2 rounded mt-4"
+              className="bg-red-600 text-white px-4 py-2 rounded mt-4 hover:bg-red-700"
             >
               Try Again
             </button>
             <button
               onClick={resetBookingFlow}
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded mt-4 ml-4"
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded mt-4 ml-4 hover:bg-gray-400"
             >
               Start Over
             </button>
@@ -230,12 +378,12 @@ export function BookingFlow({
       
       case BookingStateEnum.CANCELLATION_REQUESTED:
         return (
-          <div className="booking-cancellation">
-            <h3>Cancellation Requested</h3>
-            <p>Your cancellation request is being processed.</p>
+          <div className="booking-cancellation p-6 bg-gray-50 rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900">Cancellation Requested</h3>
+            <p className="text-gray-700">Your cancellation request is being processed.</p>
             <button
               onClick={resetBookingFlow}
-              className="bg-primary text-white px-4 py-2 rounded mt-4"
+              className="bg-gray-600 text-white px-4 py-2 rounded mt-4 hover:bg-gray-700"
             >
               Book New Session
             </button>
@@ -244,11 +392,11 @@ export function BookingFlow({
       
       default:
         return (
-          <div className="booking-default">
-            <p>Unknown booking state. Please start over.</p>
+          <div className="booking-default p-6 bg-gray-50 rounded-lg">
+            <p className="text-gray-700">Unknown booking state. Please start over.</p>
             <button
               onClick={resetBookingFlow}
-              className="bg-primary text-white px-4 py-2 rounded mt-4"
+              className="bg-gray-600 text-white px-4 py-2 rounded mt-4 hover:bg-gray-700"
             >
               Start Over
             </button>

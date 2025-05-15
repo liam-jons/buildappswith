@@ -41,6 +41,8 @@ export interface SessionType {
   maxParticipants?: number;
   calendlyEventTypeId?: string;
   calendlyEventTypeUri?: string;
+  requiresAuth?: boolean;
+  eventTypeCategory?: 'free' | 'pathway' | 'specialized' | string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -66,6 +68,8 @@ export interface Booking {
   calendlyEventId?: string;
   calendlyEventUri?: string;
   calendlyInviteeUri?: string;
+  pathway?: string;
+  customQuestionResponse?: any;
   createdAt?: string;
   updatedAt?: string;
 }

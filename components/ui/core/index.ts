@@ -20,6 +20,7 @@ export * from './label';
 export * from './loading-spinner';
 export * from './pagination';
 export * from './popover';
+export * from './progress';
 export * from './radio-group';
 export * from './select';
 export * from './separator';

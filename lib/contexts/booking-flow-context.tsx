@@ -28,18 +28,23 @@ const initialBookingState: ClientBookingState = {
   bookingStatus: undefined,
   startTime: undefined,
   endTime: undefined,
-  recoveryUrl: undefined
+  recoveryUrl: undefined,
+  pathway: undefined,
+  customQuestionResponse: undefined
 };
 
 // Action types for the reducer
 type BookingAction = 
   | { type: 'SELECT_SESSION_TYPE'; payload: { sessionType: SessionType; builderId: string; } }
+  | { type: 'SELECT_PATHWAY'; payload: { pathway: string; } }
+  | { type: 'SET_CUSTOM_QUESTION_RESPONSE'; payload: { response: any; } }
   | { type: 'INITIATE_CALENDLY'; payload?: { bookingId?: string; } }
   | { type: 'CALENDLY_EVENT_SCHEDULED'; payload: { 
       calendlyEventUri: string; 
       calendlyInviteeUri: string;
       startTime?: string;
       endTime?: string;
+      customQuestionResponse?: any;
     }
   }
   | { type: 'INITIATE_PAYMENT'; payload?: { stripeSessionId?: string; } }
@@ -70,6 +75,22 @@ function bookingReducer(state: ClientBookingState, action: BookingAction): Clien
         error: undefined
       };
     
+    case 'SELECT_PATHWAY':
+      return {
+        ...state,
+        pathway: action.payload.pathway,
+        loading: false,
+        error: undefined
+      };
+    
+    case 'SET_CUSTOM_QUESTION_RESPONSE':
+      return {
+        ...state,
+        customQuestionResponse: action.payload.response,
+        loading: false,
+        error: undefined
+      };
+    
     case 'INITIATE_CALENDLY':
       return {
         ...state,
@@ -87,6 +108,7 @@ function bookingReducer(state: ClientBookingState, action: BookingAction): Clien
         calendlyInviteeUri: action.payload.calendlyInviteeUri,
         startTime: action.payload.startTime || state.startTime,
         endTime: action.payload.endTime || state.endTime,
+        customQuestionResponse: action.payload.customQuestionResponse || state.customQuestionResponse,
         loading: false,
         error: undefined
       };
@@ -198,8 +220,10 @@ interface BookingFlowContextType {
   dispatch: React.Dispatch<BookingAction>;
   // Helper functions
   selectSessionType: (sessionType: SessionType, builderId: string) => void;
+  selectPathway: (pathway: string) => void;
+  setCustomQuestionResponse: (response: any) => void;
   initiateCalendly: (bookingId?: string) => void;
-  handleCalendlyScheduled: (calendlyEventUri: string, calendlyInviteeUri: string, startTime?: string, endTime?: string) => void;
+  handleCalendlyScheduled: (calendlyEventUri: string, calendlyInviteeUri: string, startTime?: string, endTime?: string, customQuestionResponse?: any) => void;
   initiatePayment: (stripeSessionId?: string) => void;
   handlePaymentSuccess: (stripePaymentIntentId?: string) => void;
   handlePaymentFailure: (error?: { message: string; code?: string }) => void;
@@ -213,6 +237,8 @@ const BookingFlowContext = createContext<BookingFlowContextType>({
   state: initialBookingState,
   dispatch: () => null,
   selectSessionType: () => {},
+  selectPathway: () => {},
+  setCustomQuestionResponse: () => {},
   initiateCalendly: () => {},
   handleCalendlyScheduled: () => {},
   initiatePayment: () => {},
@@ -323,6 +349,14 @@ export function BookingFlowProvider({
     dispatch({ type: 'SELECT_SESSION_TYPE', payload: { sessionType, builderId } });
   };
   
+  const selectPathway = (pathway: string) => {
+    dispatch({ type: 'SELECT_PATHWAY', payload: { pathway } });
+  };
+  
+  const setCustomQuestionResponse = (response: any) => {
+    dispatch({ type: 'SET_CUSTOM_QUESTION_RESPONSE', payload: { response } });
+  };
+  
   const initiateCalendly = (bookingId?: string) => {
     dispatch({ type: 'INITIATE_CALENDLY', payload: { bookingId } });
   };
@@ -331,7 +365,8 @@ export function BookingFlowProvider({
     calendlyEventUri: string, 
     calendlyInviteeUri: string,
     startTime?: string,
-    endTime?: string
+    endTime?: string,
+    customQuestionResponse?: any
   ) => {
     dispatch({ 
       type: 'CALENDLY_EVENT_SCHEDULED', 
@@ -339,7 +374,8 @@ export function BookingFlowProvider({
         calendlyEventUri, 
         calendlyInviteeUri,
         startTime,
-        endTime
+        endTime,
+        customQuestionResponse
       } 
     });
   };
@@ -377,6 +413,8 @@ export function BookingFlowProvider({
     state,
     dispatch,
     selectSessionType,
+    selectPathway,
+    setCustomQuestionResponse,
     initiateCalendly,
     handleCalendlyScheduled,
     initiatePayment,

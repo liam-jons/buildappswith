@@ -1,16 +1,12 @@
-import { auth } from '@clerk/nextjs/server';
-import { SignInButton } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { db } from '@/lib/db';
-// Using Calendly integration instead of BookingCalendar
-import { CalendlyEmbed } from '@/components/scheduling/calendly';
-import { createCalendlySchedulingLink } from '@/lib/scheduling/calendly/client-api';
+import { BookingFlow } from '@/components/scheduling';
+import { BookingFlowProvider } from '@/lib/contexts/booking-flow-context';
 import { Button } from "@/components/ui/core/button";
 import { Alert, AlertDescription } from "@/components/ui/core/alert";
 import { InfoIcon } from "lucide-react";
-
 
 export const metadata = {
   title: 'Book a Session | Build Apps With',
@@ -30,24 +26,37 @@ async function getBuilderProfile(builderId: string) {
       },
     });
     
-    return builderProfile;
+    if (!builderProfile) {
+      return null;
+    }
+    
+    // Serialize Decimal types for client components
+    const serializedProfile = {
+      ...builderProfile,
+      sessionTypes: builderProfile.sessionTypes.map(session => ({
+        ...session,
+        price: session.price.toNumber(), // Convert Decimal to number
+      }))
+    };
+    
+    // Log for debugging
+    console.log('Builder profile session types:', {
+      builderId,
+      sessionCount: serializedProfile.sessionTypes.length,
+      sessions: serializedProfile.sessionTypes.map(s => ({
+        id: s.id,
+        title: s.title,
+        requiresAuth: s.requiresAuth,
+        eventTypeCategory: s.eventTypeCategory,
+        price: s.price,
+        isActive: s.isActive,
+        calendlyUri: s.calendlyEventTypeUri
+      }))
+    });
+    
+    return serializedProfile;
   } catch (error) {
     console.error('Error fetching builder profile:', error);
-    return null;
-  }
-}
-
-async function getUser(userId: string | null) {
-  if (!userId) return null;
-  
-  try {
-    const user = await db.user.findUnique({
-      where: { clerkId: userId },
-      select: { id: true, email: true, name: true }
-    });
-    return user;
-  } catch (error) {
-    console.error('Error fetching user:', error);
     return null;
   }
 }
@@ -56,15 +65,12 @@ export default async function BookingPage({
   params,
   searchParams
 }: {
-  params: { builderId: string },
-  searchParams: { [key: string]: string | string[] | undefined }
+  params: Promise<{ builderId: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const { userId } = auth();
-  const { builderId } = params;
-  const sessionTypeId = searchParams.sessionTypeId as string | undefined;
-  
-  // Fetch current user data
-  const currentUser = await getUser(userId);
+  const { builderId } = await params;
+  const resolvedSearchParams = await searchParams;
+  const sessionTypeId = resolvedSearchParams.sessionTypeId as string | undefined;
   
   // Fetch builder profile with session types
   const builderProfile = await getBuilderProfile(builderId);
@@ -85,24 +91,8 @@ export default async function BookingPage({
     );
   }
   
-  // Find the selected session type or use the first available one
-  const selectedSessionType = sessionTypeId 
-    ? builderProfile.sessionTypes.find(st => st.id === sessionTypeId)
-    : builderProfile.sessionTypes[0];
-    
-  // Check if this is a dummy profile (no Calendly URL)
-  const isDummyProfile = !selectedSessionType?.calendlyEventTypeUri || !builderProfile.sessionTypes.length;
-  
-  // Debug logging
-  console.log('Builder profile debug:', {
-    builderId,
-    userName: builderProfile.user.name,
-    isDemo: builderProfile.user.isDemo,
-    sessionTypesCount: builderProfile.sessionTypes.length,
-    selectedSessionType: selectedSessionType?.title,
-    calendlyUri: selectedSessionType?.calendlyEventTypeUri,
-    isDummyProfile
-  });
+  // Check if this is a dummy profile (no active session types)
+  const isDummyProfile = !builderProfile.sessionTypes.length;
   
   return (
     <div className="container max-w-5xl py-12">
@@ -131,91 +121,25 @@ export default async function BookingPage({
         </div>
       </div>
       
-      {userId ? (
-        <>
-          {isDummyProfile ? (
-            <Alert className="mb-8">
-              <InfoIcon className="h-4 w-4" />
-              <AlertDescription>
-                This is a demonstration profile. Booking is not available for this builder at the moment.
-                <br />
-                <Link href="/marketplace" className="font-medium underline">
-                  Browse other builders
-                </Link> to find available consultations.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <>
-              {/* Session type selector if multiple types available */}
-              {builderProfile.sessionTypes.length > 1 && (
-                <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-3">Select a Session Type:</h2>
-                  <div className="grid gap-3">
-                    {builderProfile.sessionTypes.map((sessionType) => (
-                      <Link
-                        key={sessionType.id}
-                        href={`/book/${builderId}?sessionTypeId=${sessionType.id}`}
-                        className={`p-4 border rounded-lg hover:border-primary transition-colors ${
-                          selectedSessionType?.id === sessionType.id 
-                            ? 'border-primary bg-primary/5' 
-                            : 'border-gray-200'
-                        }`}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-medium">{sessionType.title}</h3>
-                            <p className="text-sm text-gray-600">{sessionType.description}</p>
-                            <p className="text-sm text-gray-500 mt-1">
-                              {sessionType.durationMinutes} minutes
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-semibold">
-                              ${sessionType.price.toString()} {sessionType.currency}
-                            </p>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {/* Calendly embed */}
-              {selectedSessionType && (
-                <div className="rounded-lg overflow-hidden shadow-lg">
-                  <CalendlyEmbed
-                    url={selectedSessionType.calendlyEventTypeUri}
-                    prefill={{
-                      name: currentUser?.name || '',
-                      email: currentUser?.email || '',
-                      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                    }}
-                    utm={{
-                      utmSource: 'buildappswith',
-                      utmMedium: 'website',
-                      utmCampaign: 'booking',
-                      utmContent: selectedSessionType.id
-                    }}
-                    className="h-[700px] w-full"
-                  />
-                </div>
-              )}
-            </>
-          )}
-        </>
+      {isDummyProfile ? (
+        <Alert className="mb-8">
+          <InfoIcon className="h-4 w-4" />
+          <AlertDescription>
+            This is a demonstration profile. Booking is not available for this builder at the moment.
+            <br />
+            <Link href="/marketplace" className="font-medium underline">
+              Browse other builders
+            </Link> to find available consultations.
+          </AlertDescription>
+        </Alert>
       ) : (
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-8 text-center">
-          <h2 className="text-xl font-semibold mb-4">Sign In to Book a Session</h2>
-          <p className="text-gray-600 mb-6">
-            You need to be signed in to book a session with {builderProfile.user.name}.
-          </p>
-          <SignInButton mode="modal">
-            <Button size="lg">
-              Sign In to Continue
-            </Button>
-          </SignInButton>
-        </div>
+        <BookingFlowProvider>
+          <BookingFlow
+            builderId={builderId}
+            sessionTypes={builderProfile.sessionTypes}
+            preselectedSessionTypeId={sessionTypeId}
+          />
+        </BookingFlowProvider>
       )}
     </div>
   );

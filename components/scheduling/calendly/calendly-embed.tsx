@@ -11,6 +11,11 @@ interface CalendlyEmbedProps {
     name?: string;
     email?: string;
     timezone?: string;
+    customAnswers?: {
+      a1?: string; // Booking ID
+      pathway?: string; // Selected pathway
+      [key: string]: string | undefined;
+    };
   };
   utm?: {
     utmSource?: string;
@@ -19,17 +24,42 @@ interface CalendlyEmbedProps {
     utmContent?: string;
     utmTerm?: string;
   };
+  utmParams?: {
+    utmContent?: string;
+    [key: string]: string | undefined;
+  };
   className?: string;
-  onEventScheduled?: (event: any) => void;
+  onEventScheduled?: (event: CalendlyEvent) => void;
+}
+
+export interface CalendlyEvent {
+  uri: string;
+  invitee: {
+    uri: string;
+    email: string;
+    name: string;
+  };
+  start_time: string;
+  end_time: string;
+  event_type_uuid: string;
+  questions_and_answers?: CalendlyQuestionAnswer[];
+}
+
+export interface CalendlyQuestionAnswer {
+  question: string;
+  answer: string;
+  position: number;
 }
 
 /**
  * Calendly embed component that loads and displays the Calendly scheduling widget
+ * Enhanced to support pathway data and custom questions
  */
 const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
   url,
   prefill,
   utm,
+  utmParams,
   className = '',
   onEventScheduled
 }) => {
@@ -54,21 +84,40 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
     if (prefill?.email) prefillData.email = prefill.email
     if (prefill?.timezone) prefillData.timezone = prefill.timezone
     
-    // Get UTM data
-    const utmParams: { [key: string]: string } = {}
+    // Add custom answers if provided
+    if (prefill?.customAnswers) {
+      Object.entries(prefill.customAnswers).forEach(([key, value]) => {
+        if (value !== undefined) {
+          prefillData[key] = value;
+        }
+      });
+    }
     
-    if (utm?.utmSource) utmParams.utm_source = utm.utmSource
-    if (utm?.utmMedium) utmParams.utm_medium = utm.utmMedium
-    if (utm?.utmCampaign) utmParams.utm_campaign = utm.utmCampaign
-    if (utm?.utmContent) utmParams.utm_content = utm.utmContent
-    if (utm?.utmTerm) utmParams.utm_term = utm.utmTerm
+    // Get UTM data from both sources
+    const utmParamsObject: { [key: string]: string } = {}
+    
+    // Legacy utm prop
+    if (utm?.utmSource) utmParamsObject.utm_source = utm.utmSource
+    if (utm?.utmMedium) utmParamsObject.utm_medium = utm.utmMedium
+    if (utm?.utmCampaign) utmParamsObject.utm_campaign = utm.utmCampaign
+    if (utm?.utmContent) utmParamsObject.utm_content = utm.utmContent
+    if (utm?.utmTerm) utmParamsObject.utm_term = utm.utmTerm
+    
+    // New utmParams prop
+    if (utmParams) {
+      Object.entries(utmParams).forEach(([key, value]) => {
+        if (value !== undefined) {
+          utmParamsObject[key] = value;
+        }
+      });
+    }
     
     // Initialize the widget
     window.Calendly.initInlineWidget({
       url: url,
       parentElement: embedRef.current,
       prefill: prefillData,
-      utm: utmParams
+      utm: utmParamsObject
     })
     
     // Set loaded state
@@ -79,9 +128,23 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
   useEffect(() => {
     if (!isScriptLoaded || !onEventScheduled) return
     
-    const handleEventScheduled = (e: any) => {
-      if (e.data.event === 'calendly:event_scheduled') {
-        onEventScheduled(e.data)
+    const handleEventScheduled = (e: MessageEvent) => {
+      if (e.data.event === 'calendly.event_scheduled') {
+        // Extract the event details
+        const eventData: CalendlyEvent = {
+          uri: e.data.payload.event.uri,
+          invitee: {
+            uri: e.data.payload.invitee.uri,
+            email: e.data.payload.invitee.email,
+            name: e.data.payload.invitee.name
+          },
+          start_time: e.data.payload.event.start_time,
+          end_time: e.data.payload.event.end_time,
+          event_type_uuid: e.data.payload.event.event_type_uuid,
+          questions_and_answers: e.data.payload.questions_and_answers
+        };
+        
+        onEventScheduled(eventData);
       }
     }
     
@@ -97,7 +160,7 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
     if (isScriptLoaded) {
       initCalendly()
     }
-  }, [isScriptLoaded, url])
+  }, [isScriptLoaded, url, prefill])
 
   return (
     <>
@@ -105,6 +168,7 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
       <Script 
         src="https://assets.calendly.com/assets/external/widget.js" 
         onLoad={() => setIsScriptLoaded(true)}
+        strategy="lazyOnload"
       />
       
       {/* Widget container */}
