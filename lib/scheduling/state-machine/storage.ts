@@ -59,10 +59,11 @@ export async function initializeBookingState(
         data: {
           id: bookingId,
           builderId: secureStateData.builderId || '',
-          clientId: secureStateData.clientId || '',
+          clientId: secureStateData.clientId || undefined, // Support anonymous users
           sessionTypeId: secureStateData.sessionTypeId,
-          startTime: secureStateData.startTime ? new Date(secureStateData.startTime) : undefined,
-          endTime: secureStateData.endTime ? new Date(secureStateData.endTime) : undefined,
+          title: `Booking ${bookingId.substring(0, 8)}`, // Temporary title
+          startTime: secureStateData.startTime ? new Date(secureStateData.startTime) : new Date(), // Default to now
+          endTime: secureStateData.endTime ? new Date(secureStateData.endTime) : new Date(Date.now() + 60 * 60 * 1000), // Default to 1 hour from now
           status: 'PENDING',
           paymentStatus: 'UNPAID',
           currentState: initialState,
