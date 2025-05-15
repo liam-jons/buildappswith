@@ -258,6 +258,8 @@ export async function fetchBuilders(
         marketplaceLogger.debug('User fields', {
           userId: builder.userId,
           hasImageUrl: !!mappedUser.imageUrl,
+          isDemo: mappedUser.isDemo,
+          userName: mappedUser.name,
         });
 
         // Create base builder profile

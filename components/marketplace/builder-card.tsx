@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
 // Import SimplifiedBuilderImage instead of BuilderImage
 import { SimplifiedBuilderImage } from "@/components/marketplace/simplified-builder-image";
@@ -14,12 +14,16 @@ import { Button } from "@/components/ui/core/button";
 import { BuilderProfileListing } from '@/lib/marketplace/types';
 import { DemoBadge } from '@/components/marketplace/ui/demo-badge';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { ShineBorder } from '@/components/magicui/shine-border';
 
 /**
  * BuilderCard component for displaying builder profiles in the marketplace
  * Uses a production-ready approach for image loading
  */
 export function BuilderCard({ builder }: { builder: BuilderProfileListing }) {
+  const [isHovering, setIsHovering] = useState(false);
+  
   // Determine the validation tier string
   const getTierString = (tier: number): 'basic' | 'verified' | 'expert' => {
     switch (tier) {
@@ -43,7 +47,34 @@ export function BuilderCard({ builder }: { builder: BuilderProfileListing }) {
   const tierString = getTierString(builder.validationTier);
 
   return (
-    <Card className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow duration-200">
+    <div className="relative">
+      {/* Shine border for featured profiles */}
+      {builder.featured && (
+        <ShineBorder
+          borderWidth={2}
+          duration={8}
+          shineColor={["#ffbd7a", "#fe8bbb", "#9e7aff"]}
+          className="opacity-70"
+        />
+      )}
+      
+      <Card 
+        className={cn(
+          "overflow-hidden flex flex-col h-full transition-all duration-300 relative",
+          "hover:shadow-md",
+          builder.isDemo && isHovering && "blur-sm",
+          builder.featured && "border-0"
+        )}
+        onMouseEnter={() => builder.isDemo && setIsHovering(true)}
+        onMouseLeave={() => builder.isDemo && setIsHovering(false)}
+      >
+        {/* Demo overlay */}
+        {builder.isDemo && isHovering && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+            <span className="text-2xl font-bold text-muted-foreground">Demo Account</span>
+          </div>
+        )}
+      
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-4">
           <SimplifiedBuilderImage
@@ -92,19 +123,23 @@ export function BuilderCard({ builder }: { builder: BuilderProfileListing }) {
           <div className="mt-3 flex items-center">
             <span 
               className={`w-2 h-2 rounded-full mr-2 ${
-                builder.availability === 'available' 
-                  ? 'bg-green-500' 
-                  : builder.availability === 'limited' 
-                    ? 'bg-yellow-500' 
-                    : 'bg-red-500'
+                builder.isDemo
+                  ? 'bg-gray-500'
+                  : builder.availability === 'available' 
+                    ? 'bg-green-500' 
+                    : builder.availability === 'limited' 
+                      ? 'bg-yellow-500' 
+                      : 'bg-red-500'
               }`}
             />
             <span className="text-xs text-muted-foreground">
-              {builder.availability === 'available' 
-                ? 'Available for hire' 
-                : builder.availability === 'limited' 
-                  ? 'Limited availability' 
-                  : 'Currently unavailable'}
+              {builder.isDemo
+                ? 'Demo Account'
+                : builder.availability === 'available' 
+                  ? 'Available for hire' 
+                  : builder.availability === 'limited' 
+                    ? 'Limited availability' 
+                    : 'Currently unavailable'}
             </span>
           </div>
         )}
@@ -123,5 +158,6 @@ export function BuilderCard({ builder }: { builder: BuilderProfileListing }) {
         </Link>
       </CardFooter>
     </Card>
+    </div>
   );
 }

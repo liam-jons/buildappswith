@@ -7,6 +7,7 @@ import { heroContent } from "./data.tsx";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AuroraText } from "@/components/magicui/aurora-text";
+import { Terminal, TerminalTypingAnimation, AnimatedSpan } from "@/components/magicui/terminal";
 
 export function HeroSection({ 
   className, 
@@ -96,51 +97,43 @@ export function HeroSection({
             </div>
           </div>
           
-          {/* Hero image */}
-          <div className="mt-16 relative">
-            <div className="aspect-[16/9] overflow-hidden rounded-2xl border border-primary/10 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent z-10"></div>
-              
-              <img 
-                src="/hero-light.png" 
-                alt="Learn AI with people, not just prompts" 
-                className="block dark:hidden w-full h-full object-cover"
-                loading="eager"
-              />
-              <img 
-                src="/hero-dark.png" 
-                alt="Learn AI with people, not just prompts" 
-                className="hidden dark:block w-full h-full object-cover"
-                loading="eager"
-              />
-            </div>
-            
-            {/* Visual indicators of human interaction */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-              className="absolute -bottom-5 -left-5 size-24 rounded-full bg-white dark:bg-zinc-900 shadow-lg p-3 border border-primary/10 md:block hidden"
-            >
-              <img 
-                src="https://i.pravatar.cc/150?img=3" 
-                alt="AI mentor" 
-                className="w-full h-full rounded-full object-cover"
-              />
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-              className="absolute -bottom-5 right-12 size-16 rounded-full bg-white dark:bg-zinc-900 shadow-lg p-2 border border-primary/10 md:block hidden"
-            >
-              <img 
-                src="https://i.pravatar.cc/150?img=8" 
-                alt="AI learner" 
-                className="w-full h-full rounded-full object-cover"
-              />
-            </motion.div>
+          {/* Terminal component */}
+          <div className="mt-16 flex justify-center">
+            <Terminal className="w-full max-w-3xl">
+              <AnimatedSpan delay={0}>
+                $ buildappswith --help
+              </AnimatedSpan>
+              <AnimatedSpan delay={100}>
+                Welcome to Build Apps With - Your AI App Development Platform
+              </AnimatedSpan>
+              <AnimatedSpan delay={200}>
+                
+              </AnimatedSpan>
+              <AnimatedSpan delay={300}>
+                Available commands:
+              </AnimatedSpan>
+              <AnimatedSpan delay={400}>
+                  accelerate    - Boost your AI development skills
+              </AnimatedSpan>
+              <AnimatedSpan delay={500}>
+                  pivot         - Transition to AI-powered roles
+              </AnimatedSpan>
+              <AnimatedSpan delay={600}>
+                  play          - Explore AI tools and experiments
+              </AnimatedSpan>
+              <AnimatedSpan delay={700}>
+                  marketplace   - Find AI builders and experts
+              </AnimatedSpan>
+              <AnimatedSpan delay={800}>
+                
+              </AnimatedSpan>
+              <AnimatedSpan delay={900}>
+                $ buildappswith accelerate
+              </AnimatedSpan>
+              <TerminalTypingAnimation delay={1000} duration={40}>
+                Connecting you with AI experts to accelerate your learning...
+              </TerminalTypingAnimation>
+            </Terminal>
           </div>
         </div>
       </div>
