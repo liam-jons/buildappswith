@@ -7,6 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Development and Production are SEPARATE databases (not branches)
 - Production email: `liam@buildappswith.com` (NOT .ai)
 - For database operations, ALWAYS run: `node scripts/verify-database-connection.js`
+- When running scripts that modify the database, remember to set `DATABASE_URL` environment variable:
+  - For dev: Use `.env` file (default)
+  - For prod: `DATABASE_URL=<production_url> node scripts/script-name.js`
 - For collaboration insights: See `/docs/COLLABORATION_INSIGHTS.md`
 
 ## Build/Test/Lint Commands

@@ -4,6 +4,7 @@ import { DiscordLogoIcon, TwitterLogoIcon, GitHubLogoIcon, LinkedInLogoIcon } fr
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/core/button";
 import { cn } from "@/lib/utils";
+import { AuroraText } from "@/components/magicui/aurora-text";
 
 const footerNavs = [
   {
@@ -104,7 +105,7 @@ export function SiteFooter() {
           <div className="mb-12 flex-col flex gap-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-                <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span>
+                <span className="text-primary">Build</span> <AuroraText className="inline-block mx-1">Apps</AuroraText> <span className="text-primary">With</span>
               </span>
             </Link>
             <p className="max-w-xs">Democratising AI application development through accessible education and transparent validation</p>
@@ -160,7 +161,7 @@ export function SiteFooter() {
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
             Copyright © 2025{" "}
             <Link href="/" className="cursor-pointer">
-              <span className="text-primary">Build</span> <span className="text-teal-500">Apps</span> <span className="text-primary">With</span>
+              <span className="text-primary">Build</span> <AuroraText className="inline-block mx-1">Apps</AuroraText> <span className="text-primary">With</span>
             </Link>
             . All Rights Reserved.
           </span>

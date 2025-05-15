@@ -1,17 +1,7 @@
 "use client";
 
 import { cn } from "../../lib/utils";
-
-const companies = [
-  { name: "Anthropic", logoUrl: "/logos/anthropic-logo.svg" },
-  { name: "Perplexity", logoUrl: "/logos/perplexity-logo.svg" },
-  { name: "GitHub", logoUrl: "/images/github-logo.png" },
-  { name: "Vercel", logoUrl: "/logos/vercel-logo.svg" },
-  { name: "Supabase", logoUrl: "/logos/supabase-logo.svg" },
-  { name: "Neon", logoUrl: "/logos/neon-logo.svg" },
-  { name: "Lovable", logoUrl: "/logos/lovable-logo.svg" },
-  { name: "Stripe", logoUrl: "/logos/stripe-logo.svg" }
-];
+import { CompanyLogos } from "./company-logos";
 
 export function TrustedEcosystem({ className }: { className?: string }) {
   return (
@@ -21,21 +11,8 @@ export function TrustedEcosystem({ className }: { className?: string }) {
           SOURCING A TRUSTED ECOSYSTEM FOR AI LITERACY
         </h3>
         
-        <div className="relative">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8 place-items-center max-w-5xl mx-auto">
-            {companies.map((company) => (
-              <div 
-                key={company.name}
-                className="h-16 w-32 flex items-center justify-center"
-              >
-                <img
-                  src={company.logoUrl}
-                  alt={`${company.name} logo`}
-                  className="h-10 object-contain dark:invert"
-                />
-              </div>
-            ))}
-          </div>
+        <div className="relative max-w-5xl mx-auto">
+          <CompanyLogos animated={false} />
         </div>
       </div>
     </section>
