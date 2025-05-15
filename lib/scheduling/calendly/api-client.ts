@@ -54,6 +54,53 @@ interface RequestMetrics {
 }
 
 /**
+ * Available times response from Calendly API
+ */
+interface CalendlyAvailableTimesResponse {
+  collection: Array<{
+    status: string;
+    invitees_remaining: number;
+    start_time: string;
+    scheduling_url: string;
+  }>;
+}
+
+/**
+ * Event types response from Calendly API
+ */
+interface CalendlyEventTypesResponse {
+  collection: any[];
+  pagination: {
+    count: number;
+    next_page?: string;
+  };
+}
+
+/**
+ * Event type response from Calendly API
+ */
+interface CalendlyEventTypeResponse {
+  resource: any;
+}
+
+/**
+ * User response from Calendly API
+ */
+interface CalendlyUserResponse {
+  resource: {
+    uri: string;
+    current_organization: string;
+  };
+}
+
+/**
+ * Organization response from Calendly API
+ */
+interface CalendlyOrganizationResponse {
+  resource: any;
+}
+
+/**
  * Calendly API client class
  */
 export class CalendlyApiClient {
@@ -363,6 +410,50 @@ export class CalendlyApiClient {
     }
     
     return response
+  }
+
+  /**
+   * Get available times for an event type
+   * 
+   * @param eventTypeUri URI of the event type
+   * @param startTime Start time in ISO-8601 format
+   * @param endTime End time in ISO-8601 format (max 7 days from start)
+   * @returns List of available time slots
+   */
+  async getEventTypeAvailableTimes(
+    eventTypeUri: string,
+    startTime: Date,
+    endTime: Date
+  ) {
+    // Validate time range (max 7 days)
+    const daysDiff = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60 * 24);
+    if (daysDiff > 7) {
+      throw new CalendlyApiError(
+        'Time range cannot exceed 7 days',
+        400,
+        'invalid_range'
+      );
+    }
+
+    // Validate times are in the future
+    const now = new Date();
+    if (startTime < now) {
+      throw new CalendlyApiError(
+        'Start time must be in the future',
+        400,
+        'invalid_start_time'
+      );
+    }
+
+    const queryParams = {
+      event_type: eventTypeUri,
+      start_time: startTime.toISOString(),
+      end_time: endTime.toISOString()
+    };
+
+    return this.request<CalendlyAvailableTimesResponse>('/v1/event_type_available_times', {
+      queryParams
+    });
   }
 
   /**

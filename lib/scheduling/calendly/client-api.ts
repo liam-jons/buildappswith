@@ -95,3 +95,64 @@ export async function createCalendlySchedulingLink(
     }
   }
 }
+
+/**
+ * Get available time slots for a Calendly event type
+ * 
+ * @param eventTypeUri Calendly event type URI
+ * @param startDate Start date for searching available times
+ * @param endDate End date for searching available times
+ * @returns List of available time slots
+ */
+export async function getCalendlyAvailableTimeSlots(
+  eventTypeUri: string,
+  startDate: Date,
+  endDate: Date
+): Promise<{
+  success: boolean;
+  timeSlots?: Array<{
+    startTime: Date;
+    endTime: Date;
+    schedulingUrl: string;
+    inviteesRemaining: number;
+  }>;
+  error?: string;
+}> {
+  try {
+    const response = await fetch('/api/scheduling/calendly/available-times', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        eventTypeUri,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      return {
+        success: false,
+        error: errorData.error || 'Failed to fetch available time slots'
+      };
+    }
+    
+    const data = await response.json();
+    return {
+      success: true,
+      timeSlots: data.timeSlots.map((slot: any) => ({
+        ...slot,
+        startTime: new Date(slot.startTime),
+        endTime: new Date(slot.endTime)
+      }))
+    };
+  } catch (error) {
+    logger.error('Error fetching Calendly available time slots', { error });
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}

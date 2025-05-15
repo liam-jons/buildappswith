@@ -45,6 +45,10 @@ const publicRoutes = [
   // Booking pages (public)
   "/book/(.*)",
   
+  // Test pages (public)
+  "/calendly-test",
+  "/calendly-direct-test",
+  
   // Marketplace pages (public)
   "/marketplace",
   "/marketplace/(.*)",

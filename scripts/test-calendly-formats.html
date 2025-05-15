@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendly URL Format Test</title>
+</head>
+<body>
+    <h1>Testing Different Calendly URL Formats</h1>
+    
+    <!-- Test 1: Standard Calendly data-url format -->
+    <h2>Test 1: Standard Format</h2>
+    <div class="calendly-inline-widget" 
+         data-url="https://calendly.com/liam-buildappswith/getting-started-businesses" 
+         style="min-width:320px;height:630px;">
+    </div>
+    
+    <!-- Test 2: API format -->
+    <h2>Test 2: API Format</h2>
+    <div id="calendly-widget-2" style="min-width:320px;height:630px;"></div>
+    
+    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+    
+    <script>
+    window.addEventListener('load', function() {
+        // Test programmatic initialization with different URL formats
+        if (window.Calendly) {
+            window.Calendly.initInlineWidget({
+                url: 'https://calendly.com/liam-buildappswith/getting-started-businesses',
+                parentElement: document.getElementById('calendly-widget-2')
+            });
+        }
+    });
+    </script>
+</body>
+</html>

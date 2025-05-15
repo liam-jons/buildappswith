@@ -70,3 +70,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Always refer to `/docs/engineering/COMPONENT_STYLE_GUIDE.md` and `/docs/engineering/FOLDER_STRUCTURE_GUIDE.md` for detailed guidelines.
 
 ALWAYS CHECK IF FUNCTIONALITY EXISTS FIRST, BEFORE BUILDING SOMETHING NEW - ITS CRITICAL THAT WE DON'T CAUSE UNNECESSARY EFFORT FOR OURSELVES, OR DO ANYTHING THAT WOULD BE UNHELPFUL AND WOULD GO AGAINST BEST PRACTICE, UNLESS THERE IS EXPLICIT CONFIRMATION FROM LIAM.
+
+## Recent Session Work
+
+### Calendly Integration & Booking System (May 15, 2025)
+- Implemented complete booking system with Calendly integration
+- Added support for both authenticated and unauthenticated users
+- Fixed PrismaClientValidationError by making clientId nullable
+- Synced 8 session types from actual Calendly profile
+- Created pathway-based booking flow components
+- See: `/docs/CALENDLY_SESSION_IMPLEMENTATION_SUMMARY.md`
+- See: `/docs/PATHWAY_BOOKING_IMPLEMENTATION_COMPLETE.md`
+
+### Key Implementation Details
+- Branch: `feature/calendly-the-finale`
+- Database updates applied to both dev and production
+- Session types: 3 free, 3 pathway (auth required), 2 specialized
+- New endpoints: `/api/marketplace/builders/[id]/session-types`, `/api/scheduling/bookings/create`
+- Updated components: `BookingFlow`, `PathwaySelector`, `SessionTypeCategory`
