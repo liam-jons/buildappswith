@@ -240,7 +240,7 @@ export function PlatformHeader() {
       <header className="fixed left-0 top-0 z-50 w-full border-b bg-background/80 backdrop-blur-[12px]">
         <div className="container flex h-[3.5rem] items-center justify-between">
           <Link className="text-md flex items-center font-semibold" href="/">
-            <span>B</span><AuroraText className="inline-block mx-0.5">W</AuroraText>
+            <AuroraText className="inline-block mx-0.5">APPS</AuroraText>
           </Link>
 
           {/* Desktop Navigation - Hidden on mobile */}

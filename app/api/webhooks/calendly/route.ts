@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { logger } from '@/lib/logger';
 import { 
-  verifyWebhookSignature, 
+  verifyCalendlyWebhookSignature as verifyWebhookSignature, 
   WebhookSignatureError 
-} from '@/lib/scheduling/calendly/webhook-security';
+} from '@/lib/scheduling/webhook-security';
 import { handleCalendlyWebhook } from '@/lib/scheduling/state-machine';
+import { sendBookingConfirmationEmail, sendBookingCancellationEmail } from '@/lib/scheduling/sendgrid-email';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 // Calendly webhook event schema
 const CalendlyEventSchema = z.object({
@@ -124,6 +128,79 @@ export async function POST(req: NextRequest) {
           previousState: result.previousState,
           currentState: result.currentState
         });
+        
+        // Send email notifications based on event type
+        try {
+          if (validatedEvent.event === 'invitee.created') {
+            // Get booking details for the confirmation email
+            const booking = await prisma.booking.findUnique({
+              where: { id: bookingId },
+              include: {
+                sessionType: true,
+                builder: {
+                  include: {
+                    user: true
+                  }
+                },
+                client: true
+              }
+            });
+            
+            if (booking) {
+              await sendBookingConfirmationEmail({
+                to: booking.client?.email || validatedEvent.payload.invitee?.email || '',
+                clientName: booking.client?.name || validatedEvent.payload.invitee?.name || 'Guest',
+                sessionTitle: booking.sessionType.title,
+                builderName: booking.builder.user?.name || 'Builder',
+                builderEmail: booking.builder.user?.email,
+                startTime: new Date(booking.startTime),
+                endTime: new Date(booking.endTime),
+                timezone: booking.clientTimezone || validatedEvent.payload.invitee?.timezone || 'UTC',
+                bookingId: booking.id,
+                sessionType: booking.sessionType.category || '',
+                price: booking.sessionType.price.toNumber(),
+                currency: booking.sessionType.currency || 'USD',
+                calendlyEventUri: booking.calendlyEventUri || '',
+                pathwayName: booking.pathway || undefined
+              });
+            }
+          } else if (validatedEvent.event === 'invitee.canceled') {
+            // Get booking details for the cancellation email
+            const booking = await prisma.booking.findUnique({
+              where: { id: bookingId },
+              include: {
+                sessionType: true,
+                builder: {
+                  include: {
+                    user: true
+                  }
+                },
+                client: true
+              }
+            });
+            
+            if (booking) {
+              await sendBookingCancellationEmail({
+                to: booking.client?.email || validatedEvent.payload.invitee?.email || '',
+                clientName: booking.client?.name || validatedEvent.payload.invitee?.name || 'Guest',
+                sessionTitle: booking.sessionType.title,
+                builderName: booking.builder.user?.name || 'Builder',
+                startTime: new Date(booking.startTime),
+                timezone: booking.clientTimezone || validatedEvent.payload.invitee?.timezone || 'UTC',
+                bookingId: booking.id,
+                cancellationReason: validatedEvent.payload.cancellation?.reason,
+                cancelledBy: validatedEvent.payload.cancellation?.canceled_by
+              });
+            }
+          }
+        } catch (emailError) {
+          logger.error('Error sending email notification', {
+            error: emailError instanceof Error ? emailError.message : String(emailError),
+            event: validatedEvent.event,
+            bookingId
+          });
+          // Don't fail the webhook processing if email fails
+        }
         
         return NextResponse.json({ 
           success: true,

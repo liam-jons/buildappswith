@@ -4,6 +4,10 @@ import { createStripeClient } from '@/lib/stripe/stripe-server';
 import { logger } from '@/lib/logger';
 import { handleStripeWebhook } from '@/lib/scheduling/state-machine';
 import { StripeWebhookEventType } from '@/lib/stripe/types';
+import { sendPaymentReceiptEmail } from '@/lib/scheduling/sendgrid-email';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 /**
  * Handle Stripe webhook events
@@ -94,6 +98,55 @@ export async function POST(req: NextRequest) {
           previousState: result.previousState,
           currentState: result.currentState
         });
+        
+        // Send payment receipt email for successful payments
+        if (event.type === StripeWebhookEventType.CHECKOUT_SESSION_COMPLETED) {
+          try {
+            const session = event.data.object as Stripe.Checkout.Session;
+            const bookingId = session.metadata?.bookingId;
+            
+            if (bookingId) {
+              const booking = await prisma.booking.findUnique({
+                where: { id: bookingId },
+                include: {
+                  sessionType: true,
+                  builder: {
+                    include: {
+                      user: true
+                    }
+                  },
+                  client: true
+                }
+              });
+              
+              if (booking) {
+                const paymentIntentDetails = await stripe.paymentIntents.retrieve(
+                  session.payment_intent as string
+                );
+                
+                await sendPaymentReceiptEmail({
+                  to: booking.client?.email || session.customer_details?.email || '',
+                  clientName: booking.client?.name || session.customer_details?.name || 'Customer',
+                  sessionTitle: booking.sessionType.title,
+                  builderName: booking.builder.user?.name || 'Builder',
+                  amount: session.amount_total || booking.sessionType.price.toNumber() * 100,
+                  currency: session.currency || 'usd',
+                  paymentDate: new Date(),
+                  bookingId: booking.id,
+                  stripePaymentIntentId: session.payment_intent as string,
+                  stripeReceiptUrl: paymentIntentDetails.charges?.data[0]?.receipt_url || undefined
+                });
+              }
+            }
+          } catch (emailError) {
+            logger.error('Error sending payment receipt email', {
+              error: emailError instanceof Error ? emailError.message : String(emailError),
+              eventType: event.type,
+              eventId: event.id
+            });
+            // Don't fail the webhook processing if email fails
+          }
+        }
         
         return NextResponse.json({ 
           success: true,

@@ -13,17 +13,17 @@ export const mainNavItems: NavigationItem[] = [
       {
         title: "Learn AI Fundamentals",
         href: "/learning",
-        description: "Start your AI journey with human-guided learning"
+        description: "Start your AI journey today"
       },
       {
         title: "Collaborate with AI Builders",
         href: "/marketplace",
-        description: "Find experienced developers for your project"
+        description: "Find experienced builders for your project"
       },
       {
         title: "Book a Consultation",
         href: "/book",
-        description: "Get personalisaed guidance on your AI journey"
+        description: "Get personalised guidance on your AI journey"
       },
       {
         title: "Join Weekly Sessions",
@@ -36,14 +36,14 @@ export const mainNavItems: NavigationItem[] = [
     title: "About Us",
     items: [
       {
-        title: "How It Works",
+        title: "How IT Works",
         href: "/how-it-works",
         description: "Learn about our human-centered approach"
       },
       {
         title: "Our Community",
         href: "/community",
-        description: "Meet our network of AI builders and learners"
+        description: "Meet our network of AI explorers"
       },
       {
         title: "FAQ",
@@ -70,7 +70,7 @@ export const heroContent: HeroContent = {
   rotatingNames: [
     "Claude", "ChatGPT", "Gemini", "Cursor", "Lovable", "Bolt",
     "Liam", "Kenny", "Ryan", "Sheri", "Troy",
-    "your friends", "your team", "your customers"
+    "your friends", "your team"
   ],
   primaryCTA: {
     text: "Sign Up Now",

@@ -9,7 +9,7 @@ import { ArrowRight } from "lucide-react";
 export function CTASection({ 
   className,
   headline = "Ready to Get Started? Begin your journey today",
-  subheadline = "Join our community of Learners and Builders to gain practical skills that will accelerate your day-to-day.",
+  subheadline = "Join the community - gain practical skills that will accelerate your day-to-day.",
   primaryCTA = {
     text: "Sign Up Now",
     href: "/signup"

@@ -39,9 +39,9 @@ export function HeroSection({
           <div className="flex flex-col items-center text-center space-y-8">
             {/* Two-row headline */}
             <div className="space-y-6">
-              {/* First row - "Build apps with" */}
+              {/* First row - "Build APPS with" */}
               <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-balance">
-                Build <AuroraText className="inline-block">apps</AuroraText> with
+                Build <AuroraText className="inline-block">APPS</AuroraText> With
               </h1>
               
               {/* Second row - Word rotation with brand colors */}
@@ -66,7 +66,7 @@ export function HeroSection({
             
             {/* Remaining subheadline text */}
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto text-balance leading-relaxed -mt-4">
-              Whether you want to be better at what you do, pivot to something new, or just to stay up-to-date - Build Apps With is the only place you&apos;ll need.
+              Whether you want to be better at what you do, pivot to something new, or just to stay up-to-date - build APPS with is the only place you&apos;ll need.
             </p>
             
             {/* Updated CTA buttons */}
@@ -79,7 +79,7 @@ export function HeroSection({
                   href="/how-it-works"
                   className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-medium text-white shadow-lg hover:bg-primary/90 transition-colors"
                 >
-                  Learn How It Works
+                  Learn How IT Works
                 </Link>
               </motion.div>
               
@@ -104,7 +104,7 @@ export function HeroSection({
                 $ buildappswith --help
               </AnimatedSpan>
               <AnimatedSpan delay={100} className="text-green-500">
-                Welcome to Build Apps With - Your AI App Development Platform
+                Welcome to Build APPS With - Your AI App Development Platform
               </AnimatedSpan>
               <AnimatedSpan delay={200}>
                 
