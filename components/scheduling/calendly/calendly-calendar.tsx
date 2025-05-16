@@ -46,8 +46,10 @@ export function CalendlyCalendar({
       setError(null);
 
       try {
-        const startDate = startOfDay(new Date());
-        const endDate = endOfDay(addDays(startDate, 6)); // Max 7 days
+        // Start from current time, not start of today
+        const now = new Date();
+        const startDate = now;
+        const endDate = endOfDay(addDays(now, 6)); // Max 7 days
 
         const response = await getCalendlyAvailableTimeSlots(
           eventTypeUri,
@@ -68,7 +70,10 @@ export function CalendlyCalendar({
 
         setAvailableDates(dates);
       } catch (err) {
-        logger.error('Error fetching available dates', { error: err });
+        logger.error('Error fetching available dates', { 
+          error: err instanceof Error ? err.message : String(err),
+          errorDetails: err 
+        });
         setError(err instanceof Error ? err.message : 'Failed to load available dates');
       } finally {
         setIsLoading(false);
@@ -87,7 +92,10 @@ export function CalendlyCalendar({
       setError(null);
 
       try {
-        const startDate = startOfDay(selectedDate);
+        // Use max of selected date start or current time for API validation
+        const now = new Date();
+        const selectedStart = startOfDay(selectedDate);
+        const startDate = selectedStart > now ? selectedStart : now;
         const endDate = endOfDay(selectedDate);
 
         const response = await getCalendlyAvailableTimeSlots(
@@ -102,7 +110,10 @@ export function CalendlyCalendar({
 
         setAvailableSlots(response.timeSlots);
       } catch (err) {
-        logger.error('Error fetching time slots', { error: err });
+        logger.error('Error fetching time slots', { 
+          error: err instanceof Error ? err.message : String(err),
+          errorDetails: err 
+        });
         setError(err instanceof Error ? err.message : 'Failed to load time slots');
         setAvailableSlots([]);
       } finally {
@@ -164,7 +175,7 @@ export function CalendlyCalendar({
             <div className="mt-4 p-3 bg-muted rounded-md">
               <p className="text-sm font-medium">{sessionType.title}</p>
               <p className="text-sm text-muted-foreground">
-                {sessionType.duration} minutes • ${sessionType.price}
+                {sessionType.duration} minutes • £{sessionType.price}
               </p>
             </div>
           )}
