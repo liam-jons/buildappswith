@@ -29,6 +29,7 @@ const publicRoutes = [
   "/api/marketplace/featured",
   "/api/marketplace/filters",
   "/api/timeline/(.+)",
+  "/api/scheduling/calendly/available-times",
   
   // Public pages
   "/toolkit",

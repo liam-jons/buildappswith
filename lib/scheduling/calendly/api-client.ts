@@ -314,7 +314,7 @@ export class CalendlyApiClient {
    * @returns Calendly user data
    */
   async getCurrentUser() {
-    return this.request<CalendlyUserResponse>('/v2/users/me')
+    return this.request<CalendlyUserResponse>('/users/me')
   }
 
   /**
@@ -397,7 +397,7 @@ export class CalendlyApiClient {
     if (options.pageToken) queryParams.page_token = options.pageToken
     if (options.sort) queryParams.sort = options.sort
     
-    const response = await this.request<CalendlyEventTypesResponse>('/v1/event_types', {
+    const response = await this.request<CalendlyEventTypesResponse>('/event_types', {
       queryParams
     })
     
@@ -451,7 +451,7 @@ export class CalendlyApiClient {
       end_time: endTime.toISOString()
     };
 
-    return this.request<CalendlyAvailableTimesResponse>('/v1/event_type_available_times', {
+    return this.request<CalendlyAvailableTimesResponse>('/event_type_available_times', {
       queryParams
     });
   }
@@ -477,7 +477,7 @@ export class CalendlyApiClient {
       // For now, we'll skip actual caching implementation
     }
     
-    const response = await this.request<CalendlyEventTypeResponse>(`/v1/event_types/${uuid}`)
+    const response = await this.request<CalendlyEventTypeResponse>(`/event_types/${uuid}`)
     
     // Store in cache if enabled and in production
     if (useCache && process.env.NODE_ENV === 'production') {
@@ -533,7 +533,7 @@ export class CalendlyApiClient {
     if (options.pageToken) queryParams.page_token = options.pageToken
     if (options.sort) queryParams.sort = options.sort
     
-    return this.request<CalendlyEventsResponse>('/v1/scheduled_events', {
+    return this.request<CalendlyEventsResponse>('/scheduled_events', {
       queryParams
     })
   }
@@ -550,7 +550,7 @@ export class CalendlyApiClient {
       ? eventUri.split('/').pop() 
       : eventUri
       
-    return this.request<CalendlyEventResponse>(`/v1/scheduled_events/${uuid}`)
+    return this.request<CalendlyEventResponse>(`/scheduled_events/${uuid}`)
   }
 
   /**
@@ -583,7 +583,7 @@ export class CalendlyApiClient {
     if (options.pageToken) queryParams.page_token = options.pageToken
     if (options.sort) queryParams.sort = options.sort
     
-    return this.request<CalendlyInviteesResponse>(`/v1/scheduled_events/${uuid}/invitees`, {
+    return this.request<CalendlyInviteesResponse>(`/scheduled_events/${uuid}/invitees`, {
       queryParams
     })
   }
