@@ -73,18 +73,38 @@ ALWAYS CHECK IF FUNCTIONALITY EXISTS FIRST, BEFORE BUILDING SOMETHING NEW - ITS 
 
 ## Recent Session Work
 
-### Calendly Integration & Booking System (May 15, 2025)
+### Calendly Integration & Booking System (May 15-16, 2025)
 - Implemented complete booking system with Calendly integration
 - Added support for both authenticated and unauthenticated users
 - Fixed PrismaClientValidationError by making clientId nullable
 - Synced 8 session types from actual Calendly profile
 - Created pathway-based booking flow components
+- **NEW**: Replaced Calendly iframe with custom calendar component
+- **NEW**: Fixed authentication issues with Calendly API
+- **NEW**: Implemented booking confirmation endpoint
+- **NEW**: Added webhook handlers for Calendly events
+- **NEW**: Integrated payment flow for paid sessions
+- **NEW**: Complete end-to-end booking flow implementation
 - See: `/docs/CALENDLY_SESSION_IMPLEMENTATION_SUMMARY.md`
 - See: `/docs/PATHWAY_BOOKING_IMPLEMENTATION_COMPLETE.md`
+- See: `/docs/sessions/SESSION_CALENDLY_CUSTOM_CALENDAR_IMPLEMENTATION.md`
+- See: `/docs/CALENDLY_INTEGRATION_FIXES.md`
+- See: `/docs/implementation-prompts/CALENDLY_BOOKING_CONFIRMATION_SESSION.md`
 
 ### Key Implementation Details
-- Branch: `feature/calendly-the-finale`
+- Branch: `feature/builder-cards` (current), `feature/calendly-the-finale` (previous)
 - Database updates applied to both dev and production
 - Session types: 3 free, 3 pathway (auth required), 2 specialized
-- New endpoints: `/api/marketplace/builders/[id]/session-types`, `/api/scheduling/bookings/create`
-- Updated components: `BookingFlow`, `PathwaySelector`, `SessionTypeCategory`
+- New endpoints: 
+  - `/api/marketplace/builders/[id]/session-types`
+  - `/api/scheduling/bookings/create`
+  - `/api/scheduling/calendly/available-times` (NEW)
+- Updated components: 
+  - `BookingFlow` (now uses custom calendar)
+  - `PathwaySelector`
+  - `SessionTypeCategory`
+  - `CalendlyCalendar` (NEW custom component)
+- Calendly API integration:
+  - Fixed endpoint paths (no v1/v2 prefix)
+  - Added public route for API access
+  - Implemented available times fetching

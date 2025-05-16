@@ -414,22 +414,70 @@ export function BookingFlow({
               price: selectedSessionType.price || 0
             }}
             onSelectTimeSlot={async (slot) => {
-              // Create booking with selected time slot
-              const event = {
-                uri: slot.schedulingUrl,
-                invitee: {
-                  uri: '',
-                  email: state.userEmail || '',
-                  name: state.userName || ''
-                },
-                start_time: slot.startTime.toISOString(),
-                end_time: slot.endTime.toISOString(),
-                event_type_uuid: selectedSessionType.calendlyEventTypeId || '',
-                questions_and_answers: []
-              };
-              
-              // Handle the booking creation
-              await handleCalendlyEvent(event);
+              // Create booking confirmation with selected time slot
+              try {
+                const response = await fetch('/api/scheduling/bookings/confirm', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    sessionTypeId: selectedSessionType.id,
+                    timeSlot: {
+                      startTime: slot.startTime.toISOString(),
+                      endTime: slot.endTime.toISOString(),
+                      schedulingUrl: slot.schedulingUrl
+                    },
+                    clientDetails: {
+                      name: state.userName || (isSignedIn ? 'User' : 'Guest'),
+                      email: state.userEmail || (isSignedIn ? 'user@example.com' : 'guest@example.com'),
+                      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                    },
+                    bookingId: state.bookingId,
+                    pathway: state.pathway,
+                    notes: state.customQuestionResponse
+                  })
+                });
+                
+                if (!response.ok) {
+                  const error = await response.json();
+                  throw new Error(error.error || 'Failed to confirm booking');
+                }
+                
+                const data = await response.json();
+                
+                // Handle payment if required
+                if (data.paymentRequired && data.checkoutUrl) {
+                  // Redirect to payment
+                  window.location.href = data.checkoutUrl;
+                } else {
+                  // Update state with confirmed booking
+                  dispatch({
+                    type: 'BOOKING_CONFIRMED',
+                    payload: {
+                      startTime: data.booking.startTime,
+                      endTime: data.booking.endTime
+                    }
+                  });
+                  
+                  // Also update Calendly event URI if provided
+                  dispatch({
+                    type: 'CALENDLY_EVENT_SCHEDULED',
+                    payload: {
+                      calendlyEventUri: data.booking.calendlyEventId,
+                      calendlyInviteeUri: data.booking.calendlyEventId, // We don't have a separate invitee URI yet
+                      startTime: data.booking.startTime,
+                      endTime: data.booking.endTime
+                    }
+                  });
+                }
+              } catch (error) {
+                logger.error('Error confirming booking', { error });
+                dispatch({
+                  type: 'SET_ERROR',
+                  payload: { error: error instanceof Error ? error : new Error('Unknown error') }
+                });
+              }
             }}
           />
         );
