@@ -1,0 +1,259 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "dev": {
+      "cache": true
+    },
+    "dev:analyze": {
+      "cache": true
+    },
+    "build": {
+      "cache": true
+    },
+    "build:analyze": {
+      "cache": true
+    },
+    "build:clean": {
+      "cache": true
+    },
+    "build:clean:full": {
+      "cache": true
+    },
+    "start": {
+      "cache": true
+    },
+    "lint": {
+      "cache": true
+    },
+    "clean": {
+      "cache": true
+    },
+    "clean:full": {
+      "cache": true
+    },
+    "prisma:generate": {
+      "cache": true
+    },
+    "prisma:push": {
+      "cache": true
+    },
+    "prisma:studio": {
+      "cache": true
+    },
+    "db:sync": {
+      "cache": true
+    },
+    "db:seed": {
+      "cache": true
+    },
+    "type-check": {
+      "cache": true
+    },
+    "fix-tailwind": {
+      "cache": true
+    },
+    "production:setup": {
+      "cache": true
+    },
+    "production:check": {
+      "cache": true
+    },
+    "fix:drift": {
+      "cache": true
+    },
+    "check:migrations": {
+      "cache": true
+    },
+    "fix:migrations": {
+      "cache": true
+    },
+    "reconcile:migrations": {
+      "cache": true
+    },
+    "baseline:migration": {
+      "cache": true
+    },
+    "debug:migrations": {
+      "cache": true
+    },
+    "standardize-imports": {
+      "cache": true
+    },
+    "test": {
+      "cache": true
+    },
+    "test:watch": {
+      "cache": true
+    },
+    "test:coverage": {
+      "cache": true
+    },
+    "test:ci": {
+      "cache": true
+    },
+    "test:unit": {
+      "cache": true
+    },
+    "test:integration": {
+      "cache": true
+    },
+    "test:e2e:vitest": {
+      "cache": true
+    },
+    "test:e2e": {
+      "cache": true
+    },
+    "test:e2e:ui": {
+      "cache": true
+    },
+    "test:e2e:simple": {
+      "cache": true
+    },
+    "test:e2e:debug": {
+      "cache": true
+    },
+    "test:visual": {
+      "cache": true
+    },
+    "test:accessibility": {
+      "cache": true
+    },
+    "test:debug": {
+      "cache": true
+    },
+    "test:verify": {
+      "cache": true
+    },
+    "test:form": {
+      "cache": true
+    },
+    "test:all": {
+      "cache": true
+    },
+    "test:auth": {
+      "cache": true
+    },
+    "test:auth:basic": {
+      "cache": true
+    },
+    "test:auth:components": {
+      "cache": true
+    },
+    "test:auth:marketplace": {
+      "cache": true
+    },
+    "test:middleware": {
+      "cache": true
+    },
+    "test:original": {
+      "cache": true
+    },
+    "test:msw": {
+      "cache": true
+    },
+    "test:msw:debug": {
+      "cache": true
+    },
+    "test:api": {
+      "cache": true
+    },
+    "test:datadog": {
+      "cache": true
+    },
+    "test:datadog:watch": {
+      "cache": true
+    },
+    "test:datadog:marketplace": {
+      "cache": true
+    },
+    "test:datadog:auth": {
+      "cache": true
+    },
+    "test:datadog:integration": {
+      "cache": true
+    },
+    "test:datadog:coverage": {
+      "cache": true
+    },
+    "arch:install": {
+      "cache": true
+    },
+    "arch:extract": {
+      "cache": true
+    },
+    "arch:extract:auth": {
+      "cache": true
+    },
+    "arch:extract:all": {
+      "cache": true
+    },
+    "arch:report": {
+      "cache": true
+    },
+    "arch:combined": {
+      "cache": true
+    },
+    "arch:unused": {
+      "cache": true
+    },
+    "arch:unused:enhanced": {
+      "cache": true
+    },
+    "arch:unused:fix": {
+      "cache": true
+    },
+    "arch:unused:verbose": {
+      "cache": true
+    },
+    "check:imports": {
+      "cache": true
+    },
+    "fix:imports": {
+      "cache": true
+    },
+    "analyze:barrels": {
+      "cache": true
+    },
+    "fix:barrels": {
+      "cache": true
+    },
+    "fix:calendly-migration": {
+      "cache": true
+    },
+    "apply:calendly-migration": {
+      "cache": true
+    }
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "eslint:lint"
+      }
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      }
+    },
+    {
+      "plugin": "@nx/next/plugin",
+      "options": {
+        "startTargetName": "start",
+        "buildTargetName": "build",
+        "devTargetName": "dev",
+        "serveStaticTargetName": "serve-static",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
+      }
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "e2e"
+      }
+    }
+  ],
+  "nxCloudId": "6828abe462fb175fc9ade5ce"
+}

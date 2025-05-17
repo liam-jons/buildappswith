@@ -48,3 +48,12 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+
+
+.nx/cache
+.nx/workspace-data
+
+# Next.js
+.next
+out
