@@ -1,5 +1,2 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Run import standardization check
-node scripts/pre-commit-import-check.js --fix
+# Empty pre-commit hook
+# Previous import check script was missing
