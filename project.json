@@ -1,4 +1,12 @@
 {
   "name": "buildappswith",
-  "projectType": "application"
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "options": {
+        "outputPath": "out"
+      }
+    }
+  }
 }

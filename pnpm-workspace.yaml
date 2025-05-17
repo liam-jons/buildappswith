@@ -1,2 +1,20 @@
 ignoredBuiltDependencies:
   - '@prisma/client'
+
+onlyBuiltDependencies:
+  - '@clerk/shared'
+  - '@datadog/native-appsec'
+  - '@datadog/native-iast-taint-tracking'
+  - '@datadog/native-metrics'
+  - '@datadog/pprof'
+  - '@parcel/watcher'
+  - '@prisma/engines'
+  - '@sentry/cli'
+  - '@swc/core'
+  - dd-trace
+  - esbuild
+  - msw
+  - nx
+  - prisma
+  - protobufjs
+  - sharp

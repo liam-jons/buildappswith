@@ -283,9 +283,9 @@ export function initializeServerTracer(): any {
     } else {
       // Server-side - use dd-trace
       try {
-        // Use a dynamic require if in server environment
-        // This is safe because we've already checked isBrowser
-        const ddTrace = require('dd-trace');
+        // Use eval to bypass webpack bundling
+        // eslint-disable-next-line no-eval
+        const ddTrace = eval('require')('dd-trace');
         
         // Log key status
         if (!process.env.DD_API_KEY) {
