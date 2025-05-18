@@ -1,0 +1,103 @@
+---
+title: 'Marketplace Module Migration Guide'
+description: 'Guide for migrating to the consolidated marketplace structure'
+---
+
+# Marketplace Module Migration Guide
+
+This guide explains how to update code that uses the older marketplace module patterns to use the new consolidated structure.
+
+## Overview of Changes
+
+We've made the following major changes to the marketplace module:
+
+1. **Consolidated Types**: All marketplace types are now in `types.ts`
+2. **Deprecated data-service.ts**: The duplicate functionality has been deprecated
+3. **Aligned with Domain Architecture**: Followed the standard pattern of actions.ts, api.ts, schemas.ts, types.ts, and utils.ts
+4. **Documented API and Architecture**: Created comprehensive documentation in Mintlify
+
+## Migration Steps
+
+### Step 1: Update Type Imports
+
+**Before:**
+```typescript
+import { AnalyticsSummary } from '@/lib/marketplace/api';
+// or
+import { BuilderProfileData } from '@/components/profile/builder-profile';
+```
+
+**After:**
+```typescript
+import { AnalyticsSummary, BuilderProfileData } from '@/lib/marketplace/types';
+```
+
+### Step 2: Update API Function Imports
+
+**Before:**
+```typescript
+import { fetchBuilders } from '@/lib/marketplace/data-service';
+```
+
+**After:**
+```typescript
+// For client-side code
+import { fetchBuilders } from '@/lib/marketplace/api';
+
+// For server-side code
+import { fetchBuilders } from '@/lib/marketplace/data/marketplace-service';
+```
+
+### Step 3: Use Barrel Exports
+
+**Before:**
+```typescript
+import { fetchBuilders } from '@/lib/marketplace/api';
+import { MarketplaceFilters } from '@/lib/marketplace/types';
+```
+
+**After:**
+```typescript
+import { fetchBuilders, MarketplaceFilters } from '@/lib/marketplace';
+```
+
+## Code Patterns
+
+### Client-Side API Functions
+
+Use the functions in `api.ts` for all client-side API calls:
+
+```typescript
+// In a React component or client-side code
+import { fetchBuilders } from '@/lib/marketplace';
+
+async function loadBuilders() {
+  const builders = await fetchBuilders(1, 10, { featured: true });
+  return builders;
+}
+```
+
+### Server-Side Functions
+
+Use the functions in `data/marketplace-service.ts` for server-side operations:
+
+```typescript
+// In an API route or server component
+import { fetchBuilders } from '@/lib/marketplace/data/marketplace-service';
+
+export async function GET(req: Request) {
+  const builders = await fetchBuilders(1, 10, { featured: true });
+  return Response.json(builders);
+}
+```
+
+## Timeline
+
+- **Now**: Begin migration to new structure
+- **Deprecated**: The `data-service.ts` file will be removed in a future update
+- **Full Migration**: All code should use the new structure by the next major release
+
+## Related Documentation
+
+- [Marketplace API Documentation](/api/marketplace)
+- [Marketplace Architecture](/architecture/marketplace)

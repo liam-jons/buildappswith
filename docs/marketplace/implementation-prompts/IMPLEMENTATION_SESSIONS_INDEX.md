@@ -1,3 +1,5 @@
+> **DEPRECATED**: This implementation documentation has been superseded by the [Marketplace API Documentation](/docs/mintlify/api/marketplace) and [Marketplace Architecture Documentation](/docs/mintlify/architecture/marketplace). Please refer to the Mintlify documentation for the latest information.
+
 # Builder Card V2 Implementation Sessions Index
 
 ## Overview
