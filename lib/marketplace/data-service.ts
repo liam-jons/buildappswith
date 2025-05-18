@@ -1,3 +1,8 @@
+/**
+ * @deprecated This file is deprecated and will be removed in a future version.
+ * Use `api.ts` for client-side API functions and `data/marketplace-service.ts` for server-side operations.
+ */
+
 import { BuilderProfileData } from "@/components/profile/builder-profile";
 import { 
   MarketplaceFilters, 
@@ -8,6 +13,7 @@ import {
 
 /**
  * Fetch builders from the API with pagination and filtering
+ * @deprecated Use `api.ts:fetchBuilders` instead
  */
 export async function fetchBuilders(
   page: number = 1, 
@@ -56,6 +62,7 @@ export async function fetchBuilders(
 
 /**
  * Fetch a single builder by ID
+ * @deprecated Use `api.ts:fetchBuilderById` instead
  */
 export async function fetchBuilderById(builderId: string): Promise<BuilderProfileData | null> {
   try {
@@ -78,6 +85,7 @@ export async function fetchBuilderById(builderId: string): Promise<BuilderProfil
 
 /**
  * Fetch featured builders
+ * @deprecated Use `api.ts:fetchFeaturedBuilders` instead
  */
 export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderProfileData[]> {
   try {
@@ -97,6 +105,7 @@ export async function fetchFeaturedBuilders(limit: number = 3): Promise<BuilderP
 
 /**
  * Fetch available marketplace filter options
+ * @deprecated Use `api.ts:fetchMarketplaceFilterOptions` instead
  */
 export async function fetchMarketplaceFilterOptions(): Promise<MarketplaceFilterOptions> {
   try {

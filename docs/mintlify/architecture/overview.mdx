@@ -1,0 +1,122 @@
+---
+title: 'Architecture Overview'
+description: 'Overview of the BuildAppsWith platform architecture'
+---
+
+# Architecture Overview
+
+The BuildAppsWith platform follows a domain-driven architecture that separates concerns into clear domains, each responsible for a specific area of functionality.
+
+## Core Architecture Principles
+
+- **Domain-Driven Design**: Code is organized by business domain rather than technical function
+- **Separation of Concerns**: Each module has a single responsibility
+- **Consistent File Structure**: Standard file organization across domains
+- **Type Safety**: Strict TypeScript interfaces for all data structures
+
+## Domain Structure
+
+Each domain follows this standard file structure:
+
+```
+/lib/[domain]/
+├── actions.ts        # Server actions
+├── api.ts            # Client-side API functions
+├── schemas.ts        # Zod schemas
+├── types.ts          # Type definitions
+├── utils.ts          # Utility functions
+└── index.ts          # Barrel exports
+```
+
+## Core Domains
+
+The platform is divided into these primary domains:
+
+### 1. Authentication (auth)
+
+Manages user authentication, authorization, and session management using Clerk.
+
+### 2. Marketplace
+
+Facilitates builder discovery, profile management, and marketplace analytics.
+
+[Learn more about Marketplace Architecture](/architecture/marketplace)
+
+### 3. Scheduling
+
+Handles booking sessions, availability management, and calendar integrations.
+
+### 4. Payment
+
+Processes payments, manages subscriptions, and handles invoicing via Stripe.
+
+### 5. Profile
+
+Manages user profiles, preferences, and account settings.
+
+### 6. Admin
+
+Provides administrative tools and dashboards for platform management.
+
+## Next.js Application Structure
+
+The application uses Next.js's App Router and follows this structure:
+
+```
+/app/
+├── (platform)/         # Platform pages (authenticated)
+│   ├── dashboard/      # User dashboard pages
+│   ├── marketplace/    # Marketplace pages
+│   └── profile/        # Profile management pages
+├── (public)/           # Public pages (unauthenticated)
+│   ├── login/          # Authentication pages
+│   └── landing/        # Marketing pages
+├── api/                # API routes
+│   ├── [domain]/       # Domain-specific API endpoints
+│   └── webhooks/       # External service webhooks
+└── layout.tsx          # Root layout
+```
+
+## Data Flow
+
+The application follows a clear data flow pattern:
+
+1. **UI Components** call client-side API functions from `api.ts`
+2. **API Functions** make requests to API routes or use server actions
+3. **API Routes/Server Actions** use server-side service functions
+4. **Service Functions** interact with the database and external services
+5. **Database** stores and retrieves persistent data
+
+## Type System
+
+The type system follows a hierarchy:
+
+1. **Domain Types** in `types.ts` define the core data structures
+2. **API Types** extend domain types for specific API needs
+3. **Component Props** use domain and API types
+4. **Database Schema** (Prisma) aligns with domain types
+
+## Nx Integration
+
+The platform is transitioning to an Nx monorepo structure with:
+
+- **Apps**: Next.js applications
+- **Libraries**: Shared functionality organized by domain
+
+## Best Practices
+
+When working with the BuildAppsWith architecture:
+
+1. **Use Barrel Exports**: Import through the domain's index.ts
+   ```typescript
+   // Good
+   import { fetchBuilders } from '@/lib/marketplace';
+   // Avoid
+   import { fetchBuilders } from '@/lib/marketplace/api';
+   ```
+
+2. **Maintain Domain Boundaries**: Keep functionality within the appropriate domain
+
+3. **Follow Type Definitions**: Ensure all data structures match defined types
+
+4. **Document with JSDoc**: Add JSDoc comments to functions and interfaces

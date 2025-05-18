@@ -1,0 +1,17 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "target": "ES2017",
+    "module": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "auth": ["libs/auth/src/index.ts"],
+      "auth/server": ["libs/auth/src/server.ts"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

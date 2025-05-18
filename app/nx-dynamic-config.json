@@ -1,0 +1,24 @@
+{
+  "dynamicPages": [
+    "/admin/session-types",
+    "/admin/builders",
+    "/booking/confirmation",
+    "/booking/recovery",
+    "/booking/schedule",
+    "/calendly-test",
+    "/community/knowledge",
+    "/dashboard",
+    "/marketplace",
+    "/onboarding",
+    "/profile",
+    "/profile/edit",
+    "/profile/profile-settings",
+    "/profile/profile-settings/availability",
+    "/profile/profile-settings/edit",
+    "/auth-test",
+    "/role-test",
+    "/learning",
+    "/learning/timeline",
+    "/builder/*"
+  ]
+}

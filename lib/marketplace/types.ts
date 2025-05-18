@@ -173,3 +173,54 @@ export interface MarketplaceEvent {
   metadata?: Record<string, any>;
   timestamp: Date;
 }
+
+/**
+ * Analytics Types
+ */
+
+// Summary of builder analytics metrics
+export interface AnalyticsSummary {
+  profileViews: number;
+  profileViewsChange: number;
+  searchAppearances: number;
+  searchAppearancesChange: number;
+  bookingRequests: number;
+  bookingRequestsChange: number;
+  conversionRate: number;
+  conversionRateChange: number;
+}
+
+// Data point for analytics timeseries
+export interface AnalyticsTimeseriesPoint {
+  date: string;
+  value: number;
+}
+
+// Timeseries data for builder analytics
+export interface AnalyticsTimeseries {
+  profileViews: AnalyticsTimeseriesPoint[];
+  searchAppearances: AnalyticsTimeseriesPoint[];
+  bookingRequests: AnalyticsTimeseriesPoint[];
+}
+
+// Success metrics for builder dashboard
+export interface SuccessMetrics {
+  metrics: Array<{
+    id: string;
+    name: string;
+    metrics: Array<{
+      label: string;
+      value: string | number;
+      description: string;
+      trend?: 'up' | 'down' | 'neutral';
+      isHighlighted?: boolean;
+    }>;
+  }>;
+}
+
+// Analytics period options
+export enum AnalyticsPeriod {
+  SEVEN_DAYS = 7,
+  THIRTY_DAYS = 30,
+  NINETY_DAYS = 90
+}

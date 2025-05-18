@@ -1,0 +1,1454 @@
+# Code Duplication Analysis
+Date: Sun 18 May 2025 13:50:38 BST
+
+## High-Priority Duplications (Application Code)
+These duplications are in core application code and should be addressed:
+
+ - [1m[32mlibs/auth/src/lib/express/adapter.ts[39m[22m [34:2 - 47:4] (13 lines, 157 tokens)
+   [1m[32mlibs/auth/src/lib/express/server-auth.ts[39m[22m [14:11 - 26:4]
+ - [1m[32mapp/api/scheduling/bookings/create/route.ts[39m[22m [55:37 - 69:51] (14 lines, 107 tokens)
+   [1m[32mapp/api/scheduling/bookings/initialize/route.ts[39m[22m [46:41 - 60:45]
+ - [1m[32mapp/api/scheduling/bookings/create/route.ts[39m[22m [69:51 - 81:35] (12 lines, 91 tokens)
+   [1m[32mapp/api/scheduling/bookings/initialize/route.ts[39m[22m [60:45 - 72:29]
+ - [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [147:2 - 158:34] (11 lines, 117 tokens)
+   [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [25:2 - 36:33]
+ - [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [169:31 - 191:23] (22 lines, 128 tokens)
+   [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [47:20 - 69:59]
+ - [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [346:14 - 365:2] (19 lines, 120 tokens)
+   [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [272:7 - 291:3]
+ - [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [385:25 - 398:27] (13 lines, 82 tokens)
+   [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [121:25 - 134:26]
+ - [1m[32mapp/api/profiles/builder/[id]/route.ts[39m[22m [41:2 - 77:5] (36 lines, 228 tokens)
+   [1m[32mapp/api/profiles/builder/slug/[slug]/route.ts[39m[22m [33:2 - 69:5]
+ - [1m[32mapp/api/profiles/builder/[id]/route.ts[39m[22m [76:3 - 94:7] (18 lines, 152 tokens)
+   [1m[32mapp/api/profiles/builder/slug/[slug]/route.ts[39m[22m [69:5 - 87:8]
+ - [1m[32mapp/api/apps/edit/[id]/route.ts[39m[22m [81:7 - 111:47] (30 lines, 221 tokens)
+   [1m[32mapp/api/apps/edit/[id]/route.ts[39m[22m [14:2 - 44:45]
+ - [1m[32mapp/api/admin/session-types/[id]/route.ts[39m[22m [125:2 - 137:45] (12 lines, 124 tokens)
+   [1m[32mapp/api/admin/session-types/[id]/route.ts[39m[22m [26:2 - 38:38]
+ - [1m[32mapp/api/admin/session-types/[id]/route.ts[39m[22m [241:30 - 254:32] (13 lines, 85 tokens)
+   [1m[32mapp/api/admin/session-types/[id]/route.ts[39m[22m [101:30 - 114:31]
+ - [1m[32mapp/api/admin/session-types/[id]/route.ts[39m[22m [265:2 - 277:47] (12 lines, 124 tokens)
+   [1m[32mapp/api/admin/session-types/[id]/route.ts[39m[22m [26:2 - 38:38]
+ - [1m[32mapp/api/admin/session-types/[id]/route.ts[39m[22m [363:30 - 376:32] (13 lines, 85 tokens)
+   [1m[32mapp/api/admin/session-types/[id]/route.ts[39m[22m [101:30 - 114:31]
+ - [1m[32m__tests__/unit/lib/scheduling/calendly/service.test.ts[39m[22m [274:37 - 285:50] (11 lines, 95 tokens)
+   [1m[32m__tests__/unit/lib/scheduling/calendly/service.test.ts[39m[22m [191:39 - 202:47]
+ - [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [94:7 - 105:24] (11 lines, 84 tokens)
+   [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [70:7 - 81:55]
+ - [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [120:38 - 133:51] (13 lines, 99 tokens)
+   [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [92:31 - 81:55]
+ - [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [204:48 - 217:6] (13 lines, 99 tokens)
+   [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [92:31 - 81:55]
+ - [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [275:43 - 295:22] (20 lines, 143 tokens)
+   [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [92:31 - 140:33]
+ - [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [332:45 - 345:55] (13 lines, 99 tokens)
+   [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [92:31 - 81:55]
+ - [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [373:43 - 386:10] (13 lines, 101 tokens)
+   [1m[32m__tests__/unit/lib/scheduling/calendly/api-client.test.ts[39m[22m [92:31 - 217:12]
+ - [1m[32m__tests__/unit/lib/auth/express/server-auth.test.ts[39m[22m [292:18 - 303:66] (11 lines, 80 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/server-auth.test.ts[39m[22m [86:14 - 97:43]
+ - [1m[32m__tests__/unit/lib/auth/express/server-auth.test.ts[39m[22m [313:7 - 327:18] (14 lines, 108 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/server-auth.test.ts[39m[22m [86:2 - 306:18]
+ - [1m[32m__tests__/unit/lib/auth/express/client-auth.test.tsx[39m[22m [360:52 - 372:2] (12 lines, 123 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/client-auth.test.tsx[39m[22m [185:55 - 196:2]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [48:2 - 59:23] (11 lines, 75 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/server-auth.test.ts[39m[22m [22:2 - 33:34]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [122:15 - 130:7] (8 lines, 83 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [99:2 - 107:13]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [188:2 - 203:70] (15 lines, 96 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [144:7 - 159:62]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [203:70 - 214:12] (11 lines, 116 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [159:62 - 170:9]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [213:7 - 218:4] (5 lines, 79 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [187:7 - 192:21]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [214:2 - 229:15] (15 lines, 101 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [170:6 - 185:14]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [232:7 - 247:63] (15 lines, 102 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [188:6 - 159:62]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [247:63 - 258:13] (11 lines, 116 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [159:62 - 170:9]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [257:7 - 262:4] (5 lines, 79 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [231:7 - 236:21]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [258:7 - 273:25] (15 lines, 107 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [214:6 - 185:14]
+ - [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [329:15 - 343:3] (14 lines, 95 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [170:6 - 183:2]
+ - [1m[32m__tests__/unit/lib/auth/express/adapter.test.ts[39m[22m [6:1 - 16:16] (10 lines, 162 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [7:1 - 17:12]
+ - [1m[32m__tests__/unit/lib/auth/express/adapter.test.ts[39m[22m [16:16 - 24:2] (8 lines, 95 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [17:12 - 25:2]
+ - [1m[32m__tests__/unit/lib/auth/express/adapter.test.ts[39m[22m [25:2 - 37:28] (12 lines, 80 tokens)
+   [1m[32m__tests__/unit/lib/auth/express/api-auth.test.ts[39m[22m [47:2 - 33:34]
+ - [1m[32mapp/api/webhooks/calendly/route.ts[39m[22m [162:36 - 182:43] (20 lines, 130 tokens)
+   [1m[32mapp/api/webhooks/stripe/route.ts[39m[22m [124:34 - 144:33]
+ - [1m[32mapp/api/scheduling/session-types/route.ts[39m[22m [30:1 - 41:8] (11 lines, 122 tokens)
+   [1m[32mapp/api/scheduling/time-slots/route.ts[39m[22m [33:1 - 44:7]
+ - [1m[32mapp/api/scheduling/builder-settings/route.ts[39m[22m [23:8 - 44:4] (21 lines, 117 tokens)
+   [1m[32mapp/api/scheduling/time-slots/route.ts[39m[22m [11:7 - 32:4]
+ - [1m[32mapp/api/scheduling/builder-settings/route.ts[39m[22m [55:2 - 71:2] (16 lines, 142 tokens)
+   [1m[32mapp/api/scheduling/time-slots/route.ts[39m[22m [33:2 - 49:2]
+ - [1m[32mapp/api/scheduling/bookings/route.ts[39m[22m [143:10 - 165:25] (22 lines, 157 tokens)
+   [1m[32mapp/api/scheduling/bookings/[bookingId]/route.ts[39m[22m [99:10 - 121:25]
+ - [1m[32mapp/api/scheduling/bookings/route.ts[39m[22m [293:26 - 305:26] (12 lines, 78 tokens)
+   [1m[32mapp/api/scheduling/bookings/route.ts[39m[22m [165:25 - 177:25]
+ - [1m[32mapp/api/scheduling/availability-rules/route.ts[39m[22m [8:1 - 19:64] (11 lines, 98 tokens)
+   [1m[32mapp/api/scheduling/builder-settings/route.ts[39m[22m [6:1 - 17:62]
+ - [1m[32mapp/api/scheduling/availability-rules/route.ts[39m[22m [29:1 - 49:4] (20 lines, 109 tokens)
+   [1m[32mapp/api/scheduling/time-slots/route.ts[39m[22m [12:1 - 32:4]
+ - [1m[32mapp/api/scheduling/availability-rules/route.ts[39m[22m [50:1 - 59:4] (9 lines, 94 tokens)
+   [1m[32mapp/api/scheduling/builder-settings/route.ts[39m[22m [45:1 - 54:4]
+ - [1m[32mapp/api/scheduling/availability-rules/route.ts[39m[22m [60:1 - 78:28] (18 lines, 168 tokens)
+   [1m[32mapp/api/scheduling/time-slots/route.ts[39m[22m [33:1 - 73:23]
+ - [1m[32mapp/api/scheduling/availability-rules/route.ts[39m[22m [178:2 - 190:39] (12 lines, 120 tokens)
+   [1m[32mapp/api/scheduling/availability-rules/route.ts[39m[22m [129:2 - 141:22]
+ - [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [9:1 - 18:10] (9 lines, 94 tokens)
+   [1m[32mapp/api/scheduling/builder-settings/route.ts[39m[22m [6:1 - 15:2]
+ - [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [40:8 - 71:4] (31 lines, 207 tokens)
+   [1m[32mapp/api/scheduling/availability-rules/route.ts[39m[22m [28:12 - 54:4]
+ - [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [72:1 - 88:2] (16 lines, 162 tokens)
+   [1m[32mapp/api/scheduling/time-slots/route.ts[39m[22m [33:1 - 49:2]
+ - [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [181:2 - 193:22] (12 lines, 120 tokens)
+   [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [141:2 - 153:21]
+ - [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [248:2 - 260:45] (12 lines, 120 tokens)
+   [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [141:2 - 153:21]
+ - [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [261:5 - 273:55] (12 lines, 100 tokens)
+   [1m[32mapp/api/scheduling/availability-exceptions/route.ts[39m[22m [154:5 - 166:55]
+ - [1m[32mapp/api/profiles/builder/route.ts[39m[22m [137:2 - 143:27] (6 lines, 82 tokens)
+   [1m[32mapp/api/profiles/builder/route.ts[39m[22m [38:2 - 44:27]
+ - [1m[32mapp/api/admin/session-types/route.ts[39m[22m [27:10 - 33:39] (6 lines, 79 tokens)
+   [1m[32mapp/api/scheduling/bookings/route.ts[39m[22m [31:11 - 37:36]
+ - [1m[32mapp/api/admin/session-types/route.ts[39m[22m [84:31 - 96:32] (12 lines, 78 tokens)
+   [1m[32mapp/api/scheduling/bookings/route.ts[39m[22m [165:25 - 177:25]
+ - [1m[32mapp/api/admin/session-types/route.ts[39m[22m [107:2 - 113:47] (6 lines, 82 tokens)
+   [1m[32mapp/api/admin/session-types/route.ts[39m[22m [27:2 - 37:36]
+ - [1m[32mapp/api/admin/session-types/route.ts[39m[22m [195:30 - 207:32] (12 lines, 78 tokens)
+   [1m[32mapp/api/scheduling/bookings/route.ts[39m[22m [165:25 - 177:25]
+ - [1m[32mapp/api/admin/builders/route.ts[39m[22m [12:1 - 19:39] (7 lines, 90 tokens)
+   [1m[32mapp/api/admin/session-types/route.ts[39m[22m [26:1 - 37:36]
+ - [1m[32mapp/api/admin/builders/route.ts[39m[22m [84:26 - 96:27] (12 lines, 78 tokens)
+   [1m[32mapp/api/scheduling/bookings/route.ts[39m[22m [165:25 - 177:25]
+ - [1m[32mapp/(platform)/profile/edit/page.tsx[39m[22m [3:1 - 14:2] (11 lines, 85 tokens)
+   [1m[32mapp/(platform)/profile/profile-settings/edit/page.tsx[39m[22m [3:1 - 14:2]
+ - [1m[32mapp/(platform)/admin/session-types/page.tsx[39m[22m [277:2 - 293:2] (16 lines, 90 tokens)
+   [1m[32mapp/(platform)/admin/session-types/page.tsx[39m[22m [240:2 - 256:3]
+ - [1m[32mapp/(auth)/sign-in/[[...sign-in]]/page.tsx[39m[22m [15:11 - 55:7] (40 lines, 300 tokens)
+   [1m[32mapp/(auth)/sign-up/[[...sign-up]]/page.tsx[39m[22m [15:11 - 55:7]
+ - [1m[32m__tests__/unit/lib/sentry/user-context.test.ts[39m[22m [211:12 - 223:60] (12 lines, 91 tokens)
+   [1m[32m__tests__/unit/lib/sentry/user-context.test.ts[39m[22m [160:2 - 171:44]
+ - [1m[32m__tests__/unit/lib/sentry/error-classification.test.ts[39m[22m [136:7 - 146:4] (10 lines, 77 tokens)
+   [1m[32m__tests__/unit/lib/sentry/error-classification.test.ts[39m[22m [91:7 - 101:9]
+ - [1m[32m__tests__/unit/lib/sentry/error-classification.test.ts[39m[22m [173:6 - 186:52] (13 lines, 91 tokens)
+   [1m[32m__tests__/unit/lib/sentry/error-classification.test.ts[39m[22m [132:9 - 145:45]
+ - [1m[32m__tests__/unit/lib/sentry/error-classification.test.ts[39m[22m [198:34 - 212:7] (14 lines, 106 tokens)
+   [1m[32m__tests__/unit/lib/sentry/error-classification.test.ts[39m[22m [132:9 - 187:10]
+ - [1m[32m__tests__/unit/lib/sentry/client-instrumentation.test.ts[39m[22m [11:27 - 24:32] (13 lines, 135 tokens)
+   [1m[32m__tests__/unit/lib/sentry/instrumentation.test.ts[39m[22m [14:20 - 27:25]
+ - [1m[32m__tests__/unit/lib/sentry/client-instrumentation.test.ts[39m[22m [59:5 - 69:51] (10 lines, 98 tokens)
+   [1m[32m__tests__/unit/lib/sentry/instrumentation.test.ts[39m[22m [56:2 - 66:53]
+   [1m[32m__tests__/unit/lib/auth/express-api-auth.test.ts[39m[22m [127:7 - 132:2]
+ - [1m[32mlib/scheduling/state-machine/error-handling.ts[39m[22m [298:2 - 307:24] (9 lines, 86 tokens)
+   [1m[32mlib/scheduling/state-machine/service.ts[39m[22m [118:2 - 127:24]
+ - [1m[32mlib/scheduling/real-data/scheduling-service-ext.ts[39m[22m [113:5 - 131:30] (18 lines, 181 tokens)
+   [1m[32mlib/scheduling/real-data/scheduling-service-ext.ts[39m[22m [35:5 - 53:32]
+ - [1m[32mlib/scheduling/real-data/scheduling-service-ext.ts[39m[22m [183:7 - 204:48] (21 lines, 176 tokens)
+   [1m[32mlib/scheduling/real-data/scheduling-service-ext.ts[39m[22m [111:5 - 52:6]
+ - [1m[32mlib/scheduling/real-data/scheduling-service-ext.ts[39m[22m [210:23 - 234:30] (24 lines, 218 tokens)
+   [1m[32mlib/scheduling/real-data/scheduling-service-ext.ts[39m[22m [107:23 - 53:32]
+ - [1m[32mlib/scheduling/calendly/types.ts[39m[22m [145:3 - 193:13] (48 lines, 285 tokens)
+   [1m[32mlib/scheduling/calendly/types.ts[39m[22m [82:3 - 130:2]
+ - [1m[32mlib/scheduling/calendly/api-client.ts[39m[22m [513:5 - 526:28] (13 lines, 115 tokens)
+   [1m[32mlib/scheduling/calendly/api-client.ts[39m[22m [382:5 - 395:41]
+ - [1m[32mlib/scheduling/calendly/api-client.ts[39m[22m [579:5 - 586:25] (7 lines, 89 tokens)
+   [1m[32mlib/scheduling/calendly/api-client.ts[39m[22m [529:5 - 536:23]
+ - [1m[32mlib/marketplace/data/marketplace-service.ts[39m[22m [421:10 - 437:5] (16 lines, 215 tokens)
+   [1m[32mlib/marketplace/data/marketplace-service.ts[39m[22m [270:12 - 286:2]
+ - [1m[32mlib/marketplace/data/marketplace-service.ts[39m[22m [532:2 - 557:33] (25 lines, 303 tokens)
+   [1m[32mlib/marketplace/data/marketplace-service.ts[39m[22m [417:2 - 291:35]
+ - [1m[32mlib/marketplace/data/marketplace-service.ts[39m[22m [557:33 - 570:5] (13 lines, 118 tokens)
+   [1m[32mlib/marketplace/data/marketplace-service.ts[39m[22m [291:35 - 304:6]
+ - [1m[32mlib/marketplace/data/marketplace-service.ts[39m[22m [646:7 - 653:2] (7 lines, 122 tokens)
+   [1m[32mapp/api/marketplace/filters/route.ts[39m[22m [29:7 - 37:2]
+ - [1m[32mlib/datadog/client/trace-context.client.ts[39m[22m [33:3 - 55:2] (22 lines, 144 tokens)
+   [1m[32mlib/datadog/server/trace-context.server.ts[39m[22m [67:3 - 89:2]
+ - [1m[32mlib/auth/express/server-auth.ts[39m[22m [13:11 - 55:2] (42 lines, 269 tokens)
+   [1m[32mlibs/auth/src/lib/express/server-auth.ts[39m[22m [22:2 - 64:2]
+ - [1m[32mlib/auth/express/server-auth.ts[39m[22m [195:2 - 223:8] (28 lines, 121 tokens)
+   [1m[32mlibs/auth/src/lib/express/server-auth.ts[39m[22m [187:6 - 215:6]
+ - [1m[32mlib/auth/express/permission-hooks.ts[39m[22m [94:18 - 101:6] (7 lines, 87 tokens)
+   [1m[32mlib/auth/express/permission-hooks.ts[39m[22m [78:17 - 85:5]
+ - [1m[32mlib/auth/express/errors.ts[39m[22m [13:30 - 53:2] (40 lines, 237 tokens)
+   [1m[32mlibs/auth/src/lib/express/errors.ts[39m[22m [9:14 - 48:2]
+ - [1m[32mlib/auth/express/errors.ts[39m[22m [53:7 - 149:4] (96 lines, 512 tokens)
+   [1m[32mlibs/auth/src/lib/express/errors.ts[39m[22m [50:7 - 143:4]
+ - [1m[32mlib/auth/express/client-auth.ts[39m[22m [167:5 - 174:6] (7 lines, 77 tokens)
+   [1m[32mlib/auth/express/server-auth.ts[39m[22m [180:5 - 187:10]
+ - [1m[32mlib/auth/express/api-auth.ts[39m[22m [203:7 - 210:47] (7 lines, 80 tokens)
+   [1m[32mlib/auth/express/api-auth.ts[39m[22m [136:7 - 143:3]
+ - [1m[32mlib/auth/express/api-auth.ts[39m[22m [244:6 - 269:4] (25 lines, 107 tokens)
+   [1m[32mlib/auth/express/api-auth.ts[39m[22m [173:5 - 198:4]
+ - [1m[32mlib/auth/express/api-auth.ts[39m[22m [274:7 - 281:40] (7 lines, 80 tokens)
+   [1m[32mlib/auth/express/api-auth.ts[39m[22m [136:7 - 143:3]
+ - [1m[32mlib/auth/express/api-auth.ts[39m[22m [285:20 - 305:38] (20 lines, 123 tokens)
+   [1m[32mlib/auth/express/api-auth.ts[39m[22m [214:16 - 234:45]
+ - [1m[32mlib/auth/express/api-auth.ts[39m[22m [305:38 - 339:4] (34 lines, 194 tokens)
+   [1m[32mlib/auth/express/api-auth.ts[39m[22m [234:45 - 198:4]
+ - [1m[32mlib/auth/express/api-auth.ts[39m[22m [381:2 - 392:6] (11 lines, 87 tokens)
+   [1m[32mlib/auth/express/server-auth.ts[39m[22m [176:2 - 187:7]
+ - [1m[32mlib/auth/express/api-auth.ts[39m[22m [427:11 - 445:2] (18 lines, 104 tokens)
+   [1m[32mlib/auth/express/api-auth.ts[39m[22m [173:5 - 191:2]
+ - [1m[32mlib/auth/express/adapter.ts[39m[22m [13:15 - 53:28] (40 lines, 255 tokens)
+   [1m[32mlibs/auth/src/lib/express/adapter.ts[39m[22m [42:2 - 82:39]
+ - [1m[32mlib/auth/clerk/verify-auth-migration.ts[39m[22m [176:2 - 189:96] (13 lines, 100 tokens)
+   [1m[32mlib/auth/clerk/verify-auth-migration.ts[39m[22m [129:7 - 142:36]
+ - [1m[32mlib/auth/clerk/remove-nextauth-deps.js[39m[22m [61:16 - 68:16] (7 lines, 87 tokens)
+   [1m[32mlib/auth/clerk/remove-nextauth-deps.js[39m[22m [41:13 - 48:13]
+ - [1m[32mlib/auth/clerk/api-auth.ts[39m[22m [188:13 - 193:47] (5 lines, 85 tokens)
+   [1m[32mlib/auth/clerk/api-auth.ts[39m[22m [154:12 - 159:47]
+ - [1m[32mapp/booking/confirmation/page.tsx[39m[22m [101:4 - 119:8] (18 lines, 111 tokens)
+   [1m[32mapp/booking/recovery/page.tsx[39m[22m [125:40 - 143:9]
+ - [1m[32mapp/(platform)/learning/page.tsx[39m[22m [56:3 - 63:3] (7 lines, 82 tokens)
+   [1m[32mapp/(platform)/learning/timeline/page.tsx[39m[22m [57:2 - 65:2]
+   [1m[32m__tests__/unit/lib/scheduling/calendly/service.test.ts[39m[22m [193:18 - 218:51]
+ - [1m[32mlib/stripe/schemas.ts[39m[22m [13:2 - 21:28] (8 lines, 96 tokens)
+   [1m[32mapp/api/stripe/checkout/route.ts[39m[22m [24:2 - 32:32]
+ - [1m[32mlib/stripe/actions.ts[39m[22m [719:2 - 736:53] (17 lines, 112 tokens)
+   [1m[32mlib/stripe/actions.ts[39m[22m [38:24 - 55:58]
+ - [1m[32mlib/sentry/error-classification.ts[39m[22m [163:8 - 189:23] (26 lines, 232 tokens)
+   [1m[32mlib/sentry/error-classification.ts[39m[22m [111:2 - 137:54]
+ - [1m[32mlib/profile/schemas.ts[39m[22m [53:2 - 58:13] (5 lines, 75 tokens)
+   [1m[32mlib/profile/schemas.ts[39m[22m [40:2 - 45:5]
+ - [1m[32mlib/profile/api.ts[39m[22m [48:5 - 72:4] (24 lines, 181 tokens)
+   [1m[32mlib/profile/api.ts[39m[22m [21:3 - 45:4]
+ - [1m[32mlib/profile/api.ts[39m[22m [75:12 - 99:4] (24 lines, 181 tokens)
+   [1m[32mlib/profile/api.ts[39m[22m [21:3 - 45:4]
+ - [1m[32mlib/profile/api.ts[39m[22m [184:8 - 193:27] (9 lines, 85 tokens)
+   [1m[32mlib/profile/api.ts[39m[22m [153:7 - 162:27]
+ - [1m[32mlib/profile/actions.ts[39m[22m [272:7 - 308:32] (36 lines, 372 tokens)
+   [1m[32mlib/profile/actions.ts[39m[22m [201:7 - 237:32]
+ - [1m[32mlib/profile/actions.ts[39m[22m [430:11 - 442:19] (12 lines, 83 tokens)
+   [1m[32mlib/profile/actions.ts[39m[22m [415:11 - 425:5]
+ - [1m[32mlib/profile/actions.ts[39m[22m [446:3 - 455:2] (9 lines, 86 tokens)
+   [1m[32mlib/scheduling/real-data/scheduling-service-ext.ts[39m[22m [38:10 - 46:2]
+ - [1m[32mlib/middleware/validation.ts[39m[22m [152:18 - 162:31] (10 lines, 78 tokens)
+   [1m[32mlib/middleware/validation.ts[39m[22m [81:23 - 91:50]
+ - [1m[32mlib/marketplace/api.ts[39m[22m [8:10 - 40:11] (32 lines, 292 tokens)
+   [1m[32mlib/marketplace/data-service.ts[39m[22m [7:10 - 39:7]
+ - [1m[32mlib/marketplace/api.ts[39m[22m [57:2 - 99:22] (42 lines, 305 tokens)
+   [1m[32mlib/marketplace/data-service.ts[39m[22m [40:7 - 82:19]
+ - [1m[32mlib/marketplace/api.ts[39m[22m [101:48 - 132:2] (31 lines, 233 tokens)
+   [1m[32mlib/marketplace/data-service.ts[39m[22m [84:34 - 115:2]
+ - [1m[32mlib/marketplace/api.ts[39m[22m [137:1 - 159:7] (22 lines, 130 tokens)
+   [1m[32mlib/marketplace/data/analytics-service.ts[39m[22m [15:1 - 43:4]
+ - [1m[32mlib/datadog/rum-config.ts[39m[22m [12:1 - 31:4] (19 lines, 121 tokens)
+   [1m[32mlib/datadog/interfaces/rum.ts[39m[22m [14:1 - 33:4]
+ - [1m[32mlib/datadog/rum-config.ts[39m[22m [39:15 - 77:4] (38 lines, 231 tokens)
+   [1m[32mlib/datadog/config/rum-config.ts[39m[22m [25:5 - 63:4]
+ - [1m[32mlib/datadog/rum-config.ts[39m[22m [84:1 - 99:2] (15 lines, 126 tokens)
+   [1m[32mlib/datadog/config/rum-config.ts[39m[22m [59:1 - 74:2]
+ - [1m[32mlib/datadog/init.ts[39m[22m [100:13 - 119:4] (19 lines, 105 tokens)
+   [1m[32mlib/datadog/client/rum.client.ts[39m[22m [65:7 - 78:2]
+ - [1m[32mlib/datadog/init.ts[39m[22m [127:2 - 146:4] (19 lines, 91 tokens)
+   [1m[32mlib/datadog/client/rum.client.ts[39m[22m [84:2 - 97:2]
+ - [1m[32mlib/datadog/init.ts[39m[22m [206:14 - 220:2] (14 lines, 108 tokens)
+   [1m[32mlib/datadog/client/logs.client.ts[39m[22m [49:11 - 63:6]
+ - [1m[32mlib/datadog/init.ts[39m[22m [342:5 - 357:7] (15 lines, 97 tokens)
+   [1m[32mlib/datadog/tracer.ts[39m[22m [69:5 - 84:17]
+ - [1m[32mlib/datadog/context-propagation.ts[39m[22m [97:7 - 124:4] (27 lines, 153 tokens)
+   [1m[32mlib/datadog/server/trace-context.server.ts[39m[22m [46:8 - 67:2]
+ - [1m[32mlib/datadog/context-propagation.ts[39m[22m [135:2 - 143:2] (8 lines, 82 tokens)
+   [1m[32mlib/datadog/server/trace-context.server.ts[39m[22m [80:3 - 88:2]
+ - [1m[32mlib/datadog/config.ts[39m[22m [28:1 - 43:6] (15 lines, 97 tokens)
+   [1m[32mlib/datadog/config/base-config.ts[39m[22m [37:1 - 54:4]
+ - [1m[32mlib/datadog/config.ts[39m[22m [48:3 - 139:4] (91 lines, 551 tokens)
+   [1m[32mlib/datadog/config/base-config.ts[39m[22m [60:3 - 152:4]
+ - [1m[32mlib/datadog/config.ts[39m[22m [134:2 - 154:2] (20 lines, 90 tokens)
+   [1m[32mlib/datadog/config/base-config.ts[39m[22m [158:5 - 178:2]
+ - [1m[32mlib/auth/types.ts[39m[22m [1:1 - 56:10] (55 lines, 236 tokens)
+   [1m[32mlibs/auth/src/lib/types.ts[39m[22m [1:1 - 56:6]
+ - [1m[32mlib/auth/types.ts[39m[22m [61:1 - 102:2] (41 lines, 214 tokens)
+   [1m[32mlibs/auth/src/lib/types.ts[39m[22m [65:1 - 106:2]
+ - [1m[32mlib/auth/data-access.ts[39m[22m [148:11 - 156:33] (8 lines, 93 tokens)
+   [1m[32mlib/auth/data-access.ts[39m[22m [121:8 - 129:49]
+ - [1m[32mlib/auth/clerk-reference.ts[39m[22m [5:2 - 32:2] (27 lines, 108 tokens)
+   [1m[32mlib/auth/express/middleware.ts[39m[22m [19:2 - 46:2]
+ - [1m[32mlib/auth/clerk-middleware.ts[39m[22m [7:1 - 38:4] (31 lines, 118 tokens)
+   [1m[32mlib/auth/express/middleware.ts[39m[22m [19:1 - 51:4]
+ - [1m[32mlib/auth/clerk-fix.ts[39m[22m [1:1 - 47:2] (46 lines, 173 tokens)
+   [1m[32mlib/auth/clerk-reference.ts[39m[22m [1:1 - 47:2]
+ - [1m[32mlib/auth/actions.ts[39m[22m [195:2 - 210:23] (15 lines, 106 tokens)
+   [1m[32mlib/auth/actions.ts[39m[22m [104:2 - 119:42]
+ - [1m[32mlib/admin/api.ts[39m[22m [70:37 - 83:37] (13 lines, 93 tokens)
+   [1m[32mlib/admin/api.ts[39m[22m [19:39 - 32:39]
+ - [1m[32mlib/admin/api.ts[39m[22m [194:40 - 207:40] (13 lines, 93 tokens)
+   [1m[32mlib/admin/api.ts[39m[22m [19:39 - 32:39]
+ - [1m[32mlib/admin/api.ts[39m[22m [256:47 - 269:47] (13 lines, 93 tokens)
+   [1m[32mlib/admin/api.ts[39m[22m [130:35 - 143:35]
+ - [1m[32mlib/admin/api.ts[39m[22m [391:29 - 404:29] (13 lines, 93 tokens)
+   [1m[32mlib/admin/api.ts[39m[22m [130:35 - 143:35]
+   [1m[32mlib/middleware/test-utils.ts[39m[22m [36:1 - 83:4]
+   [1m[32mlib/middleware/test-utils.ts[39m[22m [14:1 - 36:20]
+   [1m[32mlib/middleware/test-utils.ts[39m[22m [85:2 - 105:2]
+   [1m[32mlib/middleware/test-utils.ts[39m[22m [105:2 - 181:2]
+   [1m[32mapp/(auth)/sign-up/[[...sign-up]]/page.tsx[39m[22m [31:2 - 50:2]
+   [1m[32mapp/(auth)/sign-up/[[...sign-up]]/page.tsx[39m[22m [31:2 - 52:68]
+ - [1m[32mapp/onboarding/page.tsx[39m[22m [109:9 - 131:2] (22 lines, 144 tokens)
+   [1m[32mapp/(platform)/profile/profile-settings/page.tsx[39m[22m [114:9 - 136:2]
+ - [1m[32mapp/onboarding/page.tsx[39m[22m [1:1 - 31:17] (30 lines, 195 tokens)
+   [1m[32mapp/(platform)/profile/profile-settings/page.tsx[39m[22m [1:1 - 31:14]
+ - [1m[32mapp/onboarding/page.tsx[39m[22m [58:5 - 73:15] (15 lines, 94 tokens)
+   [1m[32mapp/(platform)/profile/profile-settings/page.tsx[39m[22m [66:5 - 81:12]
+ - [1m[32mapp/onboarding/page.tsx[39m[22m [87:13 - 102:9] (15 lines, 119 tokens)
+   [1m[32mapp/(platform)/profile/profile-settings/page.tsx[39m[22m [92:2 - 107:8]
+ - [1m[32mapp/calendly-test/page.tsx[39m[22m [23:2 - 41:2] (18 lines, 164 tokens)
+   [1m[32mapp/test/calendly-debug/page.tsx[39m[22m [18:6 - 36:2]
+ - [1m[32mapp/calendly-test/page.tsx[39m[22m [103:9 - 110:2] (7 lines, 82 tokens)
+   [1m[32mapp/test/calendly-debug/page.tsx[39m[22m [53:9 - 60:3]
+ - [1m[32mapp/auth-test/client.tsx[39m[22m [52:2 - 61:6] (9 lines, 85 tokens)
+   [1m[32mapp/role-test/client.tsx[39m[22m [60:7 - 67:40]
+ - [1m[32mapp/auth-test/client.tsx[39m[22m [67:17 - 84:7] (17 lines, 110 tokens)
+   [1m[32mapp/role-test/client.tsx[39m[22m [109:17 - 126:45]
+ - [1m[32mapp/auth-test/client.tsx[39m[22m [114:15 - 134:2] (20 lines, 147 tokens)
+   [1m[32mapp/auth-test/page.tsx[39m[22m [67:15 - 86:2]
+ - [1m[32mapp/auth-test/client.tsx[39m[22m [249:26 - 259:27] (10 lines, 105 tokens)
+   [1m[32mapp/role-test/client.tsx[39m[22m [230:48 - 240:49]
+   [1m[32mlib/auth/express/server-auth.ts[39m[22m [180:5 - 186:66]
+ - [1m[32mlib/json-utilities.ts[39m[22m [17:1 - 49:44] (32 lines, 278 tokens)
+   [1m[32mlib/prisma-types.ts[39m[22m [63:1 - 95:32]
+ - [1m[32mlib/enhanced-logger.ts[39m[22m [10:11 - 23:47] (13 lines, 89 tokens)
+   [1m[32mlib/logger.ts[39m[22m [20:2 - 33:57]
+ - [1m[32mlib/enhanced-logger.server.ts[39m[22m [93:5 - 106:6] (13 lines, 104 tokens)
+   [1m[32mlib/logger.ts[39m[22m [198:5 - 211:3]
+ - [1m[32mlib/enhanced-logger.client.ts[39m[22m [31:1 - 67:6] (36 lines, 168 tokens)
+   [1m[32mlib/enhanced-logger.server.ts[39m[22m [31:1 - 67:6]
+ - [1m[32mlib/enhanced-logger.client.ts[39m[22m [68:3 - 112:56] (44 lines, 313 tokens)
+   [1m[32mlib/enhanced-logger.server.ts[39m[22m [68:3 - 112:19]
+ - [1m[32mlib/enhanced-logger.client.ts[39m[22m [113:3 - 135:9] (22 lines, 146 tokens)
+   [1m[32mlib/enhanced-logger.server.ts[39m[22m [115:3 - 137:9]
+ - [1m[32mlib/enhanced-logger.client.ts[39m[22m [135:9 - 143:66] (8 lines, 93 tokens)
+   [1m[32mlib/enhanced-logger.server.ts[39m[22m [137:9 - 145:49]
+ - [1m[32mlib/enhanced-logger.client.ts[39m[22m [143:9 - 156:46] (13 lines, 99 tokens)
+   [1m[32mlib/enhanced-logger.server.ts[39m[22m [161:9 - 174:49]
+ - [1m[32mlib/enhanced-logger.client.ts[39m[22m [156:11 - 182:6] (26 lines, 121 tokens)
+   [1m[32mlib/enhanced-logger.server.ts[39m[22m [190:11 - 216:6]
+ - [1m[32mlib/enhanced-logger.client.ts[39m[22m [183:3 - 236:2] (53 lines, 390 tokens)
+   [1m[32mlib/enhanced-logger.server.ts[39m[22m [217:3 - 270:2]
+ - [1m[32mlib/db-utils.ts[39m[22m [304:7 - 314:7] (10 lines, 88 tokens)
+   [1m[32mlib/db-utils.ts[39m[22m [223:2 - 233:7]
+ - [1m[32mapp/globals.css[39m[22m [338:2 - 363:11] (25 lines, 178 tokens)
+   [1m[32mapp/globals.css[39m[22m [281:31 - 308:7]
+ - [1m[32mapp/globals.css[39m[22m [360:4 - 385:7] (25 lines, 180 tokens)
+   [1m[32mapp/globals.css[39m[22m [338:2 - 363:8]
+
+## Lower-Priority Duplications
+These duplications are in infrastructure code or expected patterns:
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (tsx):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/builder/availability/availability-exceptions.tsx[39m[22m [225:9 - 242:34] (17 lines, 117 tokens)
+   [1m[32mcomponents/scheduling/builder/availability/weekly-availability.tsx[39m[22m [171:9 - 188:35]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/builder/availability/availability-exceptions.tsx[39m[22m [411:8 - 418:8] (7 lines, 99 tokens)
+   [1m[32mcomponents/scheduling/builder/availability/availability-exceptions.tsx[39m[22m [394:10 - 401:10]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/builder/availability/availability-exceptions.tsx[39m[22m [452:21 - 479:10] (27 lines, 178 tokens)
+   [1m[32mcomponents/scheduling/builder/availability/weekly-availability.tsx[39m[22m [292:21 - 319:13]
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/scheduling/state-machine/state-machine.test.ts[39m[22m [93:15 - 105:19] (12 lines, 114 tokens)
+   [1m[32m__tests__/unit/scheduling/state-machine/state-machine.test.ts[39m[22m [80:7 - 92:30]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/scheduling/state-machine/security.test.ts[39m[22m [16:2 - 114:34] (98 lines, 796 tokens)
+   [1m[32m__tests__/unit/scheduling/state-machine/state-machine.test.ts[39m[22m [15:39 - 113:24]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/scheduling/state-machine/error-handling.test.ts[39m[22m [111:2 - 210:35] (99 lines, 798 tokens)
+   [1m[32m__tests__/unit/scheduling/state-machine/security.test.ts[39m[22m [15:7 - 113:9]
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [102:7 - 108:3] (6 lines, 69 tokens)
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [145:10 - 153:2] (8 lines, 91 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [122:9 - 131:3]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [174:7 - 183:41] (9 lines, 93 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [68:7 - 77:66]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [190:8 - 198:45] (8 lines, 77 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [100:2 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [211:7 - 219:63] (8 lines, 77 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [82:9 - 90:62]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [242:7 - 250:55] (8 lines, 77 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [100:2 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [10:50 - 30:7] (20 lines, 138 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [10:38 - 30:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [72:2 - 82:41] (10 lines, 96 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [173:2 - 77:66]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [117:7 - 125:39] (8 lines, 89 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [100:7 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [140:7 - 146:2] (6 lines, 74 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [121:7 - 127:2]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [141:9 - 147:14] (6 lines, 80 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [266:7 - 272:14]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [165:7 - 171:2] (6 lines, 74 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [144:7 - 150:2]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [166:10 - 175:35] (9 lines, 94 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [266:7 - 150:40]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [182:6 - 190:2] (8 lines, 90 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [266:7 - 150:3]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [201:2 - 217:6] (16 lines, 150 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [173:2 - 88:4]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [220:2 - 230:60] (10 lines, 96 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [91:2 - 101:65]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [230:60 - 241:6] (11 lines, 86 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [125:39 - 136:4]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [244:2 - 254:65] (10 lines, 99 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [240:2 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [254:65 - 268:14] (14 lines, 112 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [125:39 - 244:2]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [268:2 - 278:50] (10 lines, 99 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [240:2 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [278:50 - 289:6] (11 lines, 86 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [150:40 - 161:4]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [294:8 - 300:7] (6 lines, 75 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [266:7 - 272:3]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [303:56 - 317:14] (14 lines, 112 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [150:40 - 292:13]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [317:2 - 325:14] (8 lines, 97 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [292:2 - 272:3]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [341:6 - 348:2] (7 lines, 73 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [82:9 - 90:3]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-types.test.ts[39m[22m [61:27 - 70:40] (9 lines, 93 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [68:7 - 77:66]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-types.test.ts[39m[22m [71:27 - 80:54] (9 lines, 96 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [241:7 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-types.test.ts[39m[22m [81:27 - 87:6] (6 lines, 73 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [181:7 - 187:5]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-types.test.ts[39m[22m [111:2 - 123:5] (12 lines, 119 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [173:2 - 71:4]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-types.test.ts[39m[22m [126:2 - 136:60] (10 lines, 99 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [188:2 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-types.test.ts[39m[22m [164:2 - 174:2] (10 lines, 101 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [339:2 - 349:2]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [10:43 - 33:11] (23 lines, 181 tokens)
+   [1m[32m__tests__/unit/api/admin/session-types.test.ts[39m[22m [10:38 - 33:9]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [67:14 - 82:27] (15 lines, 138 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [70:14 - 71:27]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [84:2 - 94:53] (10 lines, 99 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [240:2 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [97:14 - 106:2] (9 lines, 93 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [178:14 - 187:2]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [101:6 - 107:5] (6 lines, 67 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [122:9 - 128:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [124:2 - 136:4] (12 lines, 119 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [173:2 - 71:4]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [139:2 - 149:60] (10 lines, 99 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [188:2 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [154:2 - 162:6] (8 lines, 93 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [180:2 - 107:3]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [175:2 - 186:9] (11 lines, 101 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [339:2 - 349:2]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [191:9 - 204:7] (13 lines, 126 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [71:6 - 71:4]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [207:2 - 217:60] (10 lines, 99 tokens)
+   [1m[32m__tests__/unit/api/scheduling/bookings.test.ts[39m[22m [188:2 - 108:56]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [221:9 - 229:8] (8 lines, 85 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [179:6 - 187:5]
+
+Clone found (typescript):
+ - [1m[32m__tests__/unit/api/admin/session-type-by-id.test.ts[39m[22m [241:2 - 249:7] (8 lines, 90 tokens)
+   [1m[32m__tests__/unit/api/scheduling/booking-by-id.test.ts[39m[22m [339:2 - 88:2]
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (javascript):
+
+Clone found (typescript):
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/client/time-slot-selector.tsx[39m[22m [101:10 - 115:20] (14 lines, 96 tokens)
+   [1m[32mcomponents/scheduling/client/time-slot-selector.tsx[39m[22m [82:8 - 96:22]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/client/time-slot-selector.tsx[39m[22m [120:8 - 133:3] (13 lines, 93 tokens)
+   [1m[32mcomponents/scheduling/client/time-slot-selector.tsx[39m[22m [82:8 - 96:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/calendly/calendly-embed-optimized.tsx[39m[22m [8:2 - 27:7] (19 lines, 143 tokens)
+   [1m[32mcomponents/scheduling/calendly/calendly-embed.tsx[39m[22m [8:2 - 27:10]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/calendly/calendly-calendar.tsx[39m[22m [135:2 - 143:2] (8 lines, 81 tokens)
+   [1m[32mcomponents/scheduling/client/time-slot-selector.tsx[39m[22m [25:2 - 35:7]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/calendly/calendly-calendar.tsx[39m[22m [248:10 - 268:8] (20 lines, 155 tokens)
+   [1m[32mcomponents/scheduling/calendly/calendly-calendar.tsx[39m[22m [224:8 - 244:10]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/calendly/calendly-calendar.tsx[39m[22m [272:8 - 291:3] (19 lines, 151 tokens)
+   [1m[32mcomponents/scheduling/calendly/calendly-calendar.tsx[39m[22m [224:8 - 244:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/builder/session-type-editor.tsx[39m[22m [143:7 - 165:4] (22 lines, 170 tokens)
+   [1m[32mcomponents/scheduling/builder/weekly-schedule.tsx[39m[22m [120:7 - 142:3]
+
+Clone found (javascript):
+ - [1m[32mcomponents/marketing/ui/marketing-stat.tsx[39m[22m [86:11 - 102:41] (16 lines, 137 tokens)
+   [1m[32mcomponents/marketing/ui/marketing-stat.tsx[39m[22m [59:9 - 71:45]
+
+Clone found (javascript):
+ - [1m[32mcomponents/marketing/ui/marketing-stat.tsx[39m[22m [102:41 - 113:2] (11 lines, 153 tokens)
+   [1m[32mcomponents/marketing/ui/marketing-stat.tsx[39m[22m [86:16 - 71:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketing/ui/marketing-stat.tsx[39m[22m [112:7 - 120:3] (8 lines, 95 tokens)
+   [1m[32mcomponents/marketing/ui/marketing-stat.tsx[39m[22m [70:9 - 78:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketing/ui/feature-card.tsx[39m[22m [108:21 - 113:3] (5 lines, 73 tokens)
+   [1m[32mcomponents/marketing/ui/feature-card.tsx[39m[22m [74:21 - 79:4]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/ui/testimonial-scroll.tsx[39m[22m [19:5 - 39:2] (20 lines, 112 tokens)
+   [1m[32mcomponents/marketing/ui/testimonial-card.tsx[39m[22m [24:11 - 44:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/ui/testimonial-scroll.tsx[39m[22m [61:2 - 89:2] (28 lines, 247 tokens)
+   [1m[32mcomponents/marketing/ui/testimonial-card.tsx[39m[22m [80:2 - 108:2]
+
+Clone found (javascript):
+ - [1m[32mcomponents/community/ui/discussion-card.tsx[39m[22m [119:2 - 161:2] (42 lines, 269 tokens)
+   [1m[32mcomponents/community/ui/server-discussion-card.tsx[39m[22m [91:2 - 134:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/community/ui/discussion-card.tsx[39m[22m [20:18 - 52:8] (32 lines, 179 tokens)
+   [1m[32mcomponents/community/ui/server-discussion-card.tsx[39m[22m [4:14 - 36:10]
+
+Clone found (tsx):
+ - [1m[32mcomponents/community/ui/discussion-card.tsx[39m[22m [99:2 - 120:2] (21 lines, 148 tokens)
+   [1m[32mcomponents/community/ui/server-discussion-card.tsx[39m[22m [70:2 - 91:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/community/ui/discussion-card.tsx[39m[22m [121:15 - 178:19] (57 lines, 394 tokens)
+   [1m[32mcomponents/community/ui/server-discussion-card.tsx[39m[22m [94:15 - 151:25]
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/seed/base-seed.ts[39m[22m [120:8 - 144:2] (24 lines, 243 tokens)
+   [1m[32m__tests__/utils/seed/base-seed.ts[39m[22m [92:2 - 117:37]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/seed/base-seed.ts[39m[22m [195:3 - 207:2] (12 lines, 84 tokens)
+   [1m[32m__tests__/utils/seed/base-seed.ts[39m[22m [174:7 - 187:40]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/database/transaction.ts[39m[22m [62:5 - 77:2] (15 lines, 98 tokens)
+   [1m[32m__tests__/utils/database/transaction.ts[39m[22m [24:5 - 39:2]
+
+Clone found (typescript):
+ - [1m[32m__tests__/mocks/scheduling/mock-calendly-data.ts[39m[22m [90:10 - 104:48] (14 lines, 91 tokens)
+   [1m[32m__tests__/mocks/scheduling/mock-calendly-data.ts[39m[22m [56:10 - 70:45]
+
+Clone found (typescript):
+ - [1m[32m__tests__/mocks/profile/profile-handlers.ts[39m[22m [34:2 - 42:58] (8 lines, 89 tokens)
+   [1m[32m__tests__/mocks/profile/profile-handlers.ts[39m[22m [18:2 - 26:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/integration/webhooks/calendly-webhook.test.ts[39m[22m [43:2 - 68:28] (25 lines, 135 tokens)
+
+Clone found (typescript):
+ - [1m[32m__tests__/integration/webhooks/calendly-webhook.test.ts[39m[22m [162:20 - 181:19] (19 lines, 135 tokens)
+   [1m[32m__tests__/integration/webhooks/calendly-webhook.test.ts[39m[22m [80:5 - 99:18]
+
+Clone found (typescript):
+ - [1m[32m__tests__/integration/booking-payment/calendly-stripe-flow.test.ts[39m[22m [258:9 - 267:12] (9 lines, 80 tokens)
+   [1m[32m__tests__/integration/booking-payment/calendly-stripe-flow.test.ts[39m[22m [107:9 - 116:5]
+
+Clone found (tsx):
+ - [1m[32m__tests__/integration/booking-payment/calendly-booking-flow.test.tsx[39m[22m [159:5 - 170:2] (11 lines, 150 tokens)
+   [1m[32m__tests__/integration/booking-payment/calendly-booking-flow.test.tsx[39m[22m [107:5 - 117:2]
+
+Clone found (tsx):
+ - [1m[32m__tests__/integration/auth-marketplace/booking-integration.test.tsx[39m[22m [123:7 - 141:75] (18 lines, 100 tokens)
+   [1m[32m__tests__/integration/auth-marketplace/booking-integration.test.tsx[39m[22m [61:7 - 79:62]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/utils/webhook-simulators.ts[39m[22m [505:2 - 519:2] (14 lines, 130 tokens)
+   [1m[32m__tests__/e2e/utils/webhook-simulators.ts[39m[22m [433:6 - 447:5]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/utils/webhook-simulators.ts[39m[22m [536:5 - 561:26] (25 lines, 183 tokens)
+   [1m[32m__tests__/e2e/utils/webhook-simulators.ts[39m[22m [448:2 - 473:12]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/utils/database-isolation.ts[39m[22m [161:47 - 180:2] (19 lines, 109 tokens)
+   [1m[32m__tests__/utils/database/transaction.ts[39m[22m [18:8 - 36:8]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/marketplace/search-filter.test.ts[39m[22m [217:5 - 231:35] (14 lines, 125 tokens)
+   [1m[32m__tests__/e2e/marketplace/search-filter.test.ts[39m[22m [176:5 - 190:30]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/marketplace/builder-profile.test.ts[39m[22m [121:2 - 128:46] (7 lines, 81 tokens)
+   [1m[32m__tests__/e2e/marketplace/builder-profile.test.ts[39m[22m [113:2 - 120:20]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [57:40 - 75:55] (18 lines, 190 tokens)
+   [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [8:41 - 26:58]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [87:19 - 95:32] (8 lines, 84 tokens)
+   [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [38:19 - 46:38]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [102:45 - 120:57] (18 lines, 190 tokens)
+   [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [8:41 - 26:58]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [132:19 - 141:54] (9 lines, 95 tokens)
+   [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [38:19 - 96:45]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [147:59 - 165:59] (18 lines, 190 tokens)
+   [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [8:41 - 26:58]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/booking/booking-flow.test.ts[39m[22m [70:5 - 87:2] (17 lines, 175 tokens)
+   [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [35:5 - 53:43]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/booking/booking-flow.test.ts[39m[22m [135:5 - 143:47] (8 lines, 104 tokens)
+   [1m[32m__tests__/e2e/booking/payment-integration.test.ts[39m[22m [206:5 - 211:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/e2e/booking/booking-flow.test.ts[39m[22m [168:5 - 177:27] (9 lines, 109 tokens)
+   [1m[32m__tests__/e2e/booking/booking-flow.test.ts[39m[22m [133:5 - 210:6]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/global-error-boundary.test.tsx[39m[22m [96:50 - 105:15] (9 lines, 87 tokens)
+   [1m[32m__tests__/components/error-boundaries/global-error-boundary.test.tsx[39m[22m [47:40 - 56:9]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/global-error-boundary.test.tsx[39m[22m [135:2 - 151:39] (16 lines, 93 tokens)
+   [1m[32m__tests__/components/error-boundaries/global-error-boundary.test.tsx[39m[22m [58:3 - 73:7]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/global-error-boundary.test.tsx[39m[22m [163:61 - 178:7] (15 lines, 125 tokens)
+   [1m[32m__tests__/components/error-boundaries/global-error-boundary.test.tsx[39m[22m [47:40 - 111:6]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/global-error-boundary.test.tsx[39m[22m [193:49 - 208:31] (15 lines, 125 tokens)
+   [1m[32m__tests__/components/error-boundaries/global-error-boundary.test.tsx[39m[22m [47:40 - 111:6]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/feature-error-boundary.test.tsx[39m[22m [9:15 - 19:2] (10 lines, 96 tokens)
+   [1m[32m__tests__/integration/error-handling/error-boundary-sentry.test.tsx[39m[22m [10:15 - 20:11]
+
+Clone found (javascript):
+ - [1m[32m__tests__/components/error-boundaries/api-error-boundary.test.tsx[39m[22m [171:2 - 249:2] (78 lines, 619 tokens)
+   [1m[32m__tests__/components/error-boundaries/api-error-boundary.test.tsx[39m[22m [167:15 - 225:2]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/api-error-boundary.test.tsx[39m[22m [10:8 - 33:9] (23 lines, 167 tokens)
+   [1m[32m__tests__/integration/error-handling/error-boundary-sentry.test.tsx[39m[22m [10:15 - 32:40]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/api-error-boundary.test.tsx[39m[22m [194:2 - 207:38] (13 lines, 102 tokens)
+   [1m[32m__tests__/components/error-boundaries/api-error-boundary.test.tsx[39m[22m [168:7 - 181:37]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/api-error-boundary.test.tsx[39m[22m [220:61 - 235:29] (15 lines, 124 tokens)
+   [1m[32m__tests__/components/error-boundaries/api-error-boundary.test.tsx[39m[22m [192:76 - 181:37]
+
+Clone found (tsx):
+ - [1m[32m__tests__/components/error-boundaries/api-error-boundary.test.tsx[39m[22m [256:5 - 267:27] (11 lines, 79 tokens)
+   [1m[32m__tests__/integration/error-handling/error-boundary-sentry.test.tsx[39m[22m [156:7 - 167:48]
+
+Clone found (typescript):
+ - [1m[32m__tests__/api/webhooks/webhook-handlers.test.ts[39m[22m [7:1 - 41:3] (34 lines, 315 tokens)
+   [1m[32m__tests__/unit/scheduling/state-machine/state-machine.test.ts[39m[22m [79:1 - 113:9]
+
+Clone found (typescript):
+ - [1m[32m__tests__/api/webhooks/webhook-handlers.test.ts[39m[22m [198:9 - 213:55] (15 lines, 101 tokens)
+   [1m[32m__tests__/api/webhooks/webhook-handlers.test.ts[39m[22m [144:9 - 159:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/api/webhooks/webhook-handlers.test.ts[39m[22m [289:19 - 299:43] (10 lines, 79 tokens)
+   [1m[32m__tests__/api/webhooks/webhook-handlers.test.ts[39m[22m [180:29 - 190:46]
+
+Clone found (typescript):
+ - [1m[32mtests/profile/profile-actions.test.ts[39m[22m [190:2 - 201:62] (11 lines, 101 tokens)
+   [1m[32mtests/profile/profile-actions.test.ts[39m[22m [174:14 - 185:82]
+
+Clone found (typescript):
+ - [1m[32mtests/calendly/calendly-stripe-integration.test.ts[39m[22m [280:9 - 290:5] (10 lines, 74 tokens)
+   [1m[32mtests/stripe/stripe-payment.test.ts[39m[22m [121:9 - 131:12]
+
+Clone found (typescript):
+ - [1m[32mtests/calendly/calendly-stripe-integration.test.ts[39m[22m [326:11 - 340:30] (14 lines, 96 tokens)
+   [1m[32mtests/calendly/calendly-stripe-integration.test.ts[39m[22m [278:11 - 291:7]
+
+Clone found (typescript):
+ - [1m[32mtests/calendly/calendly-stripe-integration.test.ts[39m[22m [591:9 - 604:17] (13 lines, 86 tokens)
+   [1m[32mtests/calendly/calendly-stripe-integration.test.ts[39m[22m [372:23 - 385:12]
+
+Clone found (typescript):
+ - [1m[32mtests/auth/auth-flow.test.ts[39m[22m [35:5 - 46:2] (11 lines, 96 tokens)
+   [1m[32m__tests__/e2e/auth/auth-flow.test.ts[39m[22m [34:2 - 45:21]
+
+Clone found (typescript):
+ - [1m[32mtests/auth/auth-flow.test.ts[39m[22m [49:5 - 65:2] (16 lines, 128 tokens)
+   [1m[32m__tests__/e2e/auth/auth-flow.test.ts[39m[22m [48:2 - 64:13]
+
+Clone found (typescript):
+ - [1m[32mtests/auth/auth-flow.test.ts[39m[22m [81:5 - 93:22] (12 lines, 83 tokens)
+   [1m[32mtests/auth/auth-flow.test.ts[39m[22m [45:5 - 57:33]
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+ - [1m[32mhooks/scheduling/use-booking-flow.ts[39m[22m [163:2 - 178:15] (15 lines, 110 tokens)
+   [1m[32mhooks/scheduling/use-booking-flow.ts[39m[22m [97:2 - 112:29]
+
+Clone found (typescript):
+ - [1m[32mhooks/scheduling/use-booking-flow.ts[39m[22m [432:7 - 451:21] (19 lines, 157 tokens)
+   [1m[32mhooks/scheduling/use-booking-flow.ts[39m[22m [158:8 - 112:29]
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/typed-mock-test.ts[39m[22m [38:23 - 46:30] (8 lines, 85 tokens)
+   [1m[32mdocs/middleware-mock-investigation/typed-mock-test.ts[39m[22m [29:19 - 37:59]
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/typed-mock-test.ts[39m[22m [56:23 - 64:30] (8 lines, 85 tokens)
+   [1m[32mdocs/middleware-mock-investigation/typed-mock-test.ts[39m[22m [47:19 - 55:59]
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/typed-mock-test.ts[39m[22m [74:23 - 81:2] (7 lines, 80 tokens)
+   [1m[32mdocs/middleware-mock-investigation/typed-mock-test.ts[39m[22m [65:19 - 73:3]
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/improved-test-utils.ts[39m[22m [9:1 - 58:4] (49 lines, 253 tokens)
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/improved-test-utils.ts[39m[22m [52:1 - 79:4] (27 lines, 123 tokens)
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/improved-test-utils.ts[39m[22m [63:2 - 83:2] (20 lines, 106 tokens)
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/improved-test-utils.ts[39m[22m [83:2 - 159:2] (76 lines, 510 tokens)
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/improved-solution.ts[39m[22m [6:2 - 38:59] (32 lines, 254 tokens)
+   [1m[32mdocs/middleware-mock-investigation/nextjs-mock-solution.ts[39m[22m [10:2 - 42:40]
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/improved-solution.ts[39m[22m [47:2 - 94:2] (47 lines, 437 tokens)
+   [1m[32mdocs/middleware-mock-investigation/nextjs-mock-solution.ts[39m[22m [44:3 - 90:2]
+
+Clone found (typescript):
+ - [1m[32mdocs/middleware-mock-investigation/factory-test-solution.ts[39m[22m [118:58 - 129:33] (11 lines, 114 tokens)
+   [1m[32mdocs/middleware-mock-investigation/factory-test-solution.ts[39m[22m [90:54 - 101:6]
+
+Clone found (tsx):
+ - [1m[32mcomponents/scheduling/session-type-list.tsx[39m[22m [42:9 - 53:9] (11 lines, 141 tokens)
+   [1m[32mcomponents/scheduling/calendly/calendly-session-type-list.tsx[39m[22m [136:13 - 147:16]
+
+Clone found (tsx):
+ - [1m[32mcomponents/providers/enhanced-clerk-provider.tsx[39m[22m [105:2 - 124:2] (19 lines, 120 tokens)
+
+Clone found (javascript):
+ - [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [92:8 - 103:17] (11 lines, 110 tokens)
+   [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [83:3 - 88:8]
+
+Clone found (javascript):
+ - [1m[32mcomponents/profile/portfolio-gallery.tsx[39m[22m [127:5 - 137:25] (10 lines, 132 tokens)
+   [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [79:11 - 87:23]
+
+Clone found (javascript):
+ - [1m[32mcomponents/profile/portfolio-gallery.tsx[39m[22m [148:11 - 180:2] (32 lines, 273 tokens)
+   [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [79:2 - 157:8]
+
+Clone found (tsx):
+ - [1m[32mcomponents/profile/portfolio-gallery.tsx[39m[22m [362:11 - 376:23] (14 lines, 126 tokens)
+   [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [155:11 - 169:15]
+
+Clone found (tsx):
+ - [1m[32mcomponents/profile/builder-profile.tsx[39m[22m [546:12 - 554:12] (8 lines, 82 tokens)
+   [1m[32mcomponents/profile/builder-profile.tsx[39m[22m [508:18 - 516:18]
+
+Clone found (tsx):
+ - [1m[32mcomponents/profile/builder-profile.tsx[39m[22m [584:17 - 592:17] (8 lines, 82 tokens)
+   [1m[32mcomponents/profile/builder-profile.tsx[39m[22m [508:18 - 516:18]
+
+Clone found (tsx):
+ - [1m[32mcomponents/profile/builder-profile.tsx[39m[22m [622:15 - 630:15] (8 lines, 82 tokens)
+   [1m[32mcomponents/profile/builder-profile.tsx[39m[22m [508:18 - 516:18]
+
+Clone found (tsx):
+ - [1m[32mcomponents/profile/builder-profile-client-wrapper.tsx[39m[22m [102:13 - 117:2] (15 lines, 100 tokens)
+   [1m[32mcomponents/profile/ui/session-booking-card.tsx[39m[22m [184:13 - 199:2]
+
+Clone found (javascript):
+ - [1m[32mcomponents/profile/app-showcase.tsx[39m[22m [87:4 - 96:4] (9 lines, 103 tokens)
+   [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [83:8 - 92:8]
+
+Clone found (javascript):
+ - [1m[32mcomponents/profile/app-showcase.tsx[39m[22m [96:4 - 107:13] (11 lines, 114 tokens)
+   [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [83:3 - 88:8]
+
+Clone found (tsx):
+ - [1m[32mcomponents/profile/app-showcase.tsx[39m[22m [101:2 - 115:4] (14 lines, 161 tokens)
+   [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [97:2 - 111:8]
+
+Clone found (tsx):
+ - [1m[32mcomponents/profile/app-showcase.tsx[39m[22m [162:4 - 178:18] (16 lines, 111 tokens)
+   [1m[32mcomponents/profile/portfolio-showcase.tsx[39m[22m [142:8 - 158:20]
+
+Clone found (javascript):
+ - [1m[32mcomponents/platform/platform-header.tsx[39m[22m [346:20 - 384:16] (38 lines, 362 tokens)
+   [1m[32mcomponents/platform/platform-header.tsx[39m[22m [276:20 - 310:3]
+
+Clone found (javascript):
+ - [1m[32mcomponents/platform/platform-header.tsx[39m[22m [401:19 - 422:31] (21 lines, 271 tokens)
+   [1m[32mcomponents/platform/platform-header.tsx[39m[22m [276:20 - 293:29]
+
+Clone found (javascript):
+ - [1m[32mcomponents/platform/platform-header.tsx[39m[22m [600:14 - 641:88] (41 lines, 304 tokens)
+   [1m[32mcomponents/platform/platform-header.tsx[39m[22m [502:2 - 542:14]
+
+Clone found (javascript):
+ - [1m[32mcomponents/platform/platform-header.tsx[39m[22m [627:5 - 668:3] (41 lines, 305 tokens)
+   [1m[32mcomponents/platform/platform-header.tsx[39m[22m [502:2 - 542:14]
+
+Clone found (tsx):
+ - [1m[32mcomponents/platform/platform-header.tsx[39m[22m [358:11 - 376:3] (18 lines, 130 tokens)
+   [1m[32mcomponents/platform/platform-header.tsx[39m[22m [288:15 - 307:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/platform/platform-header.tsx[39m[22m [646:11 - 664:55] (18 lines, 139 tokens)
+   [1m[32mcomponents/platform/platform-header.tsx[39m[22m [619:15 - 637:20]
+
+Clone found (javascript):
+ - [1m[32mcomponents/marketplace/fixed-builder-image.tsx[39m[22m [44:8 - 58:13] (14 lines, 80 tokens)
+   [1m[32mcomponents/marketplace/components/builder-image/builder-image.tsx[39m[22m [46:12 - 60:11]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketplace/builder-list-client.tsx[39m[22m [61:7 - 74:3] (13 lines, 121 tokens)
+   [1m[32mcomponents/marketplace/builder-list.tsx[39m[22m [72:7 - 85:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketplace/builder-dashboard.tsx[39m[22m [465:7 - 473:7] (8 lines, 69 tokens)
+   [1m[32mcomponents/marketplace/builder-dashboard.tsx[39m[22m [429:6 - 437:6]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketplace/builder-card.tsx[39m[22m [27:3 - 50:4] (23 lines, 169 tokens)
+   [1m[32mcomponents/marketplace/components/builder-card/builder-card.tsx[39m[22m [30:3 - 53:25]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketplace/builder-card.tsx[39m[22m [91:13 - 106:2] (15 lines, 158 tokens)
+   [1m[32mcomponents/marketplace/components/builder-card/builder-card.tsx[39m[22m [69:15 - 84:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketplace/builder-card.tsx[39m[22m [110:13 - 125:15] (15 lines, 118 tokens)
+   [1m[32mcomponents/marketplace/components/builder-card/builder-card.tsx[39m[22m [88:15 - 103:17]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketing/feature-showcase.tsx[39m[22m [71:2 - 78:6] (7 lines, 98 tokens)
+   [1m[32mcomponents/marketing/ui/feature-card.tsx[39m[22m [107:2 - 114:13]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketing/feature-showcase.tsx[39m[22m [161:3 - 169:2] (8 lines, 103 tokens)
+   [1m[32mcomponents/marketing/feature-showcase.tsx[39m[22m [139:5 - 147:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/marketing/feature-grid.tsx[39m[22m [45:9 - 59:2] (14 lines, 117 tokens)
+   [1m[32mcomponents/marketing/feature-showcase.tsx[39m[22m [95:9 - 109:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/magicui/word-rotate-with-fonts.tsx[39m[22m [20:20 - 30:25] (10 lines, 114 tokens)
+   [1m[32mcomponents/magicui/word-rotate.tsx[39m[22m [15:11 - 25:16]
+
+Clone found (tsx):
+ - [1m[32mcomponents/magicui/text-animate.tsx[39m[22m [278:4 - 292:4] (14 lines, 92 tokens)
+   [1m[32mcomponents/magicui/text-animate.tsx[39m[22m [255:4 - 269:4]
+
+Clone found (tsx):
+ - [1m[32mcomponents/magicui/terminal.tsx[39m[22m [50:3 - 59:6] (9 lines, 99 tokens)
+   [1m[32mcomponents/magicui/typing-animation.tsx[39m[22m [25:3 - 34:3]
+
+Clone found (tsx):
+ - [1m[32mcomponents/magicui/terminal.tsx[39m[22m [63:6 - 92:2] (29 lines, 203 tokens)
+   [1m[32mcomponents/magicui/typing-animation.tsx[39m[22m [58:12 - 90:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/magicui/particles.tsx[39m[22m [306:3 - 356:7] (50 lines, 579 tokens)
+   [1m[32mcomponents/magicui/particles.tsx[39m[22m [103:3 - 153:10]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/navbar.tsx[39m[22m [260:2 - 278:3] (18 lines, 144 tokens)
+   [1m[32mcomponents/landing/navbar.tsx[39m[22m [198:2 - 217:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/navbar.tsx[39m[22m [428:13 - 436:2] (8 lines, 70 tokens)
+   [1m[32mcomponents/landing/navbar.tsx[39m[22m [204:27 - 212:3]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/feature-scroll.tsx[39m[22m [10:2 - 37:7] (27 lines, 260 tokens)
+   [1m[32mcomponents/marketing/feature-showcase.tsx[39m[22m [40:2 - 67:31]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/feature-scroll.tsx[39m[22m [60:11 - 69:87] (9 lines, 102 tokens)
+   [1m[32mcomponents/landing/feature-scroll.tsx[39m[22m [47:2 - 109:15]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/feature-scroll.tsx[39m[22m [73:6 - 85:3] (12 lines, 121 tokens)
+   [1m[32mcomponents/landing/feature-scroll.tsx[39m[22m [59:8 - 77:2]
+
+Clone found (javascript):
+ - [1m[32mcomponents/landing/cta-section.tsx[39m[22m [49:3 - 82:2] (33 lines, 234 tokens)
+   [1m[32mcomponents/landing/skills-tree-section.tsx[39m[22m [93:2 - 120:6]
+
+Clone found (javascript):
+ - [1m[32mcomponents/landing/cta-section.tsx[39m[22m [75:4 - 85:4] (10 lines, 85 tokens)
+   [1m[32mcomponents/landing/skills-tree-section.tsx[39m[22m [102:4 - 111:4]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/brand-word-rotate.tsx[39m[22m [43:16 - 53:21] (10 lines, 114 tokens)
+   [1m[32mcomponents/magicui/word-rotate.tsx[39m[22m [15:11 - 25:16]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/brand-word-rotate.tsx[39m[22m [53:21 - 61:7] (8 lines, 84 tokens)
+   [1m[32mcomponents/magicui/word-rotate.tsx[39m[22m [25:16 - 33:32]
+
+Clone found (tsx):
+ - [1m[32mcomponents/landing/bento-section.tsx[39m[22m [57:5 - 64:4] (7 lines, 65 tokens)
+   [1m[32mcomponents/marketing/feature-showcase.tsx[39m[22m [94:2 - 101:2]
+
+Clone found (javascript):
+ - [1m[32mcomponents/landing/ai-capabilities-marquee.tsx[39m[22m [15:11 - 52:6] (37 lines, 327 tokens)
+   [1m[32mcomponents/landing/skills-tree-section.tsx[39m[22m [93:7 - 120:6]
+
+Clone found (javascript):
+ - [1m[32mcomponents/landing/ai-capabilities-marquee.tsx[39m[22m [86:6 - 106:4] (20 lines, 160 tokens)
+   [1m[32mcomponents/landing/skills-tree-section.tsx[39m[22m [102:2 - 111:4]
+
+Clone found (tsx):
+ - [1m[32mcomponents/error-boundaries/api-error-boundary.tsx[39m[22m [108:2 - 114:2] (6 lines, 67 tokens)
+   [1m[32mcomponents/error-boundaries/feature-error-boundary.tsx[39m[22m [124:2 - 130:2]
+
+Clone found (tsx):
+ - [1m[32mcomponents/auth/clerk-auth-form.tsx[39m[22m [33:2 - 54:33] (21 lines, 126 tokens)
+
+Clone found (tsx):
+ - [1m[32mcomponents/auth/auth-status.tsx[39m[22m [238:2 - 251:2] (13 lines, 89 tokens)
+   [1m[32mcomponents/auth/auth-status.tsx[39m[22m [76:2 - 91:33]
+
+Clone found (tsx):
+ - [1m[32mcomponents/auth/auth-error-boundary.tsx[39m[22m [193:33 - 199:3] (6 lines, 90 tokens)
+   [1m[32mcomponents/providers/enhanced-clerk-provider.tsx[39m[22m [81:58 - 87:2]
+
+Clone found (javascript):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (tsx):
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/express-auth-test-utils.ts[39m[22m [137:7 - 143:40] (6 lines, 73 tokens)
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/express-auth-test-utils.ts[39m[22m [162:2 - 172:23] (10 lines, 91 tokens)
+   [1m[32m__tests__/utils/express-auth-test-utils.ts[39m[22m [104:2 - 114:25]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/express-auth-test-utils.ts[39m[22m [331:9 - 342:2] (11 lines, 106 tokens)
+   [1m[32m__tests__/utils/express-auth-test-utils.ts[39m[22m [139:9 - 158:4]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/db-test-utils.ts[39m[22m [25:15 - 34:8] (9 lines, 86 tokens)
+   [1m[32m__tests__/utils/db-test-utils.ts[39m[22m [16:5 - 25:15]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/db-test-utils.ts[39m[22m [34:8 - 43:12] (9 lines, 86 tokens)
+   [1m[32m__tests__/utils/db-test-utils.ts[39m[22m [16:5 - 25:15]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/db-test-utils.ts[39m[22m [43:12 - 52:13] (9 lines, 86 tokens)
+   [1m[32m__tests__/utils/db-test-utils.ts[39m[22m [16:5 - 25:15]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/auth-test-utils.ts[39m[22m [170:2 - 179:37] (9 lines, 101 tokens)
+   [1m[32m__tests__/utils/auth-test-utils.ts[39m[22m [145:2 - 154:2]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/auth-test-utils.ts[39m[22m [234:12 - 243:9] (9 lines, 102 tokens)
+   [1m[32m__tests__/utils/auth-test-utils.ts[39m[22m [159:18 - 168:8]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [90:20 - 120:6] (30 lines, 139 tokens)
+   [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [41:19 - 71:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [139:19 - 169:6] (30 lines, 139 tokens)
+   [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [41:19 - 71:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [188:22 - 219:6] (31 lines, 139 tokens)
+   [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [41:19 - 71:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [519:13 - 540:6] (21 lines, 101 tokens)
+   [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [470:6 - 492:6]
+
+Clone found (typescript):
+ - [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [559:11 - 581:6] (22 lines, 105 tokens)
+   [1m[32m__tests__/utils/api-test-utils.ts[39m[22m [518:14 - 492:6]
+
+Clone found (typescript):
+ - [1m[32mtests-examples/demo-todo-app.spec.ts[39m[22m [149:47 - 159:6] (10 lines, 88 tokens)
+   [1m[32mtests-examples/demo-todo-app.spec.ts[39m[22m [124:44 - 134:21]
+
+Clone found (typescript):
+ - [1m[32mtests-examples/demo-todo-app.spec.ts[39m[22m [352:33 - 358:5] (6 lines, 74 tokens)
+   [1m[32mtests-examples/demo-todo-app.spec.ts[39m[22m [342:42 - 347:5]
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (typescript):
+
+Clone found (css):
+
+Clone found (css):
+
+Clone found (typescript):
+ - [1m[32mvitest.setup.ts[39m[22m [42:6 - 53:29] (11 lines, 82 tokens)
+   [1m[32m__tests__/utils/vitest-utils.ts[39m[22m [71:8 - 81:2]
+
+Clone found (javascript):
+ - [1m[32mvitest.config.js[39m[22m [21:2 - 31:2] (10 lines, 84 tokens)
+   [1m[32mvitest.config.mjs[39m[22m [21:2 - 31:2]
+
+Clone found (javascript):
+ - [1m[32mtest-page.js[39m[22m [2:13 - 7:8] (5 lines, 83 tokens)
+   [1m[32mcomponents/marketplace/components/error-boundaries/simple-marketplace-error-boundary.js[39m[22m [35:2 - 40:31]
+
+Clone found (typescript):
+ - [1m[32mplaywright.simple.config.ts[39m[22m [7:18 - 14:43] (7 lines, 82 tokens)
+   [1m[32mplaywright.visual.config.ts[39m[22m [5:25 - 12:46]
+
+Clone found (typescript):
+ - [1m[32mplaywright.project.config.ts[39m[22m [8:7 - 20:12] (12 lines, 109 tokens)
+   [1m[32mplaywright.simple.config.ts[39m[22m [4:19 - 16:48]
+
+Clone found (typescript):
+ - [1m[32mplaywright.project.config.ts[39m[22m [28:5 - 49:45] (21 lines, 147 tokens)
+   [1m[32mplaywright.visual.config.ts[39m[22m [30:5 - 50:2]
+
+Clone found (typescript):
+ - [1m[32mplaywright.config.ts[39m[22m [2:1 - 21:36] (19 lines, 173 tokens)
+   [1m[32mplaywright.project.config.ts[39m[22m [8:1 - 27:48]
+
+[32mHTML report saved to analysis-results/duplication/html/[39m
+[90m┌────────────[39m[90m┬────────────────[39m[90m┬─────────────[39m[90m┬──────────────[39m[90m┬──────────────[39m[90m┬──────────────────[39m[90m┬───────────────────┐[39m
+[90m│[39m[31m Format     [39m[90m│[39m[31m Files analyzed [39m[90m│[39m[31m Total lines [39m[90m│[39m[31m Total tokens [39m[90m│[39m[31m Clones found [39m[90m│[39m[31m Duplicated lines [39m[90m│[39m[31m Duplicated tokens [39m[90m│[39m
+[90m├────────────[39m[90m┼────────────────[39m[90m┼─────────────[39m[90m┼──────────────[39m[90m┼──────────────[39m[90m┼──────────────────[39m[90m┼───────────────────┤[39m
+[90m│[39m typescript [90m│[39m 435            [90m│[39m 68226       [90m│[39m 481480       [90m│[39m 254          [90m│[39m 4396 (6.44%)     [90m│[39m 33975 (7.06%)     [90m│[39m
+[90m├────────────[39m[90m┼────────────────[39m[90m┼─────────────[39m[90m┼──────────────[39m[90m┼──────────────[39m[90m┼──────────────────[39m[90m┼───────────────────┤[39m
+[90m│[39m javascript [90m│[39m 257            [90m│[39m 16997       [90m│[39m 129372       [90m│[39m 22           [90m│[39m 519 (3.05%)      [90m│[39m 4436 (3.43%)      [90m│[39m
+[90m├────────────[39m[90m┼────────────────[39m[90m┼─────────────[39m[90m┼──────────────[39m[90m┼──────────────[39m[90m┼──────────────────[39m[90m┼───────────────────┤[39m
+[90m│[39m tsx        [90m│[39m 268            [90m│[39m 36477       [90m│[39m 283366       [90m│[39m 79           [90m│[39m 1247 (3.42%)     [90m│[39m 10317 (3.64%)     [90m│[39m
+[90m├────────────[39m[90m┼────────────────[39m[90m┼─────────────[39m[90m┼──────────────[39m[90m┼──────────────[39m[90m┼──────────────────[39m[90m┼───────────────────┤[39m
+[90m│[39m css        [90m│[39m 4              [90m│[39m 412         [90m│[39m 2775         [90m│[39m 2            [90m│[39m 50 (12.14%)      [90m│[39m 358 (12.9%)       [90m│[39m
+[90m├────────────[39m[90m┼────────────────[39m[90m┼─────────────[39m[90m┼──────────────[39m[90m┼──────────────[39m[90m┼──────────────────[39m[90m┼───────────────────┤[39m
+[90m│[39m [1mTotal:[22m     [90m│[39m 964            [90m│[39m 122112      [90m│[39m 896993       [90m│[39m 357          [90m│[39m 6212 (5.09%)     [90m│[39m 49086 (5.47%)     [90m│[39m
+[90m└────────────[39m[90m┴────────────────[39m[90m┴─────────────[39m[90m┴──────────────[39m[90m┴──────────────[39m[90m┴──────────────────[39m[90m┴───────────────────┘[39m
+[90mFound 357 clones.[39m
+[3m[90mDetection time:[39m[23m: 3.299s

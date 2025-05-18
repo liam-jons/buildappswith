@@ -1,0 +1,96 @@
+---
+title: 'API Overview'
+description: 'Overview of the BuildAppsWith API'
+---
+
+# API Overview
+
+BuildAppsWith offers a suite of APIs organized by domain to help you interact with the platform. Each API provides access to a specific area of functionality.
+
+## API Organization
+
+Our APIs follow a domain-driven design pattern, with clear separation between:
+
+1. **Client-side API Functions**: Located in `lib/[domain]/api.ts` files, these functions handle client-side API calls to the backend.
+2. **Server-side Implementation**: Located in API routes and server actions, these implement the actual business logic.
+
+## Available APIs
+
+| Domain | Description | Documentation |
+|--------|-------------|---------------|
+| Marketplace | APIs for builder discovery and marketplace interactions | [Marketplace API](/api/marketplace) |
+| Auth | Authentication and authorization APIs | [Auth API](/api/auth) |
+| Profile | User profile management APIs | Coming Soon |
+| Payment | Payment processing APIs (Stripe) | Coming Soon |
+| Scheduling | Booking and availability management APIs | Coming Soon |
+
+## API Principles
+
+All BuildAppsWith APIs follow these key principles:
+
+### Consistent Error Handling
+
+```typescript
+try {
+  // API operation
+} catch (error) {
+  // Structured error handling
+  console.error(`Error in operation:`, error);
+  throw error; // or return formatted error
+}
+```
+
+### Type Safety
+
+All APIs use TypeScript interfaces for request and response types:
+
+```typescript
+async function fetchData(): Promise<ResponseType> {
+  // Implementation
+}
+```
+
+### Pagination Support
+
+List endpoints support consistent pagination:
+
+```typescript
+interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  }
+}
+```
+
+## Authentication
+
+Most API endpoints require authentication. Authentication is handled via Clerk and integrated throughout the platform.
+
+## Making API Requests
+
+To make API requests from client components:
+
+```typescript
+import { fetchBuilders } from '@/lib/marketplace';
+
+async function getBuilders() {
+  const result = await fetchBuilders(1, 10);
+  return result.data;
+}
+```
+
+From server components:
+
+```typescript
+import { fetchBuilders } from '@/lib/marketplace/data/marketplace-service';
+
+async function getBuilders() {
+  const result = await fetchBuilders(1, 10);
+  return result.data;
+}
+```

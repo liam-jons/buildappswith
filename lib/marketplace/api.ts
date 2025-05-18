@@ -4,8 +4,19 @@ import {
   MarketplaceFilters, 
   MarketplaceFilterOptions,
   BuildersResponse,
-  PaginatedResponse
+  PaginatedResponse,
+  AnalyticsSummary,
+  AnalyticsTimeseries,
+  SuccessMetrics,
+  AnalyticsPeriod
 } from './types';
+
+/**
+ * Marketplace API
+ * Version: 1.1.0
+ * 
+ * Client-side API functions for interacting with marketplace endpoints
+ */
 
 /**
  * Fetch builders from the API with pagination and filtering
@@ -132,43 +143,8 @@ export async function fetchMarketplaceFilterOptions(): Promise<MarketplaceFilter
 }
 
 /**
- * Analytics Types
+ * Analytics API Functions
  */
-export interface AnalyticsSummary {
-  profileViews: number;
-  profileViewsChange: number;
-  searchAppearances: number;
-  searchAppearancesChange: number;
-  bookingRequests: number;
-  bookingRequestsChange: number;
-  conversionRate: number;
-  conversionRateChange: number;
-}
-
-export interface AnalyticsTimeseriesPoint {
-  date: string;
-  value: number;
-}
-
-export interface AnalyticsTimeseries {
-  profileViews: AnalyticsTimeseriesPoint[];
-  searchAppearances: AnalyticsTimeseriesPoint[];
-  bookingRequests: AnalyticsTimeseriesPoint[];
-}
-
-export interface SuccessMetrics {
-  metrics: Array<{
-    id: string;
-    name: string;
-    metrics: Array<{
-      label: string;
-      value: string | number;
-      description: string;
-      trend?: 'up' | 'down' | 'neutral';
-      isHighlighted?: boolean;
-    }>;
-  }>;
-}
 
 /**
  * Fetch analytics summary for builder dashboard

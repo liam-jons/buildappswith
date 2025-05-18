@@ -1,0 +1,1951 @@
+Users/liamj/Documents/next.js:4 - default
+middleware.ts:91 - default
+middleware.ts:99 - config
+playwright.config.ts:4 - default
+playwright.project.config.ts:10 - default
+playwright.simple.config.ts:6 - default
+playwright.visual.config.ts:4 - default
+sanity.cli.ts:10 - default
+sanity.config.ts:16 - default
+tailwind.config.ts:252 - default
+test-page.tsx:6 - default
+vitest.config.ts:7 - default
+app/error.tsx:5 - default
+app/global-error.tsx:6 - default
+app/layout.tsx:21 - default
+app/layout.tsx:16 - metadata
+app/not-found.tsx:1 - default
+components/feature-flag-wrapper.tsx:16 - FeatureFlagWrapper
+components/feature-flag-wrapper.tsx:44 - SimplifiedBuilderImage
+components/feature-flag-wrapper.tsx:78 - SimplifiedViewingPreferences
+components/index.ts:7 - UserAuthForm
+components/index.ts:8 - ThemeProvider
+components/index.ts:9 - SuspenseUserAuthForm
+components/index.ts:10 - SiteFooter
+components/index.ts:11 - SearchParamsFallback
+components/index.ts:22 - LoadingSpinner
+components/index.ts:35 - ValidationTierBadge (used in module)
+components/index.ts:36 - TimezoneSelector
+components/index.ts:37 - TimeSlotSelector
+components/index.ts:38 - SessionTypeSelector
+components/index.ts:39 - BookingForm
+components/index.ts:40 - BookingCalendar
+components/index.ts:41 - WeeklySchedule
+components/index.ts:42 - SessionTypeEditor
+components/index.ts:43 - WeeklyAvailability
+components/index.ts:44 - AvailabilityManagement
+components/index.ts:45 - AvailabilityExceptions
+components/index.ts:46 - providers
+components/index.ts:47 - ClerkProvider
+components/index.ts:48 - UserProfile
+components/index.ts:49 - SuccessMetricsDashboard
+components/index.ts:50 - RoleBadges
+components/index.ts:51 - ProfileAuthProvider
+components/index.ts:52 - PortfolioShowcase
+components/index.ts:53 - PortfolioGallery
+components/index.ts:55 - BuilderProfile
+components/index.ts:56 - BuilderProfileWrapper
+components/index.ts:57 - BuilderProfileClientWrapper
+components/index.ts:58 - AppShowcase
+components/index.ts:59 - AddProjectForm
+components/index.ts:61 - SessionBookingCard
+components/index.ts:62 - ProfileStats
+components/index.ts:63 - PaymentStatusIndicator
+components/index.ts:65 - BuilderImage
+components/index.ts:66 - BuilderDashboard
+components/index.ts:67 - BuilderCard
+components/index.ts:68 - FilterPanel
+components/index.ts:69 - TestimonialSection (used in module)
+components/index.ts:70 - MarketingHero
+components/index.ts:71 - MarketingFooter
+components/index.ts:72 - MarketingCta
+components/index.ts:73 - FeatureShowcase
+components/index.ts:74 - FeatureGrid
+components/index.ts:75 - TrustProofCompanies
+components/index.ts:76 - TestimonialCard
+components/index.ts:77 - NewsletterForm
+components/index.ts:78 - MarketingStat
+components/index.ts:79 - MarketingMarquee
+components/index.ts:80 - FeatureCard
+components/index.ts:81 - WordRotate
+components/index.ts:82 - TypingAnimation
+components/index.ts:83 - TextAnimate
+components/index.ts:87 - OrbitingCircles
+components/index.ts:88 - marquee
+components/index.ts:89 - globe
+components/index.ts:90 - DotPattern
+components/index.ts:92 - BlurFade
+components/index.ts:95 - AnimatedSubscribeButton
+components/index.ts:96 - AnimatedCircularProgressBar
+components/index.ts:98 - TimelineItem
+components/index.ts:99 - TimelineFilter
+components/index.ts:101 - TrustedEcosystem
+components/index.ts:103 - SkillsTreeSection
+components/index.ts:104 - SkillsCarousel
+components/index.ts:105 - PerformanceOptimizations
+components/index.ts:106 - navbar
+components/index.ts:107 - HeroSection
+components/index.ts:108 - footer
+components/index.ts:109 - FeatureScroll
+components/index.ts:111 - CtaSection
+components/index.ts:112 - BentoSection
+components/index.ts:113 - AiStats
+components/index.ts:114 - AiCapabilitiesMarquee
+components/index.ts:115 - accessibility
+components/index.ts:116 - TestimonialScroll
+components/index.ts:118 - KnowledgeItem
+components/index.ts:119 - DiscussionCard
+components/index.ts:120 - BookingButton
+components/index.ts:121 - LoadingState
+components/index.ts:122 - ClerkAuthForm
+components/index.ts:123 - AuthStatus
+components/index.ts:124 - AuthErrorBoundary
+components/index.ts:126 - SessionTypeForm
+components/index.ts:127 - AdminNav
+components/index.ts:128 - AdminCard
+components/index.ts:30 - Tooltip
+components/index.ts:30 - TooltipTrigger
+components/index.ts:30 - TooltipContent
+components/index.ts:30 - TooltipProvider
+components/index.ts:5 - TextareaProps
+components/index.ts:24 - Textarea
+components/index.ts:55 - Tabs
+components/index.ts:55 - TabsList
+components/index.ts:55 - TabsTrigger
+components/index.ts:55 - TabsContent
+components/index.ts:112 - Table
+components/index.ts:113 - TableHeader
+components/index.ts:114 - TableBody
+components/index.ts:115 - TableFooter
+components/index.ts:116 - TableHead
+components/index.ts:117 - TableRow
+components/index.ts:118 - TableCell
+components/index.ts:119 - TableCaption
+components/index.ts:29 - Switch
+components/index.ts:35 - useToast
+components/index.ts:39 - Toaster
+components/index.ts:39 - toast
+components/index.ts:31 - Separator
+components/index.ts:148 - Select
+components/index.ts:149 - SelectGroup
+components/index.ts:150 - SelectValue
+components/index.ts:151 - SelectTrigger
+components/index.ts:152 - SelectContent
+components/index.ts:153 - SelectLabel
+components/index.ts:154 - SelectItem
+components/index.ts:155 - SelectSeparator
+components/index.ts:156 - SelectScrollUpButton
+components/index.ts:157 - SelectScrollDownButton
+components/index.ts:110 - RadioGroup
+components/index.ts:110 - RadioGroupItem
+components/index.ts:33 - Popover
+components/index.ts:33 - PopoverTrigger
+components/index.ts:33 - PopoverContent
+components/index.ts:33 - PopoverAnchor
+components/index.ts:26 - Label
+components/index.ts:5 - InputProps
+components/index.ts:25 - Input
+components/index.ts:170 - useFormField
+components/index.ts:171 - Form
+components/index.ts:172 - FormItem
+components/index.ts:173 - FormLabel
+components/index.ts:174 - FormControl
+components/index.ts:175 - FormDescription
+components/index.ts:176 - FormMessage
+components/index.ts:177 - FormField
+components/index.ts:185 - DropdownMenu
+components/index.ts:186 - DropdownMenuTrigger
+components/index.ts:187 - DropdownMenuContent
+components/index.ts:188 - DropdownMenuItem
+components/index.ts:189 - DropdownMenuCheckboxItem
+components/index.ts:190 - DropdownMenuRadioItem
+components/index.ts:191 - DropdownMenuLabel
+components/index.ts:192 - DropdownMenuSeparator
+components/index.ts:193 - DropdownMenuShortcut
+components/index.ts:194 - DropdownMenuGroup
+components/index.ts:195 - DropdownMenuPortal
+components/index.ts:196 - DropdownMenuSub
+components/index.ts:197 - DropdownMenuSubContent
+components/index.ts:198 - DropdownMenuSubTrigger
+components/index.ts:199 - DropdownMenuRadioGroup
+components/index.ts:111 - Dialog
+components/index.ts:112 - DialogPortal
+components/index.ts:113 - DialogOverlay
+components/index.ts:114 - DialogTrigger
+components/index.ts:115 - DialogClose
+components/index.ts:116 - DialogContent
+components/index.ts:117 - DialogHeader
+components/index.ts:118 - DialogFooter
+components/index.ts:119 - DialogTitle
+components/index.ts:120 - DialogDescription
+components/index.ts:29 - Checkbox
+components/index.ts:79 - Card
+components/index.ts:79 - CardHeader
+components/index.ts:79 - CardFooter
+components/index.ts:79 - CardTitle
+components/index.ts:79 - CardDescription
+components/index.ts:79 - CardContent
+components/index.ts:37 - ButtonProps
+components/index.ts:57 - Button
+components/index.ts:57 - buttonVariants
+components/index.ts:26 - BadgeProps
+components/index.ts:36 - Badge
+components/index.ts:36 - badgeVariants
+components/index.ts:50 - Avatar
+components/index.ts:50 - AvatarImage
+components/index.ts:50 - AvatarFallback
+components/index.ts:59 - Alert
+components/index.ts:59 - AlertTitle
+components/index.ts:59 - AlertDescription
+components/index.ts:56 - Accordion
+components/index.ts:56 - AccordionItem
+components/index.ts:56 - AccordionTrigger
+components/index.ts:56 - AccordionContent
+components/index.ts:28 - ClientProfile
+components/index.ts:32 - BuilderList
+components/index.ts:13 - AnimatedSpan
+components/index.ts:100 - Terminal
+components/index.ts:11 - Ripple
+components/index.ts:79 - Particles
+components/index.ts:49 - BorderBeam
+components/index.ts:16 - AvatarCircles
+components/index.ts:12 - AuroraText
+components/index.ts:25 - Timeline
+components/index.ts:4 - NavigationItem
+components/index.ts:15 - HeroContent
+components/index.ts:29 - HeroSectionProps
+components/index.ts:35 - Capability
+components/index.ts:40 - Limitation
+components/index.ts:45 - AICapabilitiesMarqueeProps
+components/index.ts:52 - SkillNode
+components/index.ts:61 - SkillsTreeSectionProps
+components/index.ts:67 - CTASectionProps
+components/index.ts:82 - FooterProps
+components/index.ts:87 - NavbarProps
+components/index.ts:92 - FeatureScrollProps
+components/index.ts:9 - mainNavItems
+components/index.ts:67 - heroContent
+components/index.ts:86 - aiCapabilities
+components/index.ts:97 - aiLimitations
+components/index.ts:109 - skillsData
+components/index.ts:39 - KnowledgeBase
+components/index.ts:22 - SettingsPanel
+components/index.ts:14 - ThemeToggle
+components/suspense-user-auth-form.tsx:7 - SuspenseUserAuthForm
+components/user-auth-form.tsx:23 - userAuthSchema (used in module)
+docs/buildappswith-platform-overview.tsx:631 - default
+e2e/global-setup.ts:70 - default
+examples/word-rotate-fonts-example.tsx:4 - HeroWithCustomFonts
+hooks/index.ts:10 - useOnClickOutside
+lib/csrf.ts:25 - generateCsrfToken (used in module)
+lib/csrf.ts:40 - setCsrfCookie (used in module)
+lib/csrf.ts:58 - getCsrfCookie (used in module)
+lib/csrf.ts:69 - createCsrfToken
+lib/csrf.ts:80 - validateCsrfToken (used in module)
+lib/csrf.ts:142 - useCsrf
+lib/db-error-handling.ts:60 - classifyPrismaError (used in module)
+lib/db-error-handling.ts:107 - isRetryableError (used in module)
+lib/db-error-handling.ts:119 - mapCategoryToSeverity (used in module)
+lib/db-error-handling.ts:149 - createErrorMetadata (used in module)
+lib/db-error-handling.ts:204 - handleDatabaseError (used in module)
+lib/db-error-handling.ts:20 - DatabaseErrorCategory (used in module)
+lib/db-error-handling.ts:33 - DatabaseErrorSeverity (used in module)
+lib/db-error-handling.ts:43 - DatabaseErrorMetadata (used in module)
+lib/db-monitoring.ts:167 - getDatabasePerformanceMetrics
+lib/db-monitoring.ts:204 - resetQueryMetrics
+lib/db-monitoring.ts:218 - scheduleHealthChecks
+lib/db-monitoring.ts:244 - createHealthCheckHandler
+lib/db-monitoring.ts:17 - DatabaseHealthCheck (used in module)
+lib/db-monitoring.ts:29 - DatabasePerformanceMetrics (used in module)
+lib/db-utils.ts:52 - createPaginationParams (used in module)
+lib/db-utils.ts:77 - safeDbRead
+lib/db-utils.ts:113 - safeDbWrite
+lib/db-utils.ts:132 - safeDbTransaction
+lib/db-utils.ts:150 - paginatedQuery
+lib/db-utils.ts:195 - recordExists
+lib/db-utils.ts:221 - safeUpsert
+lib/db-utils.ts:250 - safeCreate
+lib/db-utils.ts:275 - safeUpdate
+lib/db-utils.ts:303 - safeDelete
+lib/db-utils.ts:327 - safeFindUnique
+lib/db-utils.ts:351 - safeFindMany
+lib/db-utils.ts:17 - SchemaValidator (used in module)
+lib/db-utils.ts:25 - PaginationOptions (used in module)
+lib/db-utils.ts:35 - PaginatedResult (used in module)
+lib/db.ts:122 - withDatabaseErrorHandling
+lib/enhanced-logger.client.ts:231 - createDomainLogger
+lib/enhanced-logger.client.ts:31 - EnhancedLogger (used in module)
+lib/enhanced-logger.client.ts:228 - enhancedLogger (used in module)
+lib/enhanced-logger.server.ts:265 - createDomainLogger
+lib/enhanced-logger.server.ts:31 - EnhancedLogger (used in module)
+lib/enhanced-logger.server.ts:262 - enhancedLogger (used in module)
+lib/enhanced-logger.ts:10 - ErrorSeverity
+lib/enhanced-logger.ts:10 - ErrorCategory
+lib/enhanced-logger.ts:13 - LogLevel
+lib/enhanced-logger.ts:15 - LogMetadata (used in module)
+lib/enhanced-logger.ts:19 - LogFunction
+lib/enhanced-logger.ts:77 - enhancedLogger (used in module)
+lib/enhanced-logger.ts:78 - createDomainLogger (used in module)
+lib/enhanced-logger.ts:80 - EnhancedLogger (used in module)
+lib/feature-flags.ts:54 - setFeatureFlag (used in module)
+lib/feature-flags.ts:70 - resetFeatureFlags (used in module)
+lib/feature-flags.ts:83 - getAllFeatureFlags (used in module)
+lib/json-utilities.ts:20 - socialLinksToJson (used in module)
+lib/json-utilities.ts:28 - portfolioItemsToJson (used in module)
+lib/json-utilities.ts:36 - getSocialLinks (used in module)
+lib/json-utilities.ts:44 - getPortfolioItems (used in module)
+lib/json-utilities.ts:50 - SocialLinks (used in module)
+lib/json-utilities.ts:50 - PortfolioItem (used in module)
+lib/json-utilities.ts:50 - PortfolioItemOutcome (used in module)
+lib/json-utilities.ts:53 - PrismaJsonUtils (used in module)
+lib/json-utilities.ts:60 - default
+lib/logger.ts:20 - ErrorSeverity (used in module)
+lib/logger.ts:20 - ErrorCategory (used in module)
+lib/logger.ts:23 - LogLevel (used in module)
+lib/logger.ts:25 - LogMetadata (used in module)
+lib/logger.ts:29 - LogFunction (used in module)
+lib/logger.ts:279 - EnhancedLogger
+lib/prisma-extensions.ts:12 - PrismaExtensions (used in module)
+lib/prisma-extensions.ts:42 - default
+lib/prisma-types.ts:66 - socialLinksToJson (used in module)
+lib/prisma-types.ts:74 - portfolioItemsToJson (used in module)
+lib/prisma-types.ts:82 - getSocialLinks (used in module)
+lib/prisma-types.ts:90 - getPortfolioItems (used in module)
+lib/prisma-types.ts:96 - PrismaJsonUtils (used in module)
+lib/prisma-types.ts:103 - default
+lib/rate-limit.ts:173 - withRateLimit
+lib/server-feature-flags.ts:43 - getServerFeatureFlags (used in module)
+lib/session-types.ts:19 - getSessionTypes (used in module)
+lib/session-types.ts:116 - getSessionTypeById
+lib/session-types.ts:160 - mapMarketingSessionId
+lib/session-types.ts:224 - getBuilderSessionTypes
+pages/_document.tsx:3 - default
+__tests__/e2e/global-setup.ts:29 - default
+__tests__/mocks/initMocks.ts:99 - startMockServer
+__tests__/mocks/initMocks.ts:128 - stopMockServer
+__tests__/mocks/initMocks.ts:150 - resetMockServerHandlers
+__tests__/mocks/initMocks.ts:161 - withMockServer
+__tests__/mocks/server.ts:36 - addTemporaryHandlers
+__tests__/utils/a11y-utils.ts:49 - checkWCAG
+__tests__/utils/a11y-utils.ts:90 - a11yTests
+__tests__/utils/api-test-utils.ts:606 - getAuthHeaders
+__tests__/utils/api-test-utils.ts:632 - createMockRequest (used in module)
+__tests__/utils/api-test-utils.ts:683 - createMockResponse
+__tests__/utils/auth-test-utils.ts:288 - resetMockClerk (used in module)
+__tests__/utils/auth-test-utils.ts:308 - getRolesForUserType (used in module)
+__tests__/utils/auth-test-utils.ts:323 - hasRole
+__tests__/utils/auth-test-utils.ts:439 - setupApiAuth
+__tests__/utils/auth-test-utils.ts:9 - UserType (used in module)
+__tests__/utils/auth-test-utils.ts:12 - RoleType (used in module)
+__tests__/utils/calendly-test-utils.ts:18 - calendlyTestUtils
+__tests__/utils/db-test-utils.ts:14 - createMockPrismaClient (used in module)
+__tests__/utils/db-test-utils.ts:64 - withMockPrisma
+__tests__/utils/db-test-utils.ts:113 - setupTestDatabase
+__tests__/utils/db-test-utils.ts:123 - teardownTestDatabase
+__tests__/utils/db-test-utils.ts:132 - mockPrismaErrors
+__tests__/utils/e2e-async-utils.ts:332 - asyncExpect
+__tests__/utils/e2e-auth-utils.ts:70 - getTestUser (used in module)
+__tests__/utils/e2e-auth-utils.ts:380 - switchToRole
+__tests__/utils/e2e-auth-utils.ts:412 - getNumberedTestUser
+__tests__/utils/e2e-auth-utils.ts:419 - getNumberedStorageStatePath
+__tests__/utils/e2e-auth-utils.ts:6 - UserRole (used in module)
+__tests__/utils/e2e-auth-utils.ts:8 - TestUser (used in module)
+__tests__/utils/e2e-auth-utils.ts:133 - AuthUtils (used in module)
+__tests__/utils/express-auth-test-utils.ts:101 - createMockExpressAuth
+__tests__/utils/express-auth-test-utils.ts:159 - createExpressAuthHeaders
+__tests__/utils/express-auth-test-utils.ts:183 - MockAPIResponse (used in module)
+__tests__/utils/express-auth-test-utils.ts:292 - mockGetAuth (used in module)
+__tests__/utils/express-auth-test-utils.ts:348 - mockRequireAuth (used in module)
+__tests__/utils/index.ts:9 - TestUser
+__tests__/utils/index.ts:21 - TestProfile
+__tests__/utils/index.ts:35 - TestSessionType
+__tests__/utils/index.ts:48 - TestBooking
+__tests__/utils/index.ts:62 - TestPayment
+__tests__/utils/index.ts:76 - TestPersona
+__tests__/utils/index.ts:87 - testClerkIds
+__tests__/utils/vitest-utils.ts:22 - customRender
+__tests__/utils/vitest-utils.ts:67 - mockMatchMedia
+__tests__/utils/vitest-utils.ts:86 - mockIntersectionObserver (used in module)
+__tests__/utils/vitest-utils.ts:100 - mockResizeObserver (used in module)
+__tests__/utils/vitest-utils.ts:132 - mockConsole
+__tests__/utils/vitest-utils.ts:155 - createMockElement
+__tests__/utils/vitest-utils.ts:60 - wait
+__tests__/utils/vitest-utils.ts:117 - randomString
+app/(marketing)/metadata.ts:7 - metadata
+app/api/route-types.ts:10 - RouteParams
+components/admin/index.ts:22 - SettingsPanel
+components/admin/index.ts:31 - AdminNav
+components/admin/index.ts:52 - SessionTypeForm
+components/admin/index.ts:17 - AdminDashboard
+components/auth/clerk-auth-form.tsx:20 - ClerkAuthForm
+components/auth/index.ts:14 - AuthStatus
+components/auth/index.ts:15 - ProtectedAuthStatus
+components/auth/index.ts:16 - HeaderAuthStatus
+components/auth/index.ts:20 - ClerkAuthForm
+components/auth/index.ts:23 - ProtectedRoute
+components/auth/index.ts:25 - RoleProtected
+components/auth/index.ts:26 - PermissionProtected
+components/auth/index.ts:31 - ExpressAuthProvider
+components/auth/index.ts:32 - EnhancedAuthProvider
+components/auth/index.ts:33 - useExpressAuth
+components/auth/index.ts:34 - useAuthLoaded
+components/auth/index.ts:39 - AuthErrorBoundary
+components/auth/index.ts:40 - dispatchAuthError
+components/auth/index.ts:41 - withAuthErrorHandling
+components/auth/index.ts:45 - LoadingState
+components/auth/loading-state.tsx:17 - AuthLoadingState
+components/booking/booking-button.tsx:111 - SessionBookingButton
+components/booking/index.ts:7 - BookingButton
+components/client/faq-accordion.tsx:6 - FAQItem (used in module)
+components/client/index.ts:7 - FAQAccordion
+components/community/index.ts:39 - KnowledgeBase
+components/error-boundaries/api-error-boundary.tsx:42 - ApiErrorBoundary (used in module)
+components/error-boundaries/global-error-boundary.tsx:23 - GlobalErrorBoundary (used in module)
+components/error-boundaries/index.ts:6 - GlobalErrorBoundary
+components/error-boundaries/index.ts:7 - FeatureErrorBoundary
+components/error-boundaries/index.ts:8 - ApiErrorBoundary
+components/landing/accessibility.tsx:12 - AccessibilityProvider (used in module)
+components/landing/accessibility.tsx:56 - withSectionAccessibility
+components/landing/accessibility.tsx:81 - AccessibleLink
+components/landing/accessibility.tsx:129 - AccessibilityStyles
+components/landing/accessibility.tsx:110 - accessibilityStyles (used in module)
+components/landing/bento-section.tsx:1 - BentoSection
+components/landing/client-motion-wrapper.tsx:15 - ClientMotion
+components/landing/feature-scroll.tsx:7 - FeatureScroll
+components/landing/index.ts:7 - TrustedEcosystem
+components/landing/index.ts:8 - TestimonialSection
+components/landing/index.ts:9 - SkillsTreeSection
+components/landing/index.ts:10 - SkillsCarousel
+components/landing/index.ts:11 - PerformanceOptimizations
+components/landing/index.ts:12 - Navbar
+components/landing/index.ts:13 - HeroSection
+components/landing/index.ts:14 - FeatureScroll
+components/landing/index.ts:15 - CtaSection
+components/landing/index.ts:16 - BentoSection
+components/landing/index.ts:17 - AiStats
+components/landing/index.ts:18 - AiCapabilitiesMarquee
+components/landing/index.ts:19 - Accessibility
+components/landing/index.ts:20 - BrandWordRotate
+components/landing/index.ts:9 - mainNavItems
+components/landing/index.ts:67 - heroContent
+components/landing/index.ts:86 - aiCapabilities
+components/landing/index.ts:97 - aiLimitations
+components/landing/index.ts:109 - skillsData
+components/landing/index.ts:4 - NavigationItem
+components/landing/index.ts:15 - HeroContent
+components/landing/index.ts:29 - HeroSectionProps
+components/landing/index.ts:35 - Capability
+components/landing/index.ts:40 - Limitation
+components/landing/index.ts:45 - AICapabilitiesMarqueeProps
+components/landing/index.ts:52 - SkillNode
+components/landing/index.ts:61 - SkillsTreeSectionProps
+components/landing/index.ts:67 - CTASectionProps
+components/landing/index.ts:82 - FooterProps
+components/landing/index.ts:87 - NavbarProps
+components/landing/index.ts:92 - FeatureScrollProps
+components/landing/navbar.tsx:98 - Navbar (used in module)
+components/landing/performance-optimizations.tsx:16 - BlurImage
+components/landing/performance-optimizations.tsx:91 - InView
+components/landing/performance-optimizations.tsx:138 - DeferredContent
+components/landing/performance-optimizations.tsx:76 - MemoizedNavbar (used in module)
+components/landing/performance-optimizations.tsx:202 - lazyLoad
+components/landing/testimonial-section.tsx:3 - TestimonialSection
+components/learning/index.ts:8 - Timeline
+components/magicui/index.ts:7 - WordRotate
+components/magicui/index.ts:8 - TypingAnimation
+components/magicui/index.ts:9 - TextAnimate
+components/magicui/index.ts:13 - OrbitingCircles
+components/magicui/index.ts:14 - marquee
+components/magicui/index.ts:15 - globe
+components/magicui/index.ts:16 - DotPattern
+components/magicui/index.ts:18 - BlurFade
+components/magicui/index.ts:21 - AnimatedSubscribeButton
+components/magicui/index.ts:22 - AnimatedCircularProgressBar
+components/magicui/index.ts:13 - AnimatedSpan
+components/magicui/index.ts:100 - Terminal
+components/magicui/index.ts:11 - Ripple
+components/magicui/index.ts:79 - Particles
+components/magicui/index.ts:49 - BorderBeam
+components/magicui/index.ts:16 - AvatarCircles
+components/magicui/index.ts:12 - AuroraText
+components/magicui/index.ts:39 - Globe
+components/magicui/index.ts:35 - Marquee
+components/magicui/index.ts:4 - OrbitingCirclesProps
+components/marketing/feature-grid.tsx:4 - FeatureGridItem (used in module)
+components/marketing/feature-grid.tsx:12 - FeatureGridProps (used in module)
+components/marketing/feature-showcase.tsx:8 - FeatureItem (used in module)
+components/marketing/feature-showcase.tsx:16 - FeatureShowcaseProps (used in module)
+components/marketing/index.ts:7 - TestimonialSection
+components/marketing/index.ts:8 - MarketingHero
+components/marketing/index.ts:9 - MarketingCTA
+components/marketing/index.ts:10 - FeatureShowcase
+components/marketing/index.ts:11 - FeatureGrid
+components/marketing/marketing-cta.tsx:4 - MarketingCTAProps (used in module)
+components/marketing/marketing-hero.tsx:7 - MarketingHeroProps (used in module)
+components/marketing/testimonial-section.tsx:4 - Testimonial (used in module)
+components/marketing/testimonial-section.tsx:14 - TestimonialSectionProps (used in module)
+components/marketplace/builder-card.tsx:24 - BuilderCard
+components/marketplace/builder-image.tsx:21 - BuilderImage
+components/marketplace/fixed-builder-image.tsx:19 - FixedBuilderImage
+components/marketplace/index.ts:10 - BuilderDashboard
+components/marketplace/index.ts:15 - BuilderImage
+components/marketplace/index.ts:16 - BuilderCard
+components/marketplace/index.ts:17 - BuilderList
+components/marketplace/index.ts:18 - BuilderListClient
+components/marketplace/index.ts:19 - BuilderListSkeleton
+components/marketplace/index.ts:22 - FilterPanel
+components/marketplace/index.ts:25 - MarketplaceErrorBoundary
+components/marketplace/index.ts:26 - MarketplaceErrorFallback
+components/marketplace/index.ts:29 - ImageFallback
+components/marketplace/index.ts:30 - CardSkeleton
+components/marketplace/index.ts:35 - useBuilderFilter
+components/marketplace/index.ts:36 - useBuilderSearch
+components/marketplace/index.ts:42 - isValidImageUrl
+components/marketplace/index.ts:43 - getInitials
+components/marketplace/index.ts:44 - getDefaultAvatarUrl
+components/marketplace/index.ts:47 - createFilterParams
+components/marketplace/index.ts:48 - parseFilterParams
+components/marketplace/index.ts:49 - isEmptyFilter
+components/payment/index.ts:7 - PaymentStatusIndicator
+components/payment/index.ts:8 - StripeProvider
+components/payment/index.ts:9 - CheckoutButton
+components/payment/index.ts:10 - PaymentConfirmation
+components/payment/payment-status-indicator.tsx:13 - PaymentStatus (used in module)
+components/platform/index.ts:5 - PlatformHeader
+components/platform/index.ts:6 - ViewingPreferences
+components/platform/platform-header.tsx:122 - PlatformHeader (used in module)
+components/profile/index.ts:10 - UserProfile
+components/profile/index.ts:11 - SuccessMetricsDashboard
+components/profile/index.ts:12 - RoleBadge
+components/profile/index.ts:12 - FounderBadge
+components/profile/index.ts:12 - MultiRoleBadge
+components/profile/index.ts:13 - ProfileAuthProvider
+components/profile/index.ts:14 - PortfolioShowcase
+components/profile/index.ts:15 - PortfolioGallery
+components/profile/index.ts:17 - ClientDashboard
+components/profile/index.ts:18 - BuilderProfile
+components/profile/index.ts:19 - BuilderProfileWrapper
+components/profile/index.ts:20 - BuilderProfileClientWrapper
+components/profile/index.ts:21 - AppShowcase
+components/profile/index.ts:22 - AddProjectForm
+components/profile/index.ts:23 - ValidationTierBadge
+components/profile/index.ts:28 - ClientProfile
+components/profile/profile-auth-provider.tsx:105 - withProfileAuth
+components/profile/success-metrics-dashboard.tsx:17 - MetricItem (used in module)
+components/profile/success-metrics-dashboard.tsx:32 - SuccessMetricsDashboardProps (used in module)
+components/providers/index.ts:7 - providers
+components/providers/index.ts:8 - ClerkProvider
+components/providers/index.ts:9 - DatadogRumProvider
+components/providers/index.ts:9 - retrieveTraceContext
+components/providers/index.ts:9 - storeTraceContext
+components/providers/index.ts:11 - Providers
+components/scheduling/index.ts:7 - TimezoneSelector
+components/scheduling/index.ts:8 - TimeSlotSelector
+components/scheduling/index.ts:9 - SessionTypeSelector
+components/scheduling/index.ts:10 - SessionTypeCategory
+components/scheduling/index.ts:11 - CalendlySessionTypeSelector
+components/scheduling/index.ts:12 - BookingForm
+components/scheduling/index.ts:13 - BookingCalendar
+components/scheduling/index.ts:14 - BookingFlow
+components/scheduling/index.ts:15 - PathwaySelector
+components/scheduling/index.ts:16 - IntegratedBooking
+components/scheduling/index.ts:17 - WeeklySchedule
+components/scheduling/index.ts:18 - SessionTypeEditor
+components/scheduling/index.ts:19 - WeeklyAvailability
+components/scheduling/index.ts:20 - AvailabilityManagement
+components/scheduling/index.ts:21 - AvailabilityExceptions
+components/scheduling/index.ts:22 - StripeBookingForm
+components/scheduling/index.ts:23 - SessionTypeList
+components/scheduling/index.ts:26 - BookingsByPathway
+components/scheduling/index.ts:27 - ClientProgress
+components/scheduling/index.ts:28 - PathwayAnalytics
+components/scheduling/index.ts:31 - CalendlyEmbed
+components/scheduling/index.ts:31 - BookingConfirmation
+components/scheduling/index.ts:31 - CalendlySessionTypeList
+components/trust/index.ts:7 - TrustOverview
+components/trust/index.ts:8 - VerificationDetail
+components/ui/index.ts:33 - PlatformHeader
+components/ui/index.ts:34 - ViewingPreferences
+components/ui/index.ts:30 - Tooltip
+components/ui/index.ts:30 - TooltipTrigger
+components/ui/index.ts:30 - TooltipContent
+components/ui/index.ts:30 - TooltipProvider
+components/ui/index.ts:5 - TextareaProps
+components/ui/index.ts:24 - Textarea
+components/ui/index.ts:55 - Tabs
+components/ui/index.ts:55 - TabsList
+components/ui/index.ts:55 - TabsTrigger
+components/ui/index.ts:55 - TabsContent
+components/ui/index.ts:112 - Table
+components/ui/index.ts:113 - TableHeader
+components/ui/index.ts:114 - TableBody
+components/ui/index.ts:115 - TableFooter
+components/ui/index.ts:116 - TableHead
+components/ui/index.ts:117 - TableRow
+components/ui/index.ts:118 - TableCell
+components/ui/index.ts:119 - TableCaption
+components/ui/index.ts:29 - Switch
+components/ui/index.ts:35 - useToast
+components/ui/index.ts:39 - Toaster
+components/ui/index.ts:39 - toast
+components/ui/index.ts:31 - Separator
+components/ui/index.ts:148 - Select
+components/ui/index.ts:149 - SelectGroup
+components/ui/index.ts:150 - SelectValue
+components/ui/index.ts:151 - SelectTrigger
+components/ui/index.ts:152 - SelectContent
+components/ui/index.ts:153 - SelectLabel
+components/ui/index.ts:154 - SelectItem
+components/ui/index.ts:155 - SelectSeparator
+components/ui/index.ts:156 - SelectScrollUpButton
+components/ui/index.ts:157 - SelectScrollDownButton
+components/ui/index.ts:18 - Skeleton
+components/ui/index.ts:110 - RadioGroup
+components/ui/index.ts:110 - RadioGroupItem
+components/ui/index.ts:33 - Popover
+components/ui/index.ts:33 - PopoverTrigger
+components/ui/index.ts:33 - PopoverContent
+components/ui/index.ts:33 - PopoverAnchor
+components/ui/index.ts:9 - LoadingSpinner
+components/ui/index.ts:26 - Label
+components/ui/index.ts:5 - InputProps
+components/ui/index.ts:25 - Input
+components/ui/index.ts:170 - useFormField
+components/ui/index.ts:171 - Form
+components/ui/index.ts:172 - FormItem
+components/ui/index.ts:173 - FormLabel
+components/ui/index.ts:174 - FormControl
+components/ui/index.ts:175 - FormDescription
+components/ui/index.ts:176 - FormMessage
+components/ui/index.ts:177 - FormField
+components/ui/index.ts:185 - DropdownMenu
+components/ui/index.ts:186 - DropdownMenuTrigger
+components/ui/index.ts:187 - DropdownMenuContent
+components/ui/index.ts:188 - DropdownMenuItem
+components/ui/index.ts:189 - DropdownMenuCheckboxItem
+components/ui/index.ts:190 - DropdownMenuRadioItem
+components/ui/index.ts:191 - DropdownMenuLabel
+components/ui/index.ts:192 - DropdownMenuSeparator
+components/ui/index.ts:193 - DropdownMenuShortcut
+components/ui/index.ts:194 - DropdownMenuGroup
+components/ui/index.ts:195 - DropdownMenuPortal
+components/ui/index.ts:196 - DropdownMenuSub
+components/ui/index.ts:197 - DropdownMenuSubContent
+components/ui/index.ts:198 - DropdownMenuSubTrigger
+components/ui/index.ts:199 - DropdownMenuRadioGroup
+components/ui/index.ts:111 - Dialog
+components/ui/index.ts:112 - DialogPortal
+components/ui/index.ts:113 - DialogOverlay
+components/ui/index.ts:114 - DialogTrigger
+components/ui/index.ts:115 - DialogClose
+components/ui/index.ts:116 - DialogContent
+components/ui/index.ts:117 - DialogHeader
+components/ui/index.ts:118 - DialogFooter
+components/ui/index.ts:119 - DialogTitle
+components/ui/index.ts:120 - DialogDescription
+components/ui/index.ts:29 - Checkbox
+components/ui/index.ts:79 - Card
+components/ui/index.ts:79 - CardHeader
+components/ui/index.ts:79 - CardFooter
+components/ui/index.ts:79 - CardTitle
+components/ui/index.ts:79 - CardDescription
+components/ui/index.ts:79 - CardContent
+components/ui/index.ts:37 - ButtonProps
+components/ui/index.ts:57 - Button
+components/ui/index.ts:57 - buttonVariants
+components/ui/index.ts:26 - BadgeProps
+components/ui/index.ts:36 - Badge
+components/ui/index.ts:36 - badgeVariants
+components/ui/index.ts:50 - Avatar
+components/ui/index.ts:50 - AvatarImage
+components/ui/index.ts:50 - AvatarFallback
+components/ui/index.ts:59 - Alert
+components/ui/index.ts:59 - AlertTitle
+components/ui/index.ts:59 - AlertDescription
+components/ui/index.ts:56 - Accordion
+components/ui/index.ts:56 - AccordionItem
+components/ui/index.ts:56 - AccordionTrigger
+components/ui/index.ts:56 - AccordionContent
+docs/middleware-mock-investigation/improved-solution.ts:39 - authMiddleware (used in module)
+docs/middleware-mock-investigation/improved-solution.ts:44 - redirectToSignIn (used in module)
+docs/middleware-mock-investigation/improved-solution.ts:49 - SignedIn
+docs/middleware-mock-investigation/improved-solution.ts:50 - SignedOut
+docs/middleware-mock-investigation/improved-solution.ts:51 - useAuth
+docs/middleware-mock-investigation/improved-solution.ts:52 - useUser
+docs/middleware-mock-investigation/improved-solution.ts:53 - ClerkProvider
+docs/middleware-mock-investigation/improved-test-utils.ts:22 - createMockRequest
+docs/middleware-mock-investigation/improved-test-utils.ts:45 - createMockAuthState
+docs/middleware-mock-investigation/improved-test-utils.ts:59 - configureMockAuth
+docs/middleware-mock-investigation/improved-test-utils.ts:80 - mockJsonResponse
+docs/middleware-mock-investigation/improved-test-utils.ts:132 - mockRedirectToSignIn
+docs/middleware-mock-investigation/improved-test-utils.ts:145 - setupMiddlewareMocks
+docs/middleware-mock-investigation/improved-test-utils.ts:10 - MockAuthState (used in module)
+docs/middleware-mock-investigation/nextjs-mock-solution.ts:43 - authMiddleware (used in module)
+docs/middleware-mock-investigation/nextjs-mock-solution.ts:44 - redirectToSignIn (used in module)
+docs/middleware-mock-investigation/nextjs-mock-solution.ts:45 - SignedIn
+docs/middleware-mock-investigation/nextjs-mock-solution.ts:46 - SignedOut
+docs/middleware-mock-investigation/nextjs-mock-solution.ts:47 - useAuth
+docs/middleware-mock-investigation/nextjs-mock-solution.ts:48 - useUser
+docs/middleware-mock-investigation/nextjs-mock-solution.ts:49 - ClerkProvider
+hooks/auth/index.ts:37 - useAuth (used in module)
+hooks/auth/index.ts:47 - useUser (used in module)
+hooks/auth/index.ts:57 - useAuthStatus (used in module)
+hooks/auth/index.ts:67 - useSignOut (used in module)
+hooks/auth/index.ts:78 - useHasRole (used in module)
+hooks/auth/index.ts:88 - useIsAdmin (used in module)
+hooks/auth/index.ts:98 - useIsBuilder (used in module)
+hooks/auth/index.ts:108 - useIsClient
+hooks/auth/index.ts:119 - useHasAllRoles
+hooks/auth/index.ts:130 - useHasAnyRole
+hooks/auth/index.ts:140 - useAuthToken (used in module)
+hooks/auth/index.ts:152 - withClientAuth
+hooks/auth/index.ts:30 - UserRole (used in module)
+hooks/learning/index.ts:29 - useLearningState
+hooks/learning/index.ts:6 - LearningFilter
+hooks/learning/index.ts:7 - LearningTimeframe
+hooks/learning/index.ts:8 - LearningSort
+hooks/learning/index.ts:11 - LearningState
+hooks/scheduling/index.ts:7 - useBookingManager
+lib/admin/index.ts:13 - fetchAdminDashboard
+lib/admin/index.ts:14 - getSystemSettings
+lib/admin/index.ts:15 - updateSystemSettings
+lib/admin/index.ts:16 - getVerificationQueue
+lib/admin/index.ts:17 - updateBuilderStatus
+lib/admin/index.ts:18 - manageSessionType
+lib/admin/index.ts:19 - manageUserRole
+lib/admin/index.ts:24 - formatVerificationData
+lib/admin/index.ts:25 - calculateApprovalMetrics
+lib/admin/index.ts:26 - validateSessionTypeConfig
+lib/admin/index.ts:27 - generateAdminReport
+lib/admin/index.ts:28 - formatSystemSettings
+lib/admin/index.ts:33 - builderVerificationSchema
+lib/admin/index.ts:34 - sessionTypeSchema
+lib/admin/index.ts:35 - systemSettingsSchema
+lib/admin/index.ts:36 - userRoleSchema
+lib/admin/index.ts:37 - dashboardFilterSchema
+lib/admin/index.ts:38 - builderManagementSchema
+lib/admin/index.ts:39 - marketplaceCategorySchema
+lib/admin/index.ts:8 - VerificationStatus
+lib/admin/index.ts:18 - AdminErrorType
+lib/admin/index.ts:29 - AdminClientErrorType
+lib/admin/index.ts:39 - BuilderVerificationParams
+lib/admin/index.ts:50 - SessionType
+lib/admin/index.ts:68 - SystemSettings
+lib/admin/index.ts:110 - AdminDashboardData
+lib/admin/index.ts:149 - BuilderVerification
+lib/admin/index.ts:165 - AdminResult
+lib/admin/index.ts:178 - AdminClientResult
+lib/admin/index.ts:191 - MarketplaceCategory
+lib/admin/index.ts:207 - BuilderManagement
+lib/admin/index.ts:221 - DashboardFilter
+lib/auth/api-auth.ts:71 - withRole (used in module)
+lib/auth/api-auth.ts:93 - withAdmin
+lib/auth/api-auth.ts:102 - withBuilder
+lib/auth/api-auth.ts:111 - withClient
+lib/auth/api-auth.ts:18 - AuthUser (used in module)
+lib/auth/api-auth.ts:26 - RouteHandler (used in module)
+lib/auth/clerk-fix.ts:4 - default
+lib/auth/clerk-fix.ts:36 - config
+lib/auth/clerk-hooks.ts:22 - ExtendedUser (used in module)
+lib/auth/clerk-middleware.ts:47 - clerkMiddleware
+lib/auth/clerk-middleware.ts:80 - config
+lib/auth/clerk-reference.ts:4 - default
+lib/auth/clerk-reference.ts:36 - config
+lib/auth/hooks.ts:5 - useHasRole
+lib/auth/hooks.ts:6 - useIsAdmin
+lib/auth/hooks.ts:7 - useIsBuilder
+lib/auth/hooks.ts:8 - useIsClient
+lib/auth/hooks.ts:10 - useAuthStatus
+lib/auth/hooks.ts:14 - useClerk
+lib/auth/hooks.ts:14 - useSignIn
+lib/auth/hooks.ts:14 - useSignUp
+lib/auth/index.ts:18 - getCurrentUserId
+lib/auth/index.ts:33 - getCurrentUser
+lib/auth/index.ts:81 - addRoleToUser
+lib/auth/index.ts:160 - removeRoleFromUser
+lib/auth/index.ts:249 - getUserRoles
+lib/auth/index.ts:355 - syncUserRoles
+lib/auth/index.ts:15 - logSecurityEvent
+lib/auth/index.ts:107 - logWebhookEvent
+lib/auth/index.ts:224 - logRoleChangeEvent
+lib/auth/index.ts:263 - logAuthAttempt
+lib/auth/index.ts:294 - logProfileAccess
+lib/auth/index.ts:12 - UserRole
+lib/auth/index.ts:21 - AuthUser
+lib/auth/index.ts:43 - AuthErrorType
+lib/auth/index.ts:56 - AuthError
+lib/auth/index.ts:66 - AuthResponse
+lib/auth/index.ts:76 - AuthOptions
+lib/auth/index.ts:84 - AuthMiddlewareOptions
+lib/auth/index.ts:92 - AuthContextType
+lib/auth/test-utils.ts:191 - createAuthenticatedMock (used in module)
+lib/auth/test-utils.ts:261 - createUnauthenticatedMock (used in module)
+lib/auth/test-utils.ts:308 - createLoadingMock (used in module)
+lib/auth/test-utils.ts:351 - setupMockClerk
+lib/auth/test-utils.ts:376 - resetMockClerk
+lib/auth/test-utils.ts:387 - createAuthHeaders
+lib/auth/test-utils.ts:399 - mockMiddlewareAPI
+lib/community/index.ts:28 - getRecentDiscussions
+lib/community/index.ts:54 - createDiscussion
+lib/community/index.ts:101 - addComment
+lib/community/index.ts:146 - rateContribution
+lib/community/index.ts:173 - getKnowledgeBaseItems
+lib/community/index.ts:225 - getPopularTopics
+lib/community/index.ts:244 - getUpcomingEvents
+lib/community/index.ts:280 - getLatestKnowledgeItems
+lib/community/index.ts:292 - getKnowledgeCategories
+lib/community/index.ts:57 - getDiscussion
+lib/community/index.ts:78 - getDiscussionComments
+lib/community/index.ts:193 - getDiscussionTags
+lib/community/index.ts:18 - formatDate
+lib/community/index.ts:61 - truncateText
+lib/community/index.ts:76 - sortDiscussions
+lib/community/index.ts:103 - calculateContributionPoints
+lib/community/index.ts:118 - getContributionLevel
+lib/community/index.ts:138 - generateCommentThread
+lib/community/index.ts:13 - Discussion
+lib/community/index.ts:29 - Comment
+lib/community/index.ts:43 - DiscussionCreationData
+lib/community/index.ts:52 - CommentCreationData
+lib/community/index.ts:61 - DiscussionCreationResult
+lib/community/index.ts:71 - CommentCreationResult
+lib/community/index.ts:81 - ContributionRatingResult
+lib/community/index.ts:91 - UserContribution
+lib/community/index.ts:103 - RecognitionBadge
+lib/community/index.ts:114 - CommunitySpace
+lib/community/index.ts:126 - DiscussionList
+lib/community/index.ts:131 - CommentList
+lib/community/index.ts:15 - discussionCreationSchema
+lib/community/index.ts:24 - commentCreationSchema
+lib/community/index.ts:33 - contributionRatingSchema
+lib/community/index.ts:41 - discussionSchema
+lib/community/index.ts:57 - commentSchema
+lib/community/index.ts:71 - userContributionSchema
+lib/community/index.ts:83 - discussionListSchema
+lib/community/index.ts:88 - commentListSchema
+lib/constants/pathways.ts:85 - getPathwayById
+lib/constants/pathways.ts:90 - getAllPathways
+lib/constants/pathways.ts:94 - getPathwayNames
+lib/constants/pathways.ts:82 - PathwayConfig (used in module)
+lib/constants/pathways.ts:99 - DEFAULT_PATHWAY
+lib/constants/pathways.ts:102 - PATHWAY_STATUS (used in module)
+lib/constants/pathways.ts:108 - PathwayStatus
+lib/contexts/booking-flow-context.tsx:447 - BookingFlowContext (used in module)
+lib/contexts/booking-flow-context.tsx:447 - initialBookingState (used in module)
+lib/datadog/auth-monitoring.ts:90 - trackAuthOperation
+lib/datadog/auth-monitoring.ts:161 - trackRoleCheck
+lib/datadog/auth-monitoring.ts:240 - trackPermissionCheck
+lib/datadog/auth-monitoring.ts:18 - authMonitoringConfig (used in module)
+lib/datadog/context-propagation.ts:30 - extractTraceContext (used in module)
+lib/datadog/context-propagation.ts:125 - serializeTraceContext
+lib/datadog/context-propagation.ts:135 - deserializeTraceContext
+lib/datadog/context-propagation.ts:16 - TraceContext (used in module)
+lib/datadog/index.ts:15 - isBrowser (used in module)
+lib/datadog/index.ts:16 - isServer
+lib/datadog/init.ts:21 - isBrowser (used in module)
+lib/datadog/sentry-integration.ts:32 - createDatadogTraceUrl (used in module)
+lib/datadog/sentry-integration.ts:41 - createDatadogTraceContext
+lib/datadog/sentry-integration.ts:77 - DatadogSentryIntegration (used in module)
+lib/datadog/server-actions.ts:14 - getDatadogServiceInfo
+lib/datadog/server-tracer.ts:23 - extractServerTraceContext
+lib/datadog/server-tracer.ts:141 - tracer (used in module)
+lib/datadog/server.ts:7 - isBrowser (used in module)
+lib/datadog/server.ts:8 - isServer
+lib/datadog/server.ts:19 - initializeServerTracer
+lib/datadog/server.ts:20 - getServerTracer
+lib/datadog/server.ts:21 - extractTraceContext
+lib/datadog/server.ts:29 - startAuthSpan
+lib/datadog/server.ts:30 - finishAuthSpan
+lib/datadog/server.ts:35 - injectTraceContextIntoHeaders
+lib/datadog/server.ts:36 - extractTraceContextFromHeaders
+lib/datadog/server.ts:19 - tracer
+lib/datadog/server.ts:14 - traceContext
+lib/datadog/server.ts:106 - getCurrentEnvironment
+lib/datadog/server.ts:115 - getEnvironmentConfig
+lib/datadog/server.ts:123 - getDatadogConfig
+lib/datadog/server.ts:140 - isCriticalTransaction
+lib/datadog/server.ts:149 - getTransactionSampleRate
+lib/datadog/server.ts:11 - DatadogEnvironment
+lib/datadog/server.ts:28 - DatadogConfig
+lib/datadog/tracer.ts:13 - initializeDatadogTracer
+lib/datadog/tracer.ts:106 - createSpan (used in module)
+lib/datadog/tracer.ts:143 - withSpan
+lib/datadog/tracer.ts:180 - tracer (used in module)
+lib/learning/index.ts:24 - getUserLearningProgress
+lib/learning/index.ts:54 - recordContentCompletion
+lib/learning/index.ts:85 - performSkillAssessment
+lib/learning/index.ts:121 - getLearningCategories
+lib/learning/index.ts:145 - getLearningCapabilities
+lib/learning/index.ts:23 - getLearningModules
+lib/learning/index.ts:44 - getModuleContent
+lib/learning/index.ts:64 - getUserProgress
+lib/learning/index.ts:98 - completeContent
+lib/learning/index.ts:127 - submitAssessment
+lib/learning/index.ts:26 - calculateModuleProgress
+lib/learning/index.ts:56 - getNextRecommendedContent
+lib/learning/index.ts:97 - formatSkillLevel
+lib/learning/index.ts:119 - generateRecommendations
+lib/learning/index.ts:159 - calculateModuleTime
+lib/learning/index.ts:13 - ContentType
+lib/learning/index.ts:18 - SkillLevel
+lib/learning/index.ts:23 - ContentItem
+lib/learning/index.ts:36 - LearningModule
+lib/learning/index.ts:50 - ProgressItem
+lib/learning/index.ts:60 - CurrentModuleProgress
+lib/learning/index.ts:70 - LearningPathProgress
+lib/learning/index.ts:82 - LearningPath
+lib/learning/index.ts:93 - Recommendation
+lib/learning/index.ts:102 - SkillAssessmentResult
+lib/learning/index.ts:112 - ContentCompletionResult
+lib/learning/index.ts:15 - contentItemSchema
+lib/learning/index.ts:28 - learningModuleSchema
+lib/learning/index.ts:42 - progressItemSchema
+lib/learning/index.ts:52 - skillLevelSchema
+lib/learning/index.ts:57 - learningProgressSchema
+lib/learning/index.ts:74 - assessmentAnswerSchema
+lib/learning/index.ts:79 - contentCompletionSchema
+lib/learning/index.ts:86 - recommendationSchema
+lib/marketplace/app-service.ts:7 - fetchAppsByBuilderId
+lib/marketplace/app-service.ts:25 - createApp
+lib/marketplace/app-service.ts:58 - updateApp
+lib/marketplace/app-service.ts:91 - deleteApp
+lib/marketplace/data-service.ts:12 - fetchBuilders
+lib/marketplace/data-service.ts:60 - fetchBuilderById
+lib/marketplace/data-service.ts:82 - fetchFeaturedBuilders
+lib/marketplace/data-service.ts:101 - fetchMarketplaceFilterOptions
+lib/marketplace/index.ts:21 - getBuilders
+lib/marketplace/index.ts:13 - fetchBuilders
+lib/marketplace/index.ts:77 - fetchBuilderById
+lib/marketplace/index.ts:99 - fetchFeaturedBuilders
+lib/marketplace/index.ts:118 - fetchMarketplaceFilterOptions
+lib/marketplace/index.ts:176 - fetchBuilderAnalyticsSummary
+lib/marketplace/index.ts:205 - fetchBuilderAnalyticsTimeseries
+lib/marketplace/index.ts:229 - fetchBuilderSuccessMetrics
+lib/marketplace/index.ts:137 - AnalyticsSummary
+lib/marketplace/index.ts:148 - AnalyticsTimeseriesPoint
+lib/marketplace/index.ts:153 - AnalyticsTimeseries
+lib/marketplace/index.ts:159 - SuccessMetrics
+lib/marketplace/index.ts:9 - ValidationTier
+lib/marketplace/index.ts:16 - AvailabilityStatus
+lib/marketplace/index.ts:19 - BuilderProfileListing
+lib/marketplace/index.ts:42 - BuildersResponse
+lib/marketplace/index.ts:48 - PaginationInfo
+lib/marketplace/index.ts:57 - PaginatedResponse
+lib/marketplace/index.ts:63 - MarketplaceFilters
+lib/marketplace/index.ts:77 - MarketplaceFilterOptions
+lib/marketplace/index.ts:85 - BuilderProfileData
+lib/marketplace/index.ts:128 - BuilderProfileRequest
+lib/marketplace/index.ts:143 - BuilderSkill
+lib/marketplace/index.ts:158 - MarketplaceEventType
+lib/marketplace/index.ts:167 - MarketplaceEvent
+lib/middleware/index.ts:22 - MIDDLEWARE_VERSION
+lib/middleware/index.ts:247 - getRateLimitType
+lib/middleware/index.ts:259 - getMiddlewareConfig
+lib/middleware/index.ts:273 - mergeConfigs
+lib/middleware/index.ts:18 - RoutePattern
+lib/middleware/index.ts:20 - RateLimitType
+lib/middleware/index.ts:22 - SecurityHeadersConfig
+lib/middleware/index.ts:34 - CsrfConfig
+lib/middleware/index.ts:43 - RateLimitConfig
+lib/middleware/index.ts:50 - ApiProtectionConfig
+lib/middleware/index.ts:56 - AuthConfig
+lib/middleware/index.ts:64 - MiddlewareConfig
+lib/middleware/index.ts:75 - getClerkDomains
+lib/middleware/index.ts:87 - getRateLimitConfig
+lib/middleware/index.ts:107 - defaultCspDirectives
+lib/middleware/index.ts:120 - defaultPublicRoutes
+lib/middleware/index.ts:147 - defaultIgnoredRoutes
+lib/middleware/index.ts:155 - defaultApiPathPatterns
+lib/middleware/index.ts:165 - defaultMiddlewareConfig
+lib/middleware/index.ts:205 - environmentConfigs
+lib/middleware/index.ts:26 - createMiddleware
+lib/middleware/index.ts:25 - applyCsrfProtection
+lib/middleware/index.ts:60 - applyRateLimit
+lib/middleware/index.ts:97 - applySecurityHeaders
+lib/middleware/index.ts:126 - applyApiProtection
+lib/middleware/index.ts:26 - validateMiddlewareConfig
+lib/middleware/index.ts:325 - formatValidationErrors
+lib/middleware/index.ts:16 - ValidationError
+lib/middleware/index.ts:38 - trackPerformance
+lib/middleware/index.ts:78 - trackMultipleComponents
+lib/middleware/index.ts:97 - addPerformanceHeaders
+lib/middleware/index.ts:127 - getPerformanceEntries
+lib/middleware/index.ts:148 - getComponentStats
+lib/middleware/index.ts:201 - resetPerformanceStore
+lib/middleware/index.ts:16 - PerformanceEntry
+lib/middleware/index.ts:24 - handleMiddlewareError
+lib/middleware/index.ts:100 - createMiddlewareError
+lib/middleware/index.ts:117 - withErrorHandling
+lib/middleware/index.ts:11 - MiddlewareError
+lib/middleware/index.ts:28 - createLogEntry
+lib/middleware/index.ts:56 - logEntry
+lib/middleware/index.ts:129 - withRequestLogging
+lib/middleware/index.ts:11 - LogLevel
+lib/middleware/index.ts:13 - LogEntry
+lib/middleware/index.ts:76 - middlewareLogger
+lib/middleware/index.ts:35 - withProfileAccess
+lib/middleware/index.ts:249 - withAdminAccess
+lib/middleware/index.ts:261 - withBuilderProfileAccess
+lib/middleware/index.ts:273 - withClientProfileAccess
+lib/middleware/index.ts:16 - ProfileRouteContext
+lib/middleware/index.ts:27 - ProfileRouteHandler
+lib/middleware/index.ts:81 - getUserRoles
+lib/middleware/index.ts:105 - hasAccess
+lib/middleware/index.ts:123 - getPolicyForPath
+lib/middleware/index.ts:145 - rbacMiddleware
+lib/middleware/index.ts:14 - UserRole
+lib/middleware/index.ts:16 - ResourceAction
+lib/middleware/index.ts:18 - Permission
+lib/middleware/index.ts:23 - AccessPolicy
+lib/middleware/index.ts:31 - defaultAccessPolicies
+lib/middleware/index.ts:63 - routeAccessPolicies
+lib/middleware/test-utils.ts:84 - mockClerkAuth
+lib/middleware/test-utils.ts:154 - mockRedirectToSignIn
+lib/middleware/test-utils.ts:167 - setupMiddlewareMocks
+lib/middleware/test-utils.ts:37 - MockAuthState (used in module)
+lib/mock-data/profiles.ts:122 - mockEntryTierProfile
+lib/mock-data/profiles.ts:173 - mockExpertTierProfile
+lib/payment/index.ts:10 - createCheckoutSession
+lib/payment/index.ts:11 - retrieveCheckoutSession
+lib/payment/index.ts:12 - updatePaymentStatus
+lib/payment/index.ts:13 - processRefund
+lib/payment/index.ts:18 - initiateCheckout
+lib/payment/index.ts:19 - verifyPaymentStatus
+lib/payment/index.ts:20 - getPaymentHistory
+lib/payment/index.ts:21 - requestRefund
+lib/payment/index.ts:22 - completeBookingWithPayment
+lib/payment/index.ts:27 - formatCurrency
+lib/payment/index.ts:28 - calculateTax
+lib/payment/index.ts:29 - calculateSessionExpiry
+lib/payment/index.ts:30 - mapStripePaymentStatus
+lib/payment/index.ts:31 - isPaymentStatusFinal
+lib/payment/index.ts:32 - generateIdempotencyKey
+lib/payment/index.ts:33 - createPaymentDescription
+lib/payment/index.ts:38 - checkoutSessionSchema
+lib/payment/index.ts:39 - paymentStatusSchema
+lib/payment/index.ts:40 - webhookEventSchema
+lib/payment/index.ts:41 - refundRequestSchema
+lib/payment/index.ts:42 - paymentHistoryFilterSchema
+lib/payment/index.ts:43 - paymentIntentSchema
+lib/payment/index.ts:44 - invoiceSchema
+lib/payment/index.ts:8 - PaymentStatus
+lib/payment/index.ts:21 - PaymentErrorType
+lib/payment/index.ts:33 - PaymentClientErrorType
+lib/payment/index.ts:46 - CheckoutSessionParams
+lib/payment/index.ts:56 - PaymentResult
+lib/payment/index.ts:70 - PaymentClientResult
+lib/payment/index.ts:83 - RefundRequest
+lib/payment/index.ts:92 - PaymentMethod
+lib/payment/index.ts:106 - PaymentHistoryFilter
+lib/payment/index.ts:117 - PaymentTransaction
+lib/payment/index.ts:138 - CheckoutSessionResponse
+lib/payment/index.ts:147 - Invoice
+lib/profile/index.ts:28 - getCurrentBuilderProfile
+lib/profile/index.ts:88 - getBuilderProfileBySlug
+lib/profile/index.ts:147 - updateBuilderProfile
+lib/profile/index.ts:245 - updateExpertiseAreas
+lib/profile/index.ts:316 - getSessionTypes
+lib/profile/index.ts:373 - updateSessionType
+lib/profile/index.ts:465 - deleteSessionType
+lib/profile/index.ts:515 - updateProfile
+lib/profile/index.ts:574 - getUserProfile
+lib/profile/index.ts:638 - getPublicUserProfile
+lib/profile/index.ts:693 - getClientProfileData
+lib/profile/index.ts:19 - getBuilderProfileById
+lib/profile/index.ts:73 - getBuilderProfileByClerkId
+lib/profile/index.ts:100 - getAllBuilderProfiles
+lib/profile/index.ts:148 - createBuilderProfile
+lib/profile/index.ts:209 - deleteBuilderProfile
+lib/profile/index.ts:16 - findOrCreateUser
+lib/profile/index.ts:151 - ensureProfilesForUser
+lib/profile/index.ts:226 - syncUserRoles
+lib/profile/index.ts:274 - syncUserData
+lib/profile/index.ts:393 - createAuditLog
+lib/profile/index.ts:437 - reconcileEmailDiscrepancy
+lib/profile/index.ts:12 - profileImageSchema
+lib/profile/index.ts:17 - socialProfilesSchema
+lib/profile/index.ts:24 - testimonialSchema
+lib/profile/index.ts:35 - availabilitySchema
+lib/profile/index.ts:40 - portfolioProjectSchema
+lib/profile/index.ts:53 - aiAppSchema
+lib/profile/index.ts:64 - metricSchema
+lib/profile/index.ts:76 - metricsCategorySchema
+lib/profile/index.ts:83 - specializationContentSchema
+lib/profile/index.ts:90 - expertiseAreasSchema
+lib/profile/index.ts:96 - createBuilderProfileSchema
+lib/profile/index.ts:112 - updateBuilderProfileSchema
+lib/profile/index.ts:124 - builderProfileQuerySchema
+lib/profile/index.ts:132 - ProfileImage
+lib/profile/index.ts:133 - SocialProfiles
+lib/profile/index.ts:134 - Testimonial
+lib/profile/index.ts:135 - Availability
+lib/profile/index.ts:136 - PortfolioProject
+lib/profile/index.ts:137 - AIApp
+lib/profile/index.ts:138 - Metric
+lib/profile/index.ts:139 - MetricsCategory
+lib/profile/index.ts:140 - SpecializationContent
+lib/profile/index.ts:141 - ExpertiseAreas
+lib/profile/index.ts:142 - CreateBuilderProfileData
+lib/profile/index.ts:143 - UpdateBuilderProfileData
+lib/profile/index.ts:144 - BuilderProfileQuery
+lib/profile/index.ts:8 - ValidationTier
+lib/profile/index.ts:14 - UserRole
+lib/profile/index.ts:20 - SpecializationArea
+lib/profile/index.ts:56 - BuilderAvailability
+lib/profile/index.ts:104 - ExpertiseAreasUpdate
+lib/profile/index.ts:106 - SessionTypeWithId
+lib/profile/index.ts:118 - BuilderProfileData
+lib/profile/index.ts:142 - BuilderProfileResponse
+lib/profile/index.ts:172 - ProfilePermissions
+lib/profile/index.ts:182 - ProfileAuthContext
+lib/scheduling/index.ts:76 - getSessionTypes
+lib/scheduling/index.ts:109 - createSessionType
+lib/scheduling/index.ts:147 - deleteSessionType
+lib/scheduling/index.ts:238 - getAvailabilityRules
+lib/scheduling/index.ts:271 - createAvailabilityRule
+lib/scheduling/index.ts:309 - deleteAvailabilityRule
+lib/scheduling/index.ts:11 - bookingRequestSchema
+lib/scheduling/index.ts:25 - sessionTypeSchema
+lib/scheduling/index.ts:41 - availabilityRuleSchema
+lib/scheduling/index.ts:52 - availabilityExceptionSchema
+lib/scheduling/index.ts:63 - timeSlotRequestSchema
+lib/scheduling/index.ts:71 - bookingStatusUpdateSchema
+lib/scheduling/index.ts:77 - paymentStatusUpdateSchema
+lib/scheduling/index.ts:84 - calendlySchedulingLinkRequestSchema
+lib/scheduling/index.ts:95 - calendlyEventTypesRequestSchema
+lib/scheduling/index.ts:101 - calendlyWebhookSchema
+lib/scheduling/index.ts:11 - BookingStatus
+lib/scheduling/index.ts:21 - PaymentStatus
+lib/scheduling/index.ts:31 - SessionType
+lib/scheduling/index.ts:53 - Booking
+lib/scheduling/index.ts:80 - BookingRequest
+lib/scheduling/index.ts:93 - SchedulingIntegrationType
+lib/scheduling/index.ts:101 - AvailabilityRule
+lib/scheduling/index.ts:115 - AvailabilityException
+lib/scheduling/index.ts:128 - TimeSlot
+lib/scheduling/webhook-security.ts:38 - verifyWebhookSignature (used in module)
+lib/scheduling/webhook-security.ts:161 - verifyWebhookRequest
+lib/scheduling/webhook-security.ts:195 - verifyStripeWebhookSignature
+lib/scheduling/webhook-security.ts:212 - verifyCalendlyWebhookSignature
+lib/scheduling/webhook-security.ts:18 - WebhookSignatureError (used in module)
+lib/sentry/error-classification.ts:10 - SentrySeverity (used in module)
+lib/sentry/index.ts:8 - sentryConfig
+lib/sentry/index.ts:8 - getInitializationConfig
+lib/sentry/index.ts:12 - ErrorSeverity
+lib/sentry/index.ts:13 - ErrorCategory
+lib/sentry/index.ts:14 - ErrorSource
+lib/sentry/index.ts:15 - UserImpactLevel
+lib/sentry/index.ts:16 - ErrorMetadata
+lib/sentry/index.ts:17 - handleError
+lib/sentry/index.ts:18 - reportError
+lib/sentry/index.ts:19 - createDomainErrorHandler
+lib/sentry/index.ts:20 - errorMetadataFactory
+lib/sentry/index.ts:24 - configureSentryDataFiltering
+lib/sentry/index.ts:28 - configureSentryPerformance
+lib/sentry/index.ts:29 - createTransaction
+lib/sentry/index.ts:30 - monitorPerformance
+lib/sentry/index.ts:31 - createSpan
+lib/sentry/index.ts:32 - measureComponentPerformance
+lib/sentry/index.ts:33 - useMeasureComponent
+lib/sentry/index.ts:34 - monitorServerOperation
+lib/sentry/index.ts:35 - addServerTimingHeaders
+lib/sentry/index.ts:40 - configureSentryUserContext
+lib/sentry/index.ts:41 - useSentryUser
+lib/sentry/index.ts:42 - configureSentryUserContextFromRequest
+lib/sentry/sensitive-data-filter.ts:298 - configureSentryDataFiltering (used in module)
+lib/stripe/index.ts:33 - createCheckoutSession
+lib/stripe/index.ts:527 - handleSuccessfulPayment
+lib/stripe/index.ts:711 - getCheckoutSessionStatus
+lib/stripe/index.ts:13 - bookingDataSchema
+lib/stripe/index.ts:30 - checkoutSessionSchema
+lib/stripe/index.ts:38 - CheckoutSessionInput
+lib/stripe/index.ts:43 - paymentStatusSchema
+lib/stripe/index.ts:51 - PaymentStatusInput
+lib/stripe/index.ts:9 - StripeWebhookEventType
+lib/stripe/index.ts:17 - CheckoutSessionStatus
+lib/stripe/index.ts:24 - PaymentStatus
+lib/stripe/index.ts:33 - StripeCheckoutMetadata
+lib/stripe/index.ts:49 - CheckoutSessionRequest
+lib/stripe/index.ts:67 - CheckoutSessionResponse
+lib/stripe/index.ts:73 - PaymentStatusRequest
+lib/stripe/index.ts:79 - PaymentStatusResponse
+lib/stripe/index.ts:89 - WebhookEventRequest
+lib/stripe/index.ts:95 - WebhookEventResponse
+lib/stripe/stripe-client.ts:61 - createCheckoutSession (used in module)
+lib/stripe/stripe-client.ts:143 - redirectToCheckout (used in module)
+lib/stripe/stripe-client.ts:205 - getCheckoutSessionDetails
+lib/stripe/stripe-client.ts:23 - StripeClientResult (used in module)
+lib/stripe/stripe-client.ts:41 - getStripe (used in module)
+lib/stripe/stripe-server.ts:174 - getOrCreateCustomer (used in module)
+lib/stripe/stripe-server.ts:430 - createRefund
+lib/stripe/stripe-server.ts:24 - StripeOperationResult (used in module)
+lib/stripe/stripe-server.ts:36 - CustomerParams (used in module)
+lib/stripe/stripe-server.ts:43 - BookingCheckoutParams (used in module)
+lib/trust/index.ts:20 - validateTrustEvidence
+lib/trust/index.ts:54 - getBuilderValidationTier
+lib/trust/index.ts:65 - getTrustOverview
+lib/trust/index.ts:129 - getVerificationData
+lib/trust/index.ts:180 - getBuilderData
+lib/trust/index.ts:18 - submitTrustEvidence
+lib/trust/index.ts:47 - getValidationTier
+lib/trust/index.ts:19 - calculateValidationTier
+lib/trust/index.ts:64 - formatValidationTier
+lib/trust/index.ts:83 - getTierColorCode
+lib/trust/index.ts:104 - calculateTierProgress
+lib/trust/index.ts:13 - EvidenceType
+lib/trust/index.ts:18 - ValidationTier
+lib/trust/index.ts:23 - TrustEvidence
+lib/trust/index.ts:36 - TierRequirement
+lib/trust/index.ts:45 - ValidationTierInfo
+lib/trust/index.ts:55 - TrustValidationResult
+lib/trust/index.ts:65 - BuilderValidationStatus
+lib/trust/index.ts:17 - trustEvidenceSchema
+lib/trust/index.ts:32 - trustValidationTierSchema
+lib/trust/index.ts:50 - trustValidationResultSchema
+lib/trust/index.ts:58 - trustValidationSchema
+lib/utils/profile-form-helpers.ts:54 - profileToFormValues
+lib/utils/profile-form-helpers.ts:79 - formValuesToProfileUpdates
+lib/utils/profile-form-helpers.ts:103 - projectToFormValues
+lib/utils/profile-form-helpers.ts:8 - profileFormSchema (used in module)
+lib/utils/profile-form-helpers.ts:25 - projectFormSchema (used in module)
+lib/utils/profile-form-helpers.ts:39 - validateProfileSchema (used in module)
+lib/utils/profile-form-helpers.ts:48 - ProfileFormValues (used in module)
+sanity/lib/image.ts:9 - urlFor
+sanity/lib/live.ts:7 - sanityFetch
+sanity/lib/live.ts:7 - SanityLive
+sanity/schemaTypes/index.ts:3 - schema
+__tests__/e2e/fixtures/project.ts:17 - test (used in module)
+__tests__/e2e/fixtures/project.ts:72 - expect
+__tests__/e2e/page-objects/index.ts:8 - BasePage
+__tests__/e2e/page-objects/index.ts:9 - AuthPage
+__tests__/e2e/page-objects/index.ts:89 - ProfilePage
+__tests__/e2e/page-objects/index.ts:192 - OnboardingPage
+__tests__/e2e/page-objects/index.ts:9 - MarketplacePage
+__tests__/e2e/page-objects/index.ts:147 - BuilderProfilePage
+__tests__/e2e/page-objects/index.ts:9 - BookingPage
+__tests__/e2e/page-objects/index.ts:154 - CalendlyBookingPage
+__tests__/e2e/page-objects/index.ts:242 - PaymentPage
+__tests__/e2e/page-objects/index.ts:359 - BookingConfirmationPage
+__tests__/e2e/utils/database-isolation.ts:60 - getE2EDatabase (used in module)
+__tests__/e2e/utils/database-isolation.ts:187 - cleanupE2EDatabase
+__tests__/e2e/utils/database-isolation.ts:15 - E2EDbOptions (used in module)
+__tests__/e2e/utils/index.ts:584 - createWebhookSimulators
+__tests__/e2e/utils/index.ts:20 - CalendlyEventType
+__tests__/e2e/utils/index.ts:28 - CalendlyEventData
+__tests__/e2e/utils/index.ts:61 - CalendlyWebhookSimulator
+__tests__/e2e/utils/index.ts:184 - StripeEventType
+__tests__/e2e/utils/index.ts:198 - StripeEventData
+__tests__/e2e/utils/index.ts:220 - StripeWebhookSimulator
+__tests__/e2e/utils/index.ts:25 - setFeatureFlag
+__tests__/e2e/utils/index.ts:45 - getFeatureFlag
+__tests__/e2e/utils/index.ts:61 - setFeatureFlags
+__tests__/e2e/utils/index.ts:78 - resetFeatureFlag
+__tests__/e2e/utils/index.ts:98 - resetAllFeatureFlags
+__tests__/e2e/utils/index.ts:112 - withFeatureFlag
+__tests__/e2e/utils/index.ts:142 - withFeatureFlags
+__tests__/e2e/utils/test-data-helpers.ts:27 - getTestUserAuth (used in module)
+__tests__/e2e/utils/test-data-helpers.ts:265 - createTestBookingScenario
+__tests__/e2e/utils/test-data-helpers.ts:342 - setupTestScenario
+__tests__/e2e/utils/test-data-helpers.ts:16 - TestUserAuth (used in module)
+__tests__/e2e/utils/test-data-helpers.ts:82 - TestBuilderData (used in module)
+__tests__/e2e/visual/chromatic-setup.ts:7 - setupChromaticArchives
+__tests__/mocks/scheduling/mock-calendly-data.ts:10 - mockCalendlyUuid (used in module)
+__tests__/utils/database/index.ts:14 - resetTestDatabase
+__tests__/utils/database/index.ts:45 - initializeTestDatabase
+__tests__/utils/database/index.ts:11 - withTestTransaction
+__tests__/utils/database/index.ts:46 - withSharedTestTransaction
+__tests__/utils/database/index.ts:12 - getIsolatedDatabase
+__tests__/utils/database/index.ts:47 - cleanupIsolatedDatabase
+__tests__/utils/database/index.ts:66 - initializeIsolatedDatabase
+__tests__/utils/database/seed-test-users.ts:15 - seedTestUsers (used in module)
+__tests__/utils/database/seed-test-users.ts:166 - checkTestUserExists (used in module)
+__tests__/utils/database/seed-test-users.ts:181 - syncAllTestUsers
+__tests__/utils/e2e/index.ts:19 - setupAuthStates
+__tests__/utils/e2e/index.ts:134 - getAuthenticatedPage
+__tests__/utils/e2e/index.ts:10 - AuthOptions
+__tests__/utils/e2e/index.ts:12 - waitForCondition
+__tests__/utils/e2e/index.ts:45 - waitForElementStability
+__tests__/utils/e2e/index.ts:117 - retry
+__tests__/utils/e2e/index.ts:154 - waitForNetworkIdle
+__tests__/utils/factory/index.ts:18 - createUser (used in module)
+__tests__/utils/factory/index.ts:33 - createProfile (used in module)
+__tests__/utils/factory/index.ts:54 - createSessionType (used in module)
+__tests__/utils/factory/index.ts:70 - createBooking (used in module)
+__tests__/utils/factory/index.ts:93 - createPayment (used in module)
+__tests__/utils/factory/index.ts:110 - createPersona
+__tests__/utils/factory/index.ts:220 - createRelatedEntities
+__tests__/utils/seed/index.ts:397 - seedTestData
+__tests__/utils/seed/index.ts:26 - SeedOptions
+__tests__/utils/seed/index.ts:12 - seedAuthTestData
+__tests__/utils/seed/index.ts:30 - seedProfileTestData
+__tests__/utils/seed/index.ts:47 - seedMarketplaceTestData
+__tests__/utils/seed/index.ts:66 - seedSchedulingTestData
+__tests__/utils/seed/index.ts:83 - seedPaymentTestData
+__tests__/utils/seed/index.ts:99 - seedMinimalTestData
+__tests__/utils/seed/index.ts:111 - seedBookingScenario
+app/(platform)/admin/layout.tsx:11 - default
+app/(platform)/admin/layout.tsx:6 - metadata
+components/admin/ui/index.ts:30 - AdminCard
+components/community/ui/index.ts:7 - KnowledgeItem
+components/community/ui/index.ts:8 - DiscussionCard
+components/community/ui/index.ts:9 - ServerDiscussionCard
+components/landing/ui/index.ts:7 - TestimonialScroll
+components/landing/ui/testimonial-scroll.tsx:6 - TestimonialCardProps (used in module)
+components/landing/ui/testimonial-scroll.tsx:15 - TestimonialCard (used in module)
+components/learning/ui/index.ts:7 - TimelineItem
+components/learning/ui/index.ts:8 - TimelineFilter
+components/marketing/ui/feature-card.tsx:7 - FeatureCardProps (used in module)
+components/marketing/ui/index.ts:8 - TrustProofCompanies
+components/marketing/ui/index.ts:9 - TestimonialCard
+components/marketing/ui/index.ts:9 - TestimonialScroll
+components/marketing/ui/index.ts:10 - NewsletterForm
+components/marketing/ui/index.ts:11 - MarketingStat
+components/marketing/ui/index.ts:12 - MarketingMarquee
+components/marketing/ui/index.ts:13 - FeatureCard
+components/marketing/ui/marketing-marquee.tsx:7 - MarketingMarqueeProps (used in module)
+components/marketing/ui/marketing-stat.tsx:6 - MarketingStatProps (used in module)
+components/marketing/ui/testimonial-card.tsx:7 - TestimonialCardProps (used in module)
+components/marketing/ui/testimonial-card.tsx:60 - Testimonial (used in module)
+components/marketing/ui/testimonial-card.tsx:70 - TestimonialScrollProps (used in module)
+components/marketing/ui/trust-proof-companies.tsx:6 - TrustProofCompaniesProps (used in module)
+components/marketplace/components/index.ts:10 - BuilderImage
+components/marketplace/components/index.ts:11 - ImageFallback
+components/marketplace/components/index.ts:14 - BuilderCard
+components/marketplace/components/index.ts:15 - CardSkeleton
+components/marketplace/components/index.ts:18 - BuilderList
+components/marketplace/components/index.ts:19 - BuilderListSkeleton
+components/marketplace/components/index.ts:20 - BuilderListClient
+components/marketplace/components/index.ts:23 - FilterPanel
+components/marketplace/components/index.ts:26 - MarketplaceErrorBoundary
+components/marketplace/components/index.ts:26 - MarketplaceErrorFallback
+components/marketplace/hooks/index.ts:5 - useBuilderFilter
+components/marketplace/hooks/index.ts:6 - useBuilderSearch
+components/marketplace/ui/index.ts:7 - FilterPanel
+components/marketplace/ui/index.ts:9 - DemoBadge
+components/marketplace/utils/index.ts:8 - isValidImageUrl
+components/marketplace/utils/index.ts:26 - getInitials
+components/marketplace/utils/index.ts:50 - getDefaultAvatarUrl
+components/marketplace/utils/index.ts:10 - createFilterParams
+components/marketplace/utils/index.ts:51 - parseFilterParams
+components/marketplace/utils/index.ts:100 - isEmptyFilter
+components/profile/ui/index.ts:7 - SessionBookingCard
+components/profile/ui/index.ts:8 - ProfileStats
+components/profile/ui/index.ts:18 - ProfileDetails
+components/profile/ui/index.ts:17 - ProfileHeader
+components/profile/ui/session-booking-card.tsx:13 - SessionType (used in module)
+components/scheduling/builder/index.ts:1 - BookingsByPathway
+components/scheduling/builder/index.ts:2 - ClientProgress
+components/scheduling/builder/index.ts:3 - PathwayAnalytics
+components/scheduling/calendly/calendly-embed.tsx:35 - CalendlyEvent (used in module)
+components/scheduling/calendly/calendly-embed.tsx:48 - CalendlyQuestionAnswer (used in module)
+components/scheduling/calendly/index.ts:6 - CalendlyEmbed
+components/scheduling/calendly/index.ts:7 - BookingConfirmation
+components/scheduling/calendly/index.ts:8 - CalendlySessionTypeList
+components/trust/ui/index.ts:7 - ValidationTierBadge
+components/ui/composite/index.ts:7 - FormError
+components/ui/core/calendar.tsx:10 - CalendarProps (used in module)
+components/ui/core/index.ts:56 - Accordion
+components/ui/core/index.ts:56 - AccordionItem
+components/ui/core/index.ts:56 - AccordionTrigger
+components/ui/core/index.ts:56 - AccordionContent
+components/ui/core/index.ts:59 - Alert
+components/ui/core/index.ts:59 - AlertTitle
+components/ui/core/index.ts:59 - AlertDescription
+components/ui/core/index.ts:50 - Avatar
+components/ui/core/index.ts:50 - AvatarImage
+components/ui/core/index.ts:50 - AvatarFallback
+components/ui/core/index.ts:26 - BadgeProps
+components/ui/core/index.ts:36 - Badge
+components/ui/core/index.ts:36 - badgeVariants
+components/ui/core/index.ts:37 - ButtonProps
+components/ui/core/index.ts:57 - Button
+components/ui/core/index.ts:57 - buttonVariants
+components/ui/core/index.ts:79 - Card
+components/ui/core/index.ts:79 - CardHeader
+components/ui/core/index.ts:79 - CardFooter
+components/ui/core/index.ts:79 - CardTitle
+components/ui/core/index.ts:79 - CardDescription
+components/ui/core/index.ts:79 - CardContent
+components/ui/core/index.ts:29 - Checkbox
+components/ui/core/index.ts:12 - DashboardSkeleton
+components/ui/core/index.ts:111 - Dialog
+components/ui/core/index.ts:112 - DialogPortal
+components/ui/core/index.ts:113 - DialogOverlay
+components/ui/core/index.ts:114 - DialogTrigger
+components/ui/core/index.ts:115 - DialogClose
+components/ui/core/index.ts:116 - DialogContent
+components/ui/core/index.ts:117 - DialogHeader
+components/ui/core/index.ts:118 - DialogFooter
+components/ui/core/index.ts:119 - DialogTitle
+components/ui/core/index.ts:120 - DialogDescription
+components/ui/core/index.ts:185 - DropdownMenu
+components/ui/core/index.ts:186 - DropdownMenuTrigger
+components/ui/core/index.ts:187 - DropdownMenuContent
+components/ui/core/index.ts:188 - DropdownMenuItem
+components/ui/core/index.ts:189 - DropdownMenuCheckboxItem
+components/ui/core/index.ts:190 - DropdownMenuRadioItem
+components/ui/core/index.ts:191 - DropdownMenuLabel
+components/ui/core/index.ts:192 - DropdownMenuSeparator
+components/ui/core/index.ts:193 - DropdownMenuShortcut
+components/ui/core/index.ts:194 - DropdownMenuGroup
+components/ui/core/index.ts:195 - DropdownMenuPortal
+components/ui/core/index.ts:196 - DropdownMenuSub
+components/ui/core/index.ts:197 - DropdownMenuSubContent
+components/ui/core/index.ts:198 - DropdownMenuSubTrigger
+components/ui/core/index.ts:199 - DropdownMenuRadioGroup
+components/ui/core/index.ts:170 - useFormField
+components/ui/core/index.ts:171 - Form
+components/ui/core/index.ts:172 - FormItem
+components/ui/core/index.ts:173 - FormLabel
+components/ui/core/index.ts:174 - FormControl
+components/ui/core/index.ts:175 - FormDescription
+components/ui/core/index.ts:176 - FormMessage
+components/ui/core/index.ts:177 - FormField
+components/ui/core/index.ts:5 - InputProps
+components/ui/core/index.ts:25 - Input
+components/ui/core/index.ts:26 - Label
+components/ui/core/index.ts:9 - LoadingSpinner
+components/ui/core/index.ts:19 - Pagination
+components/ui/core/index.ts:33 - Popover
+components/ui/core/index.ts:33 - PopoverTrigger
+components/ui/core/index.ts:33 - PopoverContent
+components/ui/core/index.ts:33 - PopoverAnchor
+components/ui/core/index.ts:6 - ProgressProps
+components/ui/core/index.ts:12 - Progress
+components/ui/core/index.ts:110 - RadioGroup
+components/ui/core/index.ts:110 - RadioGroupItem
+components/ui/core/index.ts:148 - Select
+components/ui/core/index.ts:149 - SelectGroup
+components/ui/core/index.ts:150 - SelectValue
+components/ui/core/index.ts:151 - SelectTrigger
+components/ui/core/index.ts:152 - SelectContent
+components/ui/core/index.ts:153 - SelectLabel
+components/ui/core/index.ts:154 - SelectItem
+components/ui/core/index.ts:155 - SelectSeparator
+components/ui/core/index.ts:156 - SelectScrollUpButton
+components/ui/core/index.ts:157 - SelectScrollDownButton
+components/ui/core/index.ts:31 - Separator
+components/ui/core/index.ts:18 - Skeleton
+components/ui/core/index.ts:28 - Slider
+components/ui/core/index.ts:35 - useToast
+components/ui/core/index.ts:39 - Toaster
+components/ui/core/index.ts:39 - toast
+components/ui/core/index.ts:29 - Switch
+components/ui/core/index.ts:112 - Table
+components/ui/core/index.ts:113 - TableHeader
+components/ui/core/index.ts:114 - TableBody
+components/ui/core/index.ts:115 - TableFooter
+components/ui/core/index.ts:116 - TableHead
+components/ui/core/index.ts:117 - TableRow
+components/ui/core/index.ts:118 - TableCell
+components/ui/core/index.ts:119 - TableCaption
+components/ui/core/index.ts:55 - Tabs
+components/ui/core/index.ts:55 - TabsList
+components/ui/core/index.ts:55 - TabsTrigger
+components/ui/core/index.ts:55 - TabsContent
+components/ui/core/index.ts:5 - TextareaProps
+components/ui/core/index.ts:24 - Textarea
+components/ui/core/index.ts:30 - Tooltip
+components/ui/core/index.ts:30 - TooltipTrigger
+components/ui/core/index.ts:30 - TooltipContent
+components/ui/core/index.ts:30 - TooltipProvider
+lib/auth/clerk/api-auth.ts:154 - withAnyRole
+lib/auth/clerk/api-auth.ts:188 - withAllRoles
+lib/auth/clerk/helpers.ts:24 - getCurrentUser (used in module)
+lib/auth/clerk/helpers.ts:119 - requireAuth (used in module)
+lib/auth/clerk/helpers.ts:135 - hasRole (used in module)
+lib/auth/clerk/helpers.ts:146 - requireRole
+lib/auth/express/client-auth.ts:64 - useUserInternal (used in module)
+lib/auth/express/client-auth.ts:101 - useAuthInternal (used in module)
+lib/auth/express/enhanced-middleware.ts:20 - withExpressAuth
+lib/auth/express/enhanced-middleware.ts:110 - hasAuthError
+lib/auth/express/enhanced-middleware.ts:120 - getAuthDuration
+lib/auth/express/enhanced-middleware.ts:134 - getAuthUserId
+lib/auth/express/errors.ts:122 - ValidationError
+lib/auth/express/errors.ts:132 - ResourceNotFoundError
+lib/auth/express/index.ts:11 - createClerkExpressMiddleware
+lib/auth/express/index.ts:12 - adaptNextRequestToExpress
+lib/auth/express/index.ts:13 - createMockExpressResponse
+lib/auth/express/index.ts:18 - clerkExpressMiddleware
+lib/auth/express/index.ts:19 - publicRoutes
+lib/auth/express/index.ts:20 - ignoredRoutes
+lib/auth/express/index.ts:21 - isPublicPath
+lib/auth/express/index.ts:22 - isIgnoredPath
+lib/auth/express/index.ts:27 - getServerAuth
+lib/auth/express/index.ts:28 - createServerAuthRequest
+lib/auth/express/index.ts:29 - getFullServerAuth
+lib/auth/express/index.ts:30 - hasServerRole
+lib/auth/express/index.ts:31 - hasServerPermission
+lib/auth/express/index.ts:32 - requireServerAuth
+lib/auth/express/index.ts:33 - requireServerRole
+lib/auth/express/index.ts:34 - getDbUserIdFromClerkId
+lib/auth/express/index.ts:35 - ServerAuth
+lib/auth/express/index.ts:40 - withAuth
+lib/auth/express/index.ts:41 - withRole
+lib/auth/express/index.ts:42 - withAnyRole
+lib/auth/express/index.ts:43 - withAllRoles
+lib/auth/express/index.ts:44 - withAdmin
+lib/auth/express/index.ts:45 - withBuilder
+lib/auth/express/index.ts:46 - withClient
+lib/auth/express/index.ts:47 - withPermission
+lib/auth/express/index.ts:48 - AuthHandler
+lib/auth/express/index.ts:49 - RoleHandler
+lib/auth/express/index.ts:54 - useAuth
+lib/auth/express/index.ts:55 - useUser
+lib/auth/express/index.ts:56 - useHasRole
+lib/auth/express/index.ts:57 - useIsAdmin
+lib/auth/express/index.ts:58 - useIsBuilder
+lib/auth/express/index.ts:59 - useIsClient
+lib/auth/express/index.ts:60 - usePermission
+lib/auth/express/index.ts:61 - useSignOut
+lib/auth/express/index.ts:62 - useAuthStatus
+lib/auth/express/index.ts:63 - ExpressAuthProvider
+lib/auth/express/index.ts:64 - useAuthContext
+lib/auth/express/index.ts:65 - ExtendedUser
+lib/auth/express/index.ts:70 - AuthError
+lib/auth/express/index.ts:71 - AuthenticationError (used in module)
+lib/auth/express/index.ts:72 - AuthenticationErrorType
+lib/auth/express/index.ts:73 - AuthorizationError
+lib/auth/express/index.ts:74 - AuthConfigurationError
+lib/auth/express/index.ts:75 - AuthRateLimitError
+lib/auth/express/index.ts:76 - SessionError
+lib/auth/express/index.ts:77 - TokenError
+lib/auth/express/middleware.ts:174 - matchesPattern (used in module)
+lib/auth/express/middleware.ts:161 - config
+lib/auth/express/permission-hooks.ts:40 - calculatePermissions (used in module)
+lib/auth/express/permission-hooks.ts:62 - usePermission
+lib/auth/express/permission-hooks.ts:78 - useAnyPermission
+lib/auth/express/permission-hooks.ts:94 - useAllPermissions
+lib/auth/express/role-hooks.ts:20 - useHasRole (used in module)
+lib/auth/express/role-hooks.ts:35 - useHasAllRoles
+lib/auth/express/role-hooks.ts:49 - useHasAnyRole
+lib/auth/express/role-hooks.ts:62 - useIsAdmin
+lib/auth/express/role-hooks.ts:70 - useIsBuilder
+lib/auth/express/role-hooks.ts:78 - useIsClient
+lib/auth/express/token-hooks.ts:35 - useAuthToken (used in module)
+lib/auth/express/token-hooks.ts:130 - useAuthenticatedFetch
+lib/datadog/client/index.ts:17 - isBrowser (used in module)
+lib/datadog/client/index.ts:18 - isServer
+lib/datadog/client/index.ts:17 - rum
+lib/datadog/client/index.ts:17 - logs
+lib/datadog/client/index.ts:31 - tracer
+lib/datadog/client/index.ts:12 - traceContext
+lib/datadog/config/index.ts:118 - getCurrentEnvironment
+lib/datadog/config/index.ts:127 - getEnvironmentConfig
+lib/datadog/config/index.ts:135 - getDatadogConfig
+lib/datadog/config/index.ts:153 - validateEURegion
+lib/datadog/config/index.ts:164 - isCriticalTransaction
+lib/datadog/config/index.ts:173 - getTransactionSampleRate
+lib/datadog/config/index.ts:14 - DatadogEnvironment
+lib/datadog/config/index.ts:24 - EnvironmentConfig
+lib/datadog/config/index.ts:37 - DatadogConfig
+lib/datadog/config/index.ts:55 - datadogConfigBase
+lib/datadog/config/index.ts:13 - getRumConfiguration
+lib/datadog/config/index.ts:42 - validateRumEnvironmentVariables
+lib/datadog/config/index.ts:64 - sanitizeRumUserInfo
+lib/datadog/config/index.ts:13 - getLogsConfiguration
+lib/datadog/config/index.ts:36 - validateLogsEnvironmentVariables
+lib/datadog/config/index.ts:13 - getTracerConfiguration
+lib/datadog/config/index.ts:37 - validateTracerEnvironmentVariables
+lib/datadog/interfaces/index.ts:14 - EnvironmentInfo
+lib/datadog/interfaces/index.ts:21 - ServiceInfo
+lib/datadog/interfaces/index.ts:14 - RumConfig
+lib/datadog/interfaces/index.ts:34 - RumUserInfo
+lib/datadog/interfaces/index.ts:45 - RumInterface
+lib/datadog/interfaces/index.ts:14 - LogsConfig
+lib/datadog/interfaces/index.ts:28 - LogsInterface
+lib/datadog/interfaces/index.ts:15 - TracerConfig
+lib/datadog/interfaces/index.ts:30 - SpanContext
+lib/datadog/interfaces/index.ts:38 - Span
+lib/datadog/interfaces/index.ts:47 - TracerInterface
+lib/datadog/interfaces/index.ts:11 - TraceContext
+lib/datadog/interfaces/index.ts:22 - TraceContextInterface
+lib/datadog/server/index.ts:17 - isBrowser (used in module)
+lib/datadog/server/index.ts:18 - isServer
+lib/datadog/server/index.ts:19 - tracer
+lib/datadog/server/index.ts:14 - rum
+lib/datadog/server/index.ts:14 - logs
+lib/datadog/server/index.ts:14 - traceContext
+lib/marketplace/data/analytics-service.ts:209 - trackMarketplaceEvent
+lib/marketplace/data/analytics-service.ts:278 - getAnalyticsPeriods
+lib/marketplace/data/analytics-service.ts:10 - AnalyticsPeriod (used in module)
+lib/marketplace/data/analytics-service.ts:15 - AnalyticsSummary (used in module)
+lib/marketplace/data/analytics-service.ts:26 - AnalyticsTimeseriesPoint (used in module)
+lib/marketplace/data/analytics-service.ts:31 - AnalyticsTimeseries (used in module)
+lib/marketplace/data/marketplace-service.ts:483 - fetchFeaturedBuilders
+lib/marketplace/data/marketplace-service.ts:593 - getAvailableSkills (used in module)
+lib/scheduling/calendly/analytics.ts:310 - getBookingAnalytics (used in module)
+lib/scheduling/calendly/analytics.ts:73 - AnalyticsEventProperties (used in module)
+lib/scheduling/calendly/analytics.ts:124 - BookingAnalytics (used in module)
+lib/scheduling/calendly/config.ts:44 - loadCalendlyConfig (used in module)
+lib/scheduling/calendly/config.ts:13 - CalendlyConfig (used in module)
+lib/scheduling/calendly/index.ts:600 - getCalendlyApiClient
+lib/scheduling/calendly/index.ts:613 - verifyCalendlyApiToken
+lib/scheduling/calendly/index.ts:18 - CalendlyApiError
+lib/scheduling/calendly/index.ts:106 - CalendlyApiClient
+lib/scheduling/calendly/index.ts:625 - CalendlyUserResponse
+lib/scheduling/calendly/index.ts:640 - CalendlyOrganizationResponse
+lib/scheduling/calendly/index.ts:648 - CalendlyEventTypesResponse
+lib/scheduling/calendly/index.ts:653 - CalendlyEventTypeResponse
+lib/scheduling/calendly/index.ts:657 - CalendlyEventsResponse
+lib/scheduling/calendly/index.ts:662 - CalendlyEventResponse
+lib/scheduling/calendly/index.ts:666 - CalendlyInviteesResponse
+lib/scheduling/calendly/index.ts:671 - CalendlyPagination
+lib/scheduling/calendly/index.ts:679 - CalendlyEventType
+lib/scheduling/calendly/index.ts:706 - CalendlyCustomQuestion
+lib/scheduling/calendly/index.ts:716 - CalendlyEvent
+lib/scheduling/calendly/index.ts:745 - CalendlyInvitee
+lib/scheduling/calendly/index.ts:359 - getCalendlyService
+lib/scheduling/calendly/index.ts:25 - CalendlyService
+lib/scheduling/calendly/index.ts:17 - MappedCalendlyEventType
+lib/scheduling/calendly/index.ts:35 - MappedCalendlyBooking
+lib/scheduling/calendly/index.ts:58 - CalendlySchedulingLinkRequest
+lib/scheduling/calendly/index.ts:71 - CalendlySchedulingLinkResponse
+lib/scheduling/calendly/index.ts:80 - CalendlyWebhookEventCreatedPayload
+lib/scheduling/calendly/index.ts:143 - CalendlyWebhookEventCancelledPayload
+lib/scheduling/calendly/index.ts:216 - CalendlyWebhookPayload
+lib/scheduling/calendly/index.ts:223 - CalendlyConfig
+lib/scheduling/calendly/index.ts:20 - getCalendlyEventTypes
+lib/scheduling/calendly/index.ts:61 - createCalendlySchedulingLink
+lib/scheduling/calendly/index.ts:107 - getCalendlyAvailableTimeSlots
+lib/scheduling/calendly/index.ts:32 - startBookingFlow
+lib/scheduling/calendly/index.ts:95 - storeBookingFlowState
+lib/scheduling/calendly/index.ts:106 - getBookingFlowState
+lib/scheduling/calendly/index.ts:125 - clearBookingFlowState
+lib/scheduling/calendly/index.ts:15 - BookingFlowState
+lib/scheduling/calendly/index.ts:334 - getCalendlyKeyManager
+lib/scheduling/calendly/index.ts:11 - TokenStatus
+lib/scheduling/calendly/index.ts:21 - TokenInfo
+lib/scheduling/calendly/index.ts:31 - KeyManagerOptions
+lib/scheduling/calendly/index.ts:48 - CalendlyKeyManager
+lib/scheduling/calendly/index.ts:88 - verifyWebhookSignature
+lib/scheduling/calendly/index.ts:219 - verifyWebhookRequest
+lib/scheduling/calendly/index.ts:253 - logWebhookEvent
+lib/scheduling/calendly/index.ts:34 - WebhookSignatureError
+lib/scheduling/calendly/index.ts:47 - WebhookVerificationOptions
+lib/scheduling/calendly/index.ts:76 - normalizeTimezone
+lib/scheduling/calendly/index.ts:102 - getTimezoneOffset
+lib/scheduling/calendly/index.ts:160 - formatDateInTimezone
+lib/scheduling/calendly/index.ts:189 - convertDateBetweenTimezones
+lib/scheduling/calendly/index.ts:254 - isValidTimezone
+lib/scheduling/calendly/index.ts:268 - getCommonTimezones
+lib/scheduling/calendly/index.ts:317 - formatDateRangeInTimezone
+lib/scheduling/calendly/index.ts:63 - TimezoneError
+lib/scheduling/calendly/index.ts:41 - checkForBookingConflicts
+lib/scheduling/calendly/index.ts:96 - checkCalendlyAvailability
+lib/scheduling/calendly/index.ts:146 - suggestAlternativeTimes
+lib/scheduling/calendly/index.ts:218 - validateBookingRequest
+lib/scheduling/calendly/index.ts:337 - handleDoubleBooking
+lib/scheduling/calendly/index.ts:20 - BookingConflictError
+lib/scheduling/calendly/index.ts:249 - getCalendlyCache
+lib/scheduling/calendly/index.ts:265 - cached
+lib/scheduling/calendly/index.ts:295 - invalidateCache
+lib/scheduling/calendly/index.ts:303 - clearCache
+lib/scheduling/calendly/index.ts:313 - getCacheStats
+lib/scheduling/calendly/refund-service.ts:44 - calculateRefundPolicy (used in module)
+lib/scheduling/calendly/refund-service.ts:99 - processRefund
+lib/scheduling/calendly/refund-service.ts:254 - checkRefundEligibility
+lib/scheduling/calendly/refund-service.ts:18 - RefundPolicy (used in module)
+lib/scheduling/calendly/refund-service.ts:27 - RefundResult (used in module)
+lib/scheduling/real-data/scheduling-service.ts:253 - createBookingFromCalendly
+lib/scheduling/real-data/scheduling-service.ts:495 - getCalendlySessionTypes
+lib/scheduling/real-data/scheduling-service.ts:613 - getUserBookings
+lib/scheduling/real-data/scheduling-service.ts:16 - getSessionTypeById
+lib/scheduling/state-machine/index.ts:12 - bookingStateMachine
+lib/scheduling/state-machine/index.ts:13 - executeTransition
+lib/scheduling/state-machine/index.ts:14 - getAllowedTransitions
+lib/scheduling/state-machine/index.ts:15 - getInitialState
+lib/scheduling/state-machine/index.ts:16 - getInitialStateData
+lib/scheduling/state-machine/index.ts:17 - getNextState
+lib/scheduling/state-machine/index.ts:18 - isValidTransition
+lib/scheduling/state-machine/index.ts:23 - deleteBookingState
+lib/scheduling/state-machine/index.ts:24 - getBookingState
+lib/scheduling/state-machine/index.ts:25 - getBookingsInState
+lib/scheduling/state-machine/index.ts:26 - getTransitionHistory
+lib/scheduling/state-machine/index.ts:27 - initializeBookingState
+lib/scheduling/state-machine/index.ts:28 - updateBookingState
+lib/scheduling/state-machine/index.ts:33 - createBooking
+lib/scheduling/state-machine/index.ts:34 - getBooking
+lib/scheduling/state-machine/index.ts:35 - getBookingAllowedTransitions
+lib/scheduling/state-machine/index.ts:36 - getBookingTransitionHistory
+lib/scheduling/state-machine/index.ts:37 - handleCalendlyWebhook
+lib/scheduling/state-machine/index.ts:38 - handleStripeWebhook
+lib/scheduling/state-machine/index.ts:39 - recoverBooking
+lib/scheduling/state-machine/index.ts:40 - transitionBooking
+lib/scheduling/state-machine/index.ts:45 - encryptSensitiveData
+lib/scheduling/state-machine/index.ts:46 - decryptSensitiveData
+lib/scheduling/state-machine/index.ts:47 - sanitizeForLogging
+lib/scheduling/state-machine/index.ts:48 - generateStateToken
+lib/scheduling/state-machine/index.ts:49 - verifyStateToken
+lib/scheduling/state-machine/index.ts:54 - ErrorCategory
+lib/scheduling/state-machine/index.ts:55 - CategorizedError
+lib/scheduling/state-machine/index.ts:56 - classifyError
+lib/scheduling/state-machine/index.ts:57 - handleBookingError
+lib/scheduling/state-machine/index.ts:58 - recoverBookingWithToken
+lib/scheduling/state-machine/index.ts:59 - retryBookingOperation
+lib/scheduling/state-machine/index.ts:60 - createRecoveryLink
+lib/scheduling/state-machine/index.ts:14 - BookingStateEnum
+lib/scheduling/state-machine/index.ts:51 - BookingEventEnum
+lib/scheduling/state-machine/index.ts:76 - BookingStateData
+lib/scheduling/state-machine/index.ts:126 - StateTransition
+lib/scheduling/state-machine/index.ts:136 - StateHandlers
+lib/scheduling/state-machine/index.ts:144 - BookingStateMachine
+lib/scheduling/state-machine/index.ts:159 - TransitionResult
+lib/scheduling/state-machine/index.ts:172 - BookingContext
+lib/scheduling/state-machine/index.ts:181 - TransitionPayload
+lib/scheduling/state-machine/index.ts:189 - ClientBookingState
+lib/scheduling/state-machine/index.ts:215 - stateToStatusMapping
+libs/auth/src/index.ts:5 - UserRole
+libs/auth/src/index.ts:7 - AuthUser
+libs/auth/src/index.ts:8 - AuthOptions
+libs/auth/src/index.ts:9 - AuthMiddlewareOptions
+libs/auth/src/index.ts:10 - AuthContextType
+libs/auth/src/index.ts:15 - AuthExpressError
+libs/auth/src/index.ts:16 - AuthExpressErrorType
+libs/auth/src/index.ts:17 - AuthenticationError
+libs/auth/src/index.ts:18 - AuthorizationError
+libs/auth/src/index.ts:19 - AuthConfigurationError
+libs/auth/src/index.ts:20 - AuthRateLimitError
+libs/auth/src/index.ts:21 - SessionError
+libs/auth/src/index.ts:22 - TokenError
+libs/auth/src/index.ts:23 - ValidationError
+libs/auth/src/index.ts:24 - ResourceNotFoundError
+libs/auth/src/index.ts:25 - createAuthErrorResponse
+libs/auth/src/index.ts:29 - createClerkExpressMiddleware
+libs/auth/src/index.ts:33 - getServerAuth
+libs/auth/src/index.ts:34 - getFullServerAuth
+libs/auth/src/index.ts:35 - hasServerRole
+libs/auth/src/index.ts:36 - hasServerPermission
+libs/auth/src/index.ts:37 - requireServerAuth
+libs/auth/src/index.ts:38 - requireServerRole
+libs/auth/src/index.ts:3 - Auth
+libs/auth/src/server.ts:2 - HelloServer
+.next/types/app/(marketing)/layout.ts:54 - PageProps
+.next/types/app/(marketing)/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/(marketing)/page.ts:54 - PageProps (used in module)
+.next/types/app/(marketing)/page.ts:58 - LayoutProps
+.next/types/app/(platform)/layout.ts:54 - PageProps
+.next/types/app/(platform)/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/auth-test/page.ts:54 - PageProps (used in module)
+.next/types/app/auth-test/page.ts:58 - LayoutProps
+.next/types/app/booking/layout.ts:54 - PageProps
+.next/types/app/booking/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/calendly-direct-test/page.ts:54 - PageProps (used in module)
+.next/types/app/calendly-direct-test/page.ts:58 - LayoutProps
+.next/types/app/calendly-test/page.ts:54 - PageProps (used in module)
+.next/types/app/calendly-test/page.ts:58 - LayoutProps
+.next/types/app/onboarding/layout.ts:54 - PageProps
+.next/types/app/onboarding/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/onboarding/page.ts:54 - PageProps (used in module)
+.next/types/app/onboarding/page.ts:58 - LayoutProps
+.next/types/app/role-test/page.ts:54 - PageProps (used in module)
+.next/types/app/role-test/page.ts:58 - LayoutProps
+.next/types/app/test/layout.ts:54 - PageProps
+.next/types/app/test/layout.ts:58 - LayoutProps (used in module)
+components/marketplace/components/builder-card/index.ts:5 - BuilderCard (used in module)
+components/marketplace/components/builder-card/index.ts:6 - CardSkeleton
+components/marketplace/components/builder-card/index.ts:7 - default
+components/marketplace/components/builder-image/index.ts:6 - BuilderImage (used in module)
+components/marketplace/components/builder-image/index.ts:7 - ImageFallback
+components/marketplace/components/builder-image/index.ts:8 - default
+components/marketplace/components/builder-list/index.ts:5 - BuilderList (used in module)
+components/marketplace/components/builder-list/index.ts:6 - BuilderListSkeleton
+components/marketplace/components/builder-list/index.ts:7 - default
+components/marketplace/components/error-boundaries/index.ts:5 - MarketplaceErrorBoundary
+components/marketplace/components/error-boundaries/index.ts:5 - MarketplaceErrorFallback
+components/marketplace/components/filter-panel/index.ts:5 - FilterPanel (used in module)
+components/marketplace/components/filter-panel/index.ts:6 - default
+libs/auth/src/lib/types.ts:43 - AuthErrorType (used in module)
+libs/auth/src/lib/types.ts:56 - AuthError (used in module)
+libs/auth/src/lib/types.ts:70 - AuthResponse
+.next/types/app/(marketing)/about/page.ts:54 - PageProps (used in module)
+.next/types/app/(marketing)/about/page.ts:58 - LayoutProps
+.next/types/app/(marketing)/contact/page.ts:54 - PageProps (used in module)
+.next/types/app/(marketing)/contact/page.ts:58 - LayoutProps
+.next/types/app/(marketing)/faq/page.ts:54 - PageProps (used in module)
+.next/types/app/(marketing)/faq/page.ts:58 - LayoutProps
+.next/types/app/(marketing)/how-it-works/page.ts:54 - PageProps (used in module)
+.next/types/app/(marketing)/how-it-works/page.ts:58 - LayoutProps
+.next/types/app/(marketing)/privacy/page.ts:54 - PageProps (used in module)
+.next/types/app/(marketing)/privacy/page.ts:58 - LayoutProps
+.next/types/app/(marketing)/terms/page.ts:54 - PageProps (used in module)
+.next/types/app/(marketing)/terms/page.ts:58 - LayoutProps
+.next/types/app/(marketing)/toolkit/page.ts:54 - PageProps (used in module)
+.next/types/app/(marketing)/toolkit/page.ts:58 - LayoutProps
+.next/types/app/(platform)/admin/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/admin/page.ts:58 - LayoutProps
+.next/types/app/(platform)/community/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/community/page.ts:58 - LayoutProps
+.next/types/app/(platform)/dashboard/layout.ts:54 - PageProps
+.next/types/app/(platform)/dashboard/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/(platform)/dashboard/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/dashboard/page.ts:58 - LayoutProps
+.next/types/app/(platform)/learning/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/learning/page.ts:58 - LayoutProps
+.next/types/app/(platform)/marketplace/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/marketplace/page.ts:58 - LayoutProps
+.next/types/app/(platform)/portfolio/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/portfolio/page.ts:58 - LayoutProps
+.next/types/app/(platform)/profile/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/profile/page.ts:58 - LayoutProps
+.next/types/app/(platform)/trust/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/trust/page.ts:58 - LayoutProps
+.next/types/app/api/auth-test/route.ts:313 - PageProps
+.next/types/app/api/auth-test/route.ts:317 - LayoutProps
+.next/types/app/api/protected/route.ts:313 - PageProps
+.next/types/app/api/protected/route.ts:317 - LayoutProps
+.next/types/app/booking/confirmation/page.ts:54 - PageProps (used in module)
+.next/types/app/booking/confirmation/page.ts:58 - LayoutProps
+.next/types/app/booking/recovery/page.ts:54 - PageProps (used in module)
+.next/types/app/booking/recovery/page.ts:58 - LayoutProps
+.next/types/app/booking/schedule/page.ts:54 - PageProps (used in module)
+.next/types/app/booking/schedule/page.ts:58 - LayoutProps
+.next/types/app/studio/[[...tool]]/page.ts:54 - PageProps (used in module)
+.next/types/app/studio/[[...tool]]/page.ts:58 - LayoutProps
+.next/types/app/test/booking-flow-custom/page.ts:54 - PageProps (used in module)
+.next/types/app/test/booking-flow-custom/page.ts:58 - LayoutProps
+.next/types/app/test/calendly/page.ts:54 - PageProps (used in module)
+.next/types/app/test/calendly/page.ts:58 - LayoutProps
+.next/types/app/test/calendly-api/page.ts:54 - PageProps (used in module)
+.next/types/app/test/calendly-api/page.ts:58 - LayoutProps
+.next/types/app/test/calendly-debug/page.ts:54 - PageProps (used in module)
+.next/types/app/test/calendly-debug/page.ts:58 - LayoutProps
+.next/types/app/test/calendly-optimized/page.ts:54 - PageProps (used in module)
+.next/types/app/test/calendly-optimized/page.ts:58 - LayoutProps
+.next/types/app/test/dyslexic-mode/page.ts:54 - PageProps (used in module)
+.next/types/app/test/dyslexic-mode/page.ts:58 - LayoutProps
+.next/types/app/test/public-resources/page.ts:54 - PageProps (used in module)
+.next/types/app/test/public-resources/page.ts:58 - LayoutProps
+app/(platform)/builder/profile/components/metrics-display.tsx:19 - MetricsDisplay
+app/(platform)/builder/profile/components/portfolio-gallery.tsx:32 - PortfolioGallery
+app/(platform)/builder/profile/components/validation-tier.tsx:69 - ValidationTier (used in module)
+libs/auth/src/lib/express/server-auth.ts:228 - getDbUserIdFromClerkId
+libs/auth/src/lib/express/server-auth.ts:27 - ServerAuth (used in module)
+.next/types/app/(auth)/sign-in/[[...sign-in]]/layout.ts:54 - PageProps
+.next/types/app/(auth)/sign-in/[[...sign-in]]/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/(auth)/sign-in/[[...sign-in]]/page.ts:54 - PageProps (used in module)
+.next/types/app/(auth)/sign-in/[[...sign-in]]/page.ts:58 - LayoutProps
+.next/types/app/(auth)/sign-up/[[...sign-up]]/layout.ts:54 - PageProps
+.next/types/app/(auth)/sign-up/[[...sign-up]]/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/(auth)/sign-up/[[...sign-up]]/page.ts:54 - PageProps (used in module)
+.next/types/app/(auth)/sign-up/[[...sign-up]]/page.ts:58 - LayoutProps
+.next/types/app/(platform)/admin/builders/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/admin/builders/page.ts:58 - LayoutProps
+.next/types/app/(platform)/admin/session-types/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/admin/session-types/page.ts:58 - LayoutProps
+.next/types/app/(platform)/book/[builderId]/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/book/[builderId]/page.ts:58 - LayoutProps
+.next/types/app/(platform)/builder/[slug]/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/builder/[slug]/page.ts:58 - LayoutProps
+.next/types/app/(platform)/community/knowledge/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/community/knowledge/page.ts:58 - LayoutProps
+.next/types/app/(platform)/learning/timeline/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/learning/timeline/page.ts:58 - LayoutProps
+.next/types/app/(platform)/profile/[id]/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/profile/[id]/page.ts:58 - LayoutProps
+.next/types/app/(platform)/profile/edit/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/profile/edit/page.ts:58 - LayoutProps
+.next/types/app/(platform)/profile/profile-settings/layout.ts:54 - PageProps
+.next/types/app/(platform)/profile/profile-settings/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/(platform)/profile/profile-settings/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/profile/profile-settings/page.ts:58 - LayoutProps
+.next/types/app/api/admin/builders/route.ts:313 - PageProps
+.next/types/app/api/admin/builders/route.ts:317 - LayoutProps
+.next/types/app/api/admin/session-types/route.ts:313 - PageProps
+.next/types/app/api/admin/session-types/route.ts:317 - LayoutProps
+.next/types/app/api/apps/[builderId]/route.ts:313 - PageProps
+.next/types/app/api/apps/[builderId]/route.ts:317 - LayoutProps
+.next/types/app/api/auth/test/route.ts:313 - PageProps
+.next/types/app/api/auth/test/route.ts:317 - LayoutProps
+.next/types/app/api/health/calendly/route.ts:313 - PageProps
+.next/types/app/api/health/calendly/route.ts:317 - LayoutProps
+.next/types/app/api/health/db/route.ts:313 - PageProps
+.next/types/app/api/health/db/route.ts:317 - LayoutProps
+.next/types/app/api/marketplace/builders/route.ts:313 - PageProps
+.next/types/app/api/marketplace/builders/route.ts:317 - LayoutProps
+.next/types/app/api/marketplace/filters/route.ts:313 - PageProps
+.next/types/app/api/marketplace/filters/route.ts:317 - LayoutProps
+.next/types/app/api/profiles/builder/route.ts:313 - PageProps
+.next/types/app/api/profiles/builder/route.ts:317 - LayoutProps
+.next/types/app/api/profiles/builders/route.ts:313 - PageProps
+.next/types/app/api/profiles/builders/route.ts:317 - LayoutProps
+.next/types/app/api/profiles/user/route.ts:313 - PageProps
+.next/types/app/api/profiles/user/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/availability-exceptions/route.ts:313 - PageProps
+.next/types/app/api/scheduling/availability-exceptions/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/availability-rules/route.ts:313 - PageProps
+.next/types/app/api/scheduling/availability-rules/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/bookings/route.ts:313 - PageProps
+.next/types/app/api/scheduling/bookings/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/builder-settings/route.ts:313 - PageProps
+.next/types/app/api/scheduling/builder-settings/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/session-types/route.ts:313 - PageProps
+.next/types/app/api/scheduling/session-types/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/time-slots/route.ts:313 - PageProps
+.next/types/app/api/scheduling/time-slots/route.ts:317 - LayoutProps
+.next/types/app/api/stripe/checkout/route.ts:313 - PageProps
+.next/types/app/api/stripe/checkout/route.ts:317 - LayoutProps
+.next/types/app/api/stripe/webhook/route.ts:313 - PageProps
+.next/types/app/api/stripe/webhook/route.ts:317 - LayoutProps
+.next/types/app/api/test/auth/route.ts:313 - PageProps
+.next/types/app/api/test/auth/route.ts:317 - LayoutProps
+.next/types/app/api/webhooks/calendly/route.ts:313 - PageProps
+.next/types/app/api/webhooks/calendly/route.ts:317 - LayoutProps
+.next/types/app/api/webhooks/clerk/route.ts:313 - PageProps
+.next/types/app/api/webhooks/clerk/route.ts:317 - LayoutProps
+.next/types/app/api/webhooks/stripe/route.ts:313 - PageProps
+.next/types/app/api/webhooks/stripe/route.ts:317 - LayoutProps
+.next/types/app/(platform)/marketplace/builders/[id]/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/marketplace/builders/[id]/page.ts:58 - LayoutProps
+.next/types/app/(platform)/profile/profile-settings/availability/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/profile/profile-settings/availability/page.ts:58 - LayoutProps
+.next/types/app/(platform)/profile/profile-settings/edit/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/profile/profile-settings/edit/page.ts:58 - LayoutProps
+.next/types/app/(platform)/trust/verification/[builderId]/page.ts:54 - PageProps (used in module)
+.next/types/app/(platform)/trust/verification/[builderId]/page.ts:58 - LayoutProps
+.next/types/app/api/admin/session-types/[id]/route.ts:313 - PageProps
+.next/types/app/api/admin/session-types/[id]/route.ts:317 - LayoutProps
+.next/types/app/api/apps/edit/[id]/route.ts:313 - PageProps
+.next/types/app/api/apps/edit/[id]/route.ts:317 - LayoutProps
+.next/types/app/api/marketplace/builders/[id]/route.ts:313 - PageProps
+.next/types/app/api/marketplace/builders/[id]/route.ts:317 - LayoutProps
+.next/types/app/api/marketplace/builders/analytics/route.ts:313 - PageProps
+.next/types/app/api/marketplace/builders/analytics/route.ts:317 - LayoutProps
+.next/types/app/api/profiles/builder/[id]/route.ts:313 - PageProps
+.next/types/app/api/profiles/builder/[id]/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/bookings/[bookingId]/route.ts:313 - PageProps
+.next/types/app/api/scheduling/bookings/[bookingId]/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/bookings/confirm/route.ts:313 - PageProps
+.next/types/app/api/scheduling/bookings/confirm/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/bookings/create/route.ts:313 - PageProps
+.next/types/app/api/scheduling/bookings/create/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/bookings/initialize/route.ts:313 - PageProps
+.next/types/app/api/scheduling/bookings/initialize/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/bookings/recover/route.ts:313 - PageProps
+.next/types/app/api/scheduling/bookings/recover/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/calendly/available-times/route.ts:313 - PageProps
+.next/types/app/api/scheduling/calendly/available-times/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/calendly/event-types/route.ts:313 - PageProps
+.next/types/app/api/scheduling/calendly/event-types/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/calendly/scheduling-link/route.ts:313 - PageProps
+.next/types/app/api/scheduling/calendly/scheduling-link/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/calendly/sync-event-types/route.ts:313 - PageProps
+.next/types/app/api/scheduling/calendly/sync-event-types/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/session-types/[id]/route.ts:313 - PageProps
+.next/types/app/api/scheduling/session-types/[id]/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/sessions/available/route.ts:313 - PageProps
+.next/types/app/api/scheduling/sessions/available/route.ts:317 - LayoutProps
+.next/types/app/api/stripe/checkout/create/route.ts:313 - PageProps
+.next/types/app/api/stripe/checkout/create/route.ts:317 - LayoutProps
+.next/types/app/api/stripe/checkout/status/route.ts:313 - PageProps
+.next/types/app/api/stripe/checkout/status/route.ts:317 - LayoutProps
+.next/types/app/api/stripe/sessions/[id]/route.ts:313 - PageProps
+.next/types/app/api/stripe/sessions/[id]/route.ts:317 - LayoutProps
+.next/types/app/api/marketplace/builders/[id]/session-types/route.ts:313 - PageProps
+.next/types/app/api/marketplace/builders/[id]/session-types/route.ts:317 - LayoutProps
+.next/types/app/api/profiles/builder/clerk/[clerkId]/route.ts:313 - PageProps
+.next/types/app/api/profiles/builder/clerk/[clerkId]/route.ts:317 - LayoutProps
+.next/types/app/api/profiles/builder/slug/[slug]/route.ts:313 - PageProps
+.next/types/app/api/profiles/builder/slug/[slug]/route.ts:317 - LayoutProps
+.next/types/app/api/scheduling/bookings/[bookingId]/transition/route.ts:313 - PageProps
+.next/types/app/api/scheduling/bookings/[bookingId]/transition/route.ts:317 - LayoutProps

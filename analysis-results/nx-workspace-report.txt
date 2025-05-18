@@ -1,0 +1,32 @@
+
+ NX   Report complete - copy this into the issue template
+
+Node           : 23.10.0
+OS             : darwin-arm64
+Native Target  : aarch64-macos
+pnpm           : 10.8.1
+
+nx                     : 21.0.3
+@nx/js                 : 21.0.3
+@nx/jest               : 21.0.3
+@nx/eslint             : 21.0.3
+@nx/workspace          : 21.0.3
+@nx/devkit             : 21.0.3
+@nx/module-federation  : 21.0.3
+@nx/next               : 21.0.3
+@nx/playwright         : 21.0.3
+@nx/react              : 21.0.3
+@nx/vite               : 21.0.3
+@nx/web                : 21.0.3
+@nx/webpack            : 21.0.3
+typescript             : 5.8.3
+---------------------------------------
+Registered Plugins:
+@nx/eslint/plugin
+@nx/jest/plugin
+@nx/next/plugin
+@nx/playwright/plugin
+@nx/react/router-plugin
+---------------------------------------
+Cache Usage: 3.67 MB / 46.04 GB
+

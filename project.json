@@ -5,7 +5,45 @@
     "build": {
       "executor": "@nx/next:build",
       "options": {
-        "outputPath": "out"
+        "outputPath": "out",
+        "nextConfig": "next.nx.config.mjs",
+        "dotenvConfig": ".env.local.nx",
+        "env": {
+          "NODE_ENV": "production",
+          "NODE_OPTIONS": "--max-old-space-size=8192"
+        }
+      },
+      "dependsOn": ["prisma-generate"]
+    },
+    "prisma-generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma generate"
+      }
+    },
+    "dev": {
+      "executor": "@nx/next:dev",
+      "options": {
+        "port": 3000,
+        "buildTarget": "buildappswith:build"
+      }
+    },
+    "start": {
+      "executor": "@nx/next:server",
+      "options": {
+        "buildTarget": "buildappswith:build"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest --config vitest.config.js"
+      }
+    },
+    "test:e2e": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "playwright.config.ts"
       }
     }
   }
