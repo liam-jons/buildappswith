@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { BuilderCard } from '@/components/marketplace/components/builder-card';
 import { BuilderListSkeleton } from './builder-list-skeleton';
 import { MarketplaceErrorBoundary } from '@/components/marketplace/components/error-boundaries';
-import { BuilderProfileListing } from '@/lib/marketplace/types';
+import { BuilderProfileListing } from '@/lib/marketplace';
 
 interface BuilderListProps {
   builders: BuilderProfileListing[];

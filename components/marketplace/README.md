@@ -1,59 +1,95 @@
-# Marketplace Components
+# Marketplace Module
 
-This directory contains components related to the marketplace functionality of the Buildappswith platform. The marketplace is a key feature that allows users to discover builders and their services.
+## Overview
 
-## Directory Structure
+This directory contains components and services related to the marketplace functionality of the buildappswith platform, following our domain-based architecture pattern. The marketplace is a key feature that allows users to discover builders and their services.
+
+## ⚠️ Important Architecture Rules ⚠️
+
+**CRITICAL: To prevent code duplication and architectural issues:**
+
+1. **ALWAYS check if a component already exists before creating a new one**
+2. **NEVER create components directly in the root `/components/marketplace/` directory**
+3. **ALWAYS follow the domain-based architecture pattern outlined below**
+4. **When in doubt, check the [COMPONENT_STYLE_GUIDE.md](/docs/engineering/COMPONENT_STYLE_GUIDE.md) and [FOLDER_STRUCTURE_GUIDE.md](/docs/engineering/FOLDER_STRUCTURE_GUIDE.md)**
+
+## Official Directory Structure
 
 ```
-/marketplace
-├── ui/               # Marketplace-specific UI components
-│   ├── [component].tsx  # Individual UI components
-│   └── index.ts      # Barrel exports for UI components
-├── [component].tsx   # Marketplace-specific components
-└── index.ts          # Barrel exports for all marketplace components
+marketplace/
+├── components/               # Component implementations
+│   ├── [component-name]/     # Each component gets its own directory
+│   │   ├── [component-name].tsx   # Main component implementation
+│   │   ├── index.ts               # Barrel exports
+│   │   └── [other support files]  # Tests, types, helpers
+│   ├── index.ts              # Barrel exports for all components
+│   └── types.ts              # Component-specific types
+├── hooks/                    # Custom React hooks
+│   ├── use-[hook-name].ts    # Individual hook files
+│   └── index.ts              # Barrel exports for hooks
+├── utils/                    # Utility functions
+│   ├── [util-name].ts        # Individual utility files 
+│   └── index.ts              # Barrel exports for utils
+└── index.ts                  # Main barrel exports for marketplace module
 ```
 
-## Key Components
+## Component Structure Pattern
 
-- `BuilderCard`: Displays a builder profile card in the marketplace listing
-- `BuilderImage`: Handles the image display for builder profiles
-- `BuilderList`: Displays a filterable list of builders in the marketplace
-- `BuilderDashboard`: Comprehensive dashboard for builders to manage their profiles, view analytics, and handle bookings
+Each component MUST follow this structure:
 
-## Usage Guidelines
+```
+components/
+└── [component-name]/            # e.g., builder-card/
+    ├── [component-name].tsx     # e.g., builder-card.tsx
+    ├── index.ts                 # Exports the component
+    └── [optional other files]   # Tests, types, variants
+```
 
-### Importing Components
+## Importing Components
 
-Always import components using the barrel exports:
+**ALWAYS** import components using the barrel exports:
 
 ```typescript
-// Good - Use barrel exports
+// ✅ CORRECT - Use barrel exports
 import { BuilderCard, BuilderImage } from "@/components/marketplace";
-import { MarketplaceSpecificUI } from "@/components/marketplace/ui";
 
-// Avoid - Don't import directly from component files
-import { BuilderCard } from "@/components/marketplace/builder-card";
+// ❌ WRONG - Don't import directly from component files
+import BuilderCard from "@/components/marketplace/builder-card";
+// ❌ WRONG - Don't use relative imports in most cases
+import { BuilderCard } from "../builder-card";
 ```
 
-### Component Organization
+## Human + AI Development Guidelines
 
-- UI components specific to the marketplace domain should be placed in the `ui` subdirectory
-- Components that are used only within marketplace pages should be placed in this directory
-- Components that might be reused across domains should be evaluated for placement in a more general location
+To avoid duplication when working with AI assistants:
 
-## Integration with Other Domains
+1. **The AI assistant MUST ALWAYS review the existing folder structure** before creating new components
+2. **Review documentation** such as COMPONENT_STYLE_GUIDE.md before making changes
+3. **ALWAYS check for existing implementations** before creating similar components
+5. **Be explicit about file paths** rather than using relative references
 
-The marketplace components integrate with:
+See [CLAUDE.MD](/CLAUDE.MD) for more guidance.
 
-- Profile domain for detailed builder information
-- Scheduling domain for session availability
-- Trust domain for validation tier indicators
-- Payment domain for session pricing
+## Domain Integration
+
+The marketplace module integrates with these other domains:
+
+- **Profile** for builder information
+- **Scheduling** for session availability
+- **Trust** for validation tiers and verification
+- **Payment** for pricing and transactions
+
+## Documentation
+
+- Detailed architecture: [MARKETPLACE_CONSOLIDATED_ARCHITECTURE.md](/docs/engineering/MARKETPLACE_CONSOLIDATED_ARCHITECTURE.md)
+- Component usage examples: [Mintlify Documentation](https://mintlify.com/docs/components/example-markdown)
+- Guidelines: [COMPONENT_STYLE_GUIDE.md](/docs/engineering/COMPONENT_STYLE_GUIDE.md)
 
 ## Styling
 
-Marketplace components use Tailwind CSS for styling with the following considerations:
+Marketplace components use Tailwind CSS with the following guidelines:
 
-- Responsive design for all screen sizes
-- Consistent color schemes matching the platform design system
-- Accessibility compliance for all interactive elements
+- Use the `cn()` utility for conditional classes
+- Follow responsive design patterns for all screen sizes
+- Use the shadcn/ui component system when applicable
+- Maintain accessibility compliance for all interactive elements

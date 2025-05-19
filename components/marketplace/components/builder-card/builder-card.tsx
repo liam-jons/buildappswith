@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/core/button";
 import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
 import { BuilderImage } from '@/components/marketplace/components/builder-image';
 import { MarketplaceErrorBoundary } from '@/components/marketplace/components/error-boundaries';
-import { BuilderProfileListing } from '@/lib/marketplace/types';
+import { BuilderProfileListing } from '@/lib/marketplace';
 import { cn } from '@/lib/utils';
 
 interface BuilderCardProps {

@@ -4,13 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { ImageFallback } from './fallback';
-
-interface BuilderImageProps {
-  src?: string | null;
-  alt: string;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}
+import { BuilderImageProps } from '../types';
 
 /**
  * BuilderImage component

@@ -2,12 +2,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-
-interface ImageFallbackProps {
-  text: string;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}
+import { ImageFallbackProps } from '../types';
 
 /**
  * Image fallback component that displays a placeholder with the first letter of text

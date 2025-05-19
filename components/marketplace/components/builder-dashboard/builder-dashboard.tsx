@@ -15,15 +15,14 @@ import { SuccessMetricsDashboard, MetricIcons } from "@/components/profile/succe
 // import { AvailabilityManagement } from "@/components/scheduling/builder/availability/availability-management";
 import { Button } from "@/components/ui/core/button";
 import { PlusCircle, BarChart, Calendar, Settings, User, Clock, X, Plus } from "lucide-react";
-import { fetchBuilderById } from "@/lib/marketplace/api";
-import { BuilderProfileData } from "@/lib/marketplace/types";
+import { fetchBuilderById, BuilderProfileData } from "@/lib/marketplace";
 import { toast } from "sonner";
 
 interface BuilderDashboardProps {
   roles: string[];
 }
 
-export function BuilderDashboard({ roles }: BuilderDashboardProps) {
+function BuilderDashboard({ roles }: BuilderDashboardProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [builderProfile, setBuilderProfile] = useState<BuilderProfileData | null>(null);
@@ -988,3 +987,5 @@ export function BuilderDashboard({ roles }: BuilderDashboardProps) {
     </div>
   );
 }
+
+export default BuilderDashboard;

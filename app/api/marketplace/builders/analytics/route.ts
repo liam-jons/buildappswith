@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getBuilderAnalyticsSummary, getBuilderAnalyticsTimeseries, getBuilderSuccessMetrics } from '@/lib/marketplace/data/analytics-service';
+import { getBuilderAnalyticsSummary, getBuilderAnalyticsTimeseries, getBuilderSuccessMetrics, getBuilderProfileByUserId } from '@/lib/marketplace';
 import { getCurrentUserId } from '@/lib/auth/actions';
-import { getBuilderProfileByUserId } from '@/lib/marketplace/data/marketplace-service';
 
 /**
  * GET /api/marketplace/builders/analytics

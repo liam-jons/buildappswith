@@ -2,50 +2,101 @@
 
 ## Overview
 
-This document outlines the consolidated architecture for the marketplace components, designed to resolve circular dependencies, simplify state management, and standardize the component structure.
+This document outlines the consolidated architecture for the marketplace components, designed to resolve circular dependencies, simplify state management, and standardize the component structure. The architecture follows a domain-based pattern with clear separation of concerns and consistent file structure.
 
 ## Directory Structure
 
 ```
 marketplace/
-├── components/
-│   ├── builder-card/
-│   │   ├── builder-card.tsx       # Main card component
-│   │   ├── card-skeleton.tsx      # Loading state
-│   │   └── index.ts               # Explicit exports only
-│   ├── builder-image/
-│   │   ├── builder-image.tsx      # Main image component (consolidated)
-│   │   ├── fallback.tsx           # Separate fallback image logic
-│   │   └── index.ts
-│   ├── filter-panel/
-│   │   ├── filter-panel.tsx       # Main filter UI
-│   │   ├── filter-controls.tsx    # Individual filter controls
-│   │   ├── active-filters.tsx     # Active filter display
-│   │   └── index.ts
-│   ├── builder-list/
-│   │   ├── builder-list.tsx       # Grid of builder cards
-│   │   ├── builder-list-skeleton.tsx  # Loading state
-│   │   └── index.ts
-│   └── index.ts                   # Direct exports, no re-exports
-├── hooks/
-│   ├── use-builder-filter.ts      # Filter state management
-│   ├── use-builder-search.ts      # Search functionality
-│   └── index.ts
-├── utils/
-│   ├── image-helpers.ts           # Image processing utilities
-│   ├── filter-helpers.ts          # Filter processing utilities
-│   └── index.ts
-├── types.ts                       # Type definitions for marketplace
-└── api.ts                         # API functions for marketplace data
+├── components/               # Component implementations
+│   ├── builder-card/         # Builder card component directory
+│   │   ├── builder-card.tsx  # Main component implementation
+│   │   ├── card-skeleton.tsx # Loading skeleton implementation
+│   │   └── index.ts          # Barrel exports
+│   ├── builder-image/        # Consolidated builder image component
+│   │   ├── builder-image.tsx # Main component implementation
+│   │   ├── fallback.tsx      # Fallback component for errors/missing images
+│   │   └── index.ts          # Barrel exports
+│   ├── builder-list/         # List component directory
+│   │   ├── builder-list.tsx  # Main list component
+│   │   └── index.ts          # Barrel exports
+│   ├── error-boundaries/     # Error handling components
+│   ├── filter-panel/         # Filter UI components
+│   ├── index.ts              # Barrel exports for all components
+│   └── types.ts              # Component-specific type definitions
+├── hooks/                    # Custom React hooks
+│   ├── use-builder-filter.ts # Filter state management
+│   ├── use-builder-search.ts # Search functionality
+│   └── index.ts              # Barrel exports for hooks
+├── utils/                    # Utility functions
+│   ├── filter-helpers.ts     # Filter processing utilities
+│   └── index.ts              # Barrel exports for utils
+├── index.ts                  # Main barrel exports for marketplace module
+└── lib/marketplace/          # Domain business logic
+    ├── index.ts              # Barrel exports
+    ├── types.ts              # Domain-specific type definitions
+    ├── marketplace-service.ts # Marketplace data operations (maintained)
+    ├── analytics-service.ts  # Analytics tracking
+    └── data-service.ts       # DEPRECATED - use marketplace-service.ts
 ```
+
+### Deprecated Components
+
+The following components have been marked as deprecated and are kept only for historical reference. They will be removed in a future cleanup:
+
+- `components/marketplace/builder-image.tsx` → Use `components/marketplace/components/builder-image`
+- `components/marketplace/simplified-builder-image.tsx` → Use `components/marketplace/components/builder-image`
+- `components/marketplace/fixed-builder-image.tsx` → Use `components/marketplace/components/builder-image`
+- `lib/marketplace/data-service.ts` → Use `lib/marketplace/marketplace-service.ts`
+
+### Types Consolidation
+
+All marketplace types have been consolidated into appropriate locations:
+
+1. **Domain Types** - `lib/marketplace/types.ts`
+   - Contains all domain business logic types
+   - Used by services and server-side components
+   - Includes core model definitions
+
+2. **Component Types** - `components/marketplace/components/types.ts`
+   - Contains all component-specific types
+   - Prevents circular dependencies
+   - Provides proper type isolation
 
 ## Key Design Principles
 
-1. **Flat Component Structure** - No nested barrel exports to avoid circular dependencies
-2. **Single Implementation** - Consolidate multiple implementations into single components
-3. **Separation of Concerns** - Split complex components into smaller focused ones
-4. **Stateless Where Possible** - Move state to hooks for better testing and reuse
-5. **Error Boundaries** - Each major component wrapped in error boundaries
+1. **Domain-Based Architecture** - Following the standard BuildAppsWith architecture pattern with actions, API, schemas, types, utils, and index exports
+
+2. **Component Organization** - Each component lives in its own directory with supporting files:
+   - `component-name/` - Directory for a specific component
+   - `component-name/component-name.tsx` - Main component implementation
+   - `component-name/index.ts` - Barrel exports for the component
+   - `component-name/types.ts` - Component-specific types (if needed)
+
+3. **Single Implementation** - Consolidating duplicate code to eliminate redundancy
+   - Multiple builder image implementations → Single BuilderImage component
+   - Consistent, predictable API across components
+
+4. **Type Separation** - Clear separation between:
+   - Domain types (`lib/marketplace/types.ts`) - Core business logic types
+   - Component types (`components/marketplace/components/types.ts`) - UI component types
+
+5. **Barrel Exports** - Standardized exports throughout the codebase:
+   - Components export named exports for better tree-shaking
+   - Index files provide clean import paths
+   - Prevents circular dependencies
+
+6. **Error Handling** - Robust error handling strategy:
+   - Error boundaries for component isolation
+   - Fallbacks for failed image loading
+   - Clear error messages for developers
+
+7. **Stateless Design** - Components are stateless where possible:
+   - State management moved to hooks
+   - Pure render functions for predictable behavior
+   - No complex useEffect dependencies
+
+8. **Analytics Integration** - Built-in analytics tracking through marketplace-service
 
 ## Component Implementations
 

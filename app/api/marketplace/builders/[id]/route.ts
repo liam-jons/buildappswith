@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchBuilderById, trackMarketplaceEvent } from '@/lib/marketplace/data/marketplace-service';
+import { fetchBuilderById, trackMarketplaceEvent } from '@/lib/marketplace';
 import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
 import { logger } from '@/lib/logger';
 

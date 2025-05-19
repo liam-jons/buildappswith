@@ -2,7 +2,7 @@
  * Filter helper utilities for marketplace components
  */
 
-import { MarketplaceFilters } from '@/lib/marketplace/types';
+import { MarketplaceFilters } from '@/lib/marketplace';
 
 /**
  * Creates URL search params from marketplace filters

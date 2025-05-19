@@ -2,8 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { MarketplaceFilters, MarketplaceFilterOptions } from '@/lib/marketplace/types';
-import { fetchMarketplaceFilterOptions } from '@/lib/marketplace/api';
+import { MarketplaceFilters, MarketplaceFilterOptions, fetchMarketplaceFilterOptions } from '@/lib/marketplace';
 
 /**
  * Hook for managing marketplace builder filters

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMarketplaceFilterOptions } from '@/lib/marketplace/data/marketplace-service';
+import { getMarketplaceFilterOptions } from '@/lib/marketplace';
 
 /**
  * GET handler for fetching available marketplace filter options

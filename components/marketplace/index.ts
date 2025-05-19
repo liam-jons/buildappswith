@@ -1,33 +1,33 @@
 /**
- * Marketplace module exports
+ * Marketplace components barrel export file
+ * Version: 3.0.0
  *
  * This is the main entry point for the marketplace components.
- * It exports all components, hooks and utilities in a way that
- * prevents circular dependencies.
+ * It follows the domain-based architecture pattern with consolidated implementations.
  */
 
-// Export dashboard component directly
-export { BuilderDashboard } from './builder-dashboard';
-
-// Export components
+// Re-export everything from the components directory
+// This approach maintains a clean, flat export structure
 export {
   // Builder components
-  BuilderImage,
+  BuilderDashboard,
   BuilderCard,
   BuilderList,
   BuilderListClient,
+  BuilderImage,
   BuilderListSkeleton,
-
+  CardSkeleton,
+  ImageFallback,
+  
   // Filter components
   FilterPanel,
-
-  // Error Handling
+  
+  // UI components
+  DemoBadge,
+  
+  // Error handling components
   MarketplaceErrorBoundary,
-  MarketplaceErrorFallback,
-
-  // Helper components
-  ImageFallback,
-  CardSkeleton
+  MarketplaceErrorFallback
 } from './components';
 
 // Export hooks
@@ -42,7 +42,7 @@ export {
   isValidImageUrl,
   getInitials,
   getDefaultAvatarUrl,
-
+  
   // Filter utilities
   createFilterParams,
   parseFilterParams,

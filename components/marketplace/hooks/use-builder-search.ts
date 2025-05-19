@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from '@/hooks/use-debounce';
-import { BuilderProfileListing, BuildersResponse } from '@/lib/marketplace/types';
-import { fetchBuilders } from '@/lib/marketplace/api';
+import { BuilderProfileListing, BuildersResponse, fetchBuilders } from '@/lib/marketplace';
 
 interface UseBuilderSearchOptions {
   initialFilters?: Record<string, any>;
