@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { withAdmin } from "@/lib/auth/express/api-auth";
+import { withAdmin } from "@/lib/auth/api-auth";
 import { UserRole } from "@/lib/auth/types";
 import * as Sentry from "@sentry/nextjs";
 import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
@@ -30,7 +30,7 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
             id: true,
             name: true,
             email: true,
-            image: true
+            imageUrl: true
           }
         }
       },
@@ -45,7 +45,7 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
       userId: builder.userId,
       name: builder.user.name,
       email: builder.user.email,
-      image: builder.user.image,
+      image: builder.user.imageUrl,
       headline: builder.headline,
       hourlyRate: builder.hourlyRate ? Number(builder.hourlyRate) : null,
       featuredBuilder: builder.featuredBuilder,

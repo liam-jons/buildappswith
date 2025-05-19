@@ -15,7 +15,7 @@ import {
   withRole, 
   withAdmin,
   withBuilder 
-} from '@/lib/auth/express/api-auth';
+} from '@/lib/auth/api-auth';
 import { UserRole } from '@/lib/auth/types';
 import { logger } from '@/lib/logger';
 

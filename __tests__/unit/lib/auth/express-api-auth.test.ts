@@ -7,7 +7,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth, withAdmin, withBuilder, withClient, withAnyRole } from '@/lib/auth/express/api-auth';
+import { withAuth, withAdmin, withBuilder, withClient, withAnyRole } from '@/lib/auth/api-auth';
 import { UserRole } from '@/lib/auth/types';
 import { createAuthenticatedRequest, setupExpressMocks, testProtectedRoute } from '@/__tests__/utils/express-auth-test-utils';
 

@@ -54,6 +54,8 @@ export enum AnalyticsEventType {
   BOOKING_VIEWED = 'booking_viewed',
   BOOKING_CANCELLED = 'booking_cancelled',
   BOOKING_RESCHEDULED = 'booking_rescheduled',
+  BOOKING_STATUS_UPDATED = 'booking_status_updated',
+  PAYMENT_STATUS_UPDATED = 'payment_status_updated',
   
   // API events
   API_ERROR = 'api_error',

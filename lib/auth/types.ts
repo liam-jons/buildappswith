@@ -3,7 +3,7 @@
  * 
  * This file defines the common types used throughout the authentication system.
  * 
- * Version: 1.0.0
+ * Version: 2.0.0
  */
 
 /**
@@ -13,6 +13,23 @@ export enum UserRole {
   ADMIN = 'ADMIN',
   BUILDER = 'BUILDER',
   CLIENT = 'CLIENT',
+}
+
+/**
+ * Clerk user metadata shape
+ */
+export interface ClerkUserPublicMetadata {
+  roles?: UserRole[];
+  permissions?: string[];
+  [key: string]: unknown;
+}
+
+/**
+ * Clerk session claims shape
+ */
+export interface ClerkSessionClaims {
+  user_metadata?: ClerkUserPublicMetadata;
+  [key: string]: unknown;
 }
 
 /**
@@ -35,6 +52,21 @@ export interface AuthUser {
   clientProfile?: {
     id: string;
   };
+  publicMetadata?: ClerkUserPublicMetadata; // To hold raw public metadata if needed
+}
+
+/**
+ * Extended user object for Clerk Express integration
+ */
+export interface ExtendedUser {
+  id: string;
+  clerkId: string;
+  name: string | null;
+  email: string;
+  image: string | null;
+  roles: UserRole[];
+  verified: boolean;
+  stripeCustomerId?: string | null;
 }
 
 /**
@@ -90,13 +122,15 @@ export interface AuthMiddlewareOptions {
  * Authentication context type for providers
  */
 export interface AuthContextType {
-  user: AuthUser | null;
+  user: ExtendedUser | null;
   isLoaded: boolean;
   isSignedIn: boolean;
   roles: UserRole[];
   hasRole: (role: UserRole) => boolean;
+  hasPermission: (permission: string) => boolean;
   isAdmin: boolean;
   isBuilder: boolean;
   isClient: boolean;
-  signOut: (options?: AuthOptions) => Promise<void>;
+  signOut: (options?: { callbackUrl?: string }) => Promise<void>;
+  getToken: (options?: { template?: string; skipCache?: boolean }) => Promise<string | null>;
 }

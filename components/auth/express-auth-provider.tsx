@@ -5,9 +5,9 @@ import {
 } from 'react';
 import { AuthErrorBoundary } from './auth-error-boundary';
 import {
-  ExpressAuthProvider as BaseExpressAuthProvider,
-  UserRole
-} from '@/lib/auth/express/client-auth';
+  ExpressAuthProvider as BaseExpressAuthProvider
+} from '@/lib/auth/hooks';
+import { UserRole } from '@/lib/auth/types';
 
 /**
  * Express SDK authentication provider

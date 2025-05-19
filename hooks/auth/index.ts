@@ -4,7 +4,11 @@
  * This file provides standardized hooks for accessing authentication state
  * and role-based functionality throughout the application.
  *
- * Version: 3.0.0 - Updated to use Clerk Express SDK with enhanced provider
+ * Version: 4.0.0 - DEPRECATED FORWARDING MODULE
+ * 
+ * ⚠️ DEPRECATED: This module is provided for backward compatibility only.
+ * Please import auth hooks directly from @/lib/auth in new code.
+ * This forwarding module will be removed in a future release.
  */
 
 'use client';
@@ -12,197 +16,149 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import {
-  useAuth as useExpressAuth,
-  useUser as useExpressUser,
-  useIsAdmin as useExpressIsAdmin,
-  useIsBuilder as useExpressIsBuilder,
-  useHasRole as useExpressHasRole,
-  useSignOut as useExpressSignOut,
-  useAuthStatus as useExpressAuthStatus,
-  useAuthToken as useExpressAuthToken,
-  UserRole
-} from '@/lib/auth/express/client-auth';
+  useAuth as useAuthHook,
+  useUser as useUserHook,
+  useIsAdmin as useIsAdminHook,
+  useIsBuilder as useIsBuilderHook,
+  useIsClient as useIsClientHook,
+  useHasRole as useHasRoleHook,
+  useHasAllRoles as useHasAllRolesHook,
+  useHasAnyRole as useHasAnyRolesHook,
+  useSignOut as useSignOutHook,
+  useAuthStatus as useAuthStatusHook,
+  UserRole,
+  withAuth
+} from '@/lib/auth';
 
 /**
- * Export UserRole from the Express SDK implementation
- * This avoids circular dependencies with types.ts
+ * Export UserRole from the auth domain
  */
-export { UserRole };
+export { UserRole, withAuth };
 
 /**
- * Enhanced auth hook with role-based functionality using Express SDK
- *
- * @returns Enhanced auth object with role-based properties
+ * @deprecated Import from @/lib/auth instead
  */
 export function useAuth() {
-  // Forward to Express SDK implementation
-  return useExpressAuth();
+  console.warn('DEPRECATED: useAuth() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useAuthHook();
 }
 
 /**
- * Transform user data into application-specific format using Express SDK
+ * Transform user data into application-specific format
  *
+ * @deprecated Import from @/lib/auth instead
  * @returns Transformed user data and loading state
  */
 export function useUser() {
-  // Forward to Express SDK implementation
-  return useExpressUser();
+  console.warn('DEPRECATED: useUser() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useUserHook();
 }
 
 /**
- * Simple hook for checking authentication status using Express SDK
+ * Simple hook for checking authentication status
  *
+ * @deprecated Import from @/lib/auth instead
  * @returns Authentication status and loading state
  */
 export function useAuthStatus() {
-  // Forward to Express SDK implementation
-  return useExpressAuthStatus();
+  console.warn('DEPRECATED: useAuthStatus() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useAuthStatusHook();
 }
 
 /**
- * Wrap sign-out functionality with Express SDK
+ * Wrap sign-out functionality
  *
+ * @deprecated Import from @/lib/auth instead
  * @returns Sign-out function
  */
 export function useSignOut() {
-  // Forward to Express SDK implementation
-  return useExpressSignOut();
+  console.warn('DEPRECATED: useSignOut() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useSignOutHook();
 }
 
 /**
- * Check if the authenticated user has a specific role using Express SDK
+ * Check if the authenticated user has a specific role
  *
+ * @deprecated Import from @/lib/auth instead
  * @param role - The role to check for
  * @returns Boolean indicating if the user has the role
  */
 export function useHasRole(role: UserRole) {
-  // Forward to Express SDK implementation
-  return useExpressHasRole(role);
+  console.warn('DEPRECATED: useHasRole() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useHasRoleHook(role);
 }
 
 /**
- * Convenience hook for checking admin role using Express SDK
+ * Convenience hook for checking admin role
  *
+ * @deprecated Import from @/lib/auth instead
  * @returns Boolean indicating if the user is an admin
  */
 export function useIsAdmin() {
-  // Forward to Express SDK implementation
-  return useExpressIsAdmin();
+  console.warn('DEPRECATED: useIsAdmin() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useIsAdminHook();
 }
 
 /**
- * Convenience hook for checking builder role using Express SDK
+ * Convenience hook for checking builder role
  *
+ * @deprecated Import from @/lib/auth instead
  * @returns Boolean indicating if the user is a builder
  */
 export function useIsBuilder() {
-  // Forward to Express SDK implementation
-  return useExpressIsBuilder();
+  console.warn('DEPRECATED: useIsBuilder() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useIsBuilderHook();
 }
 
 /**
- * Convenience hook for checking client role using Express SDK
+ * Convenience hook for checking client role
  *
+ * @deprecated Import from @/lib/auth instead
  * @returns Boolean indicating if the user is a client
  */
 export function useIsClient() {
-  // Forward to Express SDK implementation
-  return useExpressHasRole(UserRole.CLIENT);
+  console.warn('DEPRECATED: useIsClient() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useIsClientHook();
 }
 
 /**
- * Check if the authenticated user has all of the specified roles using Express SDK
+ * Check if the authenticated user has all of the specified roles
  *
+ * @deprecated Import from @/lib/auth instead
  * @param roles - Array of roles to check for
  * @returns Boolean indicating if the user has all roles
  */
 export function useHasAllRoles(roles: UserRole[]) {
-  const { hasRole, isLoaded } = useExpressAuth();
-  return isLoaded && roles.every(role => hasRole(role));
+  console.warn('DEPRECATED: useHasAllRoles() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useHasAllRolesHook(roles);
 }
 
 /**
- * Check if the authenticated user has any of the specified roles using Express SDK
+ * Check if the authenticated user has any of the specified roles
  *
+ * @deprecated Import from @/lib/auth instead
  * @param roles - Array of roles to check for
  * @returns Boolean indicating if the user has any of the roles
  */
 export function useHasAnyRole(roles: UserRole[]) {
-  const { hasRole, isLoaded } = useExpressAuth();
-  return isLoaded && roles.some(role => hasRole(role));
+  console.warn('DEPRECATED: useHasAnyRole() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  return useHasAnyRolesHook(roles);
 }
 
 /**
- * Hook for accessing and refreshing auth tokens using Express SDK
+ * Hook for accessing and refreshing auth tokens
  *
+ * @deprecated Import from @/lib/auth instead
  * @returns Token management functions and state
  */
 export function useAuthToken() {
-  return useExpressAuthToken();
+  console.warn('DEPRECATED: useAuthToken() from @/hooks/auth is deprecated. Import from @/lib/auth instead.');
+  // Return a stub implementation that won't block usage but will motivate migration
+  return { token: null, getToken: async () => null, isLoaded: true, isExpired: false };
 }
 
 /**
- * Protect client-side components based on authentication status
- * Updated to use Express SDK
- *
- * @param WrappedComponent - Component to protect
- * @param options - Options for protection
- * @returns Protected component
+ * @deprecated Import withAuth from @/lib/auth instead
+ * This is now an alias for the withAuth HOC from the auth domain
  */
-export function withClientAuth<P extends object>(
-  WrappedComponent: React.ComponentType<P>,
-  options: {
-    redirectTo?: string;
-    loadingComponent?: React.ReactNode;
-    requiredRoles?: UserRole[];
-    requireAllRoles?: boolean;
-  } = {}
-) {
-  const WithAuth = (props: P) => {
-    const router = useRouter();
-    const { isSignedIn, isLoaded, hasRole } = useExpressAuth();
-
-    const redirectTo = options.redirectTo || '/login';
-    const defaultLoading = React.createElement('div', {}, 'Loading...');
-    const loadingComponent = options.loadingComponent || defaultLoading;
-    const requiredRoles = options.requiredRoles || [];
-    const requireAllRoles = options.requireAllRoles || false;
-
-    // Handle loading state
-    if (!isLoaded) {
-      return React.createElement(React.Fragment, {}, loadingComponent);
-    }
-
-    // Check if user is authenticated
-    if (!isSignedIn) {
-      // Use callback URL only on client-side
-      if (typeof window !== 'undefined') {
-        const callbackUrl = encodeURIComponent(window.location.href);
-        router.replace(`${redirectTo}?callbackUrl=${callbackUrl}`);
-      } else {
-        router.replace(redirectTo);
-      }
-      return null;
-    }
-
-    // Check role requirements if specified using the hasRole function from Express SDK
-    if (requiredRoles.length > 0) {
-      const hasRequiredRoles = requireAllRoles
-        ? requiredRoles.every(role => hasRole(role))
-        : requiredRoles.some(role => hasRole(role));
-
-      if (!hasRequiredRoles) {
-        router.replace('/unauthorized');
-        return null;
-      }
-    }
-
-    // Render the protected component
-    return React.createElement(WrappedComponent, props);
-  };
-
-  // Set display name for debugging
-  WithAuth.displayName = `WithAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
-
-  return WithAuth;
-}
+export const withClientAuth = withAuth;

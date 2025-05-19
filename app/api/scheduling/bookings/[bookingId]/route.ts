@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getBookingById, updateBookingStatus, updateBookingPayment } from '@/lib/scheduling/real-data/scheduling-service';
-import { withAuth } from '@/lib/auth/express/api-auth';
+import { withAuth } from '@/lib/auth/api-auth';
 import { UserRole } from '@/lib/auth/types';
 import * as Sentry from '@sentry/nextjs';
 import { logger } from '@/lib/logger';
 import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
+import { currentUser } from '@clerk/nextjs/server';
+import { BookingStatus } from '@prisma/client';
 
 // Validation schema for updating booking status
 const updateStatusSchema = z.object({
@@ -24,12 +26,13 @@ const updatePaymentSchema = z.object({
  */
 export const GET = withAuth(async (
   req: NextRequest,
-  userId: string,
+  auth: { userId: string },
   { params }: { params: { bookingId: string } }
 ) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
+  const { userId } = auth;
   const { bookingId } = params;
 
   try {
@@ -61,14 +64,13 @@ export const GET = withAuth(async (
       );
     }
     
-    // Get user roles from auth context
-    const req_roles = req.auth?.sessionClaims?.roles as UserRole[] || 
-                    req.auth?.sessionClaims?.['public_metadata']?.['roles'] as UserRole[] || 
-                    [];
+    // Get user roles for authorization
+    const user = await currentUser();
+    const userRoles = user?.publicMetadata?.roles as UserRole[] || [];
     
     // Authorization check - only allow access to own bookings
     // unless the user is an admin
-    const isAdminUser = Array.isArray(req_roles) && req_roles.includes(UserRole.ADMIN);
+    const isAdminUser = Array.isArray(userRoles) && userRoles.includes(UserRole.ADMIN);
     const isBuilder = userId === booking.builderId;
     const isClient = userId === booking.clientId;
     
@@ -146,12 +148,13 @@ export const GET = withAuth(async (
  */
 export const PATCH = withAuth(async (
   req: NextRequest,
-  userId: string,
+  auth: { userId: string },
   { params }: { params: { bookingId: string } }
 ) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
+  const { userId } = auth;
   const { bookingId } = params;
 
   try {
@@ -183,13 +186,12 @@ export const PATCH = withAuth(async (
       );
     }
     
-    // Get user roles from auth context
-    const req_roles = req.auth?.sessionClaims?.roles as UserRole[] || 
-                    req.auth?.sessionClaims?.['public_metadata']?.['roles'] as UserRole[] || 
-                    [];
+    // Get user roles for authorization
+    const user = await currentUser();
+    const userRoles = user?.publicMetadata?.roles as UserRole[] || [];
     
     // Authorization check
-    const isAdminUser = Array.isArray(req_roles) && req_roles.includes(UserRole.ADMIN);
+    const isAdminUser = Array.isArray(userRoles) && userRoles.includes(UserRole.ADMIN);
     const isBuilder = userId === existingBooking.builderId;
     const isClient = userId === existingBooking.clientId;
     
@@ -231,7 +233,7 @@ export const PATCH = withAuth(async (
         });
         
         return createAuthErrorResponse(
-          'VALIDATION_ERROR',
+          AuthErrorType.VALIDATION,
           'Invalid status data',
           400,
           path,
@@ -261,8 +263,27 @@ export const PATCH = withAuth(async (
         );
       }
       
-      // Update the booking status
-      const updatedBooking = await updateBookingStatus(bookingId, result.data.status);
+      const statusMap: { [key: string]: BookingStatus } = {
+        'pending': BookingStatus.PENDING,
+        'confirmed': BookingStatus.CONFIRMED,
+        'cancelled': BookingStatus.CANCELLED,
+        'completed': BookingStatus.COMPLETED,
+      };
+      const enumStatus = statusMap[result.data.status];
+
+      if (!enumStatus) {
+        logger.error('Invalid booking status provided after validation', { status: result.data.status, bookingId, userId });
+        return createAuthErrorResponse(
+          AuthErrorType.VALIDATION,
+          'Invalid booking status provided.',
+          400,
+          path,
+          method,
+          userId
+        );
+      }
+
+      const updatedBooking = await updateBookingStatus(bookingId, enumStatus);
       
       logger.info('Booking status updated successfully', {
         path,
@@ -302,7 +323,7 @@ export const PATCH = withAuth(async (
         });
         
         return createAuthErrorResponse(
-          'VALIDATION_ERROR',
+          AuthErrorType.VALIDATION,
           'Invalid payment data',
           400,
           path,
@@ -371,7 +392,7 @@ export const PATCH = withAuth(async (
       });
       
       return createAuthErrorResponse(
-        'VALIDATION_ERROR',
+        AuthErrorType.VALIDATION,
         'Invalid update data',
         400,
         path,

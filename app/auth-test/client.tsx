@@ -19,7 +19,7 @@ import {
   useIsBuilder, 
   useHasRole,
   useSignOut 
-} from '@/lib/auth/express/client-auth';
+} from '@/lib/auth/hooks';
 import { UserRole } from '@/lib/auth/types';
 
 /**

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { withAdmin } from "@/lib/auth/express/api-auth";
+import { withAdmin } from "@/lib/auth/api-auth";
 import * as Sentry from "@sentry/nextjs";
 import { UserRole } from "@/lib/auth/types";
 import { z } from "zod";
@@ -25,13 +25,13 @@ const sessionTypeUpdateSchema = z.object({
 // Updated to use Express SDK with admin role check
 export const GET = withAdmin(async (
   req: NextRequest,
-  userId: string,
-  roles: UserRole[],
+  auth: { userId: string; roles: UserRole[] },
   { params }: { params: { id: string } }
 ) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
+  const { userId, roles } = auth;
   const id = params.id;
 
   try {
@@ -124,13 +124,13 @@ export const GET = withAdmin(async (
 // Updated to use Express SDK with admin role check
 export const PUT = withAdmin(async (
   req: NextRequest,
-  userId: string,
-  roles: UserRole[],
+  auth: { userId: string; roles: UserRole[] },
   { params }: { params: { id: string } }
 ) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
+  const { userId, roles } = auth;
   const id = params.id;
 
   try {
@@ -264,13 +264,13 @@ export const PUT = withAdmin(async (
 // Updated to use Express SDK with admin role check
 export const DELETE = withAdmin(async (
   req: NextRequest,
-  userId: string,
-  roles: UserRole[],
+  auth: { userId: string; roles: UserRole[] },
   { params }: { params: { id: string } }
 ) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
+  const { userId, roles } = auth;
   const id = params.id;
 
   try {

@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSignOut, useAuthToken } from '@/lib/auth/express/client-auth';
+import { useSignOut, useAuth } from '@/lib/auth/hooks';
 import { Button } from '@/components/ui/core/button';
 // Removed static import of Sentry
 // import * as Sentry from '@sentry/nextjs';
@@ -36,8 +36,8 @@ export function AuthErrorBoundary({
   });
   // Add state for Sentry client
   const [sentryClient, setSentryClient] = useState<any>(null);
-  const { signOut } = useSignOut();
-  const { refreshToken } = useAuthToken();
+  const { getToken } = useAuth();
+  const performSignOut = useSignOut();
   const router = useRouter();
 
   // Dynamically load Sentry client
@@ -92,7 +92,7 @@ export function AuthErrorBoundary({
       if (error.name === 'TokenExpiredError' || error.name === 'TokenRefreshRequired') {
         try {
           // Attempt to refresh the token
-          await refreshToken();
+          await getToken();
           // Token refreshed successfully, no need to show error
           return;
         } catch (refreshError) {
@@ -151,7 +151,7 @@ export function AuthErrorBoundary({
       window.removeEventListener('popstate', handleRouteChange);
       window.removeEventListener('error', handleStandardError);
     };
-  }, [hasError, refreshToken, onError]);
+  }, [hasError, onError]);
 
   // Dispatch global auth error (for testing and manual triggering)
   const dispatchAuthError = (errorType: string | Error) => {
@@ -177,7 +177,7 @@ export function AuthErrorBoundary({
 
   // Handle sign out action
   const handleSignOut = () => {
-    signOut({ callbackUrl: '/login' });
+    performSignOut({ callbackUrl: '/login' });
   };
 
   // Custom fallback UI for auth errors

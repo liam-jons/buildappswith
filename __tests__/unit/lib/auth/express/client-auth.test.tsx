@@ -13,7 +13,7 @@ import {
   useAuthStatus,
   ExpressAuthProvider,
   useAuthContext
-} from '@/lib/auth/express/client-auth';
+} from '@/lib/auth/hooks';
 import { UserRole } from '@/lib/auth/types';
 
 // Mock Clerk client hooks
@@ -193,21 +193,22 @@ describe('Client-Side Authentication Hooks', () => {
         signOut: mockSignOut,
       });
       
-      const { result } = renderHook(() => useAuth());
+      const { result: authResult } = renderHook(() => useAuth());
       
       // Wait for useEffect to resolve
       await vi.runAllTimersAsync();
       
-      const originalWindowLocation = window.location;
-      delete window.location;
-      window.location = { href: '' } as any;
+      const originalWindowLocation: Location = window.location;
+      // @ts-ignore TS2790: Read-only property 'window.location' cannot be overwritten in tests without this.
+      window.location = { href: '', assign: vi.fn(), reload: vi.fn(), replace: vi.fn() } as unknown as Location;
       
-      await result.current.signOut({ callbackUrl: '/login' });
+      await authResult.current.signOut({ callbackUrl: '/login' });
       
       expect(mockSignOut).toHaveBeenCalled();
       expect(window.location.href).toBe('/login');
       
       // Restore original window.location
+      // @ts-ignore TS2790: Read-only property 'window.location' cannot be overwritten in tests without this.
       window.location = originalWindowLocation;
     });
   });

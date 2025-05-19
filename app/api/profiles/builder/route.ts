@@ -7,7 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withBuilder } from '@/lib/auth/express/api-auth';
+import { withBuilder } from '@/lib/auth/api-auth';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { captureException } from '@sentry/nextjs';
@@ -21,7 +21,7 @@ const builderProfileSchema = z.object({
   headline: z.string().max(100, { message: "Headline cannot exceed 100 characters" }).optional(),
   skills: z.array(z.string()).optional(),
   availableForHire: z.boolean().optional(),
-  adhdFocus: z.boolean().optional(),
+  adhd_focus: z.boolean().optional(),
   socialLinks: z.object({
     website: z.string().url({ message: "Invalid website URL" }).optional().nullable(),
     github: z.string().url({ message: "Invalid GitHub URL" }).optional().nullable(),
@@ -35,10 +35,11 @@ const builderProfileSchema = z.object({
  *
  * Get the authenticated user's builder profile
  */
-export const GET = withBuilder(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+export const GET = withBuilder(async (req: NextRequest, auth: { userId: string; roles: UserRole[] }) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
+  const { userId, roles } = auth;
 
   try {
     logger.debug('Fetching builder profile', { userId, path, method });
@@ -87,7 +88,7 @@ export const GET = withBuilder(async (req: NextRequest, userId: string, roles: U
     const formattedSkills = dbUser.builderProfile.skills.map(skill => ({
       id: skill.skill.id,
       name: skill.skill.name,
-      category: skill.skill.category,
+      domain: skill.skill.domain,
     }));
 
     // Return the builder profile with performance metrics
@@ -100,7 +101,7 @@ export const GET = withBuilder(async (req: NextRequest, userId: string, roles: U
         headline: dbUser.builderProfile.headline,
         skills: formattedSkills,
         availableForHire: dbUser.builderProfile.availableForHire,
-        adhdFocus: dbUser.builderProfile.adhdFocus,
+        adhd_focus: dbUser.builderProfile.adhd_focus,
         validationTier: dbUser.builderProfile.validationTier,
         socialLinks: dbUser.builderProfile.socialLinks,
         createdAt: dbUser.builderProfile.createdAt,
@@ -134,10 +135,11 @@ export const GET = withBuilder(async (req: NextRequest, userId: string, roles: U
  *
  * Update the authenticated user's builder profile
  */
-export const POST = withBuilder(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+export const POST = withBuilder(async (req: NextRequest, auth: { userId: string; roles: UserRole[] }) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
+  const { userId, roles } = auth;
 
   try {
     logger.debug('Updating builder profile', { userId, path, method });
@@ -199,7 +201,7 @@ export const POST = withBuilder(async (req: NextRequest, userId: string, roles: 
             bio: validatedData.bio || '',
             headline: validatedData.headline || '',
             availableForHire: validatedData.availableForHire ?? true,
-            adhdFocus: validatedData.adhdFocus ?? false,
+            adhd_focus: validatedData.adhd_focus ?? false,
             socialLinks: validatedData.socialLinks || {},
             validationTier: 1,
           },
@@ -236,7 +238,7 @@ export const POST = withBuilder(async (req: NextRequest, userId: string, roles: 
       ...validatedData.bio !== undefined ? { bio: validatedData.bio } : {},
       ...validatedData.headline !== undefined ? { headline: validatedData.headline } : {},
       ...validatedData.availableForHire !== undefined ? { availableForHire: validatedData.availableForHire } : {},
-      ...validatedData.adhdFocus !== undefined ? { adhdFocus: validatedData.adhdFocus } : {},
+      ...validatedData.adhd_focus !== undefined ? { adhd_focus: validatedData.adhd_focus } : {},
       ...validatedData.socialLinks !== undefined ? { socialLinks: validatedData.socialLinks } : {},
     };
 
@@ -251,7 +253,7 @@ export const POST = withBuilder(async (req: NextRequest, userId: string, roles: 
       // First, remove existing skill connections
       await db.builderSkill.deleteMany({
         where: {
-          builderProfileId: dbUser.builderProfile.id
+          builderId: dbUser.builderProfile.id
         }
       });
 
@@ -274,8 +276,9 @@ export const POST = withBuilder(async (req: NextRequest, userId: string, roles: 
         // Create the connection
         await db.builderSkill.create({
           data: {
-            builderProfileId: dbUser.builderProfile.id,
-            skillId: skill.id
+            builderId: dbUser.builderProfile.id,
+            skillId: skill.id,
+            proficiency: 1 // Default proficiency
           }
         });
       }

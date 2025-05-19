@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { withAuth, withClient } from '@/lib/auth/express/api-auth';
+import { withAuth, withClient } from '@/lib/auth/api-auth';
 import { createBooking, getAvailableTimeSlots } from '@/lib/scheduling/real-data/scheduling-service';
 import * as Sentry from '@sentry/nextjs';
 import { parseISO } from 'date-fns';

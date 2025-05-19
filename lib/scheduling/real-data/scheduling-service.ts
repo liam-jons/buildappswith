@@ -11,22 +11,37 @@
  * Version: 1.1.0
  */
 
-// Re-export additional session type functions
-export {
-  getSessionTypeById,
-  createSessionType,
-  updateSessionType,
-  deleteSessionType
-} from './scheduling-service-ext';
-
-import { PrismaClient, Prisma } from '@prisma/client';
-import { logger } from '@/lib/logger';
+import { 
+  PrismaClient, 
+  Prisma, 
+  BookingStatus as PrismaBookingStatus, 
+  PaymentStatus as PrismaPaymentStatus,
+  AvailabilityException as PrismaAvailabilityException,
+  AvailabilityRule as PrismaAvailabilityRule,
+  BuilderProfile as PrismaBuilderProfile,
+  User as PrismaUser, // For BuilderProfile.user relation
+  SessionType as PrismaSessionType // For SessionType mapping
+} from '@prisma/client'; 
+import { logger } from '@/lib/logger'; // Assuming logger is in @/lib/logger
 import type { 
-  BookingStatus, 
   Booking, 
-  SessionType, 
   BookingRequest,
-  PaymentStatus
+  SessionType as LocalSessionType, // Aliased to avoid conflict
+  AvailabilityRule as LocalAvailabilityRule,
+  AvailabilityException as LocalAvailabilityException,
+  TimeSlot as LocalTimeSlot, // Assuming LocalTimeSlot is defined for slots array elements
+  SchedulingSettings as LocalSchedulingSettings,
+  CreateAvailabilityExceptionInput,
+  UpdateAvailabilityExceptionInput,
+  CreateAvailabilityRuleInput,
+  UpdateAvailabilityRuleInput,
+  UpdateSchedulingSettingsInput, 
+  TimeSlotInput,
+  BookingStatus as LocalBookingStatus,
+  PaymentStatus as LocalPaymentStatus,
+  BuilderProfile as LocalBuilderProfile, // Aliased for clarity
+  DayOfWeek, // For AvailabilityRule.daysOfWeek
+  WeeklySlot 
 } from '../types';
 import { getCalendlyService } from '../calendly';
 import { trackBookingEvent, AnalyticsEventType } from '../calendly/analytics';
@@ -79,8 +94,8 @@ export async function getBookingById(bookingId: string): Promise<Booking | null>
       description: booking.description || undefined,
       startTime: booking.startTime.toISOString(),
       endTime: booking.endTime.toISOString(),
-      status: booking.status as BookingStatus,
-      paymentStatus: booking.paymentStatus as PaymentStatus,
+      status: booking.status as LocalBookingStatus,
+      paymentStatus: booking.paymentStatus as LocalPaymentStatus,
       amount: booking.amount ? booking.amount.toNumber() : undefined,
       stripeSessionId: booking.stripeSessionId || undefined,
       clientTimezone: booking.clientTimezone || undefined,
@@ -227,8 +242,8 @@ export async function createBooking(bookingData: BookingRequest): Promise<Bookin
       description: booking.description || undefined,
       startTime: booking.startTime.toISOString(),
       endTime: booking.endTime.toISOString(),
-      status: booking.status as BookingStatus,
-      paymentStatus: booking.paymentStatus as PaymentStatus,
+      status: booking.status as LocalBookingStatus,
+      paymentStatus: booking.paymentStatus as LocalPaymentStatus,
       amount: booking.amount ? booking.amount.toNumber() : undefined,
       stripeSessionId: booking.stripeSessionId || undefined,
       clientTimezone: booking.clientTimezone || undefined,
@@ -309,7 +324,7 @@ export async function createBookingFromCalendly(calendlyData: {
  */
 export async function updateBookingPayment(
   bookingId: string,
-  paymentStatus: string,
+  paymentStatus: PrismaPaymentStatus,
   stripeSessionId?: string
 ): Promise<Booking> {
   try {
@@ -326,7 +341,7 @@ export async function updateBookingPayment(
     const booking = await prisma.booking.update({
       where: { id: bookingId },
       data: {
-        paymentStatus: paymentStatus as PaymentStatus,
+        paymentStatus,
         ...(stripeSessionId && { stripeSessionId })
       }
     });
@@ -346,8 +361,8 @@ export async function updateBookingPayment(
     });
 
     // If payment is successful, update booking status to CONFIRMED if it's still PENDING
-    if (paymentStatus === 'PAID' && existingBooking.status === 'PENDING') {
-      await updateBookingStatus(bookingId, 'CONFIRMED' as BookingStatus);
+    if (paymentStatus === PrismaPaymentStatus.PAID && existingBooking.status === PrismaBookingStatus.PENDING) {
+      await updateBookingStatus(bookingId, PrismaBookingStatus.CONFIRMED);
     }
 
     // Transform the database booking to our API type
@@ -360,8 +375,8 @@ export async function updateBookingPayment(
       description: booking.description || undefined,
       startTime: booking.startTime.toISOString(),
       endTime: booking.endTime.toISOString(),
-      status: booking.status as BookingStatus,
-      paymentStatus: booking.paymentStatus as PaymentStatus,
+      status: booking.status as LocalBookingStatus,
+      paymentStatus: booking.paymentStatus as LocalPaymentStatus,
       amount: booking.amount ? booking.amount.toNumber() : undefined,
       stripeSessionId: booking.stripeSessionId || undefined,
       clientTimezone: booking.clientTimezone || undefined,
@@ -387,7 +402,7 @@ export async function updateBookingPayment(
  */
 export async function updateBookingStatus(
   bookingId: string,
-  status: BookingStatus
+  status: PrismaBookingStatus
 ): Promise<Booking> {
   try {
     // Verify the booking exists
@@ -402,7 +417,9 @@ export async function updateBookingStatus(
     // Update the booking with the new status
     const booking = await prisma.booking.update({
       where: { id: bookingId },
-      data: { status: status as string }
+      data: {
+        status: status
+      }
     });
 
     logger.info('Updated booking status', { bookingId, status });
@@ -424,8 +441,8 @@ export async function updateBookingStatus(
       description: booking.description || undefined,
       startTime: booking.startTime.toISOString(),
       endTime: booking.endTime.toISOString(),
-      status: booking.status as BookingStatus,
-      paymentStatus: booking.paymentStatus as PaymentStatus,
+      status: booking.status as LocalBookingStatus,
+      paymentStatus: booking.paymentStatus as LocalPaymentStatus,
       amount: booking.amount ? booking.amount.toNumber() : undefined,
       stripeSessionId: booking.stripeSessionId || undefined,
       clientTimezone: booking.clientTimezone || undefined,
@@ -439,167 +456,6 @@ export async function updateBookingStatus(
   } catch (error) {
     logger.error('Error updating booking status', { error, bookingId, status });
     throw new Error('Failed to update booking status');
-  }
-}
-
-/**
- * Get all session types for a builder
- * 
- * @param builderId - The ID of the builder
- * @returns Array of session types
- */
-export async function getSessionTypes(builderId: string): Promise<SessionType[]> {
-  try {
-    // Get session types from the database
-    const sessionTypes = await prisma.sessionType.findMany({
-      where: {
-        builderId,
-        isActive: true
-      },
-      orderBy: {
-        price: 'asc'
-      }
-    });
-
-    // Transform database types to our API types
-    return sessionTypes.map(st => ({
-      id: st.id,
-      builderId: st.builderId,
-      title: st.title,
-      description: st.description,
-      durationMinutes: st.durationMinutes,
-      price: st.price.toNumber(),
-      currency: st.currency,
-      isActive: st.isActive,
-      color: st.color || undefined,
-      maxParticipants: st.maxParticipants || undefined,
-      calendlyEventTypeId: st.calendlyEventTypeId || undefined,
-      calendlyEventTypeUri: st.calendlyEventTypeUri || undefined,
-      createdAt: st.createdAt.toISOString(),
-      updatedAt: st.updatedAt.toISOString(),
-    }));
-  } catch (error) {
-    logger.error('Error retrieving session types', { error, builderId });
-    throw new Error('Failed to retrieve session types');
-  }
-}
-
-/**
- * Get Calendly session types for a builder
- * 
- * This function fetches and syncs Calendly event types with our system
- * 
- * @param builderId - The ID of the builder
- * @returns Array of session types
- */
-export async function getCalendlySessionTypes(builderId: string): Promise<SessionType[]> {
-  try {
-    // Get the Calendly service
-    const calendlyService = getCalendlyService();
-    
-    // Get event types from Calendly
-    const eventTypes = await calendlyService.getEventTypes();
-    
-    // Get existing session types for this builder
-    const existingTypes = await prisma.sessionType.findMany({
-      where: {
-        builderId,
-        calendlyEventTypeId: { not: null }
-      }
-    });
-    
-    // Create a map of existing types by Calendly event type ID
-    const existingTypeMap = new Map(
-      existingTypes.map(type => [type.calendlyEventTypeId, type])
-    );
-    
-    // Process each Calendly event type
-    const processedTypes = [];
-    
-    for (const eventType of eventTypes) {
-      // Check if this event type already exists
-      const existingType = existingTypeMap.get(eventType.calendlyEventTypeId);
-      
-      if (existingType) {
-        // Update the existing type if needed
-        if (
-          existingType.title !== eventType.title ||
-          existingType.description !== eventType.description ||
-          existingType.durationMinutes !== eventType.durationMinutes ||
-          existingType.calendlyEventTypeUri !== eventType.calendlyEventTypeUri
-        ) {
-          // Update the session type
-          await prisma.sessionType.update({
-            where: { id: existingType.id },
-            data: {
-              title: eventType.title,
-              description: eventType.description,
-              durationMinutes: eventType.durationMinutes,
-              calendlyEventTypeUri: eventType.calendlyEventTypeUri,
-              color: eventType.color,
-              isActive: eventType.isActive
-            }
-          });
-        }
-        
-        // Add to processed types
-        processedTypes.push({
-          id: existingType.id,
-          builderId,
-          title: eventType.title,
-          description: eventType.description,
-          durationMinutes: eventType.durationMinutes,
-          price: existingType.price.toNumber(),
-          currency: existingType.currency,
-          isActive: eventType.isActive,
-          color: eventType.color || undefined,
-          maxParticipants: existingType.maxParticipants || undefined,
-          calendlyEventTypeId: eventType.calendlyEventTypeId,
-          calendlyEventTypeUri: eventType.calendlyEventTypeUri,
-          createdAt: existingType.createdAt.toISOString(),
-          updatedAt: existingType.updatedAt.toISOString()
-        });
-      } else {
-        // Create a new session type
-        const newType = await prisma.sessionType.create({
-          data: {
-            builderId,
-            title: eventType.title,
-            description: eventType.description,
-            durationMinutes: eventType.durationMinutes,
-            price: 0, // Default price
-            currency: 'USD', // Default currency
-            isActive: eventType.isActive,
-            color: eventType.color,
-            calendlyEventTypeId: eventType.calendlyEventTypeId,
-            calendlyEventTypeUri: eventType.calendlyEventTypeUri
-          }
-        });
-        
-        // Add to processed types
-        processedTypes.push({
-          id: newType.id,
-          builderId,
-          title: newType.title,
-          description: newType.description,
-          durationMinutes: newType.durationMinutes,
-          price: newType.price.toNumber(),
-          currency: newType.currency,
-          isActive: newType.isActive,
-          color: newType.color || undefined,
-          maxParticipants: newType.maxParticipants || undefined,
-          calendlyEventTypeId: newType.calendlyEventTypeId || undefined,
-          calendlyEventTypeUri: newType.calendlyEventTypeUri || undefined,
-          createdAt: newType.createdAt.toISOString(),
-          updatedAt: newType.updatedAt.toISOString()
-        });
-      }
-    }
-    
-    return processedTypes;
-  } catch (error) {
-    logger.error('Error retrieving Calendly session types', { error, builderId });
-    throw new Error('Failed to retrieve Calendly session types');
   }
 }
 
@@ -642,7 +498,7 @@ export async function getUserBookings(
             user: {
               select: {
                 name: true,
-                email: true
+                email: true,
               }
             }
           }
@@ -650,7 +506,7 @@ export async function getUserBookings(
         client: {
           select: {
             name: true,
-            email: true
+            email: true,
           }
         }
       },
@@ -664,13 +520,13 @@ export async function getUserBookings(
       id: booking.id,
       builderId: booking.builderId,
       clientId: booking.clientId,
-      sessionTypeId: booking.sessionTypeId || undefined,
+      sessionTypeId: booking.sessionTypeId || '',
       title: booking.title,
       description: booking.description || undefined,
       startTime: booking.startTime.toISOString(),
       endTime: booking.endTime.toISOString(),
-      status: booking.status as BookingStatus,
-      paymentStatus: booking.paymentStatus as PaymentStatus,
+      status: booking.status as LocalBookingStatus,
+      paymentStatus: booking.paymentStatus as LocalPaymentStatus,
       amount: booking.amount ? booking.amount.toNumber() : undefined,
       stripeSessionId: booking.stripeSessionId || undefined,
       clientTimezone: booking.clientTimezone || undefined,
@@ -699,448 +555,259 @@ export async function getAvailabilityExceptions(
   builderId: string,
   startDate?: string,
   endDate?: string
-): Promise<any[]> {
+): Promise<LocalAvailabilityException[]> {
   try {
-    // Prepare where clause
-    let whereClause: Prisma.AvailabilityExceptionWhereInput = {
-      builderId
+    const whereClause: Prisma.AvailabilityExceptionWhereInput = {
+      builderId,
     };
-
-    // Add date filters if provided
-    if (startDate) {
-      whereClause.date = {
-        gte: startDate
-      };
-    }
-
-    if (endDate) {
-      whereClause.date = {
-        ...whereClause.date,
-        lte: endDate
-      };
-    }
-
-    // Query database
-    const exceptions = await prisma.availabilityException.findMany({
-      where: whereClause,
-      orderBy: {
-        date: 'asc'
+    if (startDate || endDate) {
+      whereClause.AND = [];
+      if (startDate) {
+        whereClause.AND.push({ date: { gte: new Date(startDate) } });
       }
+      if (endDate) {
+        whereClause.AND.push({ date: { lte: new Date(endDate) } });
+      }
+    }
+
+    const dbExceptions = await prisma.availabilityException.findMany({
+      where: whereClause,
     });
 
-    // Transform to API type
-    return exceptions.map(exception => ({
-      id: exception.id,
-      builderId: exception.builderId,
-      date: exception.date,
-      isAvailable: exception.isAvailable,
-      slots: exception.slots || [],
-      reason: exception.reason || undefined,
-      createdAt: exception.createdAt.toISOString(),
-      updatedAt: exception.updatedAt.toISOString()
-    }));
+    return dbExceptions.map(mapToLocalAvailabilityException);
   } catch (error) {
-    logger.error('Error retrieving availability exceptions', { error, builderId });
+    logger.error('Error retrieving availability exceptions', { error, builderId, startDate, endDate });
     throw new Error('Failed to retrieve availability exceptions');
   }
 }
 
-/**
- * Get an availability exception by ID
- *
- * @param id - The ID of the availability exception
- * @returns The availability exception if found, null otherwise
- */
-export async function getAvailabilityExceptionById(id: string): Promise<any | null> {
+export async function getAvailabilityExceptionById(id: string): Promise<LocalAvailabilityException | null> {
   try {
-    const exception = await prisma.availabilityException.findUnique({
-      where: { id }
+    const prismaException = await prisma.availabilityException.findUnique({
+      where: { id },
     });
 
-    if (!exception) {
-      return null;
-    }
+    if (!prismaException) return null;
 
-    // Transform to API type
-    return {
-      id: exception.id,
-      builderId: exception.builderId,
-      date: exception.date,
-      isAvailable: exception.isAvailable,
-      slots: exception.slots || [],
-      reason: exception.reason || undefined,
-      createdAt: exception.createdAt.toISOString(),
-      updatedAt: exception.updatedAt.toISOString()
-    };
+    return mapToLocalAvailabilityException(prismaException);
   } catch (error) {
     logger.error('Error retrieving availability exception by ID', { error, id });
-    throw new Error('Failed to retrieve availability exception');
+    throw new Error('Failed to retrieve availability exception by ID');
   }
 }
 
-/**
- * Create a new availability exception
- *
- * @param data - The availability exception data
- * @returns The created availability exception
- */
-export async function createAvailabilityException(data: {
-  builderId: string;
-  date: string;
-  isAvailable: boolean;
-  slots?: { startTime: string; endTime: string; isBooked?: boolean }[];
-  reason?: string;
-}): Promise<any> {
+export async function createAvailabilityException(
+  builderId: string,
+  data: CreateAvailabilityExceptionInput
+): Promise<LocalAvailabilityException> {
+  logger.info(`Creating availability exception for builder ${builderId} with data: ${JSON.stringify(data)}`);
   try {
-    // Create the exception
-    const exception = await prisma.availabilityException.create({
+    const newPrismaException = await prisma.availabilityException.create({
       data: {
-        builderId: data.builderId,
-        date: data.date,
+        builderId,
+        date: new Date(data.date),
         isAvailable: data.isAvailable,
-        slots: data.slots || [],
-        reason: data.reason
-      }
+        // Ensure slots are correctly formatted as Prisma.InputJsonValue
+        // Prisma expects a JsonValue, which can be string, number, boolean, null, array of JsonValue, or object with string keys and JsonValue values.
+        slots: data.slots ? (data.slots as unknown as Prisma.InputJsonValue) : Prisma.JsonNull,
+        reason: data.reason,
+      },
     });
-
-    logger.info('Created availability exception', {
-      exceptionId: exception.id,
-      builderId: exception.builderId,
-      date: exception.date
-    });
-
-    // Transform to API type
-    return {
-      id: exception.id,
-      builderId: exception.builderId,
-      date: exception.date,
-      isAvailable: exception.isAvailable,
-      slots: exception.slots || [],
-      reason: exception.reason || undefined,
-      createdAt: exception.createdAt.toISOString(),
-      updatedAt: exception.updatedAt.toISOString()
-    };
+    logger.info(`Successfully created availability exception with ID: ${newPrismaException.id}`);
+    return mapToLocalAvailabilityException(newPrismaException);
   } catch (error) {
-    logger.error('Error creating availability exception', { error, data });
-    throw new Error('Failed to create availability exception');
+    logger.error(`Error creating availability exception for builder ${builderId}: ${error}`);
+    throw error; // Re-throw the error to be handled by the caller
   }
 }
 
-/**
- * Update an existing availability exception
- *
- * @param id - The ID of the availability exception to update
- * @param data - The partial availability exception data to update
- * @returns The updated availability exception
- */
 export async function updateAvailabilityException(
   id: string,
-  data: Partial<{
-    isAvailable: boolean;
-    slots: { startTime: string; endTime: string; isBooked?: boolean }[];
-    reason: string;
-  }>
-): Promise<any> {
+  data: UpdateAvailabilityExceptionInput
+): Promise<LocalAvailabilityException> {
+  logger.info(`Updating availability exception with ID: ${id} with data: ${JSON.stringify(data)}`);
+  
+  const prismaUpdateData: Prisma.AvailabilityExceptionUpdateInput = {};
+  // Only include fields in prismaUpdateData if they are actually provided in 'data'
+  if (data.isAvailable !== undefined) {
+    prismaUpdateData.isAvailable = data.isAvailable;
+  }
+  if (data.slots !== undefined) {
+    prismaUpdateData.slots = data.slots ? (data.slots as unknown as Prisma.InputJsonValue) : Prisma.JsonNull;
+  }
+  if (data.reason !== undefined) {
+    prismaUpdateData.reason = data.reason;
+  }
+  // Note: 'date' and 'builderId' are typically not part of an update operation for an existing exception.
+  // If 'date' were updatable, it would be: if (data.date) prismaUpdateData.date = new Date(data.date);
+
   try {
-    // Update the exception
-    const exception = await prisma.availabilityException.update({
+    const updatedPrismaException = await prisma.availabilityException.update({
       where: { id },
-      data
+      data: prismaUpdateData,
     });
-
-    logger.info('Updated availability exception', {
-      exceptionId: exception.id,
-      builderId: exception.builderId,
-      date: exception.date
-    });
-
-    // Transform to API type
-    return {
-      id: exception.id,
-      builderId: exception.builderId,
-      date: exception.date,
-      isAvailable: exception.isAvailable,
-      slots: exception.slots || [],
-      reason: exception.reason || undefined,
-      createdAt: exception.createdAt.toISOString(),
-      updatedAt: exception.updatedAt.toISOString()
-    };
+    logger.info(`Successfully updated availability exception with ID: ${id}`);
+    return mapToLocalAvailabilityException(updatedPrismaException);
   } catch (error) {
-    logger.error('Error updating availability exception', { error, id, data });
-    throw new Error('Failed to update availability exception');
+    logger.error(`Error updating availability exception with ID ${id}: ${error}`);
+    throw error; // Re-throw the error to be handled by the caller
   }
 }
 
 /**
- * Delete an availability exception
- *
- * @param id - The ID of the availability exception to delete
- * @returns True if deletion was successful
+ * Helper function to map Prisma AvailabilityException to local type
  */
-export async function deleteAvailabilityException(id: string): Promise<boolean> {
-  try {
-    // Delete the exception
-    await prisma.availabilityException.delete({
-      where: { id }
-    });
-
-    logger.info('Deleted availability exception', { exceptionId: id });
-
-    return true;
-  } catch (error) {
-    logger.error('Error deleting availability exception', { error, id });
-    throw new Error('Failed to delete availability exception');
+export function mapToLocalAvailabilityException(
+  prismaException: PrismaAvailabilityException
+): LocalAvailabilityException {
+  let parsedSlots: TimeSlot[] = [];
+  if (prismaException.slots && typeof prismaException.slots === 'object' && prismaException.slots !== null) {
+    try {
+      // Assuming prismaException.slots is an array of TimeSlot compatible objects or can be cast
+      const slotsFromJson = prismaException.slots as unknown as TimeSlotInput[]; 
+      if (Array.isArray(slotsFromJson)) {
+        parsedSlots = slotsFromJson.map(slot => ({ 
+          startTime: slot.startTime, 
+          endTime: slot.endTime, 
+          isBooked: slot.isBooked ?? false 
+        }));
+      }
+    } catch (e) {
+      logger.error(`Error parsing slots JSON for AvailabilityException ${prismaException.id}: ${e}`);
+      // Decide if to throw, or return empty, or a default based on requirements
+    }
   }
+  return {
+    id: prismaException.id,
+    builderId: prismaException.builderId,
+    date: prismaException.date.toISOString().split('T')[0], // Format as YYYY-MM-DD string
+    isAvailable: prismaException.isAvailable,
+    slots: parsedSlots,
+    reason: prismaException.reason ?? undefined,
+    createdAt: prismaException.createdAt.toISOString(),
+    updatedAt: prismaException.updatedAt.toISOString(),
+  };
 }
 
 /**
  * Get availability rules for a builder
- *
+ * 
  * @param builderId - The ID of the builder, or 'all' to get all rules
  * @returns Array of availability rules
  */
-export async function getAvailabilityRules(builderId: string): Promise<any[]> {
+export async function getAvailabilityRules(builderId: string): Promise<LocalAvailabilityRule[]> {
   try {
-    // For Calendly integration, we're using the Calendly API for scheduling,
-    // so this is mostly a pass-through that returns default rules
-    if (builderId === 'all') {
-      // If requesting all rules, fetch from database
-      const rules = await prisma.availabilityRule.findMany({
-        orderBy: [
-          { dayOfWeek: 'asc' },
-          { startTime: 'asc' }
-        ]
-      });
-
-      // Format and return
-      return rules.map(rule => ({
-        id: rule.id,
-        builderId: rule.builderId,
-        dayOfWeek: rule.dayOfWeek,
-        startTime: rule.startTime,
-        endTime: rule.endTime,
-        isRecurring: rule.isRecurring,
-        createdAt: rule.createdAt.toISOString(),
-        updatedAt: rule.updatedAt.toISOString()
-      }));
-    }
-
-    // Check if the builder uses Calendly integration
-    const builder = await prisma.builderProfile.findUnique({
-      where: { id: builderId },
-      include: {
-        schedulingSettings: true
-      }
-    });
-
-    if (!builder) {
-      throw new Error('Builder not found');
-    }
-
-    // If builder uses Calendly, return empty rules since Calendly manages availability
-    if (builder.schedulingSettings?.useCalendly) {
-      logger.info('Builder uses Calendly for availability', { builderId });
-      return [];
-    }
-
-    // Otherwise get rules from database
-    const rules = await prisma.availabilityRule.findMany({
+    const dbRules = await prisma.availabilityRule.findMany({
       where: { builderId },
-      orderBy: [
-        { dayOfWeek: 'asc' },
-        { startTime: 'asc' }
-      ]
     });
-
-    return rules.map(rule => ({
-      id: rule.id,
-      builderId: rule.builderId,
-      dayOfWeek: rule.dayOfWeek,
-      startTime: rule.startTime,
-      endTime: rule.endTime,
-      isRecurring: rule.isRecurring,
-      createdAt: rule.createdAt.toISOString(),
-      updatedAt: rule.updatedAt.toISOString()
-    }));
+    return dbRules.map(mapToLocalAvailabilityRule);
   } catch (error) {
     logger.error('Error retrieving availability rules', { error, builderId });
     throw new Error('Failed to retrieve availability rules');
   }
 }
 
-/**
- * Create a new availability rule
- *
- * @param data - The availability rule data
- * @returns The created availability rule
- */
-export async function createAvailabilityRule(data: {
-  builderId: string;
-  dayOfWeek: number;
-  startTime: string;
-  endTime: string;
-  isRecurring?: boolean;
-}): Promise<any> {
+export async function getAvailabilityRuleById(id: string): Promise<LocalAvailabilityRule | null> {
   try {
-    // Check if the builder uses Calendly integration
-    const builder = await prisma.builderProfile.findUnique({
-      where: { id: data.builderId },
-      include: {
-        schedulingSettings: true
-      }
+    const rule = await prisma.availabilityRule.findUnique({
+      where: { id },
     });
+    return rule ? mapToLocalAvailabilityRule(rule) : null;
+  } catch (error) {
+    logger.error('Error retrieving availability rule by ID', { error, id });
+    throw new Error('Failed to retrieve availability rule by ID');
+  }
+}
 
-    if (!builder) {
-      throw new Error('Builder not found');
-    }
-
-    if (builder.schedulingSettings?.useCalendly) {
-      throw new Error('Builder uses Calendly for availability management. Please update availability in Calendly.');
-    }
-
-    // Create the rule
-    const rule = await prisma.availabilityRule.create({
+export async function createAvailabilityRule(
+  builderId: string,
+  data: CreateAvailabilityRuleInput
+): Promise<LocalAvailabilityRule> {
+  logger.info(`Creating availability rule for builder ${builderId} with data: ${JSON.stringify(data)}`);
+  // const { slots, ...prismaData } = data; // 'slots' is not part of AvailabilityRule
+  try {
+    const newPrismaRule = await prisma.availabilityRule.create({
       data: {
         builderId: data.builderId,
-        dayOfWeek: data.dayOfWeek,
+        dayOfWeek: data.dayOfWeek as number, // Prisma expects Int
         startTime: data.startTime,
         endTime: data.endTime,
-        isRecurring: data.isRecurring ?? true
-      }
+        isRecurring: data.isRecurring ?? false, // Default to false if not provided
+        effectiveDate: data.effectiveDate ? new Date(data.effectiveDate) : null,
+        expirationDate: data.expirationDate ? new Date(data.expirationDate) : null,
+      },
     });
-
-    logger.info('Created availability rule', {
-      ruleId: rule.id,
-      builderId: rule.builderId,
-      dayOfWeek: rule.dayOfWeek
-    });
-
-    // Transform to API type
-    return {
-      id: rule.id,
-      builderId: rule.builderId,
-      dayOfWeek: rule.dayOfWeek,
-      startTime: rule.startTime,
-      endTime: rule.endTime,
-      isRecurring: rule.isRecurring,
-      createdAt: rule.createdAt.toISOString(),
-      updatedAt: rule.updatedAt.toISOString()
-    };
+    logger.info(`Successfully created availability rule with ID: ${newPrismaRule.id}`);
+    return mapToLocalAvailabilityRule(newPrismaRule);
   } catch (error) {
-    logger.error('Error creating availability rule', { error, data });
-    throw new Error(error instanceof Error ? error.message : 'Failed to create availability rule');
+    logger.error(`Error creating availability rule for builder ${builderId}: ${error}`);
+    throw error; // Re-throw the error to be handled by the caller
   }
 }
 
-/**
- * Update an existing availability rule
- *
- * @param id - The ID of the availability rule to update
- * @param data - The partial availability rule data to update
- * @returns The updated availability rule
- */
 export async function updateAvailabilityRule(
   id: string,
-  data: Partial<{
-    dayOfWeek: number;
-    startTime: string;
-    endTime: string;
-    isRecurring: boolean;
-    builderId: string;
-  }>
-): Promise<any> {
+  data: UpdateAvailabilityRuleInput
+): Promise<LocalAvailabilityRule> {
+  logger.info(`Updating availability rule with ID: ${id} with data: ${JSON.stringify(data)}`);
+  // const { slots, ...prismaData } = data; // 'slots' is not part of AvailabilityRule
+
+  const prismaUpdateData: Prisma.AvailabilityRuleUpdateInput = {};
+  if (data.dayOfWeek !== undefined) prismaUpdateData.dayOfWeek = data.dayOfWeek as number;
+  if (data.startTime !== undefined) prismaUpdateData.startTime = data.startTime;
+  if (data.endTime !== undefined) prismaUpdateData.endTime = data.endTime;
+  if (data.isRecurring !== undefined) prismaUpdateData.isRecurring = data.isRecurring;
+  if (data.effectiveDate !== undefined) {
+    prismaUpdateData.effectiveDate = data.effectiveDate ? new Date(data.effectiveDate) : null;
+  }
+  if (data.expirationDate !== undefined) {
+    prismaUpdateData.expirationDate = data.expirationDate ? new Date(data.expirationDate) : null;
+  }
+
   try {
-    // Get the existing rule
-    const existingRule = await prisma.availabilityRule.findUnique({
+    const updatedPrismaRule = await prisma.availabilityRule.update({
       where: { id },
-      include: {
-        builder: {
-          include: {
-            schedulingSettings: true
-          }
-        }
-      }
+      data: prismaUpdateData,
     });
-
-    if (!existingRule) {
-      throw new Error('Availability rule not found');
-    }
-
-    // Check if the builder uses Calendly integration
-    if (existingRule.builder?.schedulingSettings?.useCalendly) {
-      throw new Error('Builder uses Calendly for availability management. Please update availability in Calendly.');
-    }
-
-    // Update the rule
-    const rule = await prisma.availabilityRule.update({
-      where: { id },
-      data
-    });
-
-    logger.info('Updated availability rule', {
-      ruleId: rule.id,
-      builderId: rule.builderId,
-      dayOfWeek: rule.dayOfWeek
-    });
-
-    // Transform to API type
-    return {
-      id: rule.id,
-      builderId: rule.builderId,
-      dayOfWeek: rule.dayOfWeek,
-      startTime: rule.startTime,
-      endTime: rule.endTime,
-      isRecurring: rule.isRecurring,
-      createdAt: rule.createdAt.toISOString(),
-      updatedAt: rule.updatedAt.toISOString()
-    };
+    logger.info(`Successfully updated availability rule with ID: ${id}`);
+    return mapToLocalAvailabilityRule(updatedPrismaRule);
   } catch (error) {
-    logger.error('Error updating availability rule', { error, id, data });
-    throw new Error(error instanceof Error ? error.message : 'Failed to update availability rule');
+    logger.error(`Error updating availability rule with ID ${id}: ${error}`);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+}
+
+export async function deleteAvailabilityRule(id: string): Promise<LocalAvailabilityRule> {
+  try {
+    const deletedRule = await prisma.availabilityRule.delete({
+      where: { id },
+    });
+    logger.info(`Successfully deleted availability rule with ID: ${id}`);
+    return mapToLocalAvailabilityRule(deletedRule);
+  } catch (error) {
+    logger.error(`Error deleting availability rule with ID ${id}: ${error}`);
+    throw error; // Re-throw the error to be handled by the caller
   }
 }
 
 /**
- * Delete an availability rule
- *
- * @param id - The ID of the availability rule to delete
- * @returns True if deletion was successful
+ * Helper function to map Prisma AvailabilityRule to local type
  */
-export async function deleteAvailabilityRule(id: string): Promise<boolean> {
-  try {
-    // Get the existing rule
-    const existingRule = await prisma.availabilityRule.findUnique({
-      where: { id },
-      include: {
-        builder: {
-          include: {
-            schedulingSettings: true
-          }
-        }
-      }
-    });
-
-    if (!existingRule) {
-      throw new Error('Availability rule not found');
-    }
-
-    // Check if the builder uses Calendly integration
-    if (existingRule.builder?.schedulingSettings?.useCalendly) {
-      throw new Error('Builder uses Calendly for availability management. Please update availability in Calendly.');
-    }
-
-    // Delete the rule
-    await prisma.availabilityRule.delete({
-      where: { id }
-    });
-
-    logger.info('Deleted availability rule', { ruleId: id });
-
-    return true;
-  } catch (error) {
-    logger.error('Error deleting availability rule', { error, id });
-    throw new Error(error instanceof Error ? error.message : 'Failed to delete availability rule');
-  }
+export function mapToLocalAvailabilityRule(
+  prismaRule: PrismaAvailabilityRule
+): LocalAvailabilityRule {
+  return {
+    id: prismaRule.id,
+    builderId: prismaRule.builderId,
+    dayOfWeek: prismaRule.dayOfWeek as DayOfWeek, // Assuming DayOfWeek is a compatible number type
+    startTime: prismaRule.startTime,
+    endTime: prismaRule.endTime,
+    isRecurring: prismaRule.isRecurring ?? false, // Prisma's Boolean? to boolean
+    effectiveDate: prismaRule.effectiveDate?.toISOString().split('T')[0],
+    expirationDate: prismaRule.expirationDate?.toISOString().split('T')[0],
+    createdAt: prismaRule.createdAt.toISOString(),
+    updatedAt: prismaRule.updatedAt.toISOString(),
+  };
 }
 
 /**
@@ -1232,136 +899,633 @@ export async function getAvailableTimeSlots(
  * @param builderId - The ID of the builder
  * @returns Builder scheduling profile and settings
  */
-export async function getBuilderSchedulingProfile(builderId: string): Promise<any> {
+export async function getBuilderSchedulingProfile(builderId: string): Promise<{
+  profile: LocalBuilderProfile | null;
+  settings: LocalSchedulingSettings | null;
+}> {
   try {
-    // Get the builder profile with scheduling settings
-    const builder = await prisma.builderProfile.findUnique({
+    const prismaProfileWithIncludes = await prisma.builderProfile.findUnique({
       where: { id: builderId },
       include: {
-        schedulingSettings: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        }
-      }
+        user: true, 
+        schedulingSettings: true, // This relation should now be valid with regenerated client
+      },
     });
 
-    if (!builder) {
-      throw new Error('Builder not found');
+    if (!prismaProfileWithIncludes) {
+      logger.warn(`Builder profile not found for id: ${builderId}`);
+      return { profile: null, settings: null };
     }
 
-    // If no scheduling settings exist, create default settings with Calendly enabled
-    if (!builder.schedulingSettings) {
-      const newSettings = await prisma.schedulingSettings.create({
+    // Destructure carefully to avoid type issues
+    const {
+      schedulingSettings: prismaSchedulingSettings,
+      user: prismaUser,
+      ...restOfPrismaProfile // Contains fields of PrismaBuilderProfile
+    } = prismaProfileWithIncludes;
+
+    // Map PrismaBuilderProfile to LocalBuilderProfile
+    const localProfile: LocalBuilderProfile = {
+      id: restOfPrismaProfile.id,
+      userId: restOfPrismaProfile.userId,
+      bio: restOfPrismaProfile.bio,
+      website: restOfPrismaProfile.website,
+      linkedinUrl: restOfPrismaProfile.linkedinUrl,
+      githubUrl: restOfPrismaProfile.githubUrl,
+      twitterUrl: restOfPrismaProfile.twitterUrl,
+      calendlyUrl: restOfPrismaProfile.calendlyUrl, // Make sure this is part of your PrismaBuilderProfile
+      // Map 'user' if its structure/type differs in LocalBuilderProfile
+      user: prismaUser ? { 
+        id: prismaUser.id,
+        name: prismaUser.name,
+        email: prismaUser.email,
+        // Add other fields from PrismaUser to LocalUser as needed by LocalBuilderProfile.user
+       } : null,
+      createdAt: restOfPrismaProfile.createdAt.toISOString(),
+      updatedAt: restOfPrismaProfile.updatedAt.toISOString(),
+      // Add any other fields expected by LocalBuilderProfile
+    };
+
+    let localSettings: LocalSchedulingSettings | null = null;
+    if (prismaSchedulingSettings) {
+      localSettings = {
+        id: prismaSchedulingSettings.id,
+        builderId: prismaSchedulingSettings.builderId,
+        timeZone: prismaSchedulingSettings.timeZone,
+        defaultAvailability: prismaSchedulingSettings.defaultAvailability as WeeklySlot[], // Cast JsonValue
+        minBookingNotice: prismaSchedulingSettings.minBookingNotice,
+        minCancellationNotice: prismaSchedulingSettings.minCancellationNotice,
+        createdAt: prismaSchedulingSettings.createdAt.toISOString(),
+        updatedAt: prismaSchedulingSettings.updatedAt.toISOString(),
+      };
+    } else {
+      logger.info(`No scheduling settings found for builder ${builderId}, creating default settings.`);
+      // Ensure defaultAvailability is a valid Prisma.InputJsonValue. Example: empty array or default structure
+      const defaultWeeklyAvailability: WeeklySlot[] = []; // Or your default structure
+      const createdSettings = await prisma.schedulingSettings.create({
         data: {
-          builderId,
-          timezone: 'UTC',
-          bufferBefore: 15,
-          bufferAfter: 15,
-          useCalendly: true
+          builder: { connect: { id: builderId } }, 
+          timeZone: 'UTC', // Sensible default
+          defaultAvailability: defaultWeeklyAvailability as Prisma.InputJsonValue, 
+          minBookingNotice: 24, // Default in hours
+          minCancellationNotice: 24, // Default in hours
         }
       });
-
-      // Return builder with newly created settings
-      return {
-        id: builder.id,
-        userId: builder.userId,
-        name: builder.user.name,
-        email: builder.user.email,
-        schedulingSettings: {
-          timezone: newSettings.timezone,
-          bufferBefore: newSettings.bufferBefore,
-          bufferAfter: newSettings.bufferAfter,
-          useCalendly: newSettings.useCalendly,
-          calendlyUsername: newSettings.calendlyUsername || undefined,
-          calendlyUserId: newSettings.calendlyUserId || undefined,
-          defaultAvailability: newSettings.defaultAvailability || undefined,
-          createdAt: newSettings.createdAt.toISOString(),
-          updatedAt: newSettings.updatedAt.toISOString()
-        }
+      localSettings = {
+        id: createdSettings.id,
+        builderId: createdSettings.builderId,
+        timeZone: createdSettings.timeZone,
+        defaultAvailability: createdSettings.defaultAvailability as WeeklySlot[],
+        minBookingNotice: createdSettings.minBookingNotice,
+        minCancellationNotice: createdSettings.minCancellationNotice,
+        createdAt: createdSettings.createdAt.toISOString(),
+        updatedAt: createdSettings.updatedAt.toISOString(),
       };
     }
 
-    // Transform to API type
+    return { profile: localProfile, settings: localSettings };
+  } catch (error) {
+    logger.error(`Error fetching builder scheduling profile for ${builderId}:`, { error });
+    throw new Error('Failed to fetch builder scheduling profile.');
+  }
+}
+
+export async function updateBuilderSchedulingSettings(
+  builderId: string, 
+  settingsData: UpdateSchedulingSettingsInput
+): Promise<LocalSchedulingSettings> {
+  try {
+    // Construct the update payload carefully to avoid sending undefined fields that Prisma might misinterpret
+    const dataToUpdate: Prisma.SchedulingSettingsUpdateInput = {};
+    if (settingsData.timeZone !== undefined) dataToUpdate.timeZone = settingsData.timeZone;
+    if (settingsData.defaultAvailability !== undefined) {
+      dataToUpdate.defaultAvailability = settingsData.defaultAvailability as Prisma.InputJsonValue;
+    }
+    if (settingsData.minBookingNotice !== undefined) dataToUpdate.minBookingNotice = settingsData.minBookingNotice;
+    if (settingsData.minCancellationNotice !== undefined) dataToUpdate.minCancellationNotice = settingsData.minCancellationNotice;
+
+    // Find existing settings first to ensure we're updating the correct record associated with the builderId.
+    // This assumes builderId is unique on SchedulingSettings. If not, adjust the where clause.
+    const existingSettings = await prisma.schedulingSettings.findUnique({
+      where: { builderId: builderId },
+    });
+
+    if (!existingSettings) {
+      // Option 1: Throw an error if settings are expected to exist
+      // throw new Error(`Scheduling settings not found for builder ${builderId}`);
+      
+      // Option 2: Create settings if they don't exist (upsert-like behavior)
+      // This requires all necessary fields for creation.
+      logger.info(`No scheduling settings found for builder ${builderId} during update, creating new settings.`);
+      const defaultWeeklyAvailability: WeeklySlot[] = []; // Or your default structure
+      const createdSettings = await prisma.schedulingSettings.create({
+        data: {
+          builder: { connect: { id: builderId } },
+          timeZone: 'UTC', // Sensible default
+          defaultAvailability: defaultWeeklyAvailability as Prisma.InputJsonValue, 
+          minBookingNotice: 24, // Default in hours
+          minCancellationNotice: 24, // Default in hours
+        }
+      });
+      return {
+        id: createdSettings.id,
+        builderId: createdSettings.builderId,
+        timeZone: createdSettings.timeZone,
+        defaultAvailability: createdSettings.defaultAvailability as WeeklySlot[],
+        minBookingNotice: createdSettings.minBookingNotice,
+        minCancellationNotice: createdSettings.minCancellationNotice,
+        createdAt: createdSettings.createdAt.toISOString(),
+        updatedAt: createdSettings.updatedAt.toISOString(),
+      };
+    }
+
+    // If settings exist, update them.
+    const updatedSettings = await prisma.schedulingSettings.update({
+      where: { builderId: builderId }, 
+      data: dataToUpdate,
+    });
+
     return {
-      id: builder.id,
-      userId: builder.userId,
-      name: builder.user.name,
-      email: builder.user.email,
-      schedulingSettings: {
-        timezone: builder.schedulingSettings.timezone,
-        bufferBefore: builder.schedulingSettings.bufferBefore,
-        bufferAfter: builder.schedulingSettings.bufferAfter,
-        useCalendly: builder.schedulingSettings.useCalendly,
-        calendlyUsername: builder.schedulingSettings.calendlyUsername || undefined,
-        calendlyUserId: builder.schedulingSettings.calendlyUserId || undefined,
-        defaultAvailability: builder.schedulingSettings.defaultAvailability || undefined,
-        createdAt: builder.schedulingSettings.createdAt.toISOString(),
-        updatedAt: builder.schedulingSettings.updatedAt.toISOString()
-      }
+      id: updatedSettings.id,
+      builderId: updatedSettings.builderId,
+      timeZone: updatedSettings.timeZone,
+      defaultAvailability: updatedSettings.defaultAvailability as WeeklySlot[], // Cast back to local type
+      minBookingNotice: updatedSettings.minBookingNotice,
+      minCancellationNotice: updatedSettings.minCancellationNotice,
+      createdAt: updatedSettings.createdAt.toISOString(),
+      updatedAt: updatedSettings.updatedAt.toISOString(),
     };
   } catch (error) {
-    logger.error('Error getting builder scheduling profile', { error, builderId });
-    throw new Error('Failed to get builder scheduling profile');
+    logger.error(`Error updating builder scheduling settings for ${builderId}:`, { error, settingsData });
+    throw new Error('Failed to update builder scheduling settings.');
   }
 }
 
 /**
- * Update builder scheduling settings
+ * Retrieves the scheduling settings for a builder.
+ * 
+ * @param builderId - The ID of the builder.
+ * @returns The scheduling settings if found, null otherwise.
+ */
+export async function getBuilderSchedulingSettings(builderId: string): Promise<LocalSchedulingSettings | null> {
+  logger.info(`Fetching scheduling settings for builder ${builderId}`);
+  try {
+    const builderProfile = await prisma.builderProfile.findUnique({
+      where: { userId: builderId }, // Assuming builderId in function maps to userId in BuilderProfile
+    });
+
+    if (!builderProfile) {
+      logger.warn(`Builder profile not found for builder ID: ${builderId}`);
+      return null;
+    }
+
+    if (!builderProfile.schedulingSettings) {
+      logger.info(`Scheduling settings not set for builder ID: ${builderId}`);
+      // Return a default or empty LocalSchedulingSettings structure if appropriate, or null
+      // For now, returning null if no settings JSON is present.
+      // Consider if a default object should be returned, e.g.:
+      // return { id: builderProfile.id, builderId, timezone: 'UTC', defaultAvailability: [] };
+      return null; 
+    }
+
+    try {
+      // Assuming builderProfile.schedulingSettings is a JSON object that matches LocalSchedulingSettings structure
+      // Need to be careful with type assertion here.
+      const settings = builderProfile.schedulingSettings as unknown as Omit<LocalSchedulingSettings, 'id' | 'builderId'>;
+      
+      // Ensure all fields from LocalSchedulingSettings are present, even if undefined from JSON
+      return {
+        id: builderProfile.id, // Use builderProfile.id as the id for settings
+        builderId: builderId,
+        timezone: settings.timezone, // Check for 'timeZone' vs 'timezone' consistency
+        bufferBefore: settings.bufferBefore,
+        bufferAfter: settings.bufferAfter,
+        useCalendly: settings.useCalendly,
+        calendlyUsername: settings.calendlyUsername,
+        calendlyUserId: settings.calendlyUserId,
+        defaultAvailability: settings.defaultAvailability || [],
+        // createdAt and updatedAt would not typically be part of the JSON blob but the BuilderProfile record itself
+      };
+    } catch (parseError) {
+      logger.error(`Error parsing schedulingSettings JSON for builder ${builderId}:`, { parseError, settingsJson: builderProfile.schedulingSettings });
+      throw new Error('Failed to parse scheduling settings JSON.');
+    }
+
+  } catch (error) {
+    logger.error(`Error retrieving scheduling settings for builder ${builderId}:`, { error });
+    throw new Error('Failed to retrieve scheduling settings.');
+  }
+}
+
+/**
+ * Updates the scheduling settings for a builder, including their availability rules and exceptions.
+ * This function handles the orchestration of updating the main settings JSON blob on BuilderProfile
+ * and managing related AvailabilityRule and AvailabilityException records.
  *
- * @param builderId - The ID of the builder
- * @param settings - The partial settings to update
- * @returns Updated builder scheduling profile
+ * @param builderId - The ID of the builder (maps to BuilderProfile.userId).
+ * @param settingsData - The scheduling settings data to update, including rules and exceptions.
+ * @returns The updated scheduling settings.
  */
 export async function updateBuilderSchedulingSettings(
   builderId: string,
-  settings: Partial<{
-    timezone: string;
-    bufferBefore: number;
-    bufferAfter: number;
-    useCalendly: boolean;
-    calendlyUsername: string;
-    calendlyUserId: string;
-    defaultAvailability: { dayOfWeek: number; startTime: string; endTime: string }[];
-  }>
-): Promise<any> {
+  settingsData: UpdateSchedulingSettingsInput & {
+    availabilityRulesToCreate?: CreateAvailabilityRuleInput[];
+    availabilityRulesToUpdate?: (UpdateAvailabilityRuleInput & { id: string })[];
+    availabilityRuleIdsToDelete?: string[];
+    availabilityExceptionsToCreate?: CreateAvailabilityExceptionInput[];
+    availabilityExceptionsToUpdate?: (UpdateAvailabilityExceptionInput & { id: string })[];
+    availabilityExceptionIdsToDelete?: string[];
+  }
+): Promise<LocalSchedulingSettings> {
+  logger.info(`Updating builder scheduling settings for ${builderId} with data: ${JSON.stringify(settingsData)}`);
+
   try {
-    // Check if settings exist
-    const existingSettings = await prisma.schedulingSettings.findUnique({
-      where: { builderId }
+    // Step 1: Fetch current BuilderProfile to get existing schedulingSettings JSON
+    const builderProfile = await prisma.builderProfile.findUnique({
+      where: { userId: builderId },
     });
 
-    if (existingSettings) {
-      // Update existing settings
-      await prisma.schedulingSettings.update({
-        where: { builderId },
-        data: settings
-      });
-    } else {
-      // Create new settings with defaults
-      await prisma.schedulingSettings.create({
-        data: {
-          builderId,
-          timezone: settings.timezone || 'UTC',
-          bufferBefore: settings.bufferBefore ?? 15,
-          bufferAfter: settings.bufferAfter ?? 15,
-          useCalendly: settings.useCalendly ?? true,
-          calendlyUsername: settings.calendlyUsername,
-          calendlyUserId: settings.calendlyUserId,
-          defaultAvailability: settings.defaultAvailability || []
-        }
-      });
+    if (!builderProfile) {
+      logger.error(`Builder profile not found for ID: ${builderId} during update.`);
+      throw new Error(`Builder profile not found for ID: ${builderId}.`);
     }
 
-    logger.info('Updated builder scheduling settings', { builderId });
+    // Step 2: Parse existing settings or initialize if null
+    let currentSettingsJson: any = {};
+    if (builderProfile.schedulingSettings) {
+      try {
+        currentSettingsJson = JSON.parse(JSON.stringify(builderProfile.schedulingSettings)); // Deep clone
+      } catch (e) {
+        logger.error(`Failed to parse existing schedulingSettings JSON for builder ${builderId}. Initializing fresh.`, e);
+        currentSettingsJson = {}; // Default to empty if parsing fails
+      }
+    }
+    
+    // Step 3: Merge with new settingsData (excluding rules/exceptions which are handled separately)
+    const { 
+      availabilityRulesToCreate,
+      availabilityRulesToUpdate,
+      availabilityRuleIdsToDelete,
+      availabilityExceptionsToCreate,
+      availabilityExceptionsToUpdate,
+      availabilityExceptionIdsToDelete,
+      ...mainSettingsInput // a.k.a. UpdateSchedulingSettingsInput fields
+    } = settingsData;
 
-    // Get the updated profile
-    return getBuilderSchedulingProfile(builderId);
+    const newSettingsJson = { ...currentSettingsJson, ...mainSettingsInput };
+
+    // Step 4: Update BuilderProfile with the new schedulingSettings JSON
+    // Note: Prisma expects a JsonValue, so newSettingsJson should be fine directly
+    await prisma.builderProfile.update({
+      where: { userId: builderId },
+      data: {
+        schedulingSettings: newSettingsJson as Prisma.InputJsonValue,
+      },
+    });
+
+    // Step 5: Orchestrate AvailabilityRules CRUD operations
+    if (availabilityRulesToCreate) {
+      for (const ruleData of availabilityRulesToCreate) {
+        await createAvailabilityRule(builderId, ruleData); // createAvailabilityRule expects builderId as first param
+      }
+    }
+    if (availabilityRulesToUpdate) {
+      for (const ruleData of availabilityRulesToUpdate) {
+        const { id, ...updateData } = ruleData;
+        await updateAvailabilityRule(id, updateData);
+      }
+    }
+    if (availabilityRuleIdsToDelete) {
+      for (const ruleId of availabilityRuleIdsToDelete) {
+        await deleteAvailabilityRule(ruleId);
+      }
+    }
+
+    // Step 6: Orchestrate AvailabilityExceptions CRUD operations
+    if (availabilityExceptionsToCreate) {
+      for (const exData of availabilityExceptionsToCreate) {
+        await createAvailabilityException(builderId, exData); // createAvailabilityException expects builderId as first param
+      }
+    }
+    if (availabilityExceptionsToUpdate) {
+      for (const exData of availabilityExceptionsToUpdate) {
+        const { id, ...updateData } = exData;
+        await updateAvailabilityException(id, updateData);
+      }
+    }
+    if (availabilityExceptionIdsToDelete) {
+      for (const exId of availabilityExceptionIdsToDelete) {
+        await deleteAvailabilityException(exId);
+      }
+    }
+
+    // Step 7: Fetch and return the updated LocalSchedulingSettings representation
+    // This will reflect the JSON blob update and implicitly the rule/exception changes via relations if fetched together
+    const updatedProfile = await prisma.builderProfile.findUnique({ where: { userId: builderId } });
+    if (!updatedProfile || !updatedProfile.schedulingSettings) {
+        logger.error(`Failed to retrieve updated scheduling settings for builder ${builderId} after update.`);
+        throw new Error('Failed to retrieve updated scheduling settings after update.');
+    }
+    
+    // Re-map from the potentially updated JSON blob
+    const finalSettings = updatedProfile.schedulingSettings as unknown as Omit<LocalSchedulingSettings, 'id' | 'builderId'>;
+    return {
+      id: updatedProfile.id,
+      builderId: builderId,
+      timezone: finalSettings.timezone,
+      bufferBefore: finalSettings.bufferBefore,
+      bufferAfter: finalSettings.bufferAfter,
+      useCalendly: finalSettings.useCalendly,
+      calendlyUsername: finalSettings.calendlyUsername,
+      calendlyUserId: finalSettings.calendlyUserId,
+      defaultAvailability: finalSettings.defaultAvailability || [],
+      // createdAt/updatedAt are not part of the JSON blob itself
+    };
+
   } catch (error) {
-    logger.error('Error updating builder scheduling settings', { error, builderId, settings });
-    throw new Error('Failed to update builder scheduling settings');
+    logger.error(`Error updating builder scheduling settings for ${builderId}:`, { error, settingsData });
+    throw new Error('Failed to update builder scheduling settings.');
   }
+}
+
+/**
+ * Get Calendly session types for a builder
+ * 
+ * This function fetches and syncs Calendly event types with our system
+ * 
+ * @param builderId - The ID of the builder
+ * @returns Array of session types
+ */
+export async function getCalendlySessionTypes(builderId: string): Promise<LocalSessionType[]> {
+  try {
+    // Get the Calendly service
+    const calendlyService = getCalendlyService();
+    
+    // Get event types from Calendly
+    const eventTypes = await calendlyService.getEventTypes();
+    
+    // Get existing session types for this builder
+    const existingTypes = await prisma.sessionType.findMany({
+      where: {
+        builderId,
+        calendlyEventTypeId: { not: null }
+      }
+    });
+    
+    // Create a map of existing types by Calendly event type ID
+    const existingTypeMap = new Map(
+      existingTypes.map(type => [type.calendlyEventTypeId, type])
+    );
+    
+    // Process each Calendly event type
+    const processedTypes = [];
+    
+    for (const eventType of eventTypes) {
+      // Check if this event type already exists
+      const existingType = existingTypeMap.get(eventType.calendlyEventTypeId);
+      
+      if (existingType) {
+        // Update the existing type if needed
+        if (
+          existingType.title !== eventType.title ||
+          existingType.description !== eventType.description ||
+          existingType.durationMinutes !== eventType.durationMinutes ||
+          existingType.calendlyEventTypeUri !== eventType.calendlyEventTypeUri
+        ) {
+          // Update the session type
+          await prisma.sessionType.update({
+            where: { id: existingType.id },
+            data: {
+              title: eventType.title,
+              description: eventType.description,
+              durationMinutes: eventType.durationMinutes,
+              calendlyEventTypeUri: eventType.calendlyEventTypeUri,
+              color: eventType.color,
+              isActive: eventType.isActive
+            }
+          });
+        }
+        
+        // Add to processed types
+        processedTypes.push({
+          id: existingType.id,
+          builderId,
+          title: eventType.title,
+          description: eventType.description,
+          durationMinutes: eventType.durationMinutes,
+          price: existingType.price.toNumber(),
+          currency: existingType.currency,
+          isActive: eventType.isActive,
+          color: eventType.color || undefined,
+          maxParticipants: existingType.maxParticipants || undefined,
+          calendlyEventTypeId: eventType.calendlyEventTypeId,
+          calendlyEventTypeUri: eventType.calendlyEventTypeUri,
+          createdAt: existingType.createdAt.toISOString(),
+          updatedAt: existingType.updatedAt.toISOString(),
+        });
+      } else {
+        // Create a new session type
+        const newType = await prisma.sessionType.create({
+          data: {
+            builderId,
+            title: eventType.title,
+            description: eventType.description,
+            durationMinutes: eventType.durationMinutes,
+            price: 0, // Default price
+            currency: 'USD', // Default currency
+            isActive: eventType.isActive,
+            color: eventType.color,
+            calendlyEventTypeId: eventType.calendlyEventTypeId,
+            calendlyEventTypeUri: eventType.calendlyEventTypeUri
+          }
+        });
+        
+        // Add to processed types
+        processedTypes.push({
+          id: newType.id,
+          builderId,
+          title: newType.title,
+          description: newType.description,
+          durationMinutes: newType.durationMinutes,
+          price: newType.price.toNumber(),
+          currency: newType.currency,
+          isActive: newType.isActive,
+          color: newType.color || undefined,
+          maxParticipants: newType.maxParticipants || undefined,
+          calendlyEventTypeId: newType.calendlyEventTypeId || undefined,
+          calendlyEventTypeUri: newType.calendlyEventTypeUri || undefined,
+          createdAt: newType.createdAt.toISOString(),
+          updatedAt: newType.updatedAt.toISOString(),
+        });
+      }
+    }
+    
+    return processedTypes;
+  } catch (error) {
+    logger.error('Error retrieving Calendly session types', { error, builderId });
+    throw new Error('Failed to retrieve Calendly session types');
+  }
+}
+
+/**
+ * Get session types for a builder
+ * 
+ * @param builderId - The ID of the builder
+ * @returns Array of session types
+ */
+export async function getSessionTypes(builderId: string): Promise<LocalSessionType[]> {
+  try {
+    const sessionTypes = await prisma.sessionType.findMany({
+      where: { builderId },
+    });
+
+    return sessionTypes.map(mapToLocalSessionType);
+  } catch (error) {
+    logger.error('Error retrieving session types', { error, builderId });
+    throw new Error('Failed to retrieve session types');
+  }
+}
+
+/**
+ * Get a session type by ID
+ * 
+ * @param id - The ID of the session type
+ * @returns The session type if found, null otherwise
+ */
+export async function getSessionTypeById(id: string): Promise<LocalSessionType | null> {
+  try {
+    const sessionType = await prisma.sessionType.findUnique({
+      where: { id },
+    });
+    return sessionType ? mapToLocalSessionType(sessionType) : null;
+  } catch (error) {
+    logger.error('Error retrieving session type by ID', { error, id });
+    throw new Error('Failed to retrieve session type by ID');
+  }
+}
+
+/**
+ * Create a new session type
+ * 
+ * @param builderId - The ID of the builder
+ * @param data - The data for the new session type
+ * @returns The created session type
+ */
+export async function createSessionType(
+  builderId: string,
+  data: Partial<Omit<LocalSessionType, 'id' | 'builderId' | 'createdAt' | 'updatedAt'>> & { title: string; description: string; durationMinutes: number; price: number; currency: string; }
+): Promise<LocalSessionType> {
+  logger.info(`Creating session type for builder ${builderId} with data: ${JSON.stringify(data)}`);
+  try {
+    const newPrismaSessionType = await prisma.sessionType.create({
+      data: {
+        builderId,
+        title: data.title,
+        description: data.description,
+        durationMinutes: data.durationMinutes,
+        price: new Prisma.Decimal(data.price), // Convert number to Decimal
+        currency: data.currency,
+        isActive: data.isActive !== undefined ? data.isActive : true, // Default to true
+        timeZone: data.timeZone, // Added field
+        isRecurring: data.isRecurring, // Added field
+        calendlyEventTypeId: data.calendlyEventTypeId,
+        calendlyEventTypeUri: data.calendlyEventTypeUri,
+        // Fields like color, maxParticipants, requiresAuth, eventTypeCategory, effectiveDate, expirationDate are not in Prisma SessionType model
+      } as any, // Type assertion added here
+    });
+    logger.info(`Successfully created session type with ID: ${newPrismaSessionType.id}`);
+    return mapToLocalSessionType(newPrismaSessionType);
+  } catch (error) {
+    logger.error(`Error creating session type for builder ${builderId}: ${error}`);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+}
+
+/**
+ * Update a session type
+ * 
+ * @param id - The ID of the session type
+ * @param data - The updated data for the session type
+ * @returns The updated session type
+ */
+export async function updateSessionType(
+  id: string,
+  data: Partial<Omit<LocalSessionType, 'id' | 'builderId' | 'createdAt' | 'updatedAt'>>
+): Promise<LocalSessionType> {
+  logger.info(`Updating session type with ID: ${id} with data: ${JSON.stringify(data)}`);
+  
+  const prismaUpdateData: Prisma.SessionTypeUpdateInput = {};
+  if (data.title !== undefined) prismaUpdateData.title = data.title;
+  if (data.description !== undefined) prismaUpdateData.description = data.description;
+  if (data.durationMinutes !== undefined) prismaUpdateData.durationMinutes = data.durationMinutes;
+  if (data.price !== undefined) prismaUpdateData.price = new Prisma.Decimal(data.price);
+  if (data.currency !== undefined) prismaUpdateData.currency = data.currency;
+  if (data.isActive !== undefined) prismaUpdateData.isActive = data.isActive;
+  if (data.timeZone !== undefined) prismaUpdateData.timeZone = data.timeZone; // Added field
+  if (data.isRecurring !== undefined) prismaUpdateData.isRecurring = data.isRecurring; // Added field
+  if (data.calendlyEventTypeId !== undefined) prismaUpdateData.calendlyEventTypeId = data.calendlyEventTypeId;
+  if (data.calendlyEventTypeUri !== undefined) prismaUpdateData.calendlyEventTypeUri = data.calendlyEventTypeUri;
+  // Fields like color, maxParticipants, requiresAuth, eventTypeCategory, effectiveDate, expirationDate might not be in Prisma SessionType model or handled differently
+
+  try {
+    const updatedPrismaSessionType = await prisma.sessionType.update({
+      where: { id },
+      data: prismaUpdateData as any, // Type assertion added here
+    });
+    logger.info(`Successfully updated session type with ID: ${id}`);
+    return mapToLocalSessionType(updatedPrismaSessionType);
+  } catch (error) {
+    logger.error(`Error updating session type with ID ${id}: ${error}`);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+}
+
+/**
+ * Delete a session type
+ * 
+ * @param id - The ID of the session type
+ * @returns The deleted session type
+ */
+export async function deleteSessionType(id: string): Promise<LocalSessionType> {
+  try {
+    const deletedSessionType = await prisma.sessionType.delete({
+      where: { id },
+    });
+    logger.info(`Successfully deleted session type with ID: ${id}`);
+    return mapToLocalSessionType(deletedSessionType);
+  } catch (error) {
+    logger.error(`Error deleting session type with ID ${id}: ${error}`);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+}
+
+/**
+ * Helper function to map Prisma SessionType to local type
+ */
+export function mapToLocalSessionType(
+  prismaSessionType: PrismaSessionType
+): LocalSessionType {
+  return {
+    id: prismaSessionType.id,
+    builderId: prismaSessionType.builderId,
+    title: prismaSessionType.title,
+    description: prismaSessionType.description,
+    durationMinutes: prismaSessionType.durationMinutes,
+    price: prismaSessionType.price.toNumber(), // Convert Decimal to number
+    currency: prismaSessionType.currency,
+    timeZone: (prismaSessionType as any).timeZone ?? undefined, // Corrected mapping with type assertion
+    isRecurring: (prismaSessionType as any).isRecurring ?? undefined, // Corrected mapping with type assertion
+    isActive: prismaSessionType.isActive,
+    calendlyEventTypeId: prismaSessionType.calendlyEventTypeId ?? undefined,
+    calendlyEventTypeUri: prismaSessionType.calendlyEventTypeUri ?? undefined,
+    createdAt: prismaSessionType.createdAt.toISOString(),
+    updatedAt: prismaSessionType.updatedAt.toISOString(),
+    // Fields not in Prisma's base SessionType model - these will be undefined or need default values if required by LocalSessionType
+    // color: undefined, 
+    // maxParticipants: undefined,
+    // requiresAuth: undefined,
+    // eventTypeCategory: undefined,
+    // effectiveDate: undefined,
+    // expirationDate: undefined,
+  };
 }

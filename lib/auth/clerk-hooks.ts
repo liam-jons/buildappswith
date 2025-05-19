@@ -14,7 +14,7 @@ import {
   useIsBuilder as useExpressIsBuilder,
   useAuthStatus as useExpressAuthStatus,
   useSignOut as useExpressSignOut
-} from "@/lib/auth/express/client-auth";
+} from "@/lib/auth/hooks";
 
 /**
  * Extended user object with our custom fields

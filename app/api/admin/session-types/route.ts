@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { withAdmin } from "@/lib/auth/express/api-auth";
+import { withAdmin } from "@/lib/auth/api-auth";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
