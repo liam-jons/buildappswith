@@ -129,7 +129,7 @@ export function handleError(
     scope.setTag('error.retryable', String(errorMetadata.retryable));
 
     // Set error metadata as context for more detailed info
-    scope.setContext('errorMetadata', errorMetadata);
+    scope.setContext('errorMetadata', errorMetadata as any); // Cast to any as Sentry is disabled
 
     // Map severity for proper Sentry categorization
     scope.setLevel(mapToSentrySeverity(errorMetadata.severity));
@@ -181,7 +181,7 @@ export function reportError(
     scope.setTag('error.retryable', String(errorMetadata.retryable));
 
     // Set error metadata as context for more detailed info
-    scope.setContext('errorMetadata', errorMetadata);
+    scope.setContext('errorMetadata', errorMetadata as any); // Cast to any as Sentry is disabled
 
     // Map severity for proper Sentry categorization
     scope.setLevel(mapToSentrySeverity(errorMetadata.severity));

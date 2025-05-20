@@ -18,10 +18,11 @@ import {
   useHasRole,
   useSignOut,
   useAuthStatus
-} from '@/hooks/auth';
+} from '@/lib/auth';
 import { Button } from '@/components/ui/core/button';
-import { UserRole } from '@/lib/auth/types';
+import { UserRole } from '@/lib/auth';
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface AuthStatusProps {
   className?: string;
@@ -186,13 +187,13 @@ export function AuthStatus({ className, compact = false }: AuthStatusProps) {
  * Protected version of AuthStatus that requires authentication
  */
 export function ProtectedAuthStatus(props: AuthStatusProps) {
-  const { isAuthenticated, isLoading } = useAuthStatus();
+  const { isSignedIn, isLoaded } = useAuthStatus();
 
-  if (isLoading) {
+  if (isLoaded === false) { // Check for false explicitly, as isLoaded is true when done loading
     return <div>Loading...</div>;
   }
 
-  if (!isAuthenticated) {
+  if (!isSignedIn) {
     return (
       <div className={`p-4 rounded-md bg-slate-100 ${props.className}`}>
         <p className="text-slate-600">
@@ -215,25 +216,29 @@ export function ProtectedAuthStatus(props: AuthStatusProps) {
  * Simple auth status component for site header/navigation
  * Enhanced with improved performance through memoization
  */
-export function HeaderAuthStatus() {
-  const { isAuthenticated, isLoading } = useAuthStatus();
-  const signOut = useSignOut();
+export function HeaderAuthStatus({ className }: AuthStatusProps) {
   const { user } = useUser();
+  const { isSignedIn, isLoaded } = useAuthStatus();
+  const signOut = useSignOut();
+  const router = useRouter();
 
-  // Memoize component for performance
-  const content = useMemo(() => {
-    if (isLoading) {
-      return <div className="text-sm">Loading...</div>;
+  const initials = useMemo(() => {
+    if (isLoaded === false) { // Check for false explicitly, as isLoaded is true when done loading
+      return <div className="text-slate-500">Loading...</div>;
     }
-  
-    if (!isAuthenticated) {
+
+    if (!isSignedIn) {
       return (
-        <Button variant="ghost" size="sm" asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          asChild
+        >
           <a href="/sign-in">Sign in</a>
         </Button>
       );
     }
-  
+
     return (
       <div className="flex items-center gap-2">
         <span className="text-sm font-medium">
@@ -248,7 +253,7 @@ export function HeaderAuthStatus() {
         </Button>
       </div>
     );
-  }, [isLoading, isAuthenticated, user, signOut]);
+  }, [isLoaded, isSignedIn, user, signOut]);
 
-  return content;
+  return initials;
 }

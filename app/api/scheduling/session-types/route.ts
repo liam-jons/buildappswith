@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getSessionTypes, createSessionType } from '@/lib/scheduling/real-data/scheduling-service';
-import { withAuth } from '@/lib/auth/clerk/api-auth';
-import { AuthUser } from '@/lib/auth/clerk/helpers';
+import { withAuth, withOptionalAuth } from '@/lib/auth';
 import { UserRole } from '@/lib/auth/types';
 import * as Sentry from '@sentry/nextjs';
+import { 
+  createAuthErrorResponse, 
+  addAuthPerformanceMetrics, 
+  AuthErrorType 
+} from '@/lib/auth/adapters/clerk-express/errors';
+import { logger } from '@/lib/logger';
 
 // Validation schema for query parameters
 const querySchema = z.object({
@@ -26,120 +31,146 @@ const createSessionTypeSchema = z.object({
 
 /**
  * GET handler for fetching session types for a builder
+ * Uses withOptionalAuth as session types might be publicly viewable for a builder
  */
-export async function GET(request: NextRequest) {
+export const GET = withOptionalAuth(async (
+  request: NextRequest, 
+  context: any, 
+  userId?: string, 
+  userRoles?: UserRole[]
+) => {
+  const startTime = performance.now();
+  const path = request.nextUrl.pathname;
+  const method = request.method;
+
   try {
-    // Get query parameters
     const { searchParams } = new URL(request.url);
     const rawParams = Object.fromEntries(searchParams.entries());
-    
-    // Parse and validate parameters
     const result = querySchema.safeParse(rawParams);
     
     if (!result.success) {
-      return NextResponse.json(
-        { error: 'Invalid query parameters', details: result.error.flatten() }, 
-        { status: 400 }
+      logger.warn('Invalid query parameters for GET session-types', { path, method, userId, errors: result.error.flatten() });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION, 
+        'Invalid query parameters',
+        400, 
+        path, 
+        method, 
+        userId
       );
     }
     
     const { builderId } = result.data;
     
-    // Fetch session types
     try {
       const sessionTypes = await getSessionTypes(builderId);
-      return NextResponse.json({ sessionTypes });
+      const response = NextResponse.json({ success: true, data: { sessionTypes } });
+      return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
     } catch (error: any) {
-      // If the service is not fully implemented, return mock data
       if (error.message === 'SessionType database implementation required') {
-        // Import mock data
+        logger.warn('SessionType GET using mock data - database implementation pending', { path, method, userId, builderId });
         const { mockSessionTypes } = await import('@/lib/scheduling/mock-data');
-        
-        // Filter mock session types for the requested builder
         const filteredTypes = mockSessionTypes.filter(st => st.builderId === builderId);
-        
-        return NextResponse.json({ 
-          sessionTypes: filteredTypes,
+        const response = NextResponse.json({ 
+          success: true, 
+          data: { sessionTypes: filteredTypes }, 
           warning: 'Using mock data - database implementation pending'
         });
+        return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
       } else {
         throw error;
       }
     }
   } catch (error) {
-    console.error('Error in session types endpoint:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error('Error in session types GET endpoint', { error: errorMessage, path, method, userId });
     Sentry.captureException(error);
-    return NextResponse.json(
-      { error: 'Failed to fetch session types' }, 
-      { status: 500 }
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER, 
+      'Failed to fetch session types',
+      500, 
+      path, 
+      method, 
+      userId
     );
   }
-}
+});
 
 /**
  * POST handler for creating a new session type
- * Updated to use Clerk authentication
+ * Updated to use new auth HOC
  */
-export const POST = withAuth(async (request: NextRequest, user: AuthUser) => {
+export const POST = withAuth(async (
+  request: NextRequest, 
+  context: any, 
+  userId: string, 
+  userRoles: UserRole[]
+) => {
+  const startTime = performance.now();
+  const path = request.nextUrl.pathname;
+  const method = request.method;
+
   try {
-    // Parse request body
     const body = await request.json();
-    
-    // Validate request data
     const result = createSessionTypeSchema.safeParse(body);
     
     if (!result.success) {
-      return NextResponse.json(
-        { error: 'Invalid session type data', details: result.error.flatten() }, 
-        { status: 400 }
+      logger.warn('Invalid session type data for POST session-types', { path, method, userId, errors: result.error.flatten() });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION, 
+        'Invalid session type data',
+        400, 
+        path, 
+        method, 
+        userId
       );
     }
     
-    // Authorization check - only allow creating session types for own profile
-    // or if user is an admin
-    const isAdminUser = user.roles.includes(UserRole.ADMIN);
-    const isOwnProfile = user.id === result.data.builderId;
+    const isAdminUser = userRoles.includes(UserRole.ADMIN);
+    const isOwnProfile = userId === result.data.builderId;
     
     if (!isAdminUser && !isOwnProfile) {
-      return NextResponse.json(
-        { error: 'Not authorized to create session types for this builder' }, 
-        { status: 403 }
+      logger.warn('Unauthorized attempt to create session type for another builder', { path, method, userId, targetBuilderId: result.data.builderId });
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHORIZATION, 
+        'Not authorized to create session types for this builder',
+        403, 
+        path, 
+        method, 
+        userId
       );
     }
     
-    // Create the session type
     try {
       const sessionType = await createSessionType(result.data);
-      return NextResponse.json(
-        { sessionType }, 
-        { status: 201 }
-      );
+      const response = NextResponse.json({ success: true, data: { sessionType } }, { status: 201 });
+      return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
     } catch (error: any) {
-      // If the service is not fully implemented, return mock data
       if (error.message === 'SessionType database implementation required') {
-        // Import mock data
+        logger.warn('SessionType POST using mock data - database implementation pending', { path, method, userId, data: result.data });
         const { mockSessionTypes } = await import('@/lib/scheduling/mock-data');
-        
-        // Create a mock session type with an ID
-        const mockSessionType = {
-          id: 'mock-' + Math.random().toString(36).substring(2, 15),
-          ...result.data
-        };
-        
-        return NextResponse.json({ 
-          sessionType: mockSessionType,
+        const mockSessionType = { id: 'mock-' + Math.random().toString(36).substring(2, 15), ...result.data };
+        const response = NextResponse.json({ 
+          success: true, 
+          data: { sessionType: mockSessionType }, 
           warning: 'Using mock data - database implementation pending'
         }, { status: 201 });
+        return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
       } else {
         throw error;
       }
     }
   } catch (error) {
-    console.error('Error creating session type:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error('Error creating session type POST', { error: errorMessage, path, method, userId });
     Sentry.captureException(error);
-    return NextResponse.json(
-      { error: 'Failed to create session type' }, 
-      { status: 500 }
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER, 
+      'Failed to create session type',
+      500, 
+      path, 
+      method, 
+      userId
     );
   }
 });

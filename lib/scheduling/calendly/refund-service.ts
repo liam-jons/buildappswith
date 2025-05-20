@@ -5,7 +5,8 @@
  * Service for handling refunds for cancelled bookings
  */
 
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Booking } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library';
 import { logger } from '@/lib/logger'
 import { trackBookingEvent, AnalyticsEventType } from './analytics'
 
@@ -44,9 +45,9 @@ export interface RefundResult {
 export async function calculateRefundPolicy(booking: {
   id: string
   startTime: Date
-  paymentStatus?: string
+  paymentStatus?: string | null
   stripeSessionId?: string | null
-  amount?: number | null
+  amount?: Decimal | null
 }): Promise<{
   policy: RefundPolicy
   reason?: string
@@ -69,7 +70,7 @@ export async function calculateRefundPolicy(booking: {
     // More than 24 hours notice: full refund
     return {
       policy: RefundPolicy.FULL,
-      amount: booking.amount?.toNumber(),
+      amount: booking.amount ? booking.amount.toNumber() : undefined,
       reason: 'Cancelled more than 24 hours in advance'
     }
   } else if (hoursUntilBooking >= 12) {
@@ -104,8 +105,11 @@ export async function processRefund(
   try {
     // Fetch booking details
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
-    })
+      where: { id: bookingId },
+      include: { 
+        sessionType: true,
+      },
+    });
     
     if (!booking) {
       return {
@@ -134,11 +138,15 @@ export async function processRefund(
       await prisma.booking.update({
         where: { id: bookingId },
         data: {
-          cancellationReason: reason,
-          cancelledBy: cancelledBy.toUpperCase(),
-          updatedAt: new Date()
-        }
-      })
+          status: 'CANCELLED', 
+          stateData: {
+            ...(booking.stateData as object || {}),
+            cancellationReason: reason,
+            cancelledBy: cancelledBy.toUpperCase(),
+          },
+          updatedAt: new Date(),
+        },
+      });
       
       return {
         success: true,
@@ -179,13 +187,18 @@ export async function processRefund(
         data: {
           paymentStatus: 'REFUNDED',
           status: 'CANCELLED',
-          cancellationReason: reason,
-          cancelledBy: cancelledBy.toUpperCase(),
+          stateData: {
+            ...(booking.stateData as object || {}),
+            cancellationReason: reason,
+            cancelledBy: cancelledBy.toUpperCase(),
+            refundId: simulatedRefundId,
+            refundAmount: refundPolicy.amount !== undefined 
+              ? refundPolicy.amount 
+              : (booking.amount ? booking.amount.toNumber() : undefined),
+          },
           updatedAt: new Date(),
-          refundId: simulatedRefundId,
-          refundAmount: refundPolicy.amount ? refundPolicy.amount : booking.amount
-        }
-      })
+        },
+      });
       
       // Log the refund
       logger.info('Processed refund for cancelled booking', {
@@ -199,12 +212,12 @@ export async function processRefund(
       
       // Track the refund in analytics
       trackBookingEvent(AnalyticsEventType.BOOKING_CANCELLED, {
-        bookingId,
-        stripeSessionId: booking.stripeSessionId,
-        paymentStatus: 'REFUNDED',
+        bookingId: booking.id,
+        userId: booking.clientId === null ? undefined : booking.clientId, 
+        amount: refundPolicy.amount,
+        currency: booking.sessionType?.currency,
         refundPolicy: refundPolicy.policy,
-        refundAmount: refundPolicy.amount,
-        cancelledBy
+        cancellationReason: reason,
       })
       
       return {
@@ -212,7 +225,7 @@ export async function processRefund(
         bookingId,
         stripeRefundId: simulatedRefundId,
         amount: refundPolicy.amount,
-        currency: booking.currency || 'USD',
+        currency: booking.sessionType?.currency,
         policy: refundPolicy.policy,
         reason: refundPolicy.reason
       }
@@ -260,8 +273,11 @@ export async function checkRefundEligibility(bookingId: string): Promise<{
   try {
     // Fetch booking details
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
-    })
+      where: { id: bookingId },
+      include: { 
+        sessionType: true,
+      },
+    });
     
     if (!booking) {
       return {

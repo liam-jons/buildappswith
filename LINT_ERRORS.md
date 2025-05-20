@@ -1,3 +1,9 @@
+➜  buildappswith git:(feature/auth-cleanup1) ✗ pnpm lint 
+
+> buildappswith@1.0.142 lint /Users/liamj/Documents/development/buildappswith
+> next lint
+
+
 ./app/(marketing)/privacy/page.tsx
 52:133  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
 116:92  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
@@ -5,14 +11,8 @@
 ./app/(platform)/community/page.tsx
 21:55  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
 
-./app/auth-test/client.tsx
-108:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-
 ./app/not-found.tsx
 7:9  Error: Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
-
-./app/role-test/client.tsx
-310:24  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
 
 ./app/test/public-resources/page.tsx
 57:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
@@ -23,10 +23,10 @@
 154:6  Warning: React Hook useEffect has missing dependencies: 'getToken' and 'sentryClient'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
 
 ./components/auth/auth-status.tsx
-61:13  Error: Do not use an `<a>` element to navigate to `/sign-in/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
-65:15  Error: Do not use an `<a>` element to navigate to `/sign-up/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
-205:11  Error: Do not use an `<a>` element to navigate to `/sign-in/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
-232:11  Error: Do not use an `<a>` element to navigate to `/sign-in/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+62:13  Error: Do not use an `<a>` element to navigate to `/sign-in/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+66:15  Error: Do not use an `<a>` element to navigate to `/sign-up/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+206:11  Error: Do not use an `<a>` element to navigate to `/sign-in/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+237:11  Error: Do not use an `<a>` element to navigate to `/sign-in/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
 
 ./components/auth/loading-state.tsx
 48:6  Warning: React Hook React.useEffect has a missing dependency: 'isLoaded'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
@@ -119,12 +119,6 @@
 
 ./components/trust/trust-overview.tsx
 125:84  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
-
-./lib/auth/express/client-auth.ts
-151:6  Warning: React Hook useEffect has a missing dependency: 'clerk'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-
-./lib/auth/hooks.ts
-158:12  Error: React Hook "useAuthInternal" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
 
 ./lib/datadog/mocks/node-modules.js
 93:1  Warning: Assign object to a variable before exporting as module default  import/no-anonymous-default-export

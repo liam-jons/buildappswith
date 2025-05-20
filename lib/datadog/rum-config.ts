@@ -18,7 +18,7 @@ export interface RumConfig {
   env: DatadogEnvironment;
   version: string;
   sessionSampleRate: number;
-  sessionReplaySampleRate: number;
+  replaySampleRate: number;
   trackInteractions: boolean;
   trackResources: boolean;
   trackLongTasks: boolean;
@@ -41,7 +41,7 @@ export function getRumConfiguration(): RumConfig {
     env: config.env,
     version: config.version,
     sessionSampleRate: config.rumSampleRate,
-    sessionReplaySampleRate: config.rumSessionReplaySampleRate,
+    replaySampleRate: config.rumSessionReplaySampleRate,
     trackInteractions: true,
     trackResources: true,
     trackLongTasks: true,

@@ -21,5 +21,16 @@
     ".next/types/**/*.ts",
     "types/**/*.d.ts"
   ],
+  "exclude": [
+    "node_modules",
+    "tmp",
+    "dist",
+    ".next", 
+    "out",
+    "__tests__", 
+    "tests",
+    "vitest.config.ts",
+    "vitest.setup.ts"
+  ],
   "extends": "./tsconfig.base.json"
 }

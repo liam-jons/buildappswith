@@ -8,13 +8,15 @@
  */
 
 import * as Sentry from '@sentry/nextjs';
+import type { Integration, EventProcessor, Event } from '@sentry/nextjs';
 import { getDatadogConfig } from './config';
+import type { Tracer } from 'dd-trace';
 
 // Ensure this code only runs on the server side
 const isServer = typeof window === 'undefined';
 
 // This file is server-only - safely import server dependencies
-let tracer = null;
+let tracer: Tracer | null = null;
 if (isServer) {
   try {
     // Safely import dd-trace only on server side
@@ -74,7 +76,7 @@ export function createDatadogTraceContext(): Record<string, any> | null {
  * Sentry integration for Datadog
  * Adds hooks to automatically link errors to Datadog traces
  */
-export class DatadogSentryIntegration implements Sentry.Integration {
+export class DatadogSentryIntegration implements Integration {
   public static id: string = 'DatadogSentryIntegration';
   public name: string = DatadogSentryIntegration.id;
 
@@ -83,12 +85,12 @@ export class DatadogSentryIntegration implements Sentry.Integration {
   } = {}) {}
 
   setupOnce(
-    addGlobalEventProcessor: (callback: Sentry.EventProcessor) => void,
+    addGlobalEventProcessor: (callback: EventProcessor) => void,
   ): void {
     // Skip if not server side or tracer not available
     if (!isServer || !tracer) return;
 
-    addGlobalEventProcessor((event: Sentry.Event) => {
+    addGlobalEventProcessor((event: Event) => {
       try {
         // Skip if no exception or already has Datadog context
         if (!event.exception || event.contexts?.datadog) {

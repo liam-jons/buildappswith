@@ -48,7 +48,13 @@ export function initializeDatadogTracer(): void {
           }
         },
         info: (message: string) => console.info(`[Datadog APM] ${message}`),
-        error: (message: string) => console.error(`[Datadog APM Error] ${message}`),
+        error: (err: string | Error) => {
+          const message = err instanceof Error ? err.message : err;
+          console.error(`[Datadog APM Error] ${message}`);
+        },
+        warn: (message: string) => {
+          console.warn(`[Datadog APM Warn] ${message}`);
+        },
       },
     });
 
@@ -68,7 +74,7 @@ function configureTracerIntegrations(): void {
   try {
     // Configure Next.js integration
     tracer.use('next', { 
-      hooks: true, 
+      hooks: {}, 
       router: true, 
       server: true 
     });
@@ -80,14 +86,14 @@ function configureTracerIntegrations(): void {
     });
 
     // Configure Prisma integration
-    tracer.use('prisma', { 
+    tracer.use('prisma' as any, { 
       service: `${getDatadogConfig().service}-db` 
     });
 
     // Configure Express integration (if used by Next.js API routes)
     tracer.use('express', {
       app: undefined, // This will be automatically detected
-      hooks: true,
+      hooks: {},
     });
 
     // Configure GraphQL integration (if used)
@@ -117,7 +123,7 @@ export function createSpan(
     if (!config.enabled) return null;
 
     const span = tracer.startSpan(name, {
-      childOf: tracer.scope().active(),
+      childOf: tracer.scope().active() || undefined,
       tags: {
         service: options.service || config.service,
         resource: options.resource || name,

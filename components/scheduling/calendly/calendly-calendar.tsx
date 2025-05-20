@@ -11,6 +11,7 @@ import { getCalendlyAvailableTimeSlots } from '@/lib/scheduling/calendly/client-
 import { logger } from '@/lib/logger';
 import { Clock, CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CalendlyDateRange, CalendlyTimeSlot } from './calendly-model';
 
 interface CalendlyCalendarProps {
   eventTypeUri: string;
@@ -19,11 +20,7 @@ interface CalendlyCalendarProps {
     duration: number;
     price: number;
   };
-  onSelectTimeSlot: (slot: {
-    startTime: Date;
-    endTime: Date;
-    schedulingUrl: string;
-  }) => void;
+  onSelectTimeSlot: (slot: CalendlyTimeSlot) => void;
   className?: string;
 }
 
@@ -34,7 +31,7 @@ export function CalendlyCalendar({
   className
 }: CalendlyCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [availableSlots, setAvailableSlots] = useState<any[]>([]);
+  const [availableSlots, setAvailableSlots] = useState<CalendlyTimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
@@ -124,11 +121,12 @@ export function CalendlyCalendar({
     fetchTimeSlots();
   }, [selectedDate, eventTypeUri]);
 
+  // Group time slots by morning, afternoon, evening
   const timeGroups = React.useMemo(() => {
     const groups = {
-      morning: [] as typeof availableSlots,
-      afternoon: [] as typeof availableSlots,
-      evening: [] as typeof availableSlots
+      morning: [] as CalendlyTimeSlot[],
+      afternoon: [] as CalendlyTimeSlot[],
+      evening: [] as CalendlyTimeSlot[]
     };
 
     availableSlots.forEach(slot => {
@@ -157,6 +155,7 @@ export function CalendlyCalendar({
         </CardHeader>
         <CardContent>
           <Calendar
+            mode="single"
             selected={selectedDate}
             onSelect={setSelectedDate}
             disabled={(date) => {

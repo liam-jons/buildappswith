@@ -15,8 +15,8 @@ import {
   withRole, 
   withAdmin,
   withBuilder 
-} from '@/lib/auth/api-auth';
-import { UserRole } from '@/lib/auth/types';
+} from '@/lib/auth';
+import { UserRole, AuthObject } from '@/lib/auth/types';
 import { logger } from '@/lib/logger';
 
 /**
@@ -41,9 +41,9 @@ export async function GET(req: NextRequest) {
 /**
  * Protected endpoint - Requires authentication
  */
-export const POST = withAuth(async (req: NextRequest, userId: string) => {
+export const POST = withAuth(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   logger.info('Auth-protected endpoint accessed', {
-    userId,
+    userId: auth.userId,
     path: req.nextUrl.pathname,
     method: req.method,
   });
@@ -54,7 +54,7 @@ export const POST = withAuth(async (req: NextRequest, userId: string) => {
     auth: {
       required: true,
       type: 'user',
-      userId
+      userId: auth.userId
     }
   });
 });
@@ -62,10 +62,10 @@ export const POST = withAuth(async (req: NextRequest, userId: string) => {
 /**
  * Admin-only endpoint - Requires ADMIN role
  */
-export const PUT = withAdmin(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+export const PUT = withAdmin(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   logger.info('Admin-protected endpoint accessed', {
-    userId,
-    roles,
+    userId: auth.userId,
+    roles: auth.roles,
     path: req.nextUrl.pathname,
     method: req.method,
   });
@@ -76,8 +76,8 @@ export const PUT = withAdmin(async (req: NextRequest, userId: string, roles: Use
     auth: {
       required: true,
       type: 'admin',
-      userId,
-      roles
+      userId: auth.userId,
+      roles: auth.roles
     }
   });
 });
@@ -85,10 +85,10 @@ export const PUT = withAdmin(async (req: NextRequest, userId: string, roles: Use
 /**
  * Builder-only endpoint - Requires BUILDER role
  */
-export const DELETE = withBuilder(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+export const DELETE = withBuilder(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   logger.info('Builder-protected endpoint accessed', {
-    userId,
-    roles,
+    userId: auth.userId,
+    roles: auth.roles,
     path: req.nextUrl.pathname,
     method: req.method,
   });
@@ -99,8 +99,8 @@ export const DELETE = withBuilder(async (req: NextRequest, userId: string, roles
     auth: {
       required: true,
       type: 'builder',
-      userId,
-      roles
+      userId: auth.userId,
+      roles: auth.roles
     }
   });
 });
@@ -108,10 +108,10 @@ export const DELETE = withBuilder(async (req: NextRequest, userId: string, roles
 /**
  * PATCH endpoint - Requires specific roles (ADMIN or BUILDER)
  */
-export const PATCH = withRole(UserRole.CLIENT, async (req: NextRequest, userId: string, roles: UserRole[]) => {
+export const PATCH = withRole(UserRole.CLIENT, async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   logger.info('Client-protected endpoint accessed', {
-    userId,
-    roles,
+    userId: auth.userId,
+    roles: auth.roles,
     path: req.nextUrl.pathname,
     method: req.method,
   });
@@ -122,8 +122,8 @@ export const PATCH = withRole(UserRole.CLIENT, async (req: NextRequest, userId: 
     auth: {
       required: true,
       type: 'client',
-      userId,
-      roles
+      userId: auth.userId,
+      roles: auth.roles
     }
   });
 });

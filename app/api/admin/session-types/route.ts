@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { withAdmin } from "@/lib/auth/api-auth";
+import { withAdmin } from "@/lib/auth";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
-import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
+import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/adapters/clerk-express/errors';
 import { logger } from '@/lib/logger';
-import { UserRole } from "@/lib/auth/types";
+import { UserRole, AuthObject } from "@/lib/auth/types";
 
 const prisma = new PrismaClient();
 
@@ -24,7 +24,7 @@ const sessionTypeSchema = z.object({
 
 // GET /api/admin/session-types - Get all session types
 // Updated to use Express SDK with admin role check
-export const GET = withAdmin(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+export const GET = withAdmin(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
@@ -33,7 +33,7 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
     logger.info('Admin session types request received', {
       path,
       method,
-      userId
+      userId: auth.userId
     });
     
     // Get query parameters
@@ -58,7 +58,7 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
       count: serializedSessionTypes.length,
       path,
       method,
-      userId,
+      userId: auth.userId,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`
     });
 
@@ -76,7 +76,7 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
       true, 
       path, 
       method, 
-      userId
+      auth.userId
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -85,7 +85,7 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
       error: errorMessage,
       path,
       method,
-      userId,
+      userId: auth.userId,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`
     });
     
@@ -97,14 +97,14 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
       500,
       path,
       method,
-      userId
+      auth.userId
     );
   }
 });
 
 // POST /api/admin/session-types - Create a new session type
 // Updated to use Express SDK with admin role check
-export const POST = withAdmin(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+export const POST = withAdmin(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
@@ -113,7 +113,7 @@ export const POST = withAdmin(async (req: NextRequest, userId: string, roles: Us
     logger.info('Admin session type creation request received', {
       path,
       method,
-      userId
+      userId: auth.userId
     });
     
     // Parse request body
@@ -126,7 +126,7 @@ export const POST = withAdmin(async (req: NextRequest, userId: string, roles: Us
         details: validationResult.error.format(),
         path,
         method,
-        userId
+        userId: auth.userId
       });
       
       return createAuthErrorResponse(
@@ -135,7 +135,7 @@ export const POST = withAdmin(async (req: NextRequest, userId: string, roles: Us
         400,
         path,
         method,
-        userId
+        auth.userId
       );
     }
     
@@ -166,7 +166,7 @@ export const POST = withAdmin(async (req: NextRequest, userId: string, roles: Us
       builderId: serializedSessionType.builderId,
       path,
       method,
-      userId,
+      userId: auth.userId,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`
     });
 
@@ -187,7 +187,7 @@ export const POST = withAdmin(async (req: NextRequest, userId: string, roles: Us
       true, 
       path, 
       method, 
-      userId
+      auth.userId
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -196,7 +196,7 @@ export const POST = withAdmin(async (req: NextRequest, userId: string, roles: Us
       error: errorMessage,
       path,
       method,
-      userId,
+      userId: auth.userId,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`
     });
     
@@ -208,7 +208,7 @@ export const POST = withAdmin(async (req: NextRequest, userId: string, roles: Us
       500,
       path,
       method,
-      userId
+      auth.userId
     );
   }
 });

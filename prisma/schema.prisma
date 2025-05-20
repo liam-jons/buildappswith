@@ -249,6 +249,9 @@ model Booking {
   builder                BuilderProfile @relation(fields: [builderId], references: [id], onDelete: Cascade)
   client                 User?          @relation("BookingsAsClient", fields: [clientId], references: [id], onDelete: Cascade)
   sessionType            SessionType?   @relation(fields: [sessionTypeId], references: [id])
+  currentState           String?        // Stores the current state name (e.g., "PENDING_CONFIRMATION")
+  stateData              Json?          // Stores encrypted BookingStateData
+  lastTransition         DateTime?      // Timestamp of the last state transition
 }
 
 model SessionType {

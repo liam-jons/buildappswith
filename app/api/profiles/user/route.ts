@@ -6,13 +6,15 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth/api-auth';
+import { withAuth } from '@/lib/auth';
 import { authData } from '@/lib/auth/data-access';
-import { UserRole } from '@/lib/auth/types';
+import { UserRole, AuthObject } from '@/lib/auth/types';
 import { clerkClient } from '@clerk/nextjs';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { captureException } from '@sentry/nextjs';
+import { AuthErrorType, createAuthErrorResponse, addAuthPerformanceMetrics } from '@/lib/auth/adapters/clerk-express/errors';
+import { logger } from '@/lib/logger';
 
 // Schema for profile update validation
 const profileUpdateSchema = z.object({
@@ -28,36 +30,56 @@ const profileUpdateSchema = z.object({
  * 
  * Get the authenticated user's profile
  */
-export const GET = withAuth(async (req: NextRequest, user) => {
+export const GET = withAuth(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
     // Look up the full user profile in the database
     const dbUser = await db.user.findUnique({
-      where: { clerkId: user.id },
+      where: { clerkId: auth.userId },
     });
 
     if (!dbUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
+      logger.warn('User not found in GET /api/profiles/user', { userId: auth.userId, path, method });
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHENTICATION,
+        'User not found',
+        404,
+        path,
+        method,
+        auth.userId
       );
     }
 
     // Return the user profile without sensitive information
-    return NextResponse.json({
+    const response = NextResponse.json({
       id: dbUser.id,
       name: dbUser.name,
       email: dbUser.email,
-      image: dbUser.image,
+      image: dbUser.imageUrl,
       roles: dbUser.roles,
       verified: dbUser.verified,
     });
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
+
   } catch (error) {
-    console.error('Error fetching user profile:', error);
+    logger.error('Error fetching user profile', { 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId: auth.userId,
+      path,
+      method 
+    });
     captureException(error);
     
-    return NextResponse.json(
-      { error: 'Failed to fetch user profile' },
-      { status: 500 }
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to fetch user profile',
+      500,
+      path,
+      method,
+      auth.userId
     );
   }
 });
@@ -67,7 +89,11 @@ export const GET = withAuth(async (req: NextRequest, user) => {
  * 
  * Update the authenticated user's profile
  */
-export const POST = withAuth(async (req: NextRequest, user) => {
+export const POST = withAuth(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
     // Parse the request body
     const requestBody = await req.json();
@@ -76,12 +102,19 @@ export const POST = withAuth(async (req: NextRequest, user) => {
     const result = profileUpdateSchema.safeParse(requestBody);
     
     if (!result.success) {
-      return NextResponse.json(
-        { 
-          error: 'Invalid request body', 
-          details: result.error.format() 
-        },
-        { status: 400 }
+      logger.warn('Invalid request body for POST /api/profiles/user', { 
+        userId: auth.userId,
+        path, 
+        method, 
+        validationErrors: result.error.format() 
+      });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION,
+        'Invalid request body',
+        400,
+        path,
+        method,
+        auth.userId
       );
     }
     
@@ -89,13 +122,18 @@ export const POST = withAuth(async (req: NextRequest, user) => {
     
     // First, find the user in our database
     const dbUser = await db.user.findUnique({
-      where: { clerkId: user.id },
+      where: { clerkId: auth.userId },
     });
     
     if (!dbUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
+      logger.warn('User not found in POST /api/profiles/user', { userId: auth.userId, path, method });
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHENTICATION,
+        'User not found',
+        404,
+        path,
+        method,
+        auth.userId
       );
     }
     
@@ -139,7 +177,7 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       }
       
       // Update Clerk metadata to indicate onboarding is complete
-      await clerkClient.users.updateUser(user.id, {
+      await clerkClient.users.updateUser(auth.userId, {
         publicMetadata: {
           ...dbUser.roles.includes(validatedData.role) 
             ? { roles: dbUser.roles } 
@@ -150,7 +188,7 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       });
     } else {
       // Standard profile update
-      await clerkClient.users.updateUser(user.id, {
+      await clerkClient.users.updateUser(auth.userId, {
         firstName,
         lastName,
         publicMetadata: {
@@ -167,19 +205,30 @@ export const POST = withAuth(async (req: NextRequest, user) => {
       where: { id: dbUser.id },
     });
     
-    return NextResponse.json({
+    const response = NextResponse.json({
       message: builderProfileMessage 
         ? 'Profile created successfully' 
         : 'Profile updated successfully',
       user: refreshedUser,
     });
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
+
   } catch (error) {
-    console.error('Error updating user profile:', error);
+    logger.error('Error updating user profile', { 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      userId: auth.userId,
+      path,
+      method 
+    });
     captureException(error);
     
-    return NextResponse.json(
-      { error: 'Failed to update user profile' },
-      { status: 500 }
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to update user profile',
+      500,
+      path,
+      method,
+      auth.userId
     );
   }
 });

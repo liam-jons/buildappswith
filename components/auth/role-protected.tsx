@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth, useHasAnyRole, useHasAllRoles } from '@/hooks/auth';
+import { useAuth, useHasAnyRole, useHasAllRoles } from '@/lib/auth';
 import { UserRole } from '@/lib/auth/types';
 import { ReactNode, useMemo } from 'react';
 

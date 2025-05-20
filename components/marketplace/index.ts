@@ -13,7 +13,7 @@ export {
   BuilderDashboard,
   BuilderCard,
   BuilderList,
-  BuilderListClient,
+  // BuilderListClient, // Removed as it no longer exists
   BuilderImage,
   BuilderListSkeleton,
   CardSkeleton,

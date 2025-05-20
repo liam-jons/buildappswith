@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { withAuth } from "@/lib/auth/clerk/api-auth";
-import { AuthUser } from "@/lib/auth/clerk/helpers";
+import { withAuth } from "@/lib/auth";
 import * as Sentry from "@sentry/nextjs";
+import { AuthObject } from "@/lib/auth/types";
 
 export async function GET(
   request: NextRequest,
@@ -54,11 +54,11 @@ export async function GET(
 
 export const POST = withAuth(async (
   request: NextRequest,
-  user: AuthUser,
-  { params }: { params: Promise<{ builderId: string }> }
+  context: { params: { builderId: string } },
+  auth: AuthObject
 ): Promise<NextResponse> => {
   try {
-    const { builderId } = await params;
+    const { builderId } = context.params;
     const body = await request.json();
     
     // Verify this user owns the builder profile
@@ -74,7 +74,7 @@ export const POST = withAuth(async (
       );
     }
     
-    if (builderProfile.user.email !== user.email) {
+    if (builderProfile.userId !== auth.userId) {
       return NextResponse.json(
         { error: "You don't have permission to add apps to this profile" },
         { status: 403 }

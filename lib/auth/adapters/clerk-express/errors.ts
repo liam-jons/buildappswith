@@ -49,8 +49,7 @@ export class AuthError extends Error {
       error: {
         message: this.message,
         code: this.code,
-        type: this.name,
-        status: this.statusCode
+        type: this.name
       }
     };
   }
@@ -118,8 +117,28 @@ export class TokenError extends AuthError {
 }
 
 /**
+ * Validation error for invalid input data
+ */
+export class ValidationError extends AuthError {
+  constructor(message: string = 'Invalid input data') {
+    super(message, 400, 'validation_error');
+    this.name = 'ValidationError';
+  }
+}
+
+/**
+ * Resource not found error
+ */
+export class ResourceNotFoundError extends AuthError {
+  constructor(message: string = 'Resource not found') {
+    super(message, 404, 'resource_not_found');
+    this.name = 'ResourceNotFoundError';
+  }
+}
+
+/**
  * Create a standardized authentication error response
- * 
+ *
  * @param type Error type from AuthErrorType enum
  * @param detail Detailed error message
  * @param statusCode HTTP status code (defaults based on error type)
@@ -135,87 +154,83 @@ export function createAuthErrorResponse(
   path?: string,
   method?: string,
   userId?: string,
-): NextResponse {
-  // Start performance tracking
-  const spanId = startAuthSpan('auth.error_response');
-  const startTime = performance.now();
-  
-  // Determine appropriate status code based on error type if not provided
+) {
+  // Start auth error span for tracking
+  let spanId = null;
+  if (path && method) {
+    spanId = startAuthSpan(path, method, 'auth.error', userId);
+  }
+
+  // Determine appropriate status code based on error type if not specified
   if (!statusCode) {
     switch (type) {
       case AuthErrorType.AUTHENTICATION:
-        statusCode = 401; // Unauthorized
+        statusCode = 401;
         break;
       case AuthErrorType.AUTHORIZATION:
-        statusCode = 403; // Forbidden
-        break;
-      case AuthErrorType.VALIDATION:
-        statusCode = 400; // Bad Request
+        statusCode = 403;
         break;
       case AuthErrorType.RATE_LIMIT:
-        statusCode = 429; // Too Many Requests
+        statusCode = 429;
+        break;
+      case AuthErrorType.CONFIGURATION:
+      case AuthErrorType.SERVER:
+        statusCode = 500;
         break;
       case AuthErrorType.RESOURCE_NOT_FOUND:
-        statusCode = 404; // Not Found
+        statusCode = 404;
         break;
+      case AuthErrorType.VALIDATION:
       default:
-        statusCode = 500; // Server Error
+        statusCode = 400;
     }
   }
-  
-  // Create standardized error response
+
+  // Log the error with appropriate level based on status code
+  if (path && method) {
+    const logData = {
+      errorType: type,
+      detail,
+      statusCode,
+      path,
+      method,
+      ...(userId && { userId }),
+    };
+
+    if (statusCode >= 500) {
+      logger.error('Authentication error', logData);
+      captureException(new Error(detail), { extra: logData }); // Send to Sentry
+    } else if (statusCode >= 400) {
+      logger.warn('Authentication warning', logData);
+    } else {
+      logger.info('Authentication info', logData);
+    }
+  }
+
+  // Construct the error response
   const errorResponse = {
-    success: false,
     error: {
       type,
-      detail,
-      statusCode
-    }
+      message: detail,
+      code: (Object.values(AuthErrorType).includes(type as AuthErrorType)) 
+            ? type.toLowerCase().replace('_error', '') 
+            : 'general_error',
+    },
   };
-  
-  // Log error details for monitoring
-  logger.warn('Auth error response', {
-    errorType: type,
-    errorDetail: detail,
-    statusCode,
-    ...(path && { path }),
-    ...(method && { method }),
-    ...(userId && { userId }),
-    duration: (performance.now() - startTime).toFixed(2)
-  });
-  
-  // Report to Sentry if this is a server error (500)
-  if (statusCode >= 500) {
-    captureException(new Error(`Auth Error [${type}]: ${detail}`), {
-      tags: {
-        errorType: type,
-        statusCode: String(statusCode)
-      },
-      extra: {
-        path,
-        method,
-        userId
-      }
-    });
+
+  // Finish auth error span if started
+  if (spanId) {
+    finishAuthSpan(spanId, false);
   }
-  
-  // Create NextResponse with appropriate status and headers
-  const response = NextResponse.json(errorResponse, { status: statusCode });
-  
-  // Add performance tracking headers
-  response.headers.set('x-auth-error-type', String(type));
-  
-  // End performance tracking
-  finishAuthSpan(spanId);
-  
-  return response;
+
+  return NextResponse.json(errorResponse, { status: statusCode });
 }
 
 /**
- * Performance tracking for authentication operations
+ * Adds performance metrics headers to the response for auth operations.
  * 
  * @param response NextResponse to add performance headers to
- * @param startTime Performance timing start
+ * @param startTime Performance timing start (performance.now())
  * @param success Authentication success flag
  * @param path Request path for logging
  * @param method HTTP method for logging
@@ -232,18 +247,28 @@ export function addAuthPerformanceMetrics(
 ): NextResponse {
   const duration = performance.now() - startTime;
   
-  // Add performance headers
-  response.headers.set('x-auth-duration', `${duration.toFixed(2)}ms`);
-  response.headers.set('x-auth-success', String(success));
-  
-  // Log performance metrics
-  logger.debug('Auth performance', {
+  // Add Server-Timing header
+  const serverTimingValue = `auth;dur=${duration.toFixed(2)};desc="Authentication ${success ? 'succeeded' : 'failed'}"`;
+  response.headers.append('Server-Timing', serverTimingValue);
+
+  // Log performance metrics using logger
+  logger.info('Auth performance metrics', {
     path,
     method,
-    duration: duration.toFixed(2),
+    durationMs: duration,
     success,
-    ...(userId && { userId })
+    userId: userId || 'N/A',
+    operation: 'auth.middleware',
   });
+
+  // Optionally, send to Datadog or other APM tool if integrated
+  // Example: Datadog.timing('auth.operation.duration', duration, { path, method, success, userId });
   
+  // Finish Datadog span if one was started for this auth operation
+  // This assumes a span was started earlier in the request lifecycle for the auth operation
+  // If not, this specific finishAuthSpan call may need to be tied to a span started
+  // specifically for this auth performance measurement if detailed tracing is needed.
+  // For now, we assume a broader request span might be active or this is informational.
+
   return response;
 }

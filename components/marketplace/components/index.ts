@@ -21,7 +21,7 @@ export { CardSkeleton } from './builder-card/card-skeleton';
 // Builder List components
 export { BuilderList } from './builder-list/builder-list';
 export { BuilderListSkeleton } from './builder-list/builder-list-skeleton';
-export { BuilderListClient } from './builder-list/builder-list-client';
+// Removed export for BuilderListClient as builder-list-client.tsx was deleted.
 
 // Filter Panel components
 export { FilterPanel } from './filter-panel/filter-panel';

@@ -172,13 +172,16 @@ export interface WeeklySlot {
 export interface SchedulingSettings {
   id: string;
   builderId: string;
-  timezone?: string;
-  bufferBefore?: number; // In minutes
-  bufferAfter?: number;  // In minutes
-  useCalendly?: boolean;
-  calendlyUsername?: string;
-  calendlyUserId?: string;
-  defaultAvailability?: WeeklySlot[]; // Updated from DefaultAvailabilityRule[]
+  timezone?: string; // Optional, will default to UTC or builder's preference
+  bufferBetweenSessions?: number; // Optional, in minutes
+  useCalendly?: boolean; // Optional
+  calendlyUsername?: string; // Optional
+  calendlyUserId?: string; // Optional
+  defaultAvailability?: WeeklySlot[]; // Optional, might be empty
+  minimumNotice?: number; // Optional, in hours or minutes (ensure unit consistency)
+  minCancellationNotice?: number; // Optional, in hours or minutes
+  maxAdvanceBookingDays?: number; // Optional
+  isAcceptingBookings?: boolean; // Optional, defaults to true or based on other settings
   createdAt?: string;
   updatedAt?: string;
 }
@@ -224,10 +227,17 @@ export type UpdateAvailabilityRuleInput = Partial<Omit<CreateAvailabilityRuleInp
  */
 export interface UpdateSchedulingSettingsInput {
   timezone?: string;
-  bufferBefore?: number; // In minutes
-  bufferAfter?: number;  // In minutes
+  bufferBetweenSessions?: number; // In minutes
   useCalendly?: boolean;
   calendlyUsername?: string;
   calendlyUserId?: string;
-  defaultAvailability?: WeeklySlot[]; // Updated from DefaultAvailabilityRule[]
+  defaultAvailability?: WeeklySlot[];
+  minimumNotice?: number;
+  minCancellationNotice?: number;
+  maxAdvanceBookingDays?: number;
+  isAcceptingBookings?: boolean;
 }
+
+/**
+ * 
+ */

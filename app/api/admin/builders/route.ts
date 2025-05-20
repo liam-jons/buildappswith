@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { withAdmin } from "@/lib/auth/api-auth";
-import { UserRole } from "@/lib/auth/types";
+import { withAdmin, AuthenticationError, AuthorizationError, AuthErrorType } from "@/lib/auth";
+import { UserRole, AuthObject } from "@/lib/auth/types";
 import * as Sentry from "@sentry/nextjs";
-import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
 import { logger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
 
 // GET /api/admin/builders - Get all builders
-// Updated to use Express SDK with admin role check
-export const GET = withAdmin(async (req: NextRequest, userId: string, roles: UserRole[]) => {
+export const GET = withAdmin(async (req: NextRequest, auth: AuthObject) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
@@ -19,7 +17,7 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
     logger.info('Admin builders list request received', {
       path,
       method,
-      userId
+      userId: auth.userId
     });
     
     // Fetch builders
@@ -58,7 +56,7 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
       count: formattedBuilders.length,
       path,
       method,
-      userId,
+      userId: auth.userId,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`
     });
 
@@ -69,35 +67,23 @@ export const GET = withAdmin(async (req: NextRequest, userId: string, roles: Use
       count: formattedBuilders.length,
     });
 
-    // Add performance metrics to the response
-    return addAuthPerformanceMetrics(
-      response, 
-      startTime, 
-      true, 
+    return response;
+  } catch (error) {
+    Sentry.captureException(error);
+    logger.error('Error fetching builders', { 
       path, 
       method, 
-      userId
-    );
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    
-    logger.error('Error fetching builders', {
-      error: errorMessage,
-      path,
-      method,
-      userId,
-      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+      userId: auth.userId,
+      error: error instanceof Error ? error.message : 'Unknown error' 
     });
+
+    if (error instanceof AuthenticationError || error instanceof AuthorizationError) {
+      return NextResponse.json({ message: error.message }, { status: error.statusCode });
+    }
     
-    Sentry.captureException(error);
-    
-    return createAuthErrorResponse(
-      AuthErrorType.SERVER,
-      'Failed to fetch builders',
-      500,
-      path,
-      method,
-      userId
+    return NextResponse.json(
+      { message: 'An unexpected error occurred' }, 
+      { status: 500 }
     );
   }
 });

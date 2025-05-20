@@ -9,7 +9,7 @@ export * from './client/logs.client';
 export * from './client/trace-context.client';
 
 // Export shared types and interfaces
-export * from './interfaces';
+// export * from './interfaces'; // Removed: Module does not exist and causes ambiguity
 
 // Export client-specific configuration
 export * from './rum-config';

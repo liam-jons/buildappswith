@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchBuilders, MarketplaceFilters, trackMarketplaceEvent } from '@/lib/marketplace';
 import { enhancedLogger } from '@/lib/logger';
-import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
+import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/adapters/clerk-express/errors';
 
 // Create a logger for this API route
 const apiLogger = enhancedLogger.child({

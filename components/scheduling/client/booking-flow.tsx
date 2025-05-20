@@ -7,6 +7,7 @@ import { SessionType } from '@/lib/scheduling/types';
 import { useBookingFlow } from '@/lib/contexts/booking-flow-context';
 import { useBookingManager } from '@/hooks/scheduling';
 import { CalendlyCalendar } from '../calendly/calendly-calendar';
+import { CalendlyEvent, CalendlyQuestionAnswer } from '../calendly/calendly-model';
 import { SessionTypeSelector } from './session-type-selector';
 import { SessionTypeCategory } from './session-type-category';
 import { PathwaySelector } from './pathway-selector';
@@ -203,7 +204,7 @@ export function BookingFlow({
   };
   
   // Handle Calendly event scheduling
-  const handleCalendlyEvent = async (event: any) => {
+  const handleCalendlyEvent = async (event: CalendlyEvent) => {
     // Extract event details
     const { uri: calendlyEventUri, invitee } = event || {};
     const calendlyInviteeUri = invitee?.uri;
@@ -211,7 +212,7 @@ export function BookingFlow({
     const endTime = event?.end_time;
     
     // Extract custom question responses if available
-    const customQuestionResponse = event?.questions_and_answers;
+    const customQuestionResponse = event?.questions_and_answers as CalendlyQuestionAnswer[] | undefined;
     
     // If unauthenticated user, create the booking now
     if (!isSignedIn && !state.bookingId) {

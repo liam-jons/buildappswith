@@ -15,6 +15,7 @@ import type {
   CalendlySchedulingLinkResponse,
   CalendlyWebhookPayload
 } from './types'
+import { SchedulingSettings } from '../types'
 
 // Initialize Prisma client
 const prisma = new PrismaClient()
@@ -292,7 +293,7 @@ export class CalendlyService {
       paymentStatus: 'UNPAID', // Default payment status
       amount: sessionType.price.toNumber(),
       clientTimezone: invitee.timezone,
-      builderTimezone: sessionType.builder?.timezone || undefined
+      builderTimezone: (sessionType.builder?.schedulingSettings as SchedulingSettings)?.timezone || undefined
     }
   }
 
@@ -329,7 +330,7 @@ export class CalendlyService {
     return {
       id: booking.id,
       builderId: booking.builderId,
-      clientId: booking.clientId,
+      clientId: booking.clientId || '', // Added fallback for null clientId
       sessionTypeId: booking.sessionTypeId || '',
       calendlyEventId: event.uuid,
       calendlyEventUri: `https://api.calendly.com/scheduled_events/${event.uuid}`,
@@ -339,7 +340,7 @@ export class CalendlyService {
       startTime: booking.startTime.toISOString(),
       endTime: booking.endTime.toISOString(),
       status: 'CANCELLED', // Set to cancelled
-      paymentStatus: booking.paymentStatus,
+      paymentStatus: booking.paymentStatus as ('UNPAID' | 'PAID' | 'REFUNDED' | 'FAILED'), // Cast to string literal union
       amount: booking.amount?.toNumber(),
       stripeSessionId: booking.stripeSessionId || undefined,
       clientTimezone: booking.clientTimezone || undefined,

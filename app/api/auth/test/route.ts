@@ -8,21 +8,21 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth, withRole, withAdmin, withBuilder, withClient, AuthUser } from '@/lib/auth/clerk/api-auth';
-import { UserRole } from '@/lib/auth/types';
+import { withAuth, withRole, withAdmin, withBuilder, withClient } from '@/lib/auth';
+import { UserRole, AuthObject } from '@/lib/auth/types';
 
 /**
  * GET handler for testing authentication
  * 
  * Requires authentication but no specific role
  */
-export const GET = withAuth(async (req: NextRequest, user: AuthUser) => {
+export const GET = withAuth(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   return NextResponse.json({
     success: true,
     message: 'Authentication successful',
     data: {
-      userId: user.id,
-      roles: user.roles,
+      userId: auth.userId,
+      roles: auth.roles,
       isAuthenticated: true,
     },
   });
@@ -33,13 +33,13 @@ export const GET = withAuth(async (req: NextRequest, user: AuthUser) => {
  * 
  * Requires ADMIN role
  */
-export const POST = withAdmin(async (req: NextRequest, user: AuthUser) => {
+export const POST = withAdmin(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   return NextResponse.json({
     success: true,
     message: 'Admin access granted',
     data: {
-      userId: user.id,
-      roles: user.roles,
+      userId: auth.userId,
+      roles: auth.roles,
       isAdmin: true,
     },
   });
@@ -50,13 +50,13 @@ export const POST = withAdmin(async (req: NextRequest, user: AuthUser) => {
  * 
  * Requires BUILDER role
  */
-export const PUT = withBuilder(async (req: NextRequest, user: AuthUser) => {
+export const PUT = withBuilder(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   return NextResponse.json({
     success: true,
     message: 'Builder access granted',
     data: {
-      userId: user.id,
-      roles: user.roles,
+      userId: auth.userId,
+      roles: auth.roles,
       isBuilder: true,
     },
   });
@@ -67,13 +67,13 @@ export const PUT = withBuilder(async (req: NextRequest, user: AuthUser) => {
  * 
  * Requires CLIENT role
  */
-export const PATCH = withClient(async (req: NextRequest, user: AuthUser) => {
+export const PATCH = withClient(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   return NextResponse.json({
     success: true,
     message: 'Client access granted',
     data: {
-      userId: user.id,
-      roles: user.roles,
+      userId: auth.userId,
+      roles: auth.roles,
       isClient: true,
     },
   });
@@ -85,16 +85,16 @@ export const PATCH = withClient(async (req: NextRequest, user: AuthUser) => {
  * Requires either ADMIN or BUILDER role
  */
 export const DELETE = withRole(
-  async (req: NextRequest, user: AuthUser) => {
+  UserRole.ADMIN, 
+  async (req: NextRequest, context: { params?: any }, auth: AuthObject) => { 
     return NextResponse.json({
       success: true,
-      message: 'Custom role access granted',
+      message: 'Custom role access granted for ADMIN',
       data: {
-        userId: user.id,
-        roles: user.roles,
+        userId: auth.userId,
+        roles: auth.roles,
         hasRequiredRole: true,
       },
     });
-  },
-  UserRole.ADMIN
+  }
 );

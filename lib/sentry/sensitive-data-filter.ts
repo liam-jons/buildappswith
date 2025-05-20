@@ -86,10 +86,11 @@ function filterSensitiveData(event: Sentry.Event): Sentry.Event {
     }
 
     // Filter contexts if present
-    if (filteredEvent.contexts) {
+    if (filteredEvent.contexts) { 
       Object.keys(filteredEvent.contexts).forEach(key => {
-        if (typeof filteredEvent.contexts[key] === 'object') {
-          filteredEvent.contexts[key] = filterSensitiveObjectData(filteredEvent.contexts[key]);
+        const contextValue = filteredEvent.contexts![key]; 
+        if (typeof contextValue === 'object' && contextValue !== null) {
+          filteredEvent.contexts![key] = filterSensitiveObjectData(contextValue);
         }
       });
     }

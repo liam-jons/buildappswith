@@ -5,6 +5,8 @@
  * TypeScript type definitions for payment
  */
 
+import Stripe from 'stripe';
+
 // Stripe webhook event types
 export enum StripeWebhookEventType {
   CHECKOUT_SESSION_COMPLETED = 'checkout.session.completed',
@@ -35,6 +37,8 @@ export interface StripeCheckoutMetadata {
   builderId: string;
   clientId: string;
   sessionTypeId: string;
+  userEmail?: string;
+  builderEmail?: string;
   startTime?: string;
   endTime?: string;
   timeZone?: string;
@@ -46,21 +50,16 @@ export interface StripeCheckoutMetadata {
 }
 
 // Request for creating a checkout session
+// Updated to match the Zod schema in lib/stripe/actions.ts
 export interface CheckoutSessionRequest {
-  bookingData: {
-    id?: string;
-    builderId: string;
-    sessionTypeId: string;
-    startTime: string;
-    endTime: string;
-    clientId?: string;
-    clientTimezone?: string;
-    // Calendly fields
-    calendlyEventId?: string;
-    calendlyEventUri?: string;
-    calendlyInviteeUri?: string;
-  };
-  returnUrl: string;
+  clientId: string;
+  builderId: string;
+  sessionTypeId: string;
+  bookingId?: string;
+  notes?: string;
+  clientTimezone?: string;
+  paymentOption?: 'full' | 'deposit' | 'final';
+  reschedule?: boolean;
 }
 
 // Response from creating a checkout session
@@ -86,9 +85,10 @@ export interface PaymentStatusResponse {
 }
 
 // Request for handling webhook events
-export interface WebhookEventRequest {
-  event: any;
+export interface StripeWebhookRequest {
+  event: Stripe.Event; // Changed from any
   signature: string;
+  rawBody: string | Buffer; // Added rawBody
 }
 
 // Response for webhook events

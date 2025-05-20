@@ -184,24 +184,21 @@ export function createTransaction(options: TransactionOptions): SpanInterface {
   
   // Fallback to a mock transaction if API is not available
   return {
-    name,
-    op,
-    description,
-    setTag: (key: string, value: string) => {},
-    setData: (key: string, value: any) => {},
-    setStatus: (status: string) => {},
-    finish: () => {},
-    startChild: (options: any) => {
+    setTag: (key: string, value: string) => { /* no-op */ },
+    setData: (key: string, value: any) => { /* no-op */ },
+    setStatus: (status: string) => { /* no-op */ },
+    finish: () => { /* no-op */ },
+    startChild: (childOptions: any) => {
       // Create a simple child span with minimal functionality
       return {
-        setTag: (key: string, value: string) => {},
-        setData: (key: string, value: any) => {},
-        setStatus: (status: string) => {},
+        setTag: (key: string, value: string) => { /* no-op */ },
+        setData: (key: string, value: any) => { /* no-op */ },
+        setStatus: (status: string) => { /* no-op */ },
         finish: () => {
           // Use performance API for basic timing if available
           if (typeof performance !== 'undefined' && typeof performance.mark === 'function') {
             try {
-              performance.mark(`${options.name || 'span'}-end`);
+              performance.mark(`${childOptions.name || 'span'}-end`);
             } catch (e) {
               // Silently ignore errors
             }

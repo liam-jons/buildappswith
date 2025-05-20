@@ -11,18 +11,18 @@
 import { useAuth as useClerkAuth, useUser as useClerkUser } from "@clerk/nextjs";
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import React from 'react';
-import { UserRole, AuthContextType, ExtendedUser } from './types';
+import { UserRole, AuthContextType, AuthUser } from './types';
 
 // Create auth context
 const AuthContext = createContext<AuthContextType | null>(null);
 
 /**
  * Enhanced user hook that transforms Clerk user data into our application format
- * @returns ExtendedUser object or null if not authenticated
+ * @returns AuthUser object or null if not authenticated
  */
-function useUserInternal(): { user: ExtendedUser | null, isLoaded: boolean } {
+function useUserInternal(): { user: AuthUser | null, isLoaded: boolean } {
   const { user: clerkUser, isLoaded: clerkIsLoaded } = useClerkUser();
-  const [user, setUser] = useState<ExtendedUser | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   
   useEffect(() => {
@@ -35,19 +35,22 @@ function useUserInternal(): { user: ExtendedUser | null, isLoaded: boolean } {
     }
     
     // Extract roles from public metadata
-    const roleMetadata = clerkUser.publicMetadata?.roles || [];
+    const publicMetadata = clerkUser.publicMetadata || {};
+    const roleMetadata = publicMetadata?.roles || [];
     const roles = Array.isArray(roleMetadata) ? roleMetadata as UserRole[] : [];
     
     // Transform Clerk user to our application format
-    const transformedUser: ExtendedUser = {
-      id: clerkUser.id,
+    const transformedUser: AuthUser = {
+      id: clerkUser.id, // Assuming AuthUser expects clerkId as id from client perspective
       clerkId: clerkUser.id,
       name: clerkUser.fullName || clerkUser.username || null,
       email: clerkUser.primaryEmailAddress?.emailAddress || '',
-      image: clerkUser.imageUrl || null,
+      imageUrl: clerkUser.imageUrl || null, // Changed from image to imageUrl
       roles,
       verified: clerkUser.emailAddresses.some(email => email.verification?.status === 'verified') || false,
-      stripeCustomerId: clerkUser.publicMetadata?.stripeCustomerId as string || null,
+      stripeCustomerId: publicMetadata?.stripeCustomerId as string || null,
+      isFounder: typeof publicMetadata?.isFounder === 'boolean' ? publicMetadata.isFounder : false, // Added isFounder
+      isDemo: typeof publicMetadata?.isDemo === 'boolean' ? publicMetadata.isDemo : false, // Added isDemo
     };
     
     setUser(transformedUser);
@@ -151,17 +154,15 @@ export function useAuthContext() {
  * @returns Enhanced auth object with role helpers
  */
 export function useAuth(): AuthContextType {
-  // Try to use context first, fall back to direct hook if no provider
-  try {
-    return useAuthContext();
-  } catch {
-    return useAuthInternal();
-  }
+  // This hook now directly uses useAuthContext.
+  // It requires an ExpressAuthProvider to be an ancestor in the React tree.
+  // The conditional fallback to useAuthInternal has been removed to comply with the Rules of Hooks.
+  return useAuthContext();
 }
 
 /**
  * Enhanced user hook that transforms Clerk user data into our application format
- * @returns ExtendedUser object or null if not authenticated
+ * @returns AuthUser object or null if not authenticated
  */
 export function useUser() {
   const { user, isLoaded } = useAuth();

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchBuilderById, trackMarketplaceEvent } from '@/lib/marketplace';
-import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
+import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/adapters/clerk-express/errors';
 import { logger } from '@/lib/logger';
 
 /**
@@ -14,18 +14,18 @@ export async function GET(
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
-
-  // Await params properly to fix the Next.js warning
-  const resolvedParams = params instanceof Promise ? await params : params;
-  const builderId = resolvedParams.id;
-
-  logger.info('Marketplace builder profile request received', {
-    path,
-    method,
-    builderId
-  });
+  let builderId: string | undefined;
 
   try {
+    // Await params properly to fix the Next.js warning
+    const resolvedParams = params instanceof Promise ? await params : params;
+    builderId = resolvedParams.id;
+
+    logger.info('Marketplace builder profile request received', {
+      path,
+      method,
+      builderId
+    });
 
     if (!builderId) {
       logger.warn('Missing builder ID in request', { path, method });
@@ -80,7 +80,7 @@ export async function GET(
 
     logger.error('Error fetching builder profile', {
       error: errorMessage,
-      builderId: params.id,
+      builderId: builderId,
       path,
       method,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`

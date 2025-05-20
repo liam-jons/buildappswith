@@ -17,6 +17,7 @@ import { AlertTriangle, Clock, RefreshCw } from 'lucide-react'
 import { getCalendlyEventTypes } from '@/lib/scheduling/calendly/client-api'
 import { logger } from '@/lib/logger'
 import type { SessionType } from '@/lib/scheduling/types'
+import type { CalendlyEventTypesResponse } from './calendly-model'
 
 interface CalendlySessionTypeListProps {
   builderId: string;

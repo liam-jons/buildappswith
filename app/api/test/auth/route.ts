@@ -1,39 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth/clerk/api-auth';
-import { AuthUser } from '@/lib/auth/clerk/helpers';
+import { withAuth } from '@/lib/auth';
 import * as Sentry from '@sentry/nextjs';
+import { 
+  createAuthErrorResponse, 
+  addAuthPerformanceMetrics, 
+  AuthErrorType 
+} from '@/lib/auth/adapters/clerk-express/errors';
+import { logger } from '@/lib/logger';
+import { UserRole } from '@/lib/auth/types';
 
 /**
  * GET handler for testing authentication
- * Returns authenticated user data if available
- * Version: 1.0.59
+ * Returns authenticated user ID and roles if available
+ * Version: 1.0.60
  */
-export const GET = withAuth(async (request: NextRequest, user: AuthUser) => {
+export const GET = withAuth(async (
+  request: NextRequest, 
+  context: any, 
+  userId: string, 
+  userRoles: UserRole[]
+) => {
+  const startTime = performance.now();
+  const path = request.nextUrl.pathname;
+  const method = request.method;
+
   try {
-    // Log the authenticated user for debugging
-    // Return the authenticated user data
-    return NextResponse.json({
+    logger.info('Test auth route accessed successfully', { path, method, userId, roles: userRoles });
+    
+    const responseData = {
       message: 'Authentication successful',
-      user: {
-        id: user.id,
-        clerkId: user.clerkId,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        roles: user.roles,
-        verified: user.verified,
-        stripeCustomerId: user.stripeCustomerId
-      }
-    });
+      userId: userId,
+      roles: userRoles,
+    };
+
+    const response = NextResponse.json({ success: true, data: responseData });
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
+
   } catch (error) {
-    // Log and report the error
-    console.error('Error in test auth route:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error('Error in test auth route', { error: errorMessage, path, method, userId });
     Sentry.captureException(error);
     
-    // Return an error response
-    return NextResponse.json(
-      { error: 'Failed to get authenticated user data' }, 
-      { status: 500 }
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER, 
+      'Failed to get authenticated user data',
+      500, 
+      path, 
+      method, 
+      userId
     );
   }
 });

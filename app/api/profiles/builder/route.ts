@@ -7,13 +7,25 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withBuilder } from '@/lib/auth/api-auth';
+import { withBuilder } from '@/lib/auth';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { captureException } from '@sentry/nextjs';
-import { UserRole } from '@/lib/auth/types';
-import { AuthErrorType, createAuthErrorResponse, addAuthPerformanceMetrics } from '@/lib/auth/express/errors';
+import { UserRole, AuthObject } from '@/lib/auth/types';
+import { AuthErrorType, createAuthErrorResponse, addAuthPerformanceMetrics } from '@/lib/auth/adapters/clerk-express/errors';
 import { logger } from '@/lib/logger';
+
+// Simple slugify function
+const slugify = (text: string): string => {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, ''); // Trim - from end of text
+};
 
 // Schema for builder profile updates
 const builderProfileSchema = z.object({
@@ -35,18 +47,17 @@ const builderProfileSchema = z.object({
  *
  * Get the authenticated user's builder profile
  */
-export const GET = withBuilder(async (req: NextRequest, auth: { userId: string; roles: UserRole[] }) => {
+export const GET = withBuilder(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
-  const { userId, roles } = auth;
 
   try {
-    logger.debug('Fetching builder profile', { userId, path, method });
+    logger.debug('Fetching builder profile', { userId: auth.userId, path, method });
 
     // Look up the user in the database
     const dbUser = await db.user.findUnique({
-      where: { clerkId: userId },
+      where: { clerkId: auth.userId },
       include: {
         builderProfile: {
           include: {
@@ -61,26 +72,26 @@ export const GET = withBuilder(async (req: NextRequest, auth: { userId: string; 
     });
 
     if (!dbUser) {
-      logger.warn('User not found when fetching builder profile', { userId, path, method });
+      logger.warn('User not found when fetching builder profile', { userId: auth.userId, path, method });
       return createAuthErrorResponse(
         AuthErrorType.AUTHENTICATION,
         'User not found',
         404,
         path,
         method,
-        userId
+        auth.userId
       );
     }
 
     if (!dbUser.builderProfile) {
-      logger.warn('Builder profile not found', { userId, path, method });
+      logger.warn('Builder profile not found', { userId: auth.userId, path, method });
       return createAuthErrorResponse(
         'RESOURCE_NOT_FOUND',
         'Builder profile not found',
         404,
         path,
         method,
-        userId
+        auth.userId
       );
     }
 
@@ -109,11 +120,11 @@ export const GET = withBuilder(async (req: NextRequest, auth: { userId: string; 
       }
     });
 
-    return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
   } catch (error) {
     logger.error('Error fetching builder profile', {
       error: error instanceof Error ? error.message : 'Unknown error',
-      userId,
+      userId: auth.userId,
       path,
       method
     });
@@ -125,7 +136,7 @@ export const GET = withBuilder(async (req: NextRequest, auth: { userId: string; 
       500,
       path,
       method,
-      userId
+      auth.userId
     );
   }
 });
@@ -135,14 +146,13 @@ export const GET = withBuilder(async (req: NextRequest, auth: { userId: string; 
  *
  * Update the authenticated user's builder profile
  */
-export const POST = withBuilder(async (req: NextRequest, auth: { userId: string; roles: UserRole[] }) => {
+export const POST = withBuilder(async (req: NextRequest, context: { params?: any }, auth: AuthObject) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
-  const { userId, roles } = auth;
 
   try {
-    logger.debug('Updating builder profile', { userId, path, method });
+    logger.debug('Updating builder profile', { userId: auth.userId, path, method });
 
     // Parse the request body
     const requestBody = await req.json();
@@ -152,7 +162,7 @@ export const POST = withBuilder(async (req: NextRequest, auth: { userId: string;
 
     if (!result.success) {
       logger.warn('Invalid request body for builder profile update', {
-        userId,
+        userId: auth.userId,
         path,
         method,
         validationErrors: result.error.format()
@@ -164,7 +174,7 @@ export const POST = withBuilder(async (req: NextRequest, auth: { userId: string;
         400,
         path,
         method,
-        userId
+        auth.userId
       );
     }
 
@@ -172,142 +182,118 @@ export const POST = withBuilder(async (req: NextRequest, auth: { userId: string;
 
     // First, find the user in our database
     const dbUser = await db.user.findUnique({
-      where: { clerkId: userId },
+      where: { clerkId: auth.userId },
       include: {
         builderProfile: true
       }
     });
 
     if (!dbUser) {
-      logger.warn('User not found when updating builder profile', { userId, path, method });
+      logger.warn('User not found when updating builder profile', { userId: auth.userId, path, method });
       return createAuthErrorResponse(
         AuthErrorType.AUTHENTICATION,
         'User not found',
         404,
         path,
         method,
-        userId
+        auth.userId
       );
     }
 
-    if (!dbUser.builderProfile) {
-      // If no builder profile exists but user has the builder role, create one
-      if (dbUser.roles.includes(UserRole.BUILDER)) {
-        logger.info('Creating new builder profile', { userId, path, method });
+    // Determine if we are creating or updating a profile
+    const existingProfile = dbUser.builderProfile;
+    let updatedOrCreatedProfile;
 
-        const newProfile = await db.builderProfile.create({
-          data: {
-            userId: dbUser.id,
-            bio: validatedData.bio || '',
-            headline: validatedData.headline || '',
-            availableForHire: validatedData.availableForHire ?? true,
-            adhd_focus: validatedData.adhd_focus ?? false,
-            socialLinks: validatedData.socialLinks || {},
-            validationTier: 1,
-          },
-        });
+    // Handle skills separately
+    const skillsToConnect: { id: string }[] = [];
+    const skillsToCreate: { name: string; slug: string; domain?: string }[] = [];
 
-        const response = NextResponse.json({
-          success: true,
-          message: 'Builder profile created successfully',
-          data: newProfile,
-        });
-
-        return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
-      } else {
-        logger.warn('User without builder role attempted to create profile', {
-          userId,
-          roles,
-          path,
-          method
-        });
-
-        return createAuthErrorResponse(
-          AuthErrorType.AUTHORIZATION,
-          'User does not have builder role',
-          403,
-          path,
-          method,
-          userId
-        );
-      }
-    }
-
-    // Update the builder profile
-    const updateData = {
-      ...validatedData.bio !== undefined ? { bio: validatedData.bio } : {},
-      ...validatedData.headline !== undefined ? { headline: validatedData.headline } : {},
-      ...validatedData.availableForHire !== undefined ? { availableForHire: validatedData.availableForHire } : {},
-      ...validatedData.adhd_focus !== undefined ? { adhd_focus: validatedData.adhd_focus } : {},
-      ...validatedData.socialLinks !== undefined ? { socialLinks: validatedData.socialLinks } : {},
-    };
-
-    // Update skills if provided
     if (validatedData.skills && validatedData.skills.length > 0) {
-      logger.debug('Updating builder skills', {
-        userId,
-        profileId: dbUser.builderProfile.id,
-        skillCount: validatedData.skills.length
-      });
-
-      // First, remove existing skill connections
-      await db.builderSkill.deleteMany({
-        where: {
-          builderId: dbUser.builderProfile.id
-        }
-      });
-
-      // Then, add new skill connections
       for (const skillName of validatedData.skills) {
-        // Find or create the skill
-        let skill = await db.skill.findFirst({
-          where: { name: skillName }
+        const existingSkill = await db.skill.findUnique({
+          where: { name: skillName },
         });
-
-        if (!skill) {
-          skill = await db.skill.create({
-            data: {
-              name: skillName,
-              category: 'other', // Default category
-            }
-          });
+        if (existingSkill) {
+          skillsToConnect.push({ id: existingSkill.id });
+        } else {
+          // For now, let's assume new skills are generic if domain isn't provided
+          // In a real app, you might have a default domain or require it
+          skillsToCreate.push({ name: skillName, slug: slugify(skillName) });
         }
-
-        // Create the connection
-        await db.builderSkill.create({
-          data: {
-            builderId: dbUser.builderProfile.id,
-            skillId: skill.id,
-            proficiency: 1 // Default proficiency
-          }
-        });
       }
     }
 
-    // Update the builder profile
-    const updatedProfile = await db.builderProfile.update({
-      where: { id: dbUser.builderProfile.id },
-      data: updateData,
-    });
+    if (existingProfile) {
+      // Update existing profile
+      logger.debug('Updating existing builder profile', { userId: auth.userId, profileId: existingProfile.id });
+      updatedOrCreatedProfile = await db.builderProfile.update({
+        where: { id: existingProfile.id },
+        data: {
+          bio: validatedData.bio,
+          headline: validatedData.headline,
+          availableForHire: validatedData.availableForHire,
+          adhd_focus: validatedData.adhd_focus,
+          socialLinks: validatedData.socialLinks ? validatedData.socialLinks : undefined,
+          skills: {
+            // First, disconnect all existing skills for this profile if new skills are provided
+            ...(validatedData.skills && validatedData.skills.length > 0 ? { set: [] } : {}),
+            // Then connect existing or create new ones
+            connect: skillsToConnect.map(skill => ({ id: skill.id })),
+            create: skillsToCreate.map(skillData => ({ skill: { create: skillData } })),
+          },
+        },
+        include: { skills: { include: { skill: true } } },
+      });
+    } else {
+      // Create new profile
+      logger.debug('Creating new builder profile', { userId: auth.userId });
+      updatedOrCreatedProfile = await db.builderProfile.create({
+        data: {
+          userId: dbUser.id, // Link to the User model's ID, not Clerk ID
+          bio: validatedData.bio,
+          headline: validatedData.headline,
+          availableForHire: validatedData.availableForHire,
+          adhd_focus: validatedData.adhd_focus,
+          socialLinks: validatedData.socialLinks ? validatedData.socialLinks : undefined,
+          skills: {
+            connect: skillsToConnect.map(skill => ({ id: skill.id })),
+            create: skillsToCreate.map(skillData => ({ skill: { create: skillData } })),
+          },
+        },
+        include: { skills: { include: { skill: true } } },
+      });
+    }
 
-    logger.info('Builder profile updated successfully', {
-      userId,
-      profileId: dbUser.builderProfile.id,
-      path,
-      method
-    });
+    // Transform skills for the response
+    const formattedSkills = updatedOrCreatedProfile.skills.map(skill => ({
+      id: skill.skill.id,
+      name: skill.skill.name,
+      domain: skill.skill.domain,
+    }));
 
+    // Return the updated or created profile
     const response = NextResponse.json({
       success: true,
-      message: 'Builder profile updated successfully',
-      data: updatedProfile,
+      data: {
+        id: updatedOrCreatedProfile.id,
+        userId: dbUser.id,
+        bio: updatedOrCreatedProfile.bio,
+        headline: updatedOrCreatedProfile.headline,
+        skills: formattedSkills,
+        availableForHire: updatedOrCreatedProfile.availableForHire,
+        adhd_focus: updatedOrCreatedProfile.adhd_focus,
+        validationTier: updatedOrCreatedProfile.validationTier,
+        socialLinks: updatedOrCreatedProfile.socialLinks,
+        createdAt: updatedOrCreatedProfile.createdAt,
+        updatedAt: updatedOrCreatedProfile.updatedAt,
+      }
     });
 
-    return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
   } catch (error) {
     logger.error('Error updating builder profile', {
       error: error instanceof Error ? error.message : 'Unknown error',
-      userId,
+      userId: auth.userId,
       path,
       method
     });
@@ -319,7 +305,7 @@ export const POST = withBuilder(async (req: NextRequest, auth: { userId: string;
       500,
       path,
       method,
-      userId
+      auth.userId
     );
   }
 });

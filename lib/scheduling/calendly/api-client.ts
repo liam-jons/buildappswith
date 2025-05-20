@@ -56,48 +56,13 @@ interface RequestMetrics {
 /**
  * Available times response from Calendly API
  */
-interface CalendlyAvailableTimesResponse {
+export interface CalendlyAvailableTimesResponse {
   collection: Array<{
     status: string;
     invitees_remaining: number;
     start_time: string;
     scheduling_url: string;
   }>;
-}
-
-/**
- * Event types response from Calendly API
- */
-interface CalendlyEventTypesResponse {
-  collection: any[];
-  pagination: {
-    count: number;
-    next_page?: string;
-  };
-}
-
-/**
- * Event type response from Calendly API
- */
-interface CalendlyEventTypeResponse {
-  resource: any;
-}
-
-/**
- * User response from Calendly API
- */
-interface CalendlyUserResponse {
-  resource: {
-    uri: string;
-    current_organization: string;
-  };
-}
-
-/**
- * Organization response from Calendly API
- */
-interface CalendlyOrganizationResponse {
-  resource: any;
 }
 
 /**
@@ -608,7 +573,7 @@ export function getCalendlyApiClient(): CalendlyApiClient {
 /**
  * Verify Calendly API token validity
  * 
- * @returns True if token is valid, false otherwise
+ * @returns True if token is valid
  */
 export async function verifyCalendlyApiToken(): Promise<boolean> {
   try {

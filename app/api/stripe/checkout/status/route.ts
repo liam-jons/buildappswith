@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
-import { getCurrentUser } from '@/lib/auth/api-auth';
+import { withAuth } from '@/lib/auth';
+import { UserRole, AuthObject } from '@/lib/auth/types';
+import { 
+  createAuthErrorResponse, 
+  addAuthPerformanceMetrics, 
+  AuthErrorType 
+} from '@/lib/auth/adapters/clerk-express/errors';
 import { createStripeClient } from '@/lib/stripe/stripe-server';
 import { transitionBooking } from '@/lib/scheduling/state-machine';
 import { BookingEventEnum } from '@/lib/scheduling/state-machine/types';
@@ -10,33 +16,38 @@ import { BookingEventEnum } from '@/lib/scheduling/state-machine/types';
  * 
  * This endpoint retrieves the status of a Stripe checkout session.
  */
-export async function GET(req: NextRequest) {
+export const GET = withAuth(async (req: NextRequest, context: any, auth: AuthObject) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+
   try {
-    // Get current user
-    const user = await getCurrentUser();
-    if (!user) {
-      logger.warn('Unauthorized user attempted to check payment status');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    
-    // Get session ID from query parameters
     const url = new URL(req.url);
     const sessionId = url.searchParams.get('sessionId');
     
     if (!sessionId) {
-      return NextResponse.json(
-        { error: 'Session ID is required' },
-        { status: 400 }
+      logger.warn('Session ID missing for payment status check', { path, method, userId: auth.userId });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION,
+        'Session ID is required',
+        400,
+        path,
+        method,
+        auth.userId
       );
     }
     
     // Initialize Stripe client
     const stripe = createStripeClient();
     if (!stripe) {
-      logger.error('Failed to initialize Stripe client');
-      return NextResponse.json(
-        { error: 'Payment service unavailable' },
-        { status: 503 }
+      logger.error('Failed to initialize Stripe client for payment status check', { path, method, userId: auth.userId });
+      return createAuthErrorResponse(
+        AuthErrorType.CONFIGURATION,
+        'Payment service unavailable',
+        503,
+        path,
+        method,
+        auth.userId
       );
     }
     
@@ -66,7 +77,7 @@ export async function GET(req: NextRequest) {
       if (bookingId) {
         await transitionBooking(bookingId, BookingEventEnum.PAYMENT_SUCCEEDED, {
           stripeSessionId: sessionId,
-          stripePaymentIntentId: paymentIntentId
+          stripePaymentIntentId: paymentIntentId,
         });
       }
       
@@ -82,7 +93,7 @@ export async function GET(req: NextRequest) {
             code: 'session_expired',
             timestamp: new Date().toISOString(),
             source: 'stripe'
-          }
+          },
         });
       }
       
@@ -90,14 +101,14 @@ export async function GET(req: NextRequest) {
       paymentStatus = 'PENDING';
     }
     
-    logger.info('Retrieved payment status', {
+    logger.info('Retrieved payment status successfully', {
+      path, method, userId: auth.userId,
       sessionId,
       paymentStatus,
       bookingId,
-      userId: user.id
     });
     
-    return NextResponse.json({
+    const responseData = {
       status: session.status,
       paymentStatus,
       bookingId,
@@ -105,16 +116,22 @@ export async function GET(req: NextRequest) {
       metadata: session.metadata,
       calendlyEventId,
       isCalendlyBooking
-    });
+    };
+
+    const response = NextResponse.json({ success: true, data: responseData });
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
     
   } catch (error) {
-    logger.error('Error retrieving payment status', {
-      error: error instanceof Error ? error.message : String(error)
-    });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error('Error retrieving payment status', { error: errorMessage, path, method, userId: auth.userId });
     
-    return NextResponse.json(
-      { error: 'Failed to retrieve payment status' },
-      { status: 500 }
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to retrieve payment status',
+      500,
+      path,
+      method,
+      auth.userId
     );
   }
-}
+});

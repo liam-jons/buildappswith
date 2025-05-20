@@ -12,3 +12,5 @@
 //     currency,
 //   }).format(amount / 100);
 // }
+
+export {}; // Ensure this file is treated as a module

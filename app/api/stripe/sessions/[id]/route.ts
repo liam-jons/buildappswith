@@ -4,30 +4,47 @@
  * This route handles retrieving details about a specific Stripe checkout session.
  * It validates the request, ensures proper authentication, and returns session details.
  * 
- * Version: 1.0.0
+ * Version: 1.0.1 (Auth Refactor)
  */
 
 import { NextResponse, NextRequest } from 'next/server';
-import { withAuth } from '@/lib/auth/api-auth';
+import { withAuth } from '@/lib/auth'; 
+import { UserRole, AuthObject } from '@/lib/auth/types'; 
+import { 
+  createAuthErrorResponse, 
+  addAuthPerformanceMetrics, 
+  AuthErrorType 
+} from '@/lib/auth/adapters/clerk-express/errors'; 
 import { getCheckoutSessionStatus } from '@/lib/stripe/actions';
 import { logger } from '@/lib/logger';
 
 /**
  * GET handler for retrieving Stripe checkout session details
  */
-export const GET = withAuth(async (request: NextRequest, user: any, { params }: { params: { id: string } }) => {
+export const GET = withAuth(async (
+  request: NextRequest, 
+  routeContext: { params: { id: string } }, 
+  auth: AuthObject 
+) => {
+  const startTime = performance.now();
+  const path = request.nextUrl.pathname;
+  const method = request.method;
+
   try {
-    // Get session ID from route params
-    const sessionId = params.id;
+    const sessionId = routeContext.params.id;
     
     if (!sessionId) {
-      return NextResponse.json(
-        { error: 'Session ID is required' },
-        { status: 400 }
+      logger.warn('Session ID missing for session detail retrieval', { path, method, userId: auth.userId });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION,
+        'Session ID is required',
+        400,
+        path,
+        method,
+        auth.userId
       );
     }
     
-    // Get session details using server action
     const result = await getCheckoutSessionStatus(sessionId);
     
     if (!result.success) {
@@ -36,24 +53,43 @@ export const GET = withAuth(async (request: NextRequest, user: any, { params }: 
         result.error?.type === 'authentication_error' ? 401 :
         500;
       
-      return NextResponse.json(
-        { error: result.message, details: result.error },
-        { status: statusCode }
+      logger.warn('Failed to retrieve session status', { 
+        path, method, userId: auth.userId, sessionId, 
+        errorType: result.error?.type, errorMessage: result.message 
+      });
+      return createAuthErrorResponse(
+        result.error?.type || AuthErrorType.SERVER,
+        result.message || 'Failed to retrieve session status',
+        statusCode,
+        path,
+        method,
+        auth.userId
       );
     }
     
-    // Return success response with session details
-    return NextResponse.json({
+    logger.info('Successfully retrieved session status', { path, method, userId: auth.userId, sessionId });
+    const responseData = {
       status: result.data?.status,
       paymentStatus: result.data?.paymentStatus,
-      bookingId: result.data?.bookingId
-    });
+      bookingId: result.data?.bookingId,
+      // Potentially add more fields from result.data if needed by client
+    };
+
+    const response = NextResponse.json({ success: true, data: responseData });
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
+
   } catch (error: any) {
-    logger.error('Error in session API route', { error });
+    const errorMessage = error.message || 'Unknown error retrieving session details';
+    logger.error('Error in Stripe session API route', { path, method, userId: auth.userId, error: errorMessage });
+    // Sentry.captureException(error); // Consider if Sentry is needed here
     
-    return NextResponse.json(
-      { error: error.message || 'Failed to retrieve session details' },
-      { status: 500 }
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      errorMessage,
+      500,
+      path,
+      method,
+      auth.userId
     );
   }
 });

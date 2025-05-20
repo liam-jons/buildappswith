@@ -11,17 +11,17 @@ import type {
   CalendlySchedulingLinkResponse, 
   MappedCalendlyEventType
 } from './types'
+import type {
+  CalendlyEventTypesResponse,
+  CalendlyAvailableTimesResponse
+} from '@/components/scheduling/calendly/calendly-model'
 
 /**
  * Fetch Calendly event types mapped to session types
  * 
  * @returns List of mapped event types
  */
-export async function getCalendlyEventTypes(): Promise<{
-  success: boolean;
-  eventTypes?: MappedCalendlyEventType[];
-  error?: string;
-}> {
+export async function getCalendlyEventTypes(): Promise<CalendlyEventTypesResponse> {
   try {
     const response = await fetch('/api/scheduling/calendly/event-types', {
       method: 'GET',
@@ -108,16 +108,7 @@ export async function getCalendlyAvailableTimeSlots(
   eventTypeUri: string,
   startDate: Date,
   endDate: Date
-): Promise<{
-  success: boolean;
-  timeSlots?: Array<{
-    startTime: Date;
-    endTime: Date;
-    schedulingUrl: string;
-    inviteesRemaining: number;
-  }>;
-  error?: string;
-}> {
+): Promise<CalendlyAvailableTimesResponse> {
   try {
     const response = await fetch('/api/scheduling/calendly/available-times', {
       method: 'POST',

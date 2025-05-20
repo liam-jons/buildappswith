@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { withAdmin } from "@/lib/auth/api-auth";
+import { withAdmin, AuthenticationError, AuthorizationError, ResourceNotFoundError, AuthErrorType } from "@/lib/auth";
 import * as Sentry from "@sentry/nextjs";
-import { UserRole } from "@/lib/auth/types";
+import { UserRole, AuthObject } from "@/lib/auth/types";
 import { z } from "zod";
-import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
 import { logger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
@@ -22,27 +21,23 @@ const sessionTypeUpdateSchema = z.object({
 });
 
 // GET /api/admin/session-types/[id] - Get a specific session type
-// Updated to use Express SDK with admin role check
 export const GET = withAdmin(async (
   req: NextRequest,
-  auth: { userId: string; roles: UserRole[] },
-  { params }: { params: { id: string } }
+  context: { params: { id: string } },
+  auth: AuthObject
 ) => {
-  const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
-  const { userId, roles } = auth;
-  const id = params.id;
+  const id = context.params.id;
 
   try {
     logger.info('Admin session type request received', {
       path,
       method,
-      userId,
+      userId: auth.userId,
       sessionTypeId: id
     });
     
-    // Fetch the session type
     const sessionType = await prisma.sessionType.findUnique({
       where: { id },
     });
@@ -52,20 +47,12 @@ export const GET = withAdmin(async (
         sessionTypeId: id,
         path,
         method,
-        userId
+        userId: auth.userId
       });
-      
-      return createAuthErrorResponse(
-        'RESOURCE_NOT_FOUND',
-        'Session type not found',
-        404,
-        path,
-        method,
-        userId
-      );
+      const notFoundError = new ResourceNotFoundError('Session type not found');
+      return NextResponse.json({ message: notFoundError.message }, { status: notFoundError.statusCode });
     }
     
-    // Convert Decimal to number for JSON serialization
     const serializedSessionType = {
       ...sessionType,
       price: Number(sessionType.price),
@@ -76,72 +63,53 @@ export const GET = withAdmin(async (
       builderId: sessionType.builderId,
       path,
       method,
-      userId,
-      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+      userId: auth.userId,
     });
 
-    // Create response with standardized format
-    const response = NextResponse.json({ 
+    return NextResponse.json({ 
       success: true,
       data: serializedSessionType 
     });
 
-    // Add performance metrics to the response
-    return addAuthPerformanceMetrics(
-      response, 
-      startTime, 
-      true, 
-      path, 
-      method, 
-      userId
-    );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    
+    Sentry.captureException(error);
     logger.error('Error fetching session type', {
-      error: errorMessage,
+      error: error instanceof Error ? error.message : String(error),
       sessionTypeId: id,
       path,
       method,
-      userId,
-      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+      userId: auth.userId,
     });
+        
+    if (error instanceof AuthenticationError || error instanceof AuthorizationError) {
+      return NextResponse.json({ message: error.message }, { status: error.statusCode });
+    }
     
-    Sentry.captureException(error);
-    
-    return createAuthErrorResponse(
-      AuthErrorType.SERVER,
-      'Failed to fetch session type',
-      500,
-      path,
-      method,
-      userId
+    return NextResponse.json(
+      { message: 'Failed to fetch session type' }, 
+      { status: 500 }
     );
   }
 });
 
 // PUT /api/admin/session-types/[id] - Update a session type
-// Updated to use Express SDK with admin role check
 export const PUT = withAdmin(async (
   req: NextRequest,
-  auth: { userId: string; roles: UserRole[] },
-  { params }: { params: { id: string } }
+  context: { params: { id: string } },
+  auth: AuthObject
 ) => {
-  const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
-  const { userId, roles } = auth;
-  const id = params.id;
+  const id = context.params.id;
 
   try {
     logger.info('Admin session type update request received', {
       path,
       method,
-      userId,
+      userId: auth.userId,
       sessionTypeId: id
     });
     
-    // Check if session type exists
     const existingSessionType = await prisma.sessionType.findUnique({
       where: { id },
     });
@@ -151,233 +119,138 @@ export const PUT = withAdmin(async (
         sessionTypeId: id,
         path,
         method,
-        userId
+        userId: auth.userId
       });
-      
-      return createAuthErrorResponse(
-        'RESOURCE_NOT_FOUND',
-        'Session type not found',
-        404,
-        path,
-        method,
-        userId
-      );
+      const notFoundError = new ResourceNotFoundError('Session type not found for update');
+      return NextResponse.json({ message: notFoundError.message }, { status: notFoundError.statusCode });
     }
-    
-    // Parse request body
+
     const body = await req.json();
-    
-    // Validate with schema
-    const validationResult = sessionTypeUpdateSchema.safeParse(body);
-    if (!validationResult.success) {
+    const validation = sessionTypeUpdateSchema.safeParse(body);
+
+    if (!validation.success) {
       logger.warn('Invalid session type update data', {
-        details: validationResult.error.format(),
         sessionTypeId: id,
         path,
         method,
-        userId
+        userId: auth.userId,
+        errors: validation.error.flatten()
       });
-      
-      return createAuthErrorResponse(
-        'VALIDATION_ERROR',
-        'Invalid session type data',
-        400,
-        path,
-        method,
-        userId
+      return NextResponse.json(
+        { message: 'Invalid request data', errors: validation.error.flatten().fieldErrors }, 
+        { status: 400 }
       );
     }
-    
-    // Update session type
-    const data = validationResult.data;
+
     const updatedSessionType = await prisma.sessionType.update({
       where: { id },
-      data: {
-        ...(data.title && { title: data.title }),
-        ...(data.description && { description: data.description }),
-        ...(data.durationMinutes && { durationMinutes: data.durationMinutes }),
-        ...(data.price !== undefined && { price: data.price }),
-        ...(data.currency && { currency: data.currency }),
-        ...(data.isActive !== undefined && { isActive: data.isActive }),
-        ...(data.color !== undefined && { color: data.color }),
-        ...(data.maxParticipants !== undefined && { maxParticipants: data.maxParticipants }),
-      },
+      data: validation.data,
     });
-    
-    // Convert Decimal to number for JSON serialization
-    const serializedSessionType = {
+
+    const serializedUpdatedSessionType = {
       ...updatedSessionType,
       price: Number(updatedSessionType.price),
     };
-    
+
     logger.info('Session type updated successfully', {
       sessionTypeId: id,
-      builderId: updatedSessionType.builderId,
       path,
       method,
-      userId,
-      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+      userId: auth.userId,
     });
 
-    // Create response with standardized format
-    const response = NextResponse.json({
+    return NextResponse.json({ 
       success: true,
-      message: "Session type updated successfully",
-      data: serializedSessionType,
+      data: serializedUpdatedSessionType 
     });
 
-    // Add performance metrics to the response
-    return addAuthPerformanceMetrics(
-      response, 
-      startTime, 
-      true, 
-      path, 
-      method, 
-      userId
-    );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    
+    Sentry.captureException(error);
     logger.error('Error updating session type', {
-      error: errorMessage,
+      error: error instanceof Error ? error.message : String(error),
       sessionTypeId: id,
       path,
       method,
-      userId,
-      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+      userId: auth.userId,
     });
+
+    if (error instanceof AuthenticationError || error instanceof AuthorizationError) {
+      return NextResponse.json({ message: error.message }, { status: error.statusCode });
+    }
     
-    Sentry.captureException(error);
-    
-    return createAuthErrorResponse(
-      AuthErrorType.SERVER,
-      'Failed to update session type',
-      500,
-      path,
-      method,
-      userId
+    return NextResponse.json(
+      { message: 'Failed to update session type' }, 
+      { status: 500 }
     );
   }
 });
 
 // DELETE /api/admin/session-types/[id] - Delete a session type
-// Updated to use Express SDK with admin role check
 export const DELETE = withAdmin(async (
   req: NextRequest,
-  auth: { userId: string; roles: UserRole[] },
-  { params }: { params: { id: string } }
+  context: { params: { id: string } },
+  auth: AuthObject
 ) => {
-  const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
-  const { userId, roles } = auth;
-  const id = params.id;
+  const id = context.params.id;
 
   try {
-    logger.info('Admin session type deletion request received', {
+    logger.info('Admin session type delete request received', {
       path,
       method,
-      userId,
+      userId: auth.userId,
       sessionTypeId: id
     });
     
-    // Check if session type exists
     const existingSessionType = await prisma.sessionType.findUnique({
       where: { id },
     });
     
     if (!existingSessionType) {
-      logger.warn('Session type not found for deletion', {
+      logger.warn('Session type not found for delete', {
         sessionTypeId: id,
         path,
         method,
-        userId
+        userId: auth.userId
       });
-      
-      return createAuthErrorResponse(
-        'RESOURCE_NOT_FOUND',
-        'Session type not found',
-        404,
-        path,
-        method,
-        userId
-      );
+      const notFoundError = new ResourceNotFoundError('Session type not found for delete');
+      return NextResponse.json({ message: notFoundError.message }, { status: notFoundError.statusCode });
     }
-    
-    // Check if session type has any bookings
-    const bookingsCount = await prisma.booking.count({
-      where: { sessionTypeId: id },
-    });
-    
-    if (bookingsCount > 0) {
-      logger.warn('Cannot delete session type with existing bookings', {
-        sessionTypeId: id,
-        bookingsCount,
-        path,
-        method,
-        userId
-      });
-      
-      return createAuthErrorResponse(
-        'VALIDATION_ERROR',
-        'Cannot delete session type with existing bookings',
-        400,
-        path,
-        method,
-        userId
-      );
-    }
-    
-    // Delete session type
+
     await prisma.sessionType.delete({
       where: { id },
     });
-    
+
     logger.info('Session type deleted successfully', {
       sessionTypeId: id,
-      builderId: existingSessionType.builderId,
       path,
       method,
-      userId,
-      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+      userId: auth.userId,
     });
 
-    // Create response with standardized format
-    const response = NextResponse.json({
+    return NextResponse.json({ 
       success: true,
-      message: "Session type deleted successfully",
+      message: 'Session type deleted successfully' 
     });
 
-    // Add performance metrics to the response
-    return addAuthPerformanceMetrics(
-      response, 
-      startTime, 
-      true, 
-      path, 
-      method, 
-      userId
-    );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    
+    Sentry.captureException(error);
     logger.error('Error deleting session type', {
-      error: errorMessage,
+      error: error instanceof Error ? error.message : String(error),
       sessionTypeId: id,
       path,
       method,
-      userId,
-      duration: `${(performance.now() - startTime).toFixed(2)}ms`
+      userId: auth.userId,
     });
+
+    if (error instanceof AuthenticationError || error instanceof AuthorizationError) {
+      return NextResponse.json({ message: error.message }, { status: error.statusCode });
+    }
     
-    Sentry.captureException(error);
-    
-    return createAuthErrorResponse(
-      AuthErrorType.SERVER,
-      'Failed to delete session type',
-      500,
-      path,
-      method,
-      userId
+    return NextResponse.json(
+      { message: 'Failed to delete session type' }, 
+      { status: 500 }
     );
   }
 });

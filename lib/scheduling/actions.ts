@@ -9,7 +9,7 @@
 
 import { z } from 'zod';
 import { logger } from '@/lib/logger';
-import type { SessionType, AvailabilityRule, AvailabilityException, TimeSlot } from './types';
+import type { SessionType, AvailabilityRule, AvailabilityException, TimeSlot, DayOfWeek } from './types';
 
 // Mock session types for development
 const MOCK_SESSION_TYPES: SessionType[] = [
@@ -281,6 +281,7 @@ export async function createAvailabilityRule(data: Omit<AvailabilityRule, 'id' |
     const mockRule: AvailabilityRule = {
       id: `ar_${Date.now()}`,
       ...validatedData,
+      dayOfWeek: validatedData.dayOfWeek as DayOfWeek, // Explicit cast
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };

@@ -13,3 +13,5 @@
 // export async function verifyAuth(token: string): Promise<AuthResponse> {
 //   // Implementation using Clerk verification
 // }
+
+export {}; // Makes this file a module

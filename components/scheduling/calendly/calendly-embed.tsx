@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/core/card'
 import { LoadingSpinner } from '@/components/ui/core/loading-spinner'
 import Script from 'next/script'
+import { CalendlyEvent, CalendlyQuestionAnswer } from './calendly-model'
 
 interface CalendlyEmbedProps {
   url: string;
@@ -32,24 +33,7 @@ interface CalendlyEmbedProps {
   onEventScheduled?: (event: CalendlyEvent) => void;
 }
 
-export interface CalendlyEvent {
-  uri: string;
-  invitee: {
-    uri: string;
-    email: string;
-    name: string;
-  };
-  start_time: string;
-  end_time: string;
-  event_type_uuid: string;
-  questions_and_answers?: CalendlyQuestionAnswer[];
-}
-
-export interface CalendlyQuestionAnswer {
-  question: string;
-  answer: string;
-  position: number;
-}
+// Interface definitions moved to calendly-model.ts
 
 /**
  * Calendly embed component that loads and displays the Calendly scheduling widget
@@ -158,8 +142,6 @@ const CalendlyEmbed: React.FC<CalendlyEmbedProps> = ({
         parentElement: embedRef.current,
         prefill: prefillData,
         utm: utmParamsObject,
-        // Add embed parameters to ensure it shows only the widget
-        embedType: 'Inline',
         hideEventTypeDetails: false,
         hideLandingPageDetails: true,
         hideGdprBanner: true,

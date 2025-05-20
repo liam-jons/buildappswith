@@ -250,7 +250,7 @@ export function verifyWebhookRequest(
  * @param event Webhook event name
  * @param payload Webhook payload
  */
-export function logWebhookEvent(event: string, payload: any): void {
+export function logWebhookEvent(event: string, payload: Record<string, unknown>): void {
   logger.info('Calendly webhook received', {
     event,
     eventType: payload.event_type?.name,

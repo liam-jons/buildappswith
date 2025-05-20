@@ -1,22 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getBookingById, updateBookingStatus, updateBookingPayment } from '@/lib/scheduling/real-data/scheduling-service';
-import { withAuth } from '@/lib/auth/api-auth';
-import { UserRole } from '@/lib/auth/types';
+import { withAuth } from '@/lib/auth';
+import { UserRole, AuthObject } from '@/lib/auth/types';
 import * as Sentry from '@sentry/nextjs';
 import { logger } from '@/lib/logger';
-import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/express/errors';
-import { currentUser } from '@clerk/nextjs/server';
-import { BookingStatus } from '@prisma/client';
+import { addAuthPerformanceMetrics, AuthErrorType, createAuthErrorResponse } from '@/lib/auth/adapters/clerk-express/errors';
+import { BookingStatus, PaymentStatus } from '@prisma/client';
 
 // Validation schema for updating booking status
 const updateStatusSchema = z.object({
-  status: z.enum(['pending', 'confirmed', 'cancelled', 'completed'])
+  status: z.nativeEnum(BookingStatus)
 });
 
 // Validation schema for updating payment status
 const updatePaymentSchema = z.object({
-  paymentStatus: z.enum(['unpaid', 'pending', 'paid', 'failed']),
+  paymentStatus: z.nativeEnum(PaymentStatus),
   paymentId: z.string().optional()
 });
 
@@ -26,22 +25,33 @@ const updatePaymentSchema = z.object({
  */
 export const GET = withAuth(async (
   req: NextRequest,
-  auth: { userId: string },
-  { params }: { params: { bookingId: string } }
+  context: { params?: { bookingId?: string } },
+  auth: AuthObject
 ) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
-  const { userId } = auth;
-  const { bookingId } = params;
+  const bookingId = context.params?.bookingId;
 
   try {
     logger.info('Booking fetch request received', {
       path,
       method,
-      userId,
+      userId: auth.userId,
       bookingId
     });
+
+    if (!bookingId) {
+      logger.warn('Missing bookingId in GET request', { path, method, userId: auth.userId });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION,
+        'Booking ID is required in the path.',
+        400,
+        path,
+        method,
+        auth.userId
+      );
+    }
     
     // Fetch the booking
     const booking = await getBookingById(bookingId);
@@ -50,35 +60,31 @@ export const GET = withAuth(async (
       logger.warn('Booking not found', {
         path,
         method,
-        userId,
+        userId: auth.userId,
         bookingId
       });
       
       return createAuthErrorResponse(
-        'RESOURCE_NOT_FOUND',
+        AuthErrorType.RESOURCE_NOT_FOUND,
         'Booking not found',
         404,
         path,
         method,
-        userId
+        auth.userId
       );
     }
     
-    // Get user roles for authorization
-    const user = await currentUser();
-    const userRoles = user?.publicMetadata?.roles as UserRole[] || [];
-    
     // Authorization check - only allow access to own bookings
     // unless the user is an admin
-    const isAdminUser = Array.isArray(userRoles) && userRoles.includes(UserRole.ADMIN);
-    const isBuilder = userId === booking.builderId;
-    const isClient = userId === booking.clientId;
+    const isAdminUser = Array.isArray(auth.roles) && auth.roles.includes(UserRole.ADMIN);
+    const isBuilder = auth.userId === booking.builderId;
+    const isClient = auth.userId === booking.clientId;
     
     if (!isAdminUser && !isBuilder && !isClient) {
       logger.warn('Unauthorized booking access attempt', {
         path,
         method,
-        userId,
+        userId: auth.userId,
         bookingId,
         builderId: booking.builderId,
         clientId: booking.clientId
@@ -90,14 +96,14 @@ export const GET = withAuth(async (
         403,
         path,
         method,
-        userId
+        auth.userId
       );
     }
     
     logger.info('Booking retrieved successfully', {
       path,
       method,
-      userId,
+      userId: auth.userId,
       bookingId,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`
     });
@@ -115,7 +121,7 @@ export const GET = withAuth(async (
       true, 
       path, 
       method, 
-      userId
+      auth.userId
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -124,7 +130,7 @@ export const GET = withAuth(async (
       error: errorMessage,
       path,
       method,
-      userId,
+      userId: auth.userId,
       bookingId,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`
     });
@@ -137,7 +143,7 @@ export const GET = withAuth(async (
       500,
       path,
       method,
-      userId
+      auth.userId
     );
   }
 });
@@ -148,22 +154,33 @@ export const GET = withAuth(async (
  */
 export const PATCH = withAuth(async (
   req: NextRequest,
-  auth: { userId: string },
-  { params }: { params: { bookingId: string } }
+  context: { params?: { bookingId?: string } },
+  auth: AuthObject
 ) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
-  const { userId } = auth;
-  const { bookingId } = params;
+  const bookingId = context.params?.bookingId;
 
   try {
     logger.info('Booking update request received', {
       path,
       method,
-      userId,
+      userId: auth.userId,
       bookingId
     });
+
+    if (!bookingId) {
+      logger.warn('Missing bookingId in PATCH request', { path, method, userId: auth.userId });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION,
+        'Booking ID is required in the path.',
+        400,
+        path,
+        method,
+        auth.userId
+      );
+    }
     
     // Fetch the booking first to check permissions
     const existingBooking = await getBookingById(bookingId);
@@ -172,34 +189,30 @@ export const PATCH = withAuth(async (
       logger.warn('Booking not found for update', {
         path,
         method,
-        userId,
+        userId: auth.userId,
         bookingId
       });
       
       return createAuthErrorResponse(
-        'RESOURCE_NOT_FOUND',
+        AuthErrorType.RESOURCE_NOT_FOUND,
         'Booking not found',
         404,
         path,
         method,
-        userId
+        auth.userId
       );
     }
-    
-    // Get user roles for authorization
-    const user = await currentUser();
-    const userRoles = user?.publicMetadata?.roles as UserRole[] || [];
-    
+        
     // Authorization check
-    const isAdminUser = Array.isArray(userRoles) && userRoles.includes(UserRole.ADMIN);
-    const isBuilder = userId === existingBooking.builderId;
-    const isClient = userId === existingBooking.clientId;
+    const isAdminUser = Array.isArray(auth.roles) && auth.roles.includes(UserRole.ADMIN);
+    const isBuilder = auth.userId === existingBooking.builderId;
+    const isClient = auth.userId === existingBooking.clientId;
     
     if (!isAdminUser && !isBuilder && !isClient) {
       logger.warn('Unauthorized booking update attempt', {
         path,
         method,
-        userId,
+        userId: auth.userId,
         bookingId,
         builderId: existingBooking.builderId,
         clientId: existingBooking.clientId
@@ -211,7 +224,7 @@ export const PATCH = withAuth(async (
         403,
         path,
         method,
-        userId
+        auth.userId
       );
     }
     
@@ -222,73 +235,44 @@ export const PATCH = withAuth(async (
     if ('status' in body) {
       // Validate status update
       const result = updateStatusSchema.safeParse(body);
-      
       if (!result.success) {
-        logger.warn('Invalid booking status data', {
+        logger.warn('Invalid booking status update data', {
           path,
           method,
-          userId,
+          userId: auth.userId,
           bookingId,
-          validationErrors: result.error.format()
+          errors: result.error.format()
         });
-        
         return createAuthErrorResponse(
           AuthErrorType.VALIDATION,
-          'Invalid status data',
+          'Invalid booking status data',
           400,
           path,
           method,
-          userId
+          auth.userId
         );
       }
       
-      // Only builders can confirm bookings
-      // Only the user who created the booking can cancel it
-      if (result.data.status === 'confirmed' && !isBuilder && !isAdminUser) {
-        logger.warn('Non-builder attempted to confirm booking', {
-          path,
-          method,
-          userId,
-          bookingId,
-          builderId: existingBooking.builderId
+      // Permission checks for status updates
+      // Clients can cancel bookings, builders/admins can change to any valid status
+      if (result.data.status === BookingStatus.CANCELLED && !isClient && !isBuilder && !isAdminUser) {
+        logger.warn('Unauthorized attempt to cancel booking by non-participant/admin', {
+            path, method, userId: auth.userId, bookingId, requestedStatus: result.data.status
         });
-        
-        return createAuthErrorResponse(
-          AuthErrorType.AUTHORIZATION,
-          'Only builders can confirm bookings',
-          403,
-          path,
-          method,
-          userId
-        );
-      }
-      
-      const statusMap: { [key: string]: BookingStatus } = {
-        'pending': BookingStatus.PENDING,
-        'confirmed': BookingStatus.CONFIRMED,
-        'cancelled': BookingStatus.CANCELLED,
-        'completed': BookingStatus.COMPLETED,
-      };
-      const enumStatus = statusMap[result.data.status];
-
-      if (!enumStatus) {
-        logger.error('Invalid booking status provided after validation', { status: result.data.status, bookingId, userId });
-        return createAuthErrorResponse(
-          AuthErrorType.VALIDATION,
-          'Invalid booking status provided.',
-          400,
-          path,
-          method,
-          userId
-        );
+        return createAuthErrorResponse(AuthErrorType.AUTHORIZATION, 'Not authorized to cancel this booking', 403, path, method, auth.userId);
+      } else if (result.data.status !== BookingStatus.CANCELLED && !isBuilder && !isAdminUser) {
+        logger.warn('Unauthorized attempt to change booking status by non-builder/admin', {
+            path, method, userId: auth.userId, bookingId, requestedStatus: result.data.status
+        });
+        return createAuthErrorResponse(AuthErrorType.AUTHORIZATION, 'Not authorized to change booking status', 403, path, method, auth.userId);
       }
 
-      const updatedBooking = await updateBookingStatus(bookingId, enumStatus);
+      const updatedBooking = await updateBookingStatus(bookingId, result.data.status);
       
       logger.info('Booking status updated successfully', {
         path,
         method,
-        userId,
+        userId: auth.userId,
         bookingId,
         newStatus: result.data.status,
         duration: `${(performance.now() - startTime).toFixed(2)}ms`
@@ -307,7 +291,7 @@ export const PATCH = withAuth(async (
         true, 
         path, 
         method, 
-        userId
+        auth.userId
       );
     } else if ('paymentStatus' in body) {
       // Validate payment update
@@ -317,7 +301,7 @@ export const PATCH = withAuth(async (
         logger.warn('Invalid booking payment data', {
           path,
           method,
-          userId,
+          userId: auth.userId,
           bookingId,
           validationErrors: result.error.format()
         });
@@ -328,7 +312,7 @@ export const PATCH = withAuth(async (
           400,
           path,
           method,
-          userId
+          auth.userId
         );
       }
       
@@ -337,7 +321,7 @@ export const PATCH = withAuth(async (
         logger.warn('Unauthorized booking payment update attempt', {
           path,
           method,
-          userId,
+          userId: auth.userId,
           bookingId,
           builderId: existingBooking.builderId
         });
@@ -348,7 +332,7 @@ export const PATCH = withAuth(async (
           403,
           path,
           method,
-          userId
+          auth.userId
         );
       }
       
@@ -362,7 +346,7 @@ export const PATCH = withAuth(async (
       logger.info('Booking payment status updated successfully', {
         path,
         method,
-        userId,
+        userId: auth.userId,
         bookingId,
         newPaymentStatus: result.data.paymentStatus,
         duration: `${(performance.now() - startTime).toFixed(2)}ms`
@@ -381,13 +365,13 @@ export const PATCH = withAuth(async (
         true, 
         path, 
         method, 
-        userId
+        auth.userId
       );
     } else {
       logger.warn('Invalid booking update data', {
         path,
         method,
-        userId,
+        userId: auth.userId,
         bookingId
       });
       
@@ -397,7 +381,7 @@ export const PATCH = withAuth(async (
         400,
         path,
         method,
-        userId
+        auth.userId
       );
     }
   } catch (error) {
@@ -407,7 +391,7 @@ export const PATCH = withAuth(async (
       error: errorMessage,
       path,
       method,
-      userId,
+      userId: auth.userId,
       bookingId,
       duration: `${(performance.now() - startTime).toFixed(2)}ms`
     });
@@ -420,7 +404,7 @@ export const PATCH = withAuth(async (
       500,
       path,
       method,
-      userId
+      auth.userId
     );
   }
 });

@@ -7,6 +7,7 @@
 import { Stripe } from "stripe";
 import { logger } from "@/lib/logger";
 import { updateBookingPayment, updateBookingStatus, getBookingById } from "../scheduling/real-data/scheduling-service";
+import { BookingStatus as PrismaBookingStatus, PaymentStatus as PrismaPaymentStatus } from '@prisma/client';
 
 // Stripe error type classification
 export enum StripeErrorType {
@@ -56,6 +57,9 @@ export interface BookingCheckoutParams {
   cancelUrl: string;
   currency?: string;
   bookingId?: string;
+  metadata?: Record<string, any>;
+  paymentOption?: string;
+  clientName?: string | null;
 }
 
 // Initialize Stripe with proper typing
@@ -107,7 +111,7 @@ export function createStripeClient(): Stripe | null {
  * @param logContext - Additional context for logging
  * @returns Standardized error object
  */
-function handleStripeError(error: any, logContext: Record<string, any> = {}): {
+export function handleStripeError(error: any, logContext: Record<string, any> = {}): {
   type: StripeErrorType;
   code?: string;
   detail?: string;
@@ -345,7 +349,7 @@ export async function createBookingCheckoutSession(
       try {
         await updateBookingPayment(
           bookingId,
-          'pending',
+          PrismaPaymentStatus.UNPAID,
           session.id
         );
         
@@ -519,14 +523,14 @@ export async function handleWebhookEvent(
             // Update the booking payment status
             await updateBookingPayment(
               bookingId,
-              'paid',
+              PrismaPaymentStatus.PAID,
               sessionId
             );
             
             // Update the booking status to confirmed
             await updateBookingStatus(
               bookingId,
-              'confirmed'
+              PrismaBookingStatus.CONFIRMED
             );
             
             logger.info('Updated booking status for completed payment', {
@@ -542,12 +546,13 @@ export async function handleWebhookEvent(
               error: dbError
             });
             
+            const detailMessage = dbError instanceof Error ? dbError.message : 'Unknown database error while updating booking.';
             return {
               success: false,
               message: 'Failed to update booking for completed payment',
               error: {
                 type: StripeErrorType.UNKNOWN,
-                detail: `Database error: ${dbError.message}`
+                detail: `Database error: ${detailMessage}`
               }
             };
           }
@@ -579,14 +584,14 @@ export async function handleWebhookEvent(
             // Update the booking payment status
             await updateBookingPayment(
               bookingId,
-              'failed',
+              PrismaPaymentStatus.UNPAID,
               sessionId
             );
             
             logger.info('Updated booking for failed payment', {
               ...logContext,
               bookingId,
-              paymentStatus: 'failed'
+              paymentStatus: 'unpaid'
             });
           } catch (dbError) {
             logger.error('Failed to update booking for failed payment', {
@@ -595,12 +600,13 @@ export async function handleWebhookEvent(
               error: dbError
             });
             
+            const detailMessage = dbError instanceof Error ? dbError.message : 'Unknown database error while updating booking for failed payment.';
             return {
               success: false,
               message: 'Failed to update booking for failed payment',
               error: {
                 type: StripeErrorType.UNKNOWN,
-                detail: `Database error: ${dbError.message}`
+                detail: `Database error: ${detailMessage}`
               }
             };
           }

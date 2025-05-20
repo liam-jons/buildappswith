@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 import { transitionBooking, getBookingState } from '@/lib/scheduling/state-machine';
-import { getCurrentUser } from '@/lib/auth/api-auth';
+import { withAuth } from '@/lib/auth';
+import { UserRole, AuthObject } from '@/lib/auth/types';
+import { AuthErrorType, createAuthErrorResponse, addAuthPerformanceMetrics } from '@/lib/auth/adapters/clerk-express/errors';
+import * as Sentry from '@sentry/nextjs';
 import { BookingEventEnum } from '@/lib/scheduling/state-machine/types';
 import { z } from 'zod';
 
@@ -16,90 +19,127 @@ const TransitionRequestSchema = z.object({
  * 
  * This endpoint transitions a booking to a new state based on an event.
  */
-export async function POST(
+export const POST = withAuth(async (
   req: NextRequest,
-  { params }: { params: { bookingId: string } }
-) {
+  context: { params?: { bookingId?: string } }, 
+  auth: AuthObject
+) => {
+  const startTime = performance.now();
+  const path = req.nextUrl.pathname;
+  const method = req.method;
+  const bookingId = context.params?.bookingId;
+
   try {
-    const { bookingId } = params;
     if (!bookingId) {
-      return NextResponse.json({ error: 'Booking ID is required' }, { status: 400 });
+      logger.warn('Missing bookingId for transition POST', { userId: auth.userId, path, method });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION,
+        'Booking ID is required',
+        400,
+        path,
+        method,
+        auth.userId
+      );
     }
     
-    // Get current user
-    const user = await getCurrentUser();
-    if (!user) {
-      logger.warn('Unauthorized user attempted to transition booking', { bookingId });
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    
-    // Get current booking state
+    // Get current booking state to check permissions and for context
     const bookingContext = await getBookingState(bookingId);
     if (!bookingContext) {
-      logger.error('Booking not found for transition', { bookingId });
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      logger.warn('Booking not found for transition', { bookingId, userId: auth.userId, path, method });
+      return createAuthErrorResponse(
+        AuthErrorType.RESOURCE_NOT_FOUND,
+        'Booking not found',
+        404,
+        path,
+        method,
+        auth.userId
+      );
     }
     
     // Verify user has permission to update this booking
-    // In a real application, you would check if the user is the client, builder,
-    // or has admin permissions
-    const hasPermission = true; // Simplified for now
+    const isAdmin = auth.roles.includes(UserRole.ADMIN);
+    const isClientOfBooking = auth.userId === bookingContext.stateData.clientId;
+    const isBuilderOfBooking = auth.userId === bookingContext.stateData.builderId;
+    
+    const hasPermission = isAdmin || isClientOfBooking || isBuilderOfBooking;
     
     if (!hasPermission) {
       logger.warn('User has no permission to transition booking', {
         bookingId,
-        userId: user.id
+        userId: auth.userId,
+        userRoles: auth.roles,
+        bookingClientId: bookingContext.stateData.clientId,
+        bookingBuilderId: bookingContext.stateData.builderId,
+        path,
+        method
       });
-      return NextResponse.json({ error: 'Permission denied' }, { status: 403 });
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHORIZATION,
+        'Permission denied to transition this booking',
+        403,
+        path,
+        method,
+        auth.userId
+      );
     }
     
     // Parse request body
     const body = await req.json();
-    
-    try {
-      const { event, data } = TransitionRequestSchema.parse(body);
-      
-      // Execute the state transition
-      const transitionResult = await transitionBooking(bookingId, event, data);
-      
-      logger.info('Booking state transitioned', {
-        bookingId,
-        previousState: transitionResult.previousState,
-        currentState: transitionResult.currentState,
-        event,
-        userId: user.id
-      });
-      
-      return NextResponse.json({
-        success: transitionResult.success,
-        previousState: transitionResult.previousState,
-        currentState: transitionResult.currentState,
-        timestamp: transitionResult.timestamp,
-        event: transitionResult.event
-      });
-      
-    } catch (validationError) {
-      logger.error('Validation error when transitioning booking', {
-        error: validationError,
-        bookingId,
-        userId: user.id
-      });
-      
-      return NextResponse.json(
-        { error: 'Invalid request data', details: validationError },
-        { status: 400 }
+    const parseResult = TransitionRequestSchema.safeParse(body);
+
+    if (!parseResult.success) {
+      logger.warn('Invalid request body for transition POST', { userId: auth.userId, bookingId, path, method, errors: parseResult.error.format() });
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION,
+        'Invalid request data',
+        400,
+        path,
+        method,
+        auth.userId
       );
     }
-    
-  } catch (error) {
-    logger.error('Error transitioning booking', {
-      error: error instanceof Error ? error.message : String(error),
-      bookingId: params.bookingId
+      
+    const { event, data } = parseResult.data;
+      
+    // Execute the state transition
+    const transitionResult = await transitionBooking(bookingId, event, data);
+      
+    logger.info('Booking state transitioned', {
+      bookingId,
+      previousState: transitionResult.previousState,
+      currentState: transitionResult.currentState,
+      event,
+      userId: auth.userId,
+      path,
+      method
     });
-    
-    return NextResponse.json(
-      { error: 'Failed to transition booking' },
-      { status: 500 }
+      
+    const response = NextResponse.json({
+      success: transitionResult.success,
+      previousState: transitionResult.previousState,
+      currentState: transitionResult.currentState,
+      timestamp: transitionResult.timestamp,
+      event: transitionResult.event
+    });
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
+        
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error('Error transitioning booking', {
+      error: errorMessage,
+      bookingId: context.params?.bookingId, 
+      userId: auth.userId,
+      path,
+      method
+    });
+    Sentry.captureException(error);
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      'Failed to transition booking',
+      500,
+      path,
+      method,
+      auth.userId
     );
   }
-}
+});

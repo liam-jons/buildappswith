@@ -11,7 +11,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/auth';
+import { useAuth, UserRole } from '@/lib/auth';
 import { Button } from '@/components/ui/core/button';
 import { ProfileHeader } from './ui/profile-header';
 import { ProfileDetails } from './ui/profile-details';
@@ -28,7 +28,7 @@ export function UserProfile({ profile, isCurrentUser = false }: UserProfileProps
   const [isEditing, setIsEditing] = useState(false);
   
   // Determine if the user can edit this profile
-  const canEdit = isCurrentUser || (isSignedIn && hasRole('ADMIN'));
+  const canEdit = isCurrentUser || (isSignedIn && hasRole(UserRole.ADMIN));
   
   // Handle edit button click
   const handleEditClick = () => {

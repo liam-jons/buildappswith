@@ -123,7 +123,9 @@ export async function trackAuthOperation<T>(
     }
     
     // Finish the span
-    finishAuthSpan(spanId, true);
+    if (spanId) {
+      finishAuthSpan(spanId as string, true);
+    }
     
     return result;
   } catch (error) {
@@ -141,7 +143,9 @@ export async function trackAuthOperation<T>(
     });
     
     // Finish the span with error
-    finishAuthSpan(spanId, false, errorMessage);
+    if (spanId) {
+      finishAuthSpan(spanId as string, false, errorMessage);
+    }
     
     // Re-throw the error
     throw error;
@@ -201,7 +205,9 @@ export function trackRoleCheck(
     }
     
     // Finish the span
-    finishAuthSpan(spanId, hasRequiredRole);
+    if (spanId) {
+      finishAuthSpan(spanId as string, hasRequiredRole);
+    }
     
     return hasRequiredRole;
   } catch (error) {
@@ -220,7 +226,9 @@ export function trackRoleCheck(
     });
     
     // Finish the span with error
-    finishAuthSpan(spanId, false, errorMessage);
+    if (spanId) {
+      finishAuthSpan(spanId as string, false, errorMessage);
+    }
     
     // Default to false on error
     return false;
@@ -275,7 +283,9 @@ export function trackPermissionCheck(
     }
     
     // Finish the span
-    finishAuthSpan(spanId, hasPermission);
+    if (spanId) {
+      finishAuthSpan(spanId as string, hasPermission);
+    }
     
     return hasPermission;
   } catch (error) {
@@ -293,7 +303,9 @@ export function trackPermissionCheck(
     });
     
     // Finish the span with error
-    finishAuthSpan(spanId, false, errorMessage);
+    if (spanId) {
+      finishAuthSpan(spanId as string, false, errorMessage);
+    }
     
     // Default to false on error
     return false;

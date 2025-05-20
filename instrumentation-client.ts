@@ -47,13 +47,12 @@ async function initializeSentry() {
 
     // Dynamically add integrations after initialization
     try {
-      // Load browser tracing integration separately
-      const SentryIntegrations = await import('@sentry/nextjs');
-      if (SentryIntegrations.BrowserTracing) {
-        Sentry.addIntegration(new SentryIntegrations.BrowserTracing());
-      }
+      // Dynamically add BrowserTracing integration
+      // Sentry object is already imported from the initializeSentry function scope
+      const browserTracing = Sentry.browserTracingIntegration();
+      Sentry.addIntegration(browserTracing);
     } catch (err) {
-      console.warn('Failed to add Sentry integrations:', err);
+      console.warn('Failed to add Sentry BrowserTracing integration:', err);
     }
 
     console.debug('Sentry client monitoring initialized');
@@ -75,8 +74,13 @@ async function initializeDatadog() {
   }
 }
 
+interface RouterTransitionContext {
+  pathname: string;
+  previousPathname?: string;
+}
+
 // Router transition handlers with dynamic imports
-export const onRouterTransitionStart = async (context) => {
+export const onRouterTransitionStart = async (context: RouterTransitionContext) => {
   if (typeof window === 'undefined' ||
       process.env.NODE_ENV !== 'production' ||
       !process.env.NEXT_PUBLIC_SENTRY_DSN) {
@@ -85,7 +89,7 @@ export const onRouterTransitionStart = async (context) => {
 
   try {
     const Sentry = await import('@sentry/nextjs');
-    Sentry.startTransaction({
+    (Sentry as any).startTransaction({
       name: `Route Navigation: ${context.pathname}`,
       op: 'navigation',
       data: {
@@ -100,7 +104,7 @@ export const onRouterTransitionStart = async (context) => {
   return undefined;
 };
 
-export const onRouterTransitionComplete = async (context) => {
+export const onRouterTransitionComplete = async (context: RouterTransitionContext) => {
   if (typeof window === 'undefined' ||
       process.env.NODE_ENV !== 'production' ||
       !process.env.NEXT_PUBLIC_SENTRY_DSN) {
@@ -109,7 +113,7 @@ export const onRouterTransitionComplete = async (context) => {
 
   try {
     const Sentry = await import('@sentry/nextjs');
-    const activeTransaction = Sentry.getCurrentHub().getScope()?.getTransaction();
+    const activeTransaction = (Sentry as any).getCurrentHub().getScope()?.getTransaction();
 
     if (activeTransaction) {
       activeTransaction.finish();

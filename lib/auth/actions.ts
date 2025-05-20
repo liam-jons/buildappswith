@@ -6,9 +6,10 @@
  */
 
 import { clerkClient, currentUser } from '@clerk/nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
-import { UserRole, AuthResponse } from '@/lib/auth/types';
+import { UserRole, AuthResponse, AuthErrorType, AuthUser } from '@/lib/auth/types';
 import { createAuditLog, ensureProfilesForUser } from '@/lib/profile/data-service';
 
 /**
@@ -28,49 +29,76 @@ export async function getCurrentUserId(): Promise<string | null> {
 }
 
 /**
- * Get the current user from Clerk and database
+ * Get the current user from Clerk and database, ensuring they exist in the DB.
+ * Returns a fully resolved AuthUser profile or null if not authenticated or error.
  */
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<AuthUser | null> {
   try {
-    // Get the Clerk user
-    const user = await currentUser();
-    
-    if (!user) {
+    const clerkUser = await currentUser();
+    if (!clerkUser) {
       return null;
     }
-    
-    // Get the database user
-    const dbUser = await db.user.findUnique({
-      where: { clerkId: user.id },
-      include: {
-        builderProfile: true,
-        clientProfile: true
-      }
+
+    const primaryEmailObject = clerkUser.emailAddresses.find(e => e.id === clerkUser.primaryEmailAddressId);
+    if (!primaryEmailObject?.emailAddress) {
+        logger.warn('Primary email not found for Clerk user', { clerkId: clerkUser.id });
+        // Depending on requirements, might Sentry log this or throw, for now, return null
+        return null; 
+    }
+    const primaryEmail = primaryEmailObject.emailAddress;
+
+    // Ensure user exists in DB and get their DB record from findOrCreateUser
+    // This step guarantees the user is in our DB.
+    await findOrCreateUser(
+      clerkUser.id,
+      `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || primaryEmail.split('@')[0], 
+      primaryEmail,
+      clerkUser.imageUrl
+    );
+
+    // Now fetch the user from DB with all necessary includes (profiles)
+    const dbUserWithProfiles = await db.user.findUnique({
+        where: { clerkId: clerkUser.id },
+        include: {
+            builderProfile: true,
+            clientProfile: true,
+        },
     });
-    
-    if (!dbUser) {
-      logger.warn('User found in Clerk but not in database', { clerkId: user.id });
-      return null;
+
+    if (!dbUserWithProfiles) {
+        // This case should be rare if findOrCreateUser succeeded and didn't throw.
+        logger.error('DB user not found after findOrCreateUser call in getCurrentUser', { clerkId: clerkUser.id });
+        Sentry.captureMessage(`DB user not found after findOrCreateUser for clerkId: ${clerkUser.id} in getCurrentUser`);
+        return null;
     }
-    
-    // Combine Clerk and database data
+
+    // Combine Clerk and database data into AuthUser structure
     return {
-      id: dbUser.id,
-      clerkId: user.id,
-      name: dbUser.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-      email: dbUser.email,
-      imageUrl: dbUser.imageUrl || user.imageUrl,
-      roles: dbUser.roles,
-      isAdmin: dbUser.roles.includes(UserRole.ADMIN),
-      isBuilder: dbUser.roles.includes(UserRole.BUILDER),
-      isClient: dbUser.roles.includes(UserRole.CLIENT),
-      builderProfile: dbUser.builderProfile,
-      clientProfile: dbUser.clientProfile
+      id: dbUserWithProfiles.id,
+      clerkId: clerkUser.id,
+      name: dbUserWithProfiles.name, 
+      email: dbUserWithProfiles.email, 
+      imageUrl: dbUserWithProfiles.imageUrl ?? clerkUser.imageUrl, 
+      roles: dbUserWithProfiles.roles as UserRole[], 
+      verified: primaryEmailObject.verification?.status === 'verified' || dbUserWithProfiles.verified,
+      stripeCustomerId: dbUserWithProfiles.stripeCustomerId,
+      // Ensure all other AuthUser fields are populated if necessary
+      // For now, assuming AuthUser matches this structure based on previous definitions
+      // isFounder, isDemo etc., are part of dbUserWithProfiles if in schema
+      isFounder: dbUserWithProfiles.isFounder,
+      isDemo: dbUserWithProfiles.isDemo,
+      // builderProfile & clientProfile are part of dbUserWithProfiles and implicitly part of AuthUser if extended
+      // The AuthUser interface itself doesn't list builderProfile/clientProfile explicitly
+      // Let's assume they are not part of the core AuthUser for now, to match its definition in types.ts
     };
+
   } catch (error) {
-    logger.error('Error getting current user', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('Error in getCurrentUser (actions.ts)', { 
+      source: 'getCurrentUser-actions',
+      error: error instanceof Error ? error.message : 'Unknown error', 
+      stack: error instanceof Error ? error.stack : undefined
     });
+    Sentry.captureException(error, { extra: { source: 'getCurrentUser-actions' } });
     return null;
   }
 }
@@ -85,24 +113,22 @@ export async function addRoleToUser(userId: string, role: UserRole): Promise<Aut
       where: { id: userId }
     });
     
-    if (!user) {
-      return { 
-        success: false, 
-        message: 'User not found' 
+    if (!user) throw new Error('User not found');
+
+    // Ensure roles are consistently UserRole[] before Set operations
+    const existingDbRoles = user.roles.map(r => r as UserRole); // Map Prisma roles to custom UserRole
+    if (existingDbRoles.includes(role)) {
+      // Role already exists, no action needed
+      logger.debug('Role already exists for user', { userId, role });
+      return {
+        success: true,
+        message: 'Role already exists'
       };
     }
-    
-    // Check if user already has the role
-    if (user.roles.includes(role)) {
-      return { 
-        success: true, 
-        message: 'User already has this role' 
-      };
-    }
-    
+
     // Add the role
-    const newRoles = [...user.roles, role];
-    
+    const newRoles = Array.from(new Set([...existingDbRoles, role]));
+
     // Update the user in the database
     await db.user.update({
       where: { id: userId },
@@ -147,7 +173,7 @@ export async function addRoleToUser(userId: string, role: UserRole): Promise<Aut
       success: false, 
       message: 'Error adding role to user',
       error: {
-        type: 'SERVER_ERROR',
+        type: AuthErrorType.SERVER_ERROR, // Use enum member
         message: error instanceof Error ? error.message : 'Unknown error'
       }
     };
@@ -235,7 +261,7 @@ export async function removeRoleFromUser(userId: string, role: UserRole): Promis
       success: false, 
       message: 'Error removing role from user',
       error: {
-        type: 'SERVER_ERROR',
+        type: AuthErrorType.SERVER_ERROR, // Use enum member
         message: error instanceof Error ? error.message : 'Unknown error'
       }
     };
@@ -251,87 +277,45 @@ export async function getUserRoles() {
     // Get current user with detailed data
     const user = await getCurrentUser();
 
-    // Enhanced logging for debugging role issues
-    if (!user) {
-      logger.warn('getUserRoles called but no user found');
-
+    if (!user || !user.roles) {
+      logger.warn('User not found or roles undefined in getUserRoles', { userId: user?.id });
       return {
-        roles: [],
-        primaryRole: null,
-        userId: null,
-        status: 'unauthenticated',
-        debug: { message: 'No authenticated user found' }
+        roles: [UserRole.CLIENT], // Default role
+        primaryRole: UserRole.CLIENT,
+        isStaff: false
       };
     }
 
-    // Check for empty roles array and automatically fix it
-    if (!user.roles || user.roles.length === 0) {
-      logger.warn('User found with empty roles array, attempting to fix', { userId: user.id });
-
-      // Default to CLIENT role if no roles are present
-      const defaultRole = UserRole.CLIENT;
-
-      try {
-        // Attempt to update the user with a default role
-        await db.user.update({
-          where: { id: user.id },
-          data: { roles: [defaultRole] }
-        });
-
-        // Also update Clerk metadata
-        if (user.clerkId) {
-          await clerkClient.users.updateUser(user.clerkId, {
-            publicMetadata: { roles: [defaultRole] }
-          });
-        }
-
-        logger.info('Successfully added default role to user', { userId: user.id, role: defaultRole });
-
-        // Return the updated roles
-        return {
-          roles: [defaultRole],
-          primaryRole: defaultRole,
-          userId: user.id,
-          status: 'fixed',
-          debug: { message: 'User had no roles, assigned default CLIENT role' }
-        };
-      } catch (roleUpdateError) {
-        logger.error('Failed to update user with default role', {
-          userId: user.id,
-          error: roleUpdateError instanceof Error ? roleUpdateError.message : 'Unknown error'
-        });
-      }
-    }
-
     // Determine primary role (prioritize ADMIN > BUILDER > CLIENT)
-    let primaryRole = null;
+    let primaryRole: UserRole = UserRole.CLIENT; // Default to CLIENT
 
-    if (user.roles.includes(UserRole.ADMIN)) {
+    // user.roles should be UserRole[] from getCurrentUser()
+    if (user.roles.some(role => role === UserRole.ADMIN)) {
       primaryRole = UserRole.ADMIN;
-    } else if (user.roles.includes(UserRole.BUILDER)) {
+    } else if (user.roles.some(role => role === UserRole.BUILDER)) {
       primaryRole = UserRole.BUILDER;
-    } else if (user.roles.includes(UserRole.CLIENT)) {
-      primaryRole = UserRole.CLIENT;
     }
+    // No explicit check for CLIENT, as it's the default if not ADMIN or BUILDER
 
     logger.debug('User roles determined successfully', {
       userId: user.id,
-      roles: user.roles,
+      dbRoles: user.roles,
       primaryRole
     });
 
+    // Combine with Clerk roles if necessary (Clerk considered source of truth for current session roles)
+    const clerkUser = await clerkClient.users.getUser(user.id);
+    const clerkRoleData = clerkUser?.publicMetadata?.roles as UserRole[] || [];
+    
+    const allRoles = Array.from(new Set([...(user.roles as UserRole[]), ...clerkRoleData]));
+
     return {
-      roles: user.roles,
+      roles: allRoles,
       primaryRole,
-      userId: user.id,
-      status: 'success',
-      debug: {
-        hasBuilderProfile: Boolean(user.builderProfile),
-        hasClientProfile: Boolean(user.clientProfile)
-      }
+      isStaff: primaryRole === UserRole.ADMIN || primaryRole === UserRole.BUILDER
     };
   } catch (error) {
-    logger.error('Error getting user roles', {
+    logger.error('Error getting user roles', { 
       error: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined
     });
@@ -339,7 +323,7 @@ export async function getUserRoles() {
     return {
       roles: [],
       primaryRole: null,
-      userId: null,
+      isStaff: false,
       status: 'error',
       debug: {
         message: 'Error retrieving user roles',
@@ -372,28 +356,10 @@ export async function syncUserRoles(userId: string): Promise<AuthResponse> {
     // Extract roles from Clerk's public metadata
     const clerkRoles = clerkUser.publicMetadata?.roles as UserRole[] || [];
     
-    // Check if roles are different
-    const dbRolesSet = new Set(user.roles);
-    const clerkRolesSet = new Set(clerkRoles);
-    
-    const rolesEqual = 
-      user.roles.length === clerkRoles.length && 
-      user.roles.every(role => clerkRolesSet.has(role));
-    
-    if (rolesEqual) {
-      return { 
-        success: true, 
-        message: 'Roles are already in sync',
-        data: { roles: user.roles }
-      };
-    }
-    
-    // Determine which roles to use (prefer database roles if they exist)
-    const rolesToUse = user.roles.length > 0 ? user.roles : clerkRoles;
-    
-    // Ensure there's at least one role
-    const finalRoles = rolesToUse.length > 0 ? rolesToUse : [UserRole.CLIENT];
-    
+    // Combine DB roles (mapped) and Clerk roles
+    const mappedDbRoles = user.roles.map(r => r as UserRole); // Map Prisma roles to custom UserRole
+    const finalRoles = Array.from(new Set([...mappedDbRoles, ...clerkRoles]));
+
     // Update in the database
     await db.user.update({
       where: { id: userId },
@@ -434,11 +400,90 @@ export async function syncUserRoles(userId: string): Promise<AuthResponse> {
     
     return { 
       success: false, 
-      message: 'Error synchronizing user roles',
+      message: 'Error syncing user roles',
       error: {
-        type: 'SERVER_ERROR',
+        type: AuthErrorType.SERVER_ERROR, // Use enum member
         message: error instanceof Error ? error.message : 'Unknown error'
       }
     };
+  }
+}
+
+/**
+ * Finds an existing user by clerkId or email, or creates a new one if not found.
+ * Ensures a user record exists in the local database for a given Clerk user.
+ * @param clerkId The Clerk user ID.
+ * @param name The user's full name.
+ * @param email The user's primary email address.
+ * @param imageUrl The user's profile image URL.
+ * @returns The found or created user record from the database.
+ * @throws Throws an error if the operation fails.
+ */
+export async function findOrCreateUser(
+  clerkId: string,
+  name: string,
+  email: string,
+  imageUrl: string | null
+) {
+  try {
+    logger.debug('Attempting to find or create user', { clerkId, email });
+
+    // First, try to find the user by clerkId
+    let user = await db.user.findUnique({
+      where: { clerkId },
+    });
+    logger.debug(user ? 'User found by clerkId' : 'User not found by clerkId', { clerkId });
+
+    // If not found by clerkId, try email
+    if (!user) {
+      logger.debug('Attempting to find user by email', { email });
+      user = await db.user.findUnique({
+        where: { email },
+      });
+
+      // If user exists by email but doesn't have a clerkId, update it
+      if (user && !user.clerkId) {
+        logger.debug('User found by email, updating clerkId', { userId: user.id, clerkId });
+        user = await db.user.update({
+          where: { id: user.id },
+          data: { clerkId },
+        });
+      } else if (user && user.clerkId && user.clerkId !== clerkId) {
+        // Edge case: Email exists with a DIFFERENT clerkId. This might indicate a problem.
+        logger.warn('User found by email, but with a different clerkId. Potential account conflict.', {
+          email, 
+          existingClerkId: user.clerkId, 
+          newClerkId: clerkId 
+        });
+        // Depending on policy, you might throw an error or handle this differently.
+        // For now, we'll proceed assuming the clerkId passed in is the source of truth if user was not found by new clerkId first.
+      }
+    }
+
+    // If user still not found, create a new one
+    if (!user) {
+      logger.debug('User not found by clerkId or email, creating new user', { clerkId, email });
+      user = await db.user.create({
+        data: {
+          clerkId,
+          name,
+          email,
+          imageUrl: imageUrl, // Changed 'image' to 'imageUrl'
+          roles: [UserRole.CLIENT] as any, // Default role, cast to any
+          verified: true, // Assuming Clerk has verified the email
+        },
+      });
+      logger.info('New user created in DB', { userId: user.id, clerkId });
+    }
+
+    return user;
+  } catch (error) {
+    logger.error('Error in findOrCreateUser', { 
+      clerkId, 
+      email, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    });
+    Sentry.captureException(error);
+    throw error; // Re-throw the error to be handled by the caller
   }
 }

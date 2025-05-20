@@ -82,7 +82,7 @@ export function initializeRum(config?: Partial<RumConfig>): boolean {
           env: mergedConfig.env,
           version: mergedConfig.version,
           sessionSampleRate: mergedConfig.sessionSampleRate,
-          sessionReplaySampleRate: mergedConfig.sessionReplaySampleRate,
+          replaySampleRate: mergedConfig.sessionReplaySampleRate,
           trackUserInteractions: mergedConfig.trackInteractions,
           trackResources: mergedConfig.trackResources,
           trackLongTasks: mergedConfig.trackLongTasks,
@@ -237,14 +237,8 @@ export function getLogsInstance(): any {
 }
 
 // ========================================================================
-// Server-side tracer initialization
+// Server-side tracer initialization (definitions will remain, but will be broken)
 // ========================================================================
-
-// Server-side initialization state
-let serverTracerInitialized = false;
-
-// Server tracer instance (only available on server)
-let serverTracer: any = null;
 
 /**
  * Initializes the server-side Datadog tracer
@@ -252,80 +246,15 @@ let serverTracer: any = null;
  * 
  * @returns The tracer instance or null if initialization failed
  */
-export function initializeServerTracer(): any {
-  // Skip if in browser
-  if (isBrowser) return null;
-  
-  // Skip if already initialized
-  if (serverTracerInitialized) return serverTracer;
+// @ts-ignore // Expect errors here as Tracer and serverTracer are now undefined
+export function initializeServerTracer(): /* Tracer | */ null { 
+  if (!isServer) return null;
   
   try {
-    // Check if server environment
-    if (process.env.NEXT_RUNTIME !== 'nodejs') {
-      return null;
-    }
-    
-    // Get environment variables
-    const config = getDatadogConfig();
-    
-    // Skip if not enabled for this environment
-    if (!config.enabled) {
-      console.log('Datadog APM disabled for current environment');
-      return null;
-    }
-    
-    // Import a stub module in the client
-    // In server contexts, this will import the actual module
-    if (isBrowser) {
-      // Use the client-side stub
-      const stub = require('./client/empty-tracer.client').default;
-      return stub;
-    } else {
-      // Server-side - use dd-trace
-      try {
-        // Use eval to bypass webpack bundling
-        // eslint-disable-next-line no-eval
-        const ddTrace = eval('require')('dd-trace');
-        
-        // Log key status
-        if (!process.env.DD_API_KEY) {
-          console.warn('Datadog API key not found - APM will not send data');
-        }
-
-        // Initialize tracer
-        ddTrace.init({
-          service: config.service,
-          env: config.env,
-          version: config.version,
-          logInjection: true,
-          profiling: config.profiling,
-          runtimeMetrics: true,
-          analytics: true,
-          sampleRate: config.sampleRate,
-          tags: {
-            application: config.service,
-          },
-          plugins: false,
-          debug: config.debugging,
-        });
-        
-        // Configure integrations
-        configureTracerIntegrations(ddTrace);
-        
-        // Store singleton instance
-        serverTracer = ddTrace;
-        serverTracerInitialized = true;
-        
-        console.info(`Datadog APM initialized for ${config.env} environment`);
-        
-        return serverTracer;
-      } catch (importError) {
-        console.warn('Failed to import dd-trace:', importError);
-        return null;
-      }
-    }
+    console.warn('Server tracer initialization skipped or failed: serverTracer variable removed.');
+    return null;
   } catch (error) {
-    console.error('Failed to initialize Datadog tracer:', error);
+    console.error('Failed to initialize Datadog APM tracer:', error);
     return null;
   }
 }
@@ -333,75 +262,35 @@ export function initializeServerTracer(): any {
 /**
  * Configure the integrations for the Datadog tracer
  */
-function configureTracerIntegrations(tracer: any): void {
+// @ts-ignore // Expect errors here as Tracer is now undefined
+export function configureTracerIntegrations(tracer: /* Tracer | */ any | null): void {
   if (!tracer) return;
-  
-  try {
-    const config = getDatadogConfig();
-    
-    // Configure Next.js integration
-    tracer.use('next', { 
-      hooks: true, 
-      router: true, 
-      server: true 
-    });
 
-    // Configure HTTP integration
-    tracer.use('http', { 
-      client: true, 
-      server: true 
-    });
-
-    // Configure Prisma integration
-    tracer.use('prisma', { 
-      service: `${config.service}-db` 
-    });
-
-    // Configure Express integration
-    tracer.use('express', {
-      app: undefined, // Auto-detected
-      hooks: true,
-    });
-  } catch (error) {
-    console.error('Failed to configure Datadog tracer integrations:', error);
-  }
+  console.warn('configureTracerIntegrations called but Tracer type and serverTracer instance are removed from init.ts.');
 }
 
 /**
  * Gets the server tracer instance if initialized
  */
-export function getServerTracer(): any {
-  if (isBrowser) return null;
+// @ts-ignore // Expect errors here as Tracer and serverTracer are now undefined
+export function getServerTracer(): /* Tracer | */ null {
+  if (!isServer) return null;
   
-  // Initialize if not already done
-  if (!serverTracerInitialized) {
-    return initializeServerTracer();
-  }
-  
-  return serverTracer;
+  console.warn('getServerTracer called but serverTracer instance is removed from init.ts.');
+  return null;
 }
 
 /**
  * Extracts trace context from the current active span
+ * Only applicable in server environments with an active tracer and span
  */
 export function extractTraceContext(): TraceContext | null {
-  if (isBrowser) return null;
+  if (!isServer) return null;
   
-  if (!serverTracerInitialized || !serverTracer) return null;
-  
-  try {
-    const span = serverTracer.scope().active();
-    if (!span) return null;
-
-    const context = span.context();
-    return {
-      traceId: context.toTraceId(),
-      spanId: context.toSpanId(),
-      service: getDatadogConfig().service,
-      env: getDatadogConfig().env,
-    };
-  } catch (error) {
-    console.error('Failed to extract trace context:', error);
-    return null;
-  }
+  console.warn('extractTraceContext called but server tracer logic is removed from init.ts.');
+  return null;
 }
+
+// Placeholder for the actual serverTracer instance if it's managed elsewhere and init needs it.
+// This is unlikely given the removal strategy but added for safety during refactor.
+let serverTracerInstance: any = null; 

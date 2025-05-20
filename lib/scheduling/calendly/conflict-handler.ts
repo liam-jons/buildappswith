@@ -49,7 +49,7 @@ export async function checkForBookingConflicts(
     const conflicts = await prisma.booking.findMany({
       where: {
         builderId,
-        status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] },
+        status: { in: ['PENDING', 'CONFIRMED'] },
         id: excludeBookingId ? { not: excludeBookingId } : undefined,
         OR: [
           // New booking starts during existing booking
@@ -234,7 +234,7 @@ export async function validateBookingRequest(bookingData: {
       const conflicts = await prisma.booking.findMany({
         where: {
           builderId,
-          status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] },
+          status: { in: ['PENDING', 'CONFIRMED'] },
           id: bookingId ? { not: bookingId } : undefined,
           OR: [
             { startTime: { lte: startTime }, endTime: { gt: startTime } },
@@ -348,7 +348,11 @@ export async function handleDoubleBooking(
       where: { id: bookingId },
       include: {
         sessionType: true,
-        builder: true,
+        builder: {
+          include: {
+            user: true
+          }
+        },
         client: true
       }
     })
@@ -431,7 +435,7 @@ export async function handleDoubleBooking(
         clientNotificationNeeded: true,
         clientEmail: booking.client?.email,
         clientName: booking.client?.name,
-        builderName: booking.builder?.name,
+        builderName: booking.builder?.user?.name,
         originalTime: booking.startTime,
         alternatives
       }

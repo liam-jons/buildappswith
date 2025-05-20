@@ -6,6 +6,8 @@
  * Version: 2.0.0
  */
 
+import { getAuth as clerkGetAuth } from "@clerk/nextjs/server"; // Added import for getAuth type inference
+
 /**
  * User roles in the system
  */
@@ -33,40 +35,24 @@ export interface ClerkSessionClaims {
 }
 
 /**
- * Extended user data with application-specific fields
+ * Extended user type with combined Clerk and database data.
+ * Represents a fully resolved user profile including database ID, Clerk ID,
+ * roles, and other essential information.
  */
 export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  imageUrl: string;
-  roles: UserRole[];
-  verified: boolean;
-  completedOnboarding?: boolean;
-  stripeCustomerId?: string;
-  builderProfile?: {
-    id: string;
-    slug: string;
-    validationTier: number;
-  };
-  clientProfile?: {
-    id: string;
-  };
-  publicMetadata?: ClerkUserPublicMetadata; // To hold raw public metadata if needed
-}
-
-/**
- * Extended user object for Clerk Express integration
- */
-export interface ExtendedUser {
-  id: string;
-  clerkId: string;
+  id: string;            // Database user ID
+  clerkId: string;       // Clerk user ID
   name: string | null;
   email: string;
-  image: string | null;
+  imageUrl: string | null;    // Typically from Clerk or DB user.imageUrl
   roles: UserRole[];
-  verified: boolean;
+  verified: boolean;       // Email verification status
   stripeCustomerId?: string | null;
+  isFounder: boolean;      // Added property
+  isDemo: boolean;         // Added property
+  // Add other relevant fields from your database's User model as needed
+  // e.g., builderProfileId?: string | null;
+  //       clientProfileId?: string | null;
 }
 
 /**
@@ -122,7 +108,7 @@ export interface AuthMiddlewareOptions {
  * Authentication context type for providers
  */
 export interface AuthContextType {
-  user: ExtendedUser | null;
+  user: AuthUser | null;
   isLoaded: boolean;
   isSignedIn: boolean;
   roles: UserRole[];
@@ -133,4 +119,16 @@ export interface AuthContextType {
   isClient: boolean;
   signOut: (options?: { callbackUrl?: string }) => Promise<void>;
   getToken: (options?: { template?: string; skipCache?: boolean }) => Promise<string | null>;
+}
+
+/**
+ * Object containing authenticated user's ID, roles, and session claims.
+ * Passed by HOFs in api-protection.ts to protected API route handlers.
+ */
+export interface AuthObject {
+  userId: string;
+  roles: UserRole[];
+  claims: ReturnType<typeof clerkGetAuth>['sessionClaims'];
+  // Consider adding orgId if it's consistently available from getAuth and needed by handlers
+  // orgId?: string | null; 
 }

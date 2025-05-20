@@ -95,7 +95,6 @@ const ddTraceMock = {
   scope: () => ({
     active: () => null,
     bind: (fn: any) => fn,
-    activate: () => null,
     activate: (span: any, fn: any) => fn()
   }),
   startSpan: () => dummySpan,

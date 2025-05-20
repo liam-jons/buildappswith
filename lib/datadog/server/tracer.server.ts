@@ -47,7 +47,7 @@ export const tracer: TracerInterface = {
       // Use conditional require to prevent webpack from bundling
       try {
         // Dynamic import doesn't work well with dd-trace, use conditional require
-        const ddTrace = typeof window === 'undefined' ? require('dd-trace') : null;
+        const ddTrace: typeof import('dd-trace') = typeof window === 'undefined' ? require('dd-trace') : null;
         if (!ddTrace) return null;
 
         // Initialize tracer
@@ -65,6 +65,21 @@ export const tracer: TracerInterface = {
           },
           plugins: false,
           debug: config.debug,
+          logger: { 
+            debug: (message: string) => { 
+              if(config.debug) console.debug(`[Datadog ServerTracer Debug] ${message}`);
+            },
+            info: (message: string) => { 
+              console.info(`[Datadog ServerTracer Info] ${message}`);
+            },
+            error: (err: string | Error) => { 
+              const message = err instanceof Error ? err.message : err;
+              console.error(`[Datadog ServerTracer Error] ${message}`);
+            },
+            warn: (message: string) => { 
+              console.warn(`[Datadog ServerTracer Warn] ${message}`);
+            }
+          }
         });
         
         // Configure integrations
@@ -119,18 +134,19 @@ export const tracer: TracerInterface = {
   /**
    * Start a new span
    */
-  startSpan(name: string, options?: any): Span {
-    if (!tracerInitialized || !serverTracer) {
-      // Return a dummy span if tracer not available
-      return {
-        context: () => ({ toTraceId: () => '0', toSpanId: () => '0' }),
-        finish: () => {},
-        addTags: () => {}
-      };
-    }
+  startSpan(name: string, options?: any): Span | null {
+    if (!tracerInitialized || !serverTracer?.tracer) return null;
+
+    const activeSpan = this.scope()?.active() || undefined;
 
     try {
-      return serverTracer.startSpan(name, options);
+      const span = serverTracer.tracer.startSpan(name, {
+        childOf: activeSpan,
+        tags: {
+          service: options?.service || serverTracer.tracer.config.service,
+        }
+      });
+      return span;
     } catch (error) {
       console.error('Failed to start span:', error);
       return {
@@ -195,32 +211,32 @@ export const tracer: TracerInterface = {
    * Configure the integrations for the Datadog tracer
    * Private helper method
    */
-  private configureTracerIntegrations(tracer: any): void {
-    if (!tracer) return;
+  configureTracerIntegrations(tracerInstance: typeof import('dd-trace')): void {
+    if (!tracerInstance) return;
     
     try {
       // Configure Next.js integration
-      tracer.use('next', { 
-        hooks: true, 
+      tracerInstance.use('next', { 
+        hooks: {}, 
         router: true, 
         server: true 
       });
 
       // Configure HTTP integration
-      tracer.use('http', { 
+      tracerInstance.use('http', { 
         client: true, 
         server: true 
       });
 
-      // Configure Prisma integration if available
-      tracer.use('prisma', { 
-        service: `${process.env.DD_SERVICE || 'buildappswith-platform'}-db` 
+      // Configure Prisma integration
+      tracerInstance.use('prisma' as any, { 
+        service: `${tracerInstance.tracer.config.service}-db` 
       });
 
       // Configure Express integration
-      tracer.use('express', {
+      tracerInstance.use('express', {
         app: undefined, // Auto-detected
-        hooks: true,
+        hooks: {}, // Corrected hooks
       });
     } catch (error) {
       console.error('Failed to configure Datadog tracer integrations:', error);

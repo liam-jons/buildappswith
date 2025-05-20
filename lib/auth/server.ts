@@ -1,20 +1,22 @@
 /**
  * Server-Side Authentication Utilities
- * Version: 2.0.0
+ * Version: 1.0.0
  * 
  * This file provides server-side authentication utilities for use with
  * Clerk Express SDK in Next.js server components and API routes.
  */
 
 import { getAuth } from "@clerk/express";
-import type { Request as ExpressRequest } from "express";
+import type { Request as ExpressRequest } from "express"; 
 import { headers, cookies } from "next/headers";
-import { UserRole } from "./types";
+import { currentUser } from "@clerk/nextjs/server";
+import { UserRole, ClerkUserPublicMetadata, AuthUser } from "./types"; 
 import { logger } from "@/lib/logger";
-import { AuthenticationError, AuthorizationError } from "./adapters/clerk-express/errors";
+import { AuthenticationError, AuthorizationError } from "./adapters/clerk-express/errors"; 
+import { getCurrentUser } from "./actions"; 
+import { hasRole } from "./utils"; 
 
-// Define ClerkRequest type since it's not exported from @clerk/express
-type ClerkRequest = ExpressRequest;
+interface ClerkRequest extends ExpressRequest {}
 
 /**
  * Authentication information from server context
@@ -31,16 +33,15 @@ export interface ServerAuth {
  * Get basic auth state in server components and route handlers
  * @returns Authentication information from response headers
  */
-export function getServerAuth(): ServerAuth {
+export async function getServerAuth(): Promise<ServerAuth> {
   try {
-    // Get headers in a sync-safe way
-    const headersList = headers();
-    const userId = headersList.get?.('x-clerk-auth-user-id') || null;
-    const sessionId = headersList.get?.('x-clerk-auth-session-id') || null;
+    const headersList = await headers();
+    const userId = headersList.get('x-clerk-auth-user-id');
+    const sessionId = headersList.get('x-clerk-auth-session-id');
     
     // Parse roles from header if available
     let roles: UserRole[] = [];
-    const rolesHeader = headersList.get?.('x-clerk-auth-user-roles') || null;
+    const rolesHeader = headersList.get('x-clerk-auth-user-roles');
     
     if (rolesHeader) {
       try {
@@ -60,11 +61,10 @@ export function getServerAuth(): ServerAuth {
       hasRole: (role: UserRole) => roles.includes(role),
     };
   } catch (error) {
-    logger.error('Error getting server auth from headers', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+    logger.error('Error getting server auth', { 
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
     
-    // Return default unauthenticated state on error
     return {
       userId: null,
       sessionId: null,
@@ -79,61 +79,59 @@ export function getServerAuth(): ServerAuth {
  * Create Express SDK-compatible request object from headers and cookies
  * @returns Express-compatible request object for authentication
  */
-export function createServerAuthRequest(): ClerkRequest {
-  // Get headers and cookies from Next.js
-  const headersList = headers();
-  const cookieStore = cookies();
-  
-  // Convert headers to standard format
-  const headersObj: Record<string, string> = {};
-  // Handle headersMap safely (may be a ReadonlyMap or similar)
-  Array.from(headersList.entries()).forEach(([key, value]) => {
-    headersObj[key] = value;
-  });
-  
-  // Get all cookies safely
-  const allCookies = cookieStore.getAll?.() || [];
-  
-  // Convert cookies to header format for Clerk
-  const cookieHeader = allCookies
-    .map(cookie => `${cookie.name}=${cookie.value}`)
-    .join('; ');
-  
-  if (cookieHeader) {
-    headersObj['cookie'] = cookieHeader;
+export async function createServerAuthRequest(): Promise<ClerkRequest> {
+  try {
+    const headersList = await headers();
+    const cookieStore = await cookies();
+    
+    // Convert headers to object for Clerk Express SDK
+    const headersObj: Record<string, string> = {};
+    headersList.forEach((value: string, key: string) => { 
+      headersObj[key] = value;
+    });
+    
+    // Convert cookies to object
+    const cookiesObj: Record<string, string> = {};
+    cookieStore.getAll().forEach((cookie: { name: string; value: string }) => { 
+      cookiesObj[cookie.name] = cookie.value;
+    });
+    
+    // Create minimal request object with necessary properties
+    return {
+      headers: headersObj,
+      cookies: cookiesObj,
+      // Add other required properties for Express compatibility
+      method: 'GET',
+      url: headersList.get('x-url') || '/',
+      get: (name: string) => headersObj[name.toLowerCase()] || null,
+    } as unknown as ClerkRequest;
+  } catch (error) {
+    logger.error('Error creating server auth request', { 
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+    
+    // Return empty request in case of error
+    return {
+      headers: {},
+      cookies: {},
+      method: 'GET',
+      url: '/',
+      get: () => null,
+    } as unknown as ClerkRequest;
   }
-  
-  // Create minimal Express-compatible request object with type assertion
-  const cookiesObj: Record<string, string> = {};
-  
-  // Parse cookies into object format required by some Clerk functions
-  allCookies.forEach(cookie => {
-    cookiesObj[cookie.name] = cookie.value;
-  });
-  
-  // Create a minimal compatible request object
-  const req = {
-    headers: headersObj,
-    cookies: cookiesObj,
-    // Add other required properties
-    method: 'GET',
-    url: '/',
-  } as unknown as ClerkRequest;
-  
-  return req;
 }
 
 /**
  * Get full auth object from Express SDK in server context
  * @returns Complete Clerk auth object or null if error
  */
-export function getFullServerAuth() {
+export async function getFullServerAuth() {
   try {
-    const req = createServerAuthRequest();
+    const req = await createServerAuthRequest();
     return getAuth(req);
   } catch (error) {
-    logger.error('Error getting full server auth', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+    logger.error('Error getting full server auth', { 
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
     return null;
   }
@@ -144,16 +142,24 @@ export function getFullServerAuth() {
  * @param role Role to check for
  * @returns True if the user has the specified role
  */
-export function hasServerRole(role: UserRole): boolean {
-  const { userId, roles } = getServerAuth();
-  
-  // Not authenticated
-  if (!userId) {
+export async function hasServerRole(role: UserRole): Promise<boolean> {
+  try {
+    const auth = await getFullServerAuth();
+    if (!auth?.userId) return false;
+
+    // Check session claims for roles
+    const userRoles: UserRole[] = (auth.sessionClaims as any)?.roles || 
+                     (auth.sessionClaims as any)?.['public_metadata']?.['roles'] || 
+                     [];
+                     
+    return Array.isArray(userRoles) && userRoles.includes(role);
+  } catch (error) {
+    logger.error('Error checking server role', { 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      role,
+    });
     return false;
   }
-  
-  // Check if user has the specified role
-  return roles.includes(role);
 }
 
 /**
@@ -161,51 +167,50 @@ export function hasServerRole(role: UserRole): boolean {
  * @param permission Permission to check for
  * @returns True if the user has the specified permission
  */
-export function hasServerPermission(permission: string): boolean {
-  const { userId, roles } = getServerAuth();
-  
-  // Not authenticated
-  if (!userId) {
+export async function hasServerPermission(permission: string): Promise<boolean> {
+  try {
+    const auth = await getFullServerAuth();
+    if (!auth?.userId) return false;
+    
+    // Use Clerk's built-in permission check if available
+    if (typeof auth.has === 'function') {
+      return auth.has({ permission });
+    }
+    
+    // Fallback to manual permission check based on roles
+    // This would need to be customized based on your permission model
+    const userRoles: UserRole[] = (auth.sessionClaims as any)?.roles || [] as UserRole[]; 
+    
+    // Simple role-based permission mapping
+    // Replace with your actual permission mapping logic
+    const rolePermissions: Record<string, string[]> = {
+      [UserRole.ADMIN]: ['*'], // Admin has all permissions
+      [UserRole.BUILDER]: ['profile:edit', 'builder:manage'],
+      [UserRole.CLIENT]: ['profile:view', 'booking:create'],
+    };
+    
+    // Check if any of the user's roles grant the required permission
+    return userRoles.some((r: UserRole) => { 
+      const permissions = rolePermissions[r] || [];
+      return permissions.includes('*') || permissions.includes(permission);
+    });
+  } catch (error) {
+    logger.error('Error checking server permission', { 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      permission,
+    });
     return false;
   }
-  
-  // Admin has all permissions
-  if (roles.includes(UserRole.ADMIN)) {
-    return true;
-  }
-  
-  // Map permissions to roles (simplified implementation)
-  // In a real app, this would be more sophisticated with a permission registry
-  
-  // Builder permissions
-  if (roles.includes(UserRole.BUILDER)) {
-    if (permission.startsWith('builder:')) {
-      return true;
-    }
-  }
-  
-  // Client permissions
-  if (roles.includes(UserRole.CLIENT)) {
-    if (permission.startsWith('client:')) {
-      return true;
-    }
-  }
-  
-  // No matching permission
-  return false;
 }
 
 /**
  * Require authentication for server component or route handler
- * @throws AuthenticationError if user is not authenticated
  */
-export function requireServerAuth(): ServerAuth {
-  const auth = getServerAuth();
-  
+export async function requireServerAuth(): Promise<ServerAuth> {
+  const auth = await getServerAuth();
   if (!auth.isAuthenticated) {
-    throw new AuthenticationError('Authentication required');
+    throw new AuthenticationError('Authentication required.');
   }
-  
   return auth;
 }
 
@@ -215,13 +220,11 @@ export function requireServerAuth(): ServerAuth {
  * @throws AuthenticationError if user is not authenticated
  * @throws AuthorizationError if user doesn't have the required role
  */
-export function requireServerRole(role: UserRole): ServerAuth {
-  const auth = requireServerAuth();
-  
+export async function requireServerRole(role: UserRole): Promise<ServerAuth> {
+  const auth = await requireServerAuth();
   if (!auth.hasRole(role)) {
-    throw new AuthorizationError(`Role ${role} required`);
+    throw new AuthorizationError(`Required role: ${role}`);
   }
-  
   return auth;
 }
 
@@ -232,26 +235,90 @@ export function requireServerRole(role: UserRole): ServerAuth {
  * @returns Database user ID or null
  */
 export async function getDbUserIdFromClerkId(clerkUserId: string): Promise<string | null> {
+  // This is a placeholder. Replace with your actual logic to map
+  // Clerk user IDs to your internal database user IDs if they differ.
+  // For example, you might query a UserMapping table or use a consistent prefix.
+  logger.info('Mapping Clerk User ID to DB User ID', { clerkUserId });
+
+  // If Clerk ID is directly used as DB ID:
+  if (process.env.CLERK_ID_IS_DB_ID === 'true') {
+    return clerkUserId;
+  }
+
+  // Example: query a user table by clerk_id
+  // try {
+  //   const user = await prisma.user.findUnique({
+  //     where: { clerkId: clerkUserId },
+  //     select: { id: true },
+  //   });
+  //   return user?.id || null;
+  // } catch (error) {
+  //   logger.error('Error fetching DB user ID from Clerk ID', { clerkUserId, error });
+  //   return null;
+  // }
+
+  // Fallback: return clerkUserId if no mapping needed or if above logic is commented out
+  // Consider if this is the desired default behavior for your application
+  return clerkUserId; 
+}
+
+/**
+ * Gets basic Clerk user information (Clerk ID and roles from public metadata)
+ * using @clerk/nextjs/server. Does not perform database synchronization.
+ * Useful for quick server-side checks or when only Clerk session data is needed.
+ * @returns Object with clerkId and roles, or null if not authenticated.
+ */
+export async function getClerkJsCurrentUser(): Promise<{ clerkId: string; roles: UserRole[] } | null> {
   try {
-    // This is a placeholder for your actual DB lookup implementation
-    // Replace with your actual database service call
-    // For example: return await db.user.findUnique({ where: { clerkId } })?.id || null;
-    
-    // Mock implementation - in a real app, you would query your database
-    logger.debug('Getting DB user ID from Clerk ID', { clerkUserId });
-    
-    // Simulate database lookup delay
-    await new Promise(resolve => setTimeout(resolve, 50));
-    
-    // Simple transformation for demo purposes
-    // In a real implementation, you would look up the ID in your database
-    return clerkUserId.replace('user_', 'db_');
+    const user = await currentUser();
+    if (!user) {
+      return null;
+    }
+    const metadata = user.publicMetadata as ClerkUserPublicMetadata | undefined;
+    const roles = metadata?.roles || [];
+    return {
+      clerkId: user.id,
+      roles,
+    };
   } catch (error) {
-    logger.error('Error getting DB user ID from Clerk ID', {
+    logger.error('Error in getClerkJsCurrentUser', { 
       error: error instanceof Error ? error.message : 'Unknown error',
-      clerkUserId
     });
-    
     return null;
   }
+}
+
+/**
+ * Requires a fully authenticated and DB-synced user.
+ * Retrieves the user profile combined from Clerk and the local database.
+ * Throws an AuthenticationError if the user is not authenticated or cannot be resolved.
+ * @returns {Promise<AuthUser>} The authenticated and DB-synced user.
+ * @throws {AuthenticationError} If no user is found or cannot be resolved.
+ */
+export async function requireDbSyncedUser(): Promise<AuthUser> {
+  // getCurrentUser from helpers.ts (which calls findOrCreateUser from actions.ts)
+  // This is the function that returns the AuthUser profile.
+  const user = await getCurrentUser(); 
+  if (!user) {
+    logger.warn('requireDbSyncedUser: User not found or could not be resolved.');
+    throw new AuthenticationError('Unauthorized: User not found or could not be resolved.');
+  }
+  return user;
+}
+
+/**
+ * Requires a fully authenticated and DB-synced user with a specific role.
+ * Throws an AuthenticationError if not authenticated, or AuthorizationError if the role is not present.
+ * @param {UserRole} role The role to require.
+ * @returns {Promise<AuthUser>} The authenticated user with the required role.
+ * @throws {AuthenticationError} If no user is found.
+ * @throws {AuthorizationError} If the user does not have the required role.
+ */
+export async function requireDbSyncedUserRole(role: UserRole): Promise<AuthUser> {
+  const user = await requireDbSyncedUser(); // Uses the above function
+  if (!hasRole(user, role)) {
+    logger.warn('requireDbSyncedUserRole: User does not have required role.', { userId: user.clerkId, requiredRole: role });
+    throw new AuthorizationError(`Forbidden: Requires ${role} role`);
+  }
+  return user;
 }

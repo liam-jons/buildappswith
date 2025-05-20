@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/core/input';
 import { Textarea } from '@/components/ui/core/textarea';
 import { Separator } from '@/components/ui/core/separator';
-import { useAuth } from '@/hooks/auth';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { CheckoutButton } from '@/components/payment/checkout-button';
 import { StripeProvider } from '@/components/payment/stripe-provider';

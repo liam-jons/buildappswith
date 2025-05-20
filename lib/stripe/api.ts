@@ -9,3 +9,5 @@
 // export async function createCheckoutSession(bookingId: string): Promise<CheckoutSessionResult> {
 //   // Implementation
 // }
+
+export {}; // Ensure this file is treated as a module

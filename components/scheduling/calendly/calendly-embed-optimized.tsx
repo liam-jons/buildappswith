@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/core/card'
 import { LoadingSpinner } from '@/components/ui/core/loading-spinner'
+import { CalendlyEvent } from './calendly-model'
 import Script from 'next/script'
 
 interface CalendlyEmbedOptimizedProps {
@@ -26,7 +27,7 @@ interface CalendlyEmbedOptimizedProps {
   };
   height?: string;
   className?: string;
-  onEventScheduled?: (event: any) => void;
+  onEventScheduled?: (event: CalendlyEvent) => void;
 }
 
 declare global {
@@ -97,9 +98,7 @@ export function CalendlyEmbedOptimized({
           parentElement: embedRef.current,
           prefill: prefillData,
           utm: utmParams,
-          // This is the key to avoid showing the full Calendly site
-          // Use inline parameters instead of popup parameters
-          embedType: 'Inline',
+          // Options for customizing the appearance
           hideEventTypeDetails: false,
           hideLandingPageDetails: true,
           hideGdprBanner: true,

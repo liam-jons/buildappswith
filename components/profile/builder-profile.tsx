@@ -35,7 +35,7 @@ import { AppShowcase, AppItem } from "./app-showcase";
 import { SuccessMetricsDashboard, MetricsCategory } from "./success-metrics-dashboard";
 import { MultiRoleBadge } from "./role-badges";
 import { UserRole } from "@prisma/client";
-import { DemoBadge } from '@/components/marketplace/ui/demo-badge';
+import { DemoBadge } from '@/components/marketplace/components/demo-badge/demo-badge';
 import { 
   SpecializationArea, 
   SpecializationContent,

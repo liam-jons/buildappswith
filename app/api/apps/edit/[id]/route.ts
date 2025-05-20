@@ -1,26 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { withAuth } from "@/lib/auth/clerk/api-auth";
-import { AuthUser } from "@/lib/auth/clerk/helpers";
+import { withAuth } from "@/lib/auth";
 import * as Sentry from "@sentry/nextjs";
+import { UserRole, AuthObject } from "@/lib/auth/types";
 
 export const PATCH = withAuth(async (
   request: NextRequest,
-  user: AuthUser,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: { id: string } },
+  auth: AuthObject
 ): Promise<NextResponse> => {
   try {
-    const { id } = await params;
+    const { id } = context.params;
     const body = await request.json();
     
-    // Get the app with builder info
     const app = await db.app.findUnique({
       where: { id },
       include: {
         builder: {
-          include: {
-            user: true
-          }
+          select: { userId: true }
         }
       }
     });
@@ -32,14 +29,10 @@ export const PATCH = withAuth(async (
       );
     }
     
-    // Check if the user owns this app
-    if (app.builder.user.email !== user.email) {
-      // Admin check
-      const currentUser = await db.user.findUnique({
-        where: { email: user.email }
-      });
-      
-      if (!currentUser?.roles.includes("ADMIN")) {
+    if (app.builder.userId !== auth.userId) {
+      const userRoles = auth.roles;
+
+      if (!userRoles.includes(UserRole.ADMIN)) {
         return NextResponse.json(
           { error: "You don't have permission to edit this app" },
           { status: 403 }
@@ -47,7 +40,6 @@ export const PATCH = withAuth(async (
       }
     }
     
-    // Update the app
     const updatedApp = await db.app.update({
       where: { id },
       data: {
@@ -74,20 +66,17 @@ export const PATCH = withAuth(async (
 
 export const DELETE = withAuth(async (
   request: NextRequest,
-  user: AuthUser,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: { id: string } },
+  auth: AuthObject
 ): Promise<NextResponse> => {
   try {
-    const { id } = await params;
+    const { id } = context.params;
     
-    // Get the app with builder info
     const app = await db.app.findUnique({
       where: { id },
       include: {
         builder: {
-          include: {
-            user: true
-          }
+          select: { userId: true }
         }
       }
     });
@@ -99,14 +88,10 @@ export const DELETE = withAuth(async (
       );
     }
     
-    // Check if the user owns this app
-    if (app.builder.user.email !== user.email) {
-      // Admin check
-      const currentUser = await db.user.findUnique({
-        where: { email: user.email }
-      });
-      
-      if (!currentUser?.roles.includes("ADMIN")) {
+    if (app.builder.userId !== auth.userId) {
+      const userRoles = auth.roles;
+
+      if (!userRoles.includes(UserRole.ADMIN)) {
         return NextResponse.json(
           { error: "You don't have permission to delete this app" },
           { status: 403 }
@@ -114,7 +99,6 @@ export const DELETE = withAuth(async (
       }
     }
     
-    // Delete the app
     await db.app.delete({
       where: { id },
     });

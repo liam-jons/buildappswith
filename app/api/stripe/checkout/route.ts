@@ -4,15 +4,22 @@
  * This route handles the creation of Stripe checkout sessions for booking payments.
  * It validates the request, ensures proper authentication, and returns checkout details.
  * 
- * Version: 1.1.0
+ * Version: 1.1.1 (Auth Refactor)
  * 
  * Updates:
+ * - Updated to use new withAuth HOC and standardized auth patterns
  * - Added support for Calendly integration
  * - Updated schema to include Calendly event fields
  */
 
 import { NextResponse, NextRequest } from 'next/server';
-import { withAuth } from '@/lib/auth/api-auth';
+import { withAuth } from '@/lib/auth';
+import { UserRole, AuthObject } from '@/lib/auth/types';
+import { 
+  createAuthErrorResponse, 
+  addAuthPerformanceMetrics, 
+  AuthErrorType 
+} from '@/lib/auth/adapters/clerk-express/errors';
 import { createCheckoutSession } from '@/lib/stripe/actions';
 import { logger } from '@/lib/logger';
 import { CheckoutSessionRequest } from '@/lib/stripe/types';
@@ -40,57 +47,63 @@ const checkoutSessionSchema = z.object({
 /**
  * POST handler for creating Stripe checkout sessions
  */
-export const POST = withAuth(async (request: NextRequest, user: any) => {
+export const POST = withAuth(async (request: NextRequest, context: any, auth: AuthObject) => {
+  const startTime = performance.now();
+  const path = request.nextUrl.pathname;
+  const method = request.method;
+  let requestBodyForLogging: any = null; // For logging in catch block
+
   try {
-    // Parse and validate request body
     const body = await request.json();
+    requestBodyForLogging = body; // Store for potential logging
     
     try {
       checkoutSessionSchema.parse(body);
     } catch (validationError: any) {
       logger.warn('Invalid checkout session request', { 
-        error: validationError,
-        userId: user.id 
+        path, method, userId: auth.userId, 
+        error: validationError.errors 
       });
-      
-      return NextResponse.json(
-        { 
-          error: 'Invalid request data',
-          details: validationError.errors 
-        },
-        { status: 400 }
+      return createAuthErrorResponse(
+        AuthErrorType.VALIDATION,
+        'Invalid request data',
+        400,
+        path,
+        method,
+        auth.userId
+        // details: validationError.errors // Avoid sending detailed validation errors to client
       );
     }
     
-    // Add client ID from authenticated user if not provided
     if (!body.bookingData.clientId) {
-      body.bookingData.clientId = user.id;
+      body.bookingData.clientId = auth.userId; // Use authenticated userId
     }
     
-    // Verify client ID matches authenticated user
-    if (body.bookingData.clientId !== user.id) {
-      logger.warn('Unauthorized checkout session request', { 
+    if (body.bookingData.clientId !== auth.userId) { // Compare with authenticated userId
+      logger.warn('Unauthorized checkout session request attempt', { 
+        path, method, userId: auth.userId,
         requestClientId: body.bookingData.clientId,
-        authenticatedUserId: user.id 
+        authenticatedUserId: auth.userId 
       });
-      
-      return NextResponse.json(
-        { error: 'Unauthorized request' },
-        { status: 403 }
+      return createAuthErrorResponse(
+        AuthErrorType.AUTHORIZATION,
+        'Unauthorized request',
+        403,
+        path,
+        method,
+        auth.userId
       );
     }
     
-    // Track API request for analytics
     const isCalendlyBooking = !!body.bookingData.calendlyEventId;
     trackBookingEvent(AnalyticsEventType.CHECKOUT_API_REQUESTED, {
       builderId: body.bookingData.builderId,
-      clientId: user.id,
+      clientId: auth.userId, // Use authenticated userId
       hasBookingId: !!body.bookingData.id,
       isCalendly: isCalendlyBooking,
       calendlyEventId: body.bookingData.calendlyEventId
     });
     
-    // Create checkout session using server action
     const result = await createCheckoutSession(body as CheckoutSessionRequest);
     
     if (!result.success) {
@@ -100,54 +113,63 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         result.error?.type === 'not_implemented' ? 501 :
         500;
       
-      // Track failed checkout creation
       trackBookingEvent(AnalyticsEventType.CHECKOUT_API_FAILED, {
         builderId: body.bookingData.builderId,
-        clientId: user.id,
+        clientId: auth.userId, // Use authenticated userId
         error: result.error?.type,
         errorDetail: result.error?.detail,
         isCalendly: isCalendlyBooking,
         calendlyEventId: body.bookingData.calendlyEventId
       });
       
-      return NextResponse.json(
-        { error: result.message, details: result.error },
-        { status: statusCode }
+      return createAuthErrorResponse(
+        result.error?.type || AuthErrorType.SERVER, 
+        result.message || 'Checkout creation failed',
+        statusCode, 
+        path, 
+        method, 
+        auth.userId
       );
     }
     
-    // Track successful checkout creation
     trackBookingEvent(AnalyticsEventType.CHECKOUT_API_SUCCEEDED, {
       builderId: body.bookingData.builderId,
-      clientId: user.id,
+      clientId: auth.userId, // Use authenticated userId
       isCalendly: isCalendlyBooking,
       calendlyEventId: body.bookingData.calendlyEventId,
       sessionId: result.data?.sessionId
     });
     
-    // Return success response with session details
-    return NextResponse.json({
-      sessionId: result.data?.sessionId,
-      url: result.data?.url
+    const response = NextResponse.json({
+      success: true, // Added for consistency with other refactored endpoints
+      data: {
+        sessionId: result.data?.sessionId,
+        url: result.data?.url
+      }
     });
+    return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
+
   } catch (error: any) {
-    logger.error('Error in checkout API route', { error });
+    const errorMessage = error.message || 'Unknown error during checkout process';
+    logger.error('Error in Stripe checkout API route', { 
+      path, method, userId: auth.userId || 'unknown', // userId might not be set if error is very early
+      error: errorMessage,
+      requestBody: requestBodyForLogging ? JSON.stringify(requestBodyForLogging).substring(0, 200) : 'not parsed'
+    });
     
-    // Track unexpected error
-    try {
-      const body = await request.json();
-      trackBookingEvent(AnalyticsEventType.CHECKOUT_API_ERROR, {
-        error: error.message || 'Unknown error',
-        requestBody: JSON.stringify(body).substring(0, 200), // Limit for logging
-        userId: user?.id
-      });
-    } catch (e) {
-      // Ignore parsing errors - we already have the main error logged
-    }
+    trackBookingEvent(AnalyticsEventType.CHECKOUT_API_ERROR, {
+      error: errorMessage,
+      requestBody: requestBodyForLogging ? JSON.stringify(requestBodyForLogging).substring(0, 200) : 'not parsed',
+      userId: auth.userId || 'unknown' // userId might not be set
+    });
     
-    return NextResponse.json(
-      { error: error.message || 'Failed to create checkout session' },
-      { status: 500 }
+    return createAuthErrorResponse(
+      AuthErrorType.SERVER,
+      error.message || 'Failed to create checkout session',
+      500,
+      path,
+      method,
+      auth.userId || 'unknown' // Pass userId if available
     );
   }
 });
