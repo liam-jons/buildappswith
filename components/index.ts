@@ -35,20 +35,21 @@ export * from './ui/core/alert';
 export * from './ui/core/accordion';
 export { ValidationTierBadge } from './trust/ui/validation-tier-badge';
 export { TimezoneSelector } from './scheduling/shared/timezone-selector';
-export { TimeSlotSelector } from './scheduling/client/time-slot-selector';
+// Using default exports for these scheduling components
+export { default as TimeSlotSelector } from './scheduling/client/time-slot-selector';
 export { SessionTypeSelector } from './scheduling/client/session-type-selector';
-export { BookingForm } from './scheduling/client/booking-form';
-export { BookingCalendar } from './scheduling/client/booking-calendar';
+export { default as BookingForm } from './scheduling/client/booking-form';
+export { default as BookingCalendar } from './scheduling/client/booking-calendar';
 export { WeeklySchedule } from './scheduling/builder/weekly-schedule';
 export { SessionTypeEditor } from './scheduling/builder/session-type-editor';
-export { WeeklyAvailability } from './scheduling/builder/availability/weekly-availability';
-export { AvailabilityManagement } from './scheduling/builder/availability/availability-management';
-export { AvailabilityExceptions } from './scheduling/builder/availability/availability-exceptions';
-export { providers } from './providers/providers';
+export { default as WeeklyAvailability } from './scheduling/builder/availability/weekly-availability';
+export { default as AvailabilityManagement } from './scheduling/builder/availability/availability-management';
+export { default as AvailabilityExceptions } from './scheduling/builder/availability/availability-exceptions';
+export { Providers as providers } from './providers/providers';
 export { ClerkProvider } from './providers/clerk-provider';
 export { UserProfile } from './profile/user-profile';
 export { SuccessMetricsDashboard } from './profile/success-metrics-dashboard';
-export { RoleBadges } from './profile/role-badges';
+export { RoleBadge as RoleBadges } from './profile/role-badges';
 export { ProfileAuthProvider } from './profile/profile-auth-provider';
 export { PortfolioShowcase } from './profile/portfolio-showcase';
 export { PortfolioGallery } from './profile/portfolio-gallery';
@@ -69,8 +70,9 @@ export { default as BuilderDashboard } from './marketplace/components/builder-da
 export { FilterPanel } from './marketplace/components/filter-panel/filter-panel';
 // export { TestimonialSection } from './marketing/testimonial-section'; // Duplicated with ./landing/
 export { MarketingHero } from './marketing/marketing-hero';
-export { MarketingFooter } from './marketing/marketing-footer';
-export { MarketingCta } from './marketing/marketing-cta';
+// Remove reference to missing module
+// export { MarketingFooter } from './marketing/marketing-footer';
+export { MarketingCTA as MarketingCta } from './marketing/marketing-cta';
 export { FeatureShowcase } from './marketing/feature-showcase';
 export { FeatureGrid } from './marketing/feature-grid';
 export { TrustProofCompanies } from './marketing/ui/trust-proof-companies';
@@ -86,14 +88,15 @@ export * from './magicui/terminal';
 export * from './magicui/ripple';
 export * from './magicui/particles';
 export { OrbitingCircles } from './magicui/orbiting-circles';
-export { marquee } from './magicui/marquee';
-export { globe } from './magicui/globe';
+export { Marquee as marquee } from './magicui/marquee';
+export { Globe as globe } from './magicui/globe';
 export { DotPattern } from './magicui/dot-pattern';
 export * from './magicui/border-beam';
 export { BlurFade } from './magicui/blur-fade';
 export * from './magicui/avatar-circles';
 export * from './magicui/aurora-text';
-export { AnimatedSubscribeButton } from './animated-subscribe-button';
+// Remove reference to missing module
+// export { AnimatedSubscribeButton } from './animated-subscribe-button';
 export { AnimatedCircularProgressBar } from './magicui/animated-circular-progress-bar';
 export * from './learning/timeline';
 export { TimelineItem } from './learning/ui/timeline-item';
@@ -103,18 +106,19 @@ export { TrustedEcosystem } from './landing/trusted-ecosystem';
 export { TestimonialSection } from './landing/testimonial-section';
 export { SkillsTreeSection } from './landing/skills-tree-section';
 export { SkillsCarousel } from './landing/skills-carousel';
-export { PerformanceOptimizations } from './landing/performance-optimizations';
-export { navbar } from './landing/navbar';
+// Remove reference to missing member
+// export { PerformanceOptimizations } from './landing/performance-optimizations';
+export { Navbar as navbar } from './landing/navbar';
 export { HeroSection } from './landing/hero-section';
 // Comment out missing module reference
 // export { footer } from './landing/footer';
 export { FeatureScroll } from './landing/feature-scroll';
 export * from './landing/data';
-export { CtaSection } from './landing/cta-section';
+export { CTASection as CtaSection } from './landing/cta-section';
 export { BentoSection } from './landing/bento-section';
-export { AiStats } from './landing/ai-stats';
-export { AiCapabilitiesMarquee } from './landing/ai-capabilities-marquee';
-export { accessibility } from './landing/accessibility';
+export { AIStats as AiStats } from './landing/ai-stats';
+export { AICapabilitiesMarquee as AiCapabilitiesMarquee } from './landing/ai-capabilities-marquee';
+export { default as accessibility } from './landing/accessibility';
 export { TestimonialScroll } from './landing/ui/testimonial-scroll';
 export * from './community/knowledge-base';
 export { KnowledgeItem } from './community/ui/knowledge-item';
@@ -132,5 +136,5 @@ export * from './site-footer';
 export * from './theme-provider';
 export * from './search-params-fallback';
 
-// Re-export subdirectory
-export * from './utils';
+// Comment out non-module export
+// export * from './utils';
