@@ -10,6 +10,7 @@ import {
   AuthErrorType 
 } from '@/lib/auth/adapters/clerk-express/errors';
 import { logger } from '@/lib/logger';
+import { toStandardResponse, ApiErrorCode } from '@/lib/types/api-types';
 
 // Validation schema for query parameters
 const querySchema = z.object({
@@ -64,18 +65,16 @@ export const GET = withOptionalAuth(async (
     
     try {
       const sessionTypes = await getSessionTypes(builderId);
-      const response = NextResponse.json({ success: true, data: { sessionTypes } });
+      const response = NextResponse.json(toStandardResponse({ sessionTypes }));
       return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
     } catch (error: any) {
       if (error.message === 'SessionType database implementation required') {
         logger.warn('SessionType GET using mock data - database implementation pending', { path, method, userId, builderId });
         const { mockSessionTypes } = await import('@/lib/scheduling/mock-data');
         const filteredTypes = mockSessionTypes.filter(st => st.builderId === builderId);
-        const response = NextResponse.json({ 
-          success: true, 
-          data: { sessionTypes: filteredTypes }, 
-          warning: 'Using mock data - database implementation pending'
-        });
+        const response = NextResponse.json(toStandardResponse({ sessionTypes: filteredTypes }, {
+          message: 'Using mock data - database implementation pending'
+        }));
         return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
       } else {
         throw error;
@@ -143,18 +142,16 @@ export const POST = withAuth(async (
     
     try {
       const sessionType = await createSessionType(result.data);
-      const response = NextResponse.json({ success: true, data: { sessionType } }, { status: 201 });
+      const response = NextResponse.json(toStandardResponse({ sessionType }), { status: 201 });
       return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
     } catch (error: any) {
       if (error.message === 'SessionType database implementation required') {
         logger.warn('SessionType POST using mock data - database implementation pending', { path, method, userId, data: result.data });
         const { mockSessionTypes } = await import('@/lib/scheduling/mock-data');
         const mockSessionType = { id: 'mock-' + Math.random().toString(36).substring(2, 15), ...result.data };
-        const response = NextResponse.json({ 
-          success: true, 
-          data: { sessionType: mockSessionType }, 
-          warning: 'Using mock data - database implementation pending'
-        }, { status: 201 });
+        const response = NextResponse.json(toStandardResponse({ sessionType: mockSessionType }, {
+          message: 'Using mock data - database implementation pending'
+        }), { status: 201 });
         return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
       } else {
         throw error;

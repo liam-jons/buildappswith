@@ -245,12 +245,30 @@ export function verifyWebhookRequest(
 }
 
 /**
+ * Calendly webhook payload interface for type safety
+ */
+interface CalendlyWebhookPayload {
+  event_type?: {
+    name?: string;
+  };
+  invitee?: {
+    email?: string;
+    uuid?: string;
+    name?: string;
+  };
+  event?: {
+    uuid?: string;
+  };
+  [key: string]: unknown;
+}
+
+/**
  * Log webhook event details for monitoring and analytics
  * 
  * @param event Webhook event name
  * @param payload Webhook payload
  */
-export function logWebhookEvent(event: string, payload: Record<string, unknown>): void {
+export function logWebhookEvent(event: string, payload: CalendlyWebhookPayload): void {
   logger.info('Calendly webhook received', {
     event,
     eventType: payload.event_type?.name,

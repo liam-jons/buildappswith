@@ -78,7 +78,8 @@ export async function createSessionType(data: {
     // Validate builder exists
     const builder = await prisma.builderProfile.findUnique({
       where: { id: data.builderId },
-      include: {
+      select: {
+        id: true,
         schedulingSettings: true
       }
     });

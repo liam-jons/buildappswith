@@ -5,7 +5,10 @@
  * Client-side API functions for scheduling
  */
 
-// Example API function
+// Placeholder exports to make this a valid module
+export const schedulingApiPlaceholder = true;
+
+// TODO: Add actual API functions here when needed
 // export async function createBooking(booking: BookingInput): Promise<BookingResult> {
 //   // Implementation
 // }

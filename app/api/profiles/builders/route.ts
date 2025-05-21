@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { captureException } from '@sentry/nextjs';
+import { toStandardResponse, ApiErrorCode } from '@/lib/types/api-types';
 
 /**
  * GET /api/profiles/builders
@@ -55,7 +56,7 @@ export async function GET(req: NextRequest) {
             id: true,
             name: true,
             email: true,
-            image: true,
+            imageUrl: true,
           }
         },
         skills: {
@@ -82,14 +83,14 @@ export async function GET(req: NextRequest) {
         id: profile.user.id,
         name: profile.user.name,
         email: profile.user.email,
-        image: profile.user.image,
+        imageUrl: profile.user.imageUrl,
       },
       headline: profile.headline,
       bio: profile.bio,
-      skills: profile.skills.map(skill => ({
-        id: skill.skill.id,
-        name: skill.skill.name,
-        category: skill.skill.category,
+      skills: profile.skills.map((skillRelation: any) => ({
+        id: skillRelation.skill.id,
+        name: skillRelation.skill.name,
+        category: skillRelation.skill.category,
       })),
       availableForHire: profile.availableForHire,
       adhdFocus: profile.adhd_focus,
@@ -98,21 +99,28 @@ export async function GET(req: NextRequest) {
       featured: profile.featured,
     }));
     
-    return NextResponse.json({
+    return NextResponse.json(toStandardResponse({
       builders: formattedProfiles,
       pagination: {
         total: totalCount,
         page,
         limit,
         totalPages: Math.ceil(totalCount / limit),
+        hasMore: page < Math.ceil(totalCount / limit),
       }
-    });
+    }));
   } catch (error) {
     console.error('Error fetching builder profiles:', error);
     captureException(error);
     
     return NextResponse.json(
-      { error: 'Failed to fetch builder profiles' },
+      toStandardResponse(null, {
+        error: {
+          code: ApiErrorCode.INTERNAL_ERROR,
+          message: 'Failed to fetch builder profiles',
+          statusCode: 500
+        }
+      }),
       { status: 500 }
     );
   }

@@ -13,6 +13,7 @@ import { DayOfWeek, CreateAvailabilityRuleInput } from '@/lib/scheduling/types';
 import * as Sentry from '@sentry/nextjs';
 import { AuthErrorType, createAuthErrorResponse, addAuthPerformanceMetrics } from '@/lib/auth/adapters/clerk-express/errors';
 import { logger } from '@/lib/logger';
+import { toStandardResponse, ApiErrorCode } from '@/lib/types/api-types';
 
 // Validation schema for query parameters
 const querySchema = z.object({
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
     // Fetch availability rules
     const availabilityRules = await getAvailabilityRules(builderId);
     
-    const response = NextResponse.json({ availabilityRules });
+    const response = NextResponse.json(toStandardResponse({ availabilityRules }));
     return addAuthPerformanceMetrics(response, startTime, true, path, method);
     
   } catch (error) {
@@ -138,7 +139,7 @@ export const POST = withAuth(async (request: NextRequest, context: { params?: an
     // Create the availability rule
     const availabilityRule = await createAvailabilityRule(ruleData.builderId, { ...ruleData, dayOfWeek: ruleData.dayOfWeek as DayOfWeek });
     
-    const response = NextResponse.json({ availabilityRule }, { status: 201 });
+    const response = NextResponse.json(toStandardResponse({ availabilityRule }), { status: 201 });
     return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
     
   } catch (error) {
@@ -263,7 +264,7 @@ export const PUT = withAuth(async (request: NextRequest, context: { params?: any
     // Update the availability rule
     const availabilityRule = await updateAvailabilityRule(ruleId, servicePayload);
     
-    const response = NextResponse.json({ availabilityRule });
+    const response = NextResponse.json(toStandardResponse({ availabilityRule }));
     return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
     
   } catch (error) {
@@ -333,7 +334,7 @@ export const DELETE = withAuth(async (request: NextRequest, context: { params?: 
     
     await deleteAvailabilityRule(ruleId);
     
-    const response = NextResponse.json({ message: 'Availability rule deleted successfully' });
+    const response = NextResponse.json(toStandardResponse(null, { message: 'Availability rule deleted successfully' }));
     return addAuthPerformanceMetrics(response, startTime, true, path, method, userId);
 
   } catch (error) {

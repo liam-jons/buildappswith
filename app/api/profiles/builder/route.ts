@@ -14,6 +14,7 @@ import { captureException } from '@sentry/nextjs';
 import { UserRole, AuthObject } from '@/lib/auth/types';
 import { AuthErrorType, createAuthErrorResponse, addAuthPerformanceMetrics } from '@/lib/auth/adapters/clerk-express/errors';
 import { logger } from '@/lib/logger';
+import { toStandardResponse, ApiErrorCode } from '@/lib/types/api-types';
 
 // Simple slugify function
 const slugify = (text: string): string => {
@@ -103,9 +104,7 @@ export const GET = withBuilder(async (req: NextRequest, context: { params?: any 
     }));
 
     // Return the builder profile with performance metrics
-    const response = NextResponse.json({
-      success: true,
-      data: {
+    const response = NextResponse.json(toStandardResponse({
         id: dbUser.builderProfile.id,
         userId: dbUser.id,
         bio: dbUser.builderProfile.bio,
@@ -118,7 +117,7 @@ export const GET = withBuilder(async (req: NextRequest, context: { params?: any 
         createdAt: dbUser.builderProfile.createdAt,
         updatedAt: dbUser.builderProfile.updatedAt,
       }
-    });
+    ));
 
     return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
   } catch (error) {
@@ -265,16 +264,14 @@ export const POST = withBuilder(async (req: NextRequest, context: { params?: any
     }
 
     // Transform skills for the response
-    const formattedSkills = updatedOrCreatedProfile.skills.map(skill => ({
-      id: skill.skill.id,
-      name: skill.skill.name,
-      domain: skill.skill.domain,
+    const formattedSkills = updatedOrCreatedProfile.skills.map((skillRelation: any) => ({
+      id: skillRelation.skill.id,
+      name: skillRelation.skill.name,
+      domain: skillRelation.skill.domain,
     }));
 
     // Return the updated or created profile
-    const response = NextResponse.json({
-      success: true,
-      data: {
+    const response = NextResponse.json(toStandardResponse({
         id: updatedOrCreatedProfile.id,
         userId: dbUser.id,
         bio: updatedOrCreatedProfile.bio,
@@ -287,7 +284,7 @@ export const POST = withBuilder(async (req: NextRequest, context: { params?: any
         createdAt: updatedOrCreatedProfile.createdAt,
         updatedAt: updatedOrCreatedProfile.updatedAt,
       }
-    });
+    ));
 
     return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
   } catch (error) {

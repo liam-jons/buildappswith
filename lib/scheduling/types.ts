@@ -63,7 +63,7 @@ export interface SessionType {
   currency: string;
   isActive: boolean;
   color?: string | null; // Allow both undefined and null from database
-  maxParticipants?: number;
+  maxParticipants?: number | null;
   calendlyEventTypeId?: string | null;
   calendlyEventTypeUri?: string | null;
   requiresAuth?: boolean;
@@ -239,5 +239,16 @@ export interface UpdateSchedulingSettingsInput {
 }
 
 /**
- * 
+ * Builder scheduling profile with all scheduling settings and data
  */
+export interface BuilderSchedulingProfile {
+  builderId: string;
+  minimumNotice: number; // In minutes
+  bufferBetweenSessions: number; // In minutes  
+  maximumAdvanceBooking: number; // In days
+  availabilityRules: AvailabilityRule[];
+  exceptions: AvailabilityException[];
+  sessionTypes: SessionType[];
+  timezone: string;
+  isAcceptingBookings: boolean;
+}

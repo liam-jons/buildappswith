@@ -293,7 +293,7 @@ export class CalendlyService {
       paymentStatus: 'UNPAID', // Default payment status
       amount: sessionType.price.toNumber(),
       clientTimezone: invitee.timezone,
-      builderTimezone: (sessionType.builder?.schedulingSettings as SchedulingSettings)?.timezone || undefined
+      builderTimezone: (sessionType.builder?.schedulingSettings as unknown as SchedulingSettings)?.timezone || undefined
     }
   }
 

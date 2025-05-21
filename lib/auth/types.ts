@@ -14,6 +14,9 @@ import {
   AccessType
 } from '@/lib/types/enums';
 
+// Re-export commonly used enums for easier importing
+export { UserRole, AuthStatus, ProfileType, AccessType };
+
 /**
  * Permission type - defines all possible permissions in the system
  */

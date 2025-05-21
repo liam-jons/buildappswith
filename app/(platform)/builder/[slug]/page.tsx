@@ -31,17 +31,17 @@ export async function generateMetadata(
 
   return {
     title: `${profile.displayName} - Builder Profile | BuildAppsWith`,
-    description: profile.tagline || `Professional AI application builder specializing in ${profile.specializations.join(", ")}`,
+    description: profile.tagline || `Professional AI application builder specializing in ${profile.specializations?.join(", ") || 'various technologies'}`,
     openGraph: {
       title: `${profile.displayName} - AI Application Builder`,
-      description: profile.tagline || `Professional AI application builder specializing in ${profile.specializations.join(", ")}`,
+      description: profile.tagline || `Professional AI application builder specializing in ${profile.specializations?.join(", ") || 'various technologies'}`,
       images: profile.avatar?.url ? [profile.avatar.url, ...previousImages] : previousImages,
       type: "profile",
-      profile: {
-        firstName: profile.displayName.split(" ")[0],
-        lastName: profile.displayName.split(" ").slice(1).join(" "),
+      profiles: [{
+        firstName: profile.displayName?.split(" ")[0] || '',
+        lastName: profile.displayName?.split(" ").slice(1).join(" ") || '',
         username: params.slug,
-      },
+      }],
     },
     twitter: {
       card: "summary_large_image",

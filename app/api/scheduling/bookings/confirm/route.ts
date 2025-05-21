@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/db';
-import { calendlyApiClient } from '@/lib/scheduling/calendly/api-client';
+import { db } from '@/lib/db';
 import { sendBookingConfirmationEmail } from '@/lib/scheduling/email';
 import { z } from 'zod';
+import { toStandardResponse, ApiErrorCode } from '@/lib/types/api-types';
 
 // Request validation schema
 const BookingConfirmSchema = z.object({
@@ -26,7 +26,19 @@ const BookingConfirmSchema = z.object({
 
 // Error response helper
 function errorResponse(message: string, status: number = 400) {
-  return NextResponse.json({ success: false, error: message }, { status });
+  return NextResponse.json(
+    toStandardResponse(null, {
+      error: {
+        code: status === 400 ? ApiErrorCode.BAD_REQUEST : 
+              status === 404 ? ApiErrorCode.NOT_FOUND :
+              status === 401 ? ApiErrorCode.UNAUTHORIZED :
+              ApiErrorCode.INTERNAL_ERROR,
+        message,
+        statusCode: status
+      }
+    }),
+    { status }
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -57,9 +69,15 @@ export async function POST(req: NextRequest) {
     });
     
     // Fetch session type details
-    const sessionType = await prisma.sessionType.findUnique({
+    const sessionType = await db.sessionType.findUnique({
       where: { id: sessionTypeId },
-      include: { builder: true }
+      include: { 
+        builder: {
+          include: {
+            user: true
+          }
+        }
+      }
     });
     
     if (!sessionType) {
@@ -89,7 +107,7 @@ export async function POST(req: NextRequest) {
     let booking;
     if (providedBookingId) {
       // Update existing booking
-      booking = await prisma.booking.findUnique({
+      booking = await db.booking.findUnique({
         where: { id: providedBookingId }
       });
       
@@ -99,17 +117,17 @@ export async function POST(req: NextRequest) {
       }
     } else {
       // Create new booking (for unauthenticated users)
-      booking = await prisma.booking.create({
+      booking = await db.booking.create({
         data: {
           builderId: sessionType.builderId,
           sessionTypeId,
           clientId: userId,
-          clientName: clientDetails.name,
-          clientEmail: clientDetails.email,
+          title: `Booking with ${sessionType.title}`,
           status: 'PENDING',
-          createdAt: new Date(),
-          userProvidedGoal: pathway,
-          customQuestionResponse: notes ? [{ question: 'Notes', answer: notes }] : undefined
+          startTime: new Date(),
+          endTime: new Date(Date.now() + 60 * 60 * 1000),
+          pathway,
+          customQuestionResponse: notes ? { notes } : undefined
         }
       });
     }
@@ -168,7 +186,7 @@ export async function POST(req: NextRequest) {
       });
       
       // Store the scheduling URL for the user to complete booking if needed
-      calendlyBooking.scheduling_url = schedulingUrl;
+      (calendlyBooking as any).scheduling_url = schedulingUrl;
       
     } catch (error) {
       logger.error('Failed to create booking structure', {
@@ -178,23 +196,23 @@ export async function POST(req: NextRequest) {
       });
       
       // Update booking status to failed
-      await prisma.booking.update({
+      await db.booking.update({
         where: { id: booking.id },
-        data: { status: 'FAILED' }
+        data: { status: 'CANCELLED' }
       });
       
       return errorResponse('Failed to create booking', 500);
     }
     
     // Update booking with Calendly details
-    const updatedBooking = await prisma.booking.update({
+    const updatedBooking = await db.booking.update({
       where: { id: booking.id },
       data: {
         calendlyEventUri: calendlyBooking.uri,
         startTime: timeSlot.startTime,
         endTime: timeSlot.endTime,
-        status: Number(sessionType.price) > 0 ? 'PENDING_PAYMENT' : 'CONFIRMED',
-        userTimezone: clientDetails.timezone
+        status: sessionType.price.toNumber() > 0 ? 'PENDING' : 'CONFIRMED',
+        clientTimezone: clientDetails.timezone
       }
     });
     
@@ -205,7 +223,7 @@ export async function POST(req: NextRequest) {
           to: clientDetails.email,
           clientName: clientDetails.name,
           sessionTitle: sessionType.title,
-          builderName: sessionType.builder.name,
+          builderName: sessionType.builder.user?.name || 'Builder',
           startTime: timeSlot.startTime,
           endTime: timeSlot.endTime,
           timezone: clientDetails.timezone,
@@ -221,13 +239,12 @@ export async function POST(req: NextRequest) {
     }
     
     // Prepare response
-    const response = {
-      success: true,
+    const responseData = {
       booking: {
         id: updatedBooking.id,
         calendlyEventId: calendlyBooking.uri,
         confirmationUrl: `/booking/confirmation?bookingId=${updatedBooking.id}`,
-        schedulingUrl: calendlyBooking.scheduling_url,
+        schedulingUrl: (calendlyBooking as any).scheduling_url,
         startTime: timeSlot.startTime.toISOString(),
         endTime: timeSlot.endTime.toISOString(),
         sessionType: {
@@ -236,21 +253,21 @@ export async function POST(req: NextRequest) {
           duration: sessionType.durationMinutes
         },
         builder: {
-          name: sessionType.builder.name,
-          email: sessionType.builder.email
+          name: sessionType.builder.user?.name || 'Builder',
+          email: sessionType.builder.user?.email || ''
         }
       },
-      paymentRequired: Number(sessionType.price) > 0,
+      paymentRequired: sessionType.price.toNumber() > 0,
       checkoutUrl: Number(sessionType.price) > 0 ? `/api/payment/create-checkout?bookingId=${updatedBooking.id}` : undefined
     };
     
     logger.info('Booking confirmation created successfully', {
       bookingId: updatedBooking.id,
       sessionTypeId,
-      paymentRequired: sessionType.price > 0
+      paymentRequired: sessionType.price.toNumber() > 0
     });
     
-    return NextResponse.json(response);
+    return NextResponse.json(toStandardResponse(responseData));
     
   } catch (error) {
     logger.error('Error confirming booking', { error });

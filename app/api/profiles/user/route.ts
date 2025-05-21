@@ -15,6 +15,7 @@ import { db } from '@/lib/db';
 import { captureException } from '@sentry/nextjs';
 import { AuthErrorType, createAuthErrorResponse, addAuthPerformanceMetrics } from '@/lib/auth/adapters/clerk-express/errors';
 import { logger } from '@/lib/logger';
+import { toStandardResponse, ApiErrorCode } from '@/lib/types/api-types';
 
 // Schema for profile update validation
 const profileUpdateSchema = z.object({
@@ -54,14 +55,14 @@ export const GET = withAuth(async (req: NextRequest, context: { params?: any }, 
     }
 
     // Return the user profile without sensitive information
-    const response = NextResponse.json({
+    const response = NextResponse.json(toStandardResponse({
       id: dbUser.id,
       name: dbUser.name,
       email: dbUser.email,
-      image: dbUser.imageUrl,
+      imageUrl: dbUser.imageUrl,
       roles: dbUser.roles,
       verified: dbUser.verified,
-    });
+    }));
     return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
 
   } catch (error) {
@@ -205,12 +206,13 @@ export const POST = withAuth(async (req: NextRequest, context: { params?: any },
       where: { id: dbUser.id },
     });
     
-    const response = NextResponse.json({
+    const response = NextResponse.json(toStandardResponse({
+      user: refreshedUser,
+    }, {
       message: builderProfileMessage 
         ? 'Profile created successfully' 
-        : 'Profile updated successfully',
-      user: refreshedUser,
-    });
+        : 'Profile updated successfully'
+    }));
     return addAuthPerformanceMetrics(response, startTime, true, path, method, auth.userId);
 
   } catch (error) {

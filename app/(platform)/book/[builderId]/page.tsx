@@ -107,10 +107,10 @@ export default async function BookingPage({
             </p>
           </div>
           
-          {(builderProfile.user.imageUrl || builderProfile.avatarUrl) && (
+          {builderProfile.user.imageUrl && (
             <div className="h-16 w-16 rounded-full overflow-hidden">
               <Image 
-                src={builderProfile.user.imageUrl || builderProfile.avatarUrl || ''} 
+                src={builderProfile.user.imageUrl} 
                 alt={builderProfile.user.name || 'Builder'}
                 className="h-full w-full object-cover"
                 width={64}
