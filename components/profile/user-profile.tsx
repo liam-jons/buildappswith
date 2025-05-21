@@ -64,10 +64,8 @@ export function UserProfile({ profile, isCurrentUser = false }: UserProfileProps
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       {/* Profile Header with Avatar and Name */}
       <ProfileHeader
-        name={profile.name}
-        avatarUrl={profile.imageUrl}
-        title={profile.title}
-        isEditing={isEditing}
+        profile={profile}
+        editable={isEditing}
       />
       
       {/* Builder Validation Badge (if applicable) */}

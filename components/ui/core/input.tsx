@@ -22,10 +22,13 @@ export type InputVariant = 'default' | 'filled' | 'flushed';
  * Input component props
  */
 export interface InputProps
-  extends BaseComponentProps,
-    DisableableProps,
-    FormFieldProps,
-    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'className' | 'disabled' | 'name' | 'required'> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+  /** Field label */
+  label?: string;
+  /** Field description */
+  description?: string;
+  /** Error message */
+  error?: string;
   /** Input size */
   size?: InputSize;
   /** Input variant style */

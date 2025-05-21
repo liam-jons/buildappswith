@@ -2,6 +2,7 @@
 
 import { useAuth, useHasAnyRole, useHasAllRoles } from '@/lib/auth';
 import { UserRole } from '@/lib/types/enums';
+import { Permission } from '@/lib/auth/types';
 import { ReactNode, useMemo } from 'react';
 
 interface RoleProtectedProps {
@@ -52,7 +53,7 @@ export function RoleProtected({
 
 interface PermissionProtectedProps {
   children: ReactNode;
-  permissions: string[];
+  permissions: Permission[];
   requireAll?: boolean;
   fallback?: ReactNode;
   loadingFallback?: ReactNode;
@@ -80,8 +81,8 @@ export function PermissionProtected({
     if (!isLoaded) return false;
     
     return requireAll
-      ? permissions.every(permission => hasPermission(permission))
-      : permissions.some(permission => hasPermission(permission));
+      ? permissions.every(permission => hasPermission(permission as Permission))
+      : permissions.some(permission => hasPermission(permission as Permission));
   }, [isLoaded, hasPermission, permissions, requireAll]);
 
   // Loading state handling

@@ -3,5 +3,5 @@
  * Version: 1.0.0
  */
 
-// Export domain-specific UI components here
-// Example: export * from './auth-button';
+// Create an empty export to make this a valid ES module
+export {};

@@ -5,6 +5,7 @@
  * user management, content moderation, and system configuration.
  */
 
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/core";
 import { AdminNav } from "./admin-nav";
 import { AdminCard } from "./ui/admin-card";
@@ -15,6 +16,8 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ roles }: AdminDashboardProps) {
+  const router = useRouter();
+  
   // Placeholder statistics - would be fetched from API in real implementation
   const stats = {
     totalUsers: 1245,
@@ -31,37 +34,43 @@ export function AdminDashboard({ roles }: AdminDashboardProps) {
       title: "User Management",
       description: "Manage users, roles, and permissions",
       icon: "👥",
-      href: "/admin/users"
+      actionLabel: "Manage Users",
+      onAction: () => router.push("/admin/users")
     },
     {
       title: "Builder Verification",
       description: "Review and approve builder verification requests",
       icon: "✅",
-      href: "/admin/verification"
+      actionLabel: "Review Verifications",
+      onAction: () => router.push("/admin/verification")
     },
     {
       title: "Content Moderation",
       description: "Moderate platform content and listings",
       icon: "📝",
-      href: "/admin/moderation"
+      actionLabel: "Moderate Content",
+      onAction: () => router.push("/admin/moderation")
     },
     {
       title: "System Configuration",
       description: "Configure platform settings and features",
       icon: "⚙️",
-      href: "/admin/settings"
+      actionLabel: "Open Settings",
+      onAction: () => router.push("/admin/settings")
     },
     {
       title: "Analytics & Reporting",
       description: "View detailed platform analytics and generate reports",
       icon: "📊",
-      href: "/admin/analytics"
+      actionLabel: "View Analytics",
+      onAction: () => router.push("/admin/analytics")
     },
     {
       title: "Support Cases",
       description: "Manage user support requests and cases",
       icon: "🛟",
-      href: "/admin/support"
+      actionLabel: "View Cases",
+      onAction: () => router.push("/admin/support")
     }
   ];
 
@@ -108,7 +117,8 @@ export function AdminDashboard({ roles }: AdminDashboardProps) {
               title={action.title}
               description={action.description}
               icon={action.icon}
-              href={action.href}
+              actionLabel={action.actionLabel}
+              onAction={action.onAction}
             />
           ))}
         </div>

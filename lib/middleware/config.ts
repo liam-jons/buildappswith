@@ -205,6 +205,9 @@ export const defaultMiddlewareConfig: MiddlewareConfig = {
 export const environmentConfigs: Record<string, Partial<MiddlewareConfig>> = {
   development: {
     api: {
+      csrf: {
+        enabled: false, // Disable CSRF in development
+      },
       securityHeaders: {
         // In development, we might want to disable HTTPS enforcement
         strictTransportSecurity: false,

@@ -69,6 +69,7 @@ export interface PortfolioProject {
   repositoryUrl?: string;
   completionDate?: string | Date;
   featured?: boolean;
+  createdAt?: Date;
 }
 
 export interface AIApp {
@@ -136,6 +137,7 @@ export interface BuilderProfileData {
   expertiseAreas: Record<string, any>;
   socialLinks: Record<string, string>;
   portfolioItems: any[];
+  portfolio?: PortfolioProject[]; // Added for profile context compatibility
   featured: boolean;
   searchable: boolean;
   availability: string;
@@ -146,6 +148,9 @@ export interface BuilderProfileData {
   coverImageUrl?: string;
   joinDate?: Date;
   rating?: number;
+  userId?: string; // Added for auth provider compatibility
+  clerkId?: string; // Added for auth provider compatibility
+  clerkUserId?: string; // Added for legacy component compatibility
 }
 
 /**
@@ -178,6 +183,7 @@ export interface BuilderProfileResponseData {
   expertiseAreas: Record<string, any>;
   socialLinks: Record<string, string>;
   portfolioItems: any[];
+  portfolio?: PortfolioProject[]; // Added for profile context compatibility
   featured: boolean;
   searchable: boolean;
   availability: string;

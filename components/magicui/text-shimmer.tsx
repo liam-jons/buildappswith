@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-interface TextShimmerProps {
+export interface TextShimmerProps {
   children: React.ReactNode;
   className?: string;
   shimmerWidth?: number; // Width of the shimmer effect in pixels

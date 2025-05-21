@@ -192,7 +192,7 @@ export function AuthStatus({ className, compact = false }: AuthStatusProps) {
  * Protected version of AuthStatus that requires authentication
  */
 export function ProtectedAuthStatus(props: AuthStatusProps) {
-  const { status, isSignedIn, isLoaded } = useAuthStatus();
+  const { status, isSignedIn, isLoaded } = useAuth();
 
   if (status === AuthStatusEnum.LOADING || isLoaded === false) { 
     return <div>Loading...</div>;
@@ -223,7 +223,7 @@ export function ProtectedAuthStatus(props: AuthStatusProps) {
  */
 export function HeaderAuthStatus({ className }: AuthStatusProps) {
   const { user } = useUser();
-  const { status, isSignedIn, isLoaded } = useAuthStatus();
+  const { status, isSignedIn, isLoaded } = useAuth();
   const signOut = useSignOut();
   const router = useRouter();
 

@@ -52,11 +52,13 @@ interface Testimonial {
   description: React.ReactNode;
 }
 
+export interface TestimonialScrollProps {
+  testimonials: Testimonial[];
+}
+
 export function TestimonialScroll({
   testimonials,
-}: {
-  testimonials: Testimonial[];
-}) {
+}: TestimonialScrollProps) {
   return (
     <div className="h-full">
       <div className="px-10">

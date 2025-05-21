@@ -13,7 +13,7 @@
 export { AuthStatus } from './auth-status';
 
 // Authentication form component
-export { default as ClerkAuthForm } from './clerk-auth-form'; 
+export { ClerkAuthForm } from './clerk-auth-form'; 
 
 // Protection components
 export { default as ProtectedRoute } from './protected-route';
@@ -26,8 +26,8 @@ export { ExpressAuthProvider } from './express-auth-provider';
 export { AuthErrorBoundary } from './auth-error-boundary';
 
 // Loading state components
-export { default as LoadingState } from './loading-state';
-export { OptimizedLoadingState } from './optimized-loading-state';
+export { AuthLoadingState as LoadingState } from './loading-state';
+export { OptimizedAuthLoadingState as OptimizedLoadingState } from './optimized-loading-state';
 export { ProgressiveLoadingState } from './progressive-loading-state';
 
 // Re-export subdirectory components

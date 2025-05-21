@@ -82,10 +82,10 @@ export function formValuesToProfileUpdates(formValues: ProfileFormValues): Parti
     topSkills: formValues.skills,
     availability: formValues.availability.status, // Now a string in the unified type
     socialLinks: {
-      website: formValues.socialLinks.website || undefined,
-      linkedin: formValues.socialLinks.linkedin || undefined,
-      github: formValues.socialLinks.github || undefined,
-      twitter: formValues.socialLinks.twitter || undefined,
+      website: formValues.socialLinks.website || "",
+      linkedin: formValues.socialLinks.linkedin || "",
+      github: formValues.socialLinks.github || "",
+      twitter: formValues.socialLinks.twitter || "",
     },
   };
 }

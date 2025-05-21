@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
+import { useAuth } from "@/lib/auth";
 import React from "react";
-import ProgressiveLoadingState from "./progressive-loading-state";
+import { ProgressiveLoadingState } from "./progressive-loading-state";
 
 interface AuthLoadingStateProps {
   children: React.ReactNode;

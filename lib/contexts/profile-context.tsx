@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useCallback } from "react";
-import { BuilderProfileData } from "@/lib/profile/types";
-import { PortfolioProject } from "@/components/profile/portfolio-showcase";
+import { BuilderProfileData, PortfolioProject } from "@/lib/profile/types";
 import { toast } from "sonner";
 
 // This would be replaced with an API client in a real application
@@ -41,7 +40,14 @@ export function useProfile() {
 // Provider component to wrap parts of the app that need profile state
 export function ProfileProvider({ children }: { children: ReactNode }) {
   // State
-  const [profile, setProfile] = useState<BuilderProfileData>(mockEstablishedTierProfile as BuilderProfileData);
+  const [profile, setProfile] = useState<BuilderProfileData>(() => {
+    // Initialize with proper portfolio property
+    const initialProfile = {
+      ...mockEstablishedTierProfile,
+      portfolio: [] as PortfolioProject[]
+    } as unknown as BuilderProfileData;
+    return initialProfile;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   
@@ -103,7 +109,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         
         setProfile(current => ({
           ...current,
-          portfolio: [newProject, ...current.portfolio],
+          portfolio: [newProject, ...(current.portfolio || [])],
           completedProjects: current.completedProjects + 1
         }));
         
@@ -117,7 +123,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     await simulateApiRequest(
       () => {
         setProfile(current => {
-          const updatedPortfolio = current.portfolio.map(project => 
+          const updatedPortfolio = (current.portfolio || []).map(project => 
             project.id === projectId ? { ...project, ...updates } : project
           );
           
@@ -134,7 +140,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     await simulateApiRequest(
       () => {
         setProfile(current => {
-          const updatedPortfolio = current.portfolio.filter(
+          const updatedPortfolio = (current.portfolio || []).filter(
             project => project.id !== projectId
           );
           
