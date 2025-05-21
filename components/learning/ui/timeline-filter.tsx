@@ -37,7 +37,9 @@ export function TimelineFilter({
 }: TimelineFilterProps) {
   // State and hooks
   const [selectedCategory, setSelectedCategory] = useState(initialCategory || "all");
-  const { loading, error } = useLearningState();
+  const learningState = useLearningState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   
   // Effect to notify parent of changes
   useEffect(() => {

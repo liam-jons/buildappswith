@@ -6,7 +6,7 @@
 
 import { PlatformHeader } from "@/components/ui";
 import { useAuth } from "@/lib/auth/hooks";
-import { UserRole } from "@/lib/auth/types";
+import { UserRole } from "@/lib/types/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { redirect } from "next/navigation";

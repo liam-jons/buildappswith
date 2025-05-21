@@ -6,7 +6,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, useUser } from "@clerk/nextjs";
-import { BuilderProfile, BuilderProfileData } from "@/components/profile/builder-profile";
+import { BuilderProfile } from "@/components/profile/builder-profile";
+import { BuilderProfileData } from "@/lib/types/builder";
+import { BuilderProfileClientWrapperProps } from "./types";
 import { Button } from "@/components/ui/core/button";
 import { 
   Dialog,
@@ -19,8 +21,7 @@ import {
 } from "@/components/ui/core/dialog";
 import { CalendarIcon, ChatBubbleIcon } from "@radix-ui/react-icons";
 
-interface BuilderProfileClientWrapperProps {
-  profile: BuilderProfileData;
+interface ExtendedBuilderProfileClientWrapperProps extends BuilderProfileClientWrapperProps {
   sessionTypes: any[];
   clerkUserId?: string;
 }
@@ -28,8 +29,12 @@ interface BuilderProfileClientWrapperProps {
 export function BuilderProfileClientWrapper({ 
   profile, 
   sessionTypes,
-  clerkUserId
-}: BuilderProfileClientWrapperProps) {
+  clerkUserId,
+  showEditControls = true,
+  className,
+  id,
+  ...props
+}: ExtendedBuilderProfileClientWrapperProps) {
   const router = useRouter();
   const { isLoaded, userId, isSignedIn } = useAuth();
   const { user } = useUser();

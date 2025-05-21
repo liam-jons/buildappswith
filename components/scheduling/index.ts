@@ -30,5 +30,5 @@ export { PathwayAnalytics } from './builder/pathway-analytics';
 // Calendly components
 export { CalendlyEmbed, BookingConfirmation, CalendlySessionTypeList } from './calendly';
 
-// Re-export subdirectory
-export * from './ui';
+// UI directory doesn't have actual exports yet
+// export * from './ui';

@@ -14,15 +14,16 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/core/button';
 
-interface BookingButtonProps {
+export interface BookingButtonProps {
   builderId: string;
   sessionTypeId?: string;
   calendlyEventTypeId?: string;
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'outline' | 'primary' | 'secondary';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
   fullWidth?: boolean;
   label?: string;
+  sessionTitle?: string;
 }
 
 /**
@@ -33,8 +34,8 @@ export function BookingButton({
   sessionTypeId,
   calendlyEventTypeId,
   className,
-  size = 'md',
-  variant = 'primary',
+  size = 'default',
+  variant = 'default',
   fullWidth = false,
   label = 'Book a Session',
 }: BookingButtonProps) {
@@ -113,7 +114,7 @@ export function SessionBookingButton({
   builderId,
   sessionTitle,
   ...props
-}: BookingButtonProps & { sessionTitle?: string }) {
+}: BookingButtonProps) {
   return (
     <BookingButton
       builderId={builderId}

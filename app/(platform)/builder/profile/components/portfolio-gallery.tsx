@@ -36,7 +36,7 @@ export function PortfolioGallery({ projects }: PortfolioGalleryProps) {
   const technologies = ['all'];
   projects.forEach(project => {
     if (project.technologies && Array.isArray(project.technologies)) {
-      project.technologies.forEach(tech => {
+      project.technologies.forEach((tech: string) => {
         if (!technologies.includes(tech)) {
           technologies.push(tech);
         }
@@ -91,7 +91,7 @@ function ProjectGrid({ projects }: { projects: Project[] }) {
 function ProjectCard({ project }: { project: Project }) {
   // Find the most significant outcome to feature
   const featuredOutcome = project.outcomes && Array.isArray(project.outcomes) 
-    ? project.outcomes.sort((a, b) => {
+    ? project.outcomes.sort((a: any, b: any) => {
         // Prioritize verified outcomes (using isVerified or verified property)
         const aVerified = a.isVerified || a.verified;
         const bVerified = b.isVerified || b.verified;
@@ -140,7 +140,7 @@ function ProjectCard({ project }: { project: Project }) {
       </CardHeader>
       
       <CardContent className="p-4 pt-2 flex-1">
-        <p className="text-sm font-medium">{project.client}</p>
+        <p className="text-sm font-medium">{project.client?.name || 'Client Project'}</p>
         
         <div className="mt-3">
           <p className="text-sm text-muted-foreground">{project.description.substring(0, 100)}...</p>
@@ -158,7 +158,7 @@ function ProjectCard({ project }: { project: Project }) {
         )}
         
         <div className="flex flex-wrap gap-2 mt-4">
-          {project.technologies && Array.isArray(project.technologies) && project.technologies.slice(0, 3).map(tech => (
+          {project.technologies && Array.isArray(project.technologies) && project.technologies.slice(0, 3).map((tech: string) => (
             <Badge key={tech} variant="outline" className="capitalize">
               {tech}
             </Badge>

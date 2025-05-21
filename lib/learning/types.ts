@@ -114,3 +114,17 @@ export interface ContentCompletionResult {
   message: string;
   updatedProgress?: ProgressItem;
 }
+
+/**
+ * Learning capability definition
+ */
+export interface LearningCapability {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: "can" | "cannot" | "limitation";
+  examples: string[];
+  dateAdded: string;
+  limitations?: string[];
+}

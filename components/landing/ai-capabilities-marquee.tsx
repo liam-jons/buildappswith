@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Marquee } from "@/components/magicui/marquee";
 import { AICapabilitiesMarqueeProps } from "./types";
-import { aiCapabilities, aiLimitations } from "./data.tsx";
+import { aiCapabilities, aiLimitations } from "./data";
 import { motion } from "framer-motion";
 
 export function AICapabilitiesMarquee({

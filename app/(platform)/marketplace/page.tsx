@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  BuilderListClient,
+  BuilderList,
   FilterPanel,
   MarketplaceErrorBoundary,
   useBuilderSearch
@@ -64,7 +64,7 @@ export default function MarketplacePage() {
             </div>
             
             {/* Builder list grid */}
-            <BuilderListClient
+            <BuilderList
               builders={builders}
               isLoading={isLoading}
               emptyMessage={

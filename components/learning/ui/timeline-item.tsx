@@ -70,17 +70,21 @@ export function TimelineItem({
                 <div>
                   <h5 className="font-medium mb-2">Examples</h5>
                   <ul className="list-disc pl-5 space-y-1">
-                    {capability.examples.map((example, index) => (
+                    {capability.examples.map((example: string, index: number) => (
                       <li key={index}>{example}</li>
                     ))}
                   </ul>
                 </div>
               )}
               
-              {capability.limitations && (
+              {capability.limitations && capability.limitations.length > 0 && (
                 <div>
                   <h5 className="font-medium mb-2">Limitations</h5>
-                  <p className="text-gray-600">{capability.limitations}</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    {capability.limitations.map((limitation: string, index: number) => (
+                      <li key={index} className="text-gray-600">{limitation}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
               

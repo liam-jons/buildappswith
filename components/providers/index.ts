@@ -1,11 +1,13 @@
 /**
  * providers components barrel export file
- * Version: 1.0.0
+ * Version: 2.0.0
+ * Updated to use named exports consistently
  */
 
-// Export components
-export { default as providers } from './providers';
-export { default as ClerkProvider } from './clerk-provider';
+// Export components with named exports to match actual implementations
+export { Providers as providers } from './providers';
+export { ClerkProvider } from './clerk-provider';
 export { DatadogRumProvider, retrieveTraceContext, storeTraceContext } from './datadog-rum-provider';
 
-export { default as Providers } from './providers';
+// Re-export Providers with its actual name as well
+export { Providers } from './providers';

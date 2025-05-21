@@ -1,25 +1,18 @@
- buildappswith git:(feature/auth-cleanup1) ✗ pnpm type-check
-
-> buildappswith@1.0.142 type-check /Users/liamj/Documents/development/buildappswith
+uildappswith@1.0.142 type-check /Users/liamj/Documents/development/buildappswith
 > tsc --noEmit
 
-app/(marketing)/metadata.ts:99:3 - error TS2561: Object literal may only specify known properties, but 'themeColour' does not exist in type 'Metadata'. Did you mean to write 'themeColor'?
-
-99   themeColour: [
-     ~~~~~~~~~~~
-
-app/(platform)/book/[builderId]/page.tsx:110:60 - error TS2339: Property 'avatarUrl' does not exist on type '{ sessionTypes: { price: number; builderId: string; id: string; createdAt: Date; updatedAt: Date; title: string; description: string; color: string | null; durationMinutes: number; ... 9 more ...; calendlyEventTypeUri: string | null; }[]; ... 28 more ...; schedulingSettings: JsonValue; }'.
+app/(platform)/book/[builderId]/page.tsx:110:60 - error TS2339: Property 'avatarUrl' does not exist on type '{ sessionTypes: { price: number; builderId: string; calendlyEventTypeId: string | null; id: string; title: string; color: string | null; createdAt: Date; updatedAt: Date; description: string; ... 9 more ...; calendlyEventTypeUri: string | null; }[]; ... 28 more ...; schedulingSettings: JsonValue; }'.
 
 110           {(builderProfile.user.imageUrl || builderProfile.avatarUrl) && (
                                                                ~~~~~~~~~
 
-app/(platform)/book/[builderId]/page.tsx:113:69 - error TS2339: Property 'avatarUrl' does not exist on type '{ sessionTypes: { price: number; builderId: string; id: string; createdAt: Date; updatedAt: Date; title: string; description: string; color: string | null; durationMinutes: number; ... 9 more ...; calendlyEventTypeUri: string | null; }[]; ... 28 more ...; schedulingSettings: JsonValue; }'.
+app/(platform)/book/[builderId]/page.tsx:113:69 - error TS2339: Property 'avatarUrl' does not exist on type '{ sessionTypes: { price: number; builderId: string; calendlyEventTypeId: string | null; id: string; title: string; color: string | null; createdAt: Date; updatedAt: Date; description: string; ... 9 more ...; calendlyEventTypeUri: string | null; }[]; ... 28 more ...; schedulingSettings: JsonValue; }'.
 
 113                 src={builderProfile.user.imageUrl || builderProfile.avatarUrl || ''}
                                                                         ~~~~~~~~~
 
-app/(platform)/book/[builderId]/page.tsx:139:13 - error TS2322: Type '{ price: number; builderId: string; id: string; createdAt: Date; updatedAt: Date; title: string; description: string; color: string | null; durationMinutes: number; currency: string; ... 8 more ...; calendlyEventTypeUri: string | null; }[]' is not assignable to type 'SessionType[]'.
-  Type '{ price: number; builderId: string; id: string; createdAt: Date; updatedAt: Date; title: string; description: string; color: string | null; durationMinutes: number; currency: string; isActive: boolean; ... 7 more ...; calendlyEventTypeUri: string | null; }' is not assignable to type 'SessionType'.
+app/(platform)/book/[builderId]/page.tsx:139:13 - error TS2322: Type '{ price: number; builderId: string; calendlyEventTypeId: string | null; id: string; title: string; color: string | null; createdAt: Date; updatedAt: Date; description: string; ... 9 more ...; calendlyEventTypeUri: string | null; }[]' is not assignable to type 'SessionType[]'.
+  Type '{ price: number; builderId: string; calendlyEventTypeId: string | null; id: string; title: string; color: string | null; createdAt: Date; updatedAt: Date; description: string; durationMinutes: number; ... 8 more ...; calendlyEventTypeUri: string | null; }' is not assignable to type 'SessionType'.
     Types of property 'color' are incompatible.
       Type 'string | null' is not assignable to type 'string | undefined'.
         Type 'null' is not assignable to type 'string | undefined'.
@@ -27,8 +20,8 @@ app/(platform)/book/[builderId]/page.tsx:139:13 - error TS2322: Type '{ price: n
 139             sessionTypes={builderProfile.sessionTypes}
                 ~~~~~~~~~~~~
 
-  components/scheduling/client/booking-flow.tsx:19:3
-    19   sessionTypes?: SessionType[];
+  components/scheduling/client/booking-flow.tsx:20:3
+    20   sessionTypes?: SessionType[];
          ~~~~~~~~~~~~
     The expected type comes from property 'sessionTypes' which is declared here on type 'IntrinsicAttributes & BookingFlowProps'
 
@@ -57,93 +50,36 @@ app/(platform)/builder/[slug]/page.tsx:39:7 - error TS2353: Object literal may o
             ~~~~~~~~~
     The expected type comes from property 'openGraph' which is declared here on type 'Metadata'
 
-app/(platform)/builder/[slug]/page.tsx:281:13 - error TS2322: Type '{ id: string; name: string; title: string; bio: string; avatarUrl: string; coverImageUrl: string; validationTier: ValidationTier; joinDate: Date; completedProjects: number; ... 9 more ...; expertiseAreas: { ...; }; }' is not assignable to type 'BuilderProfileData'.
-  Types of property 'validationTier' are incompatible.
-    Type 'import("/Users/liamj/Documents/development/buildappswith/lib/profile/types").ValidationTier' is not assignable to type 'import("/Users/liamj/Documents/development/buildappswith/lib/trust/types").ValidationTier'.
+app/(platform)/builder/[slug]/page.tsx:68:25 - error TS2693: 'ValidationTier' only refers to a type, but is being used as a value here.
+
+68         validationTier: ValidationTier.TIER3,
+                           ~~~~~~~~~~~~~~
+
+app/(platform)/builder/[slug]/page.tsx:281:13 - error TS2739: Type '{ id: string; name: string; title: string; bio: string; avatarUrl: string; coverImageUrl: string; validationTier: any; joinDate: Date; completedProjects: number; rating: number; responseRate: number; ... 7 more ...; expertiseAreas: { ...; }; }' is missing the following properties from type 'BuilderProfileData': userId, createdAt, updatedAt
 
 281             profile={profile}
                 ~~~~~~~
 
-  components/profile/builder-profile-client-wrapper.tsx:23:3
-    23   profile: BuilderProfileData;
+  components/profile/builder-profile-client-wrapper.tsx:24:3
+    24   profile: BuilderProfileData;
          ~~~~~~~
     The expected type comes from property 'profile' which is declared here on type 'IntrinsicAttributes & BuilderProfileClientWrapperProps'
 
-app/(platform)/builder/profile/components/metrics-display.tsx:3:32 - error TS2307: Cannot find module '@/lib/types/builder' or its corresponding type declarations.
+app/(platform)/profile/[id]/page.tsx:88:13 - error TS2322: Type '{ profileId: string; isPublicView: boolean; }' is not assignable to type 'IntrinsicAttributes & BuilderProfileWrapperProps'.
+  Property 'profileId' does not exist on type 'IntrinsicAttributes & BuilderProfileWrapperProps'.
 
-3 import { BuilderMetrics } from '@/lib/types/builder';
-                                 ~~~~~~~~~~~~~~~~~~~~~
+88             profileId={params.id}
+               ~~~~~~~~~
 
-app/(platform)/builder/profile/components/metrics-display.tsx:12:8 - error TS2613: Module '"/Users/liamj/Documents/development/buildappswith/components/magicui/particles"' has no default export. Did you mean to use 'import { Particles } from "/Users/liamj/Documents/development/buildappswith/components/magicui/particles"' instead?
+app/(platform)/profile/[id]/page.tsx:93:13 - error TS2322: Type '{ userId: string; }' is not assignable to type 'IntrinsicAttributes & ClientDashboardProps'.
+  Property 'userId' does not exist on type 'IntrinsicAttributes & ClientDashboardProps'.
 
-12 import Particles from '@/components/magicui/particles';
-          ~~~~~~~~~
-
-app/(platform)/builder/profile/components/portfolio-gallery.tsx:7:25 - error TS2307: Cannot find module '@/lib/types/builder' or its corresponding type declarations.
-
-7 import { Project } from '@/lib/types/builder';
-                          ~~~~~~~~~~~~~~~~~~~~~
-
-app/(platform)/builder/profile/components/portfolio-gallery.tsx:26:29 - error TS2307: Cannot find module '@/components/magicui/text-shimmer' or its corresponding type declarations.
-
-26 import { TextShimmer } from '@/components/magicui/text-shimmer';
-                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-app/(platform)/builder/profile/components/portfolio-gallery.tsx:39:36 - error TS7006: Parameter 'tech' implicitly has an 'any' type.
-
-39       project.technologies.forEach(tech => {
-                                      ~~~~
-
-app/(platform)/builder/profile/components/portfolio-gallery.tsx:94:30 - error TS7006: Parameter 'a' implicitly has an 'any' type.
-
-94     ? project.outcomes.sort((a, b) => {
-                                ~
-
-app/(platform)/builder/profile/components/portfolio-gallery.tsx:94:33 - error TS7006: Parameter 'b' implicitly has an 'any' type.
-
-94     ? project.outcomes.sort((a, b) => {
-                                   ~
-
-app/(platform)/builder/profile/components/portfolio-gallery.tsx:161:112 - error TS7006: Parameter 'tech' implicitly has an 'any' type.
-
-161           {project.technologies && Array.isArray(project.technologies) && project.technologies.slice(0, 3).map(tech => (
-                                                                                                                   ~~~~
-
-app/(platform)/builder/profile/components/validation-tier.tsx:3:44 - error TS2307: Cannot find module '@/lib/types/builder' or its corresponding type declarations.
-
-3 import { ValidationTier as TierType } from '@/lib/types/builder';
-                                             ~~~~~~~~~~~~~~~~~~~~~
-
-app/(platform)/builder/profile/components/validation-tier.tsx:12:29 - error TS2307: Cannot find module '@/components/magicui/text-shimmer' or its corresponding type declarations.
-
-12 import { TextShimmer } from '@/components/magicui/text-shimmer';
-                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-app/(platform)/marketplace/page.tsx:5:3 - error TS2305: Module '"@/components/marketplace"' has no exported member 'BuilderListClient'.
-
-5   BuilderListClient,
-    ~~~~~~~~~~~~~~~~~
-
-app/(platform)/profile/[id]/page.tsx:88:13 - error TS2322: Type '{ userId: string; isPublicView: boolean; }' is not assignable to type 'IntrinsicAttributes & BuilderProfileProps'.
-  Property 'userId' does not exist on type 'IntrinsicAttributes & BuilderProfileProps'.
-
-88             userId={params.id}
+93             userId={params.id}
                ~~~~~~
 
-app/(platform)/profile/[id]/page.tsx:94:13 - error TS2322: Type '{ userId: string; isPublicView: boolean; }' is not assignable to type 'IntrinsicAttributes & ClientProfileProps'.
-  Property 'isPublicView' does not exist on type 'IntrinsicAttributes & ClientProfileProps'.
+app/(platform)/profile/page.tsx:48:46 - error TS2554: Expected 0 arguments, but got 1.
 
-94             isPublicView={!isOwnProfile}
-               ~~~~~~~~~~~~
-
-app/(platform)/profile/page.tsx:13:10 - error TS2305: Module '"@/components/profile/ui"' has no exported member 'ProfileSkeleton'.
-
-13 import { ProfileSkeleton } from "@/components/profile/ui";
-            ~~~~~~~~~~~~~~~
-
-app/(platform)/profile/page.tsx:49:46 - error TS2554: Expected 0 arguments, but got 1.
-
-49   const profile = await getPublicUserProfile(userId);
+48   const profile = await getPublicUserProfile(userId);
                                                 ~~~~~~
 
 app/(platform)/profile/profile-settings/availability/page.tsx:22:52 - error TS2339: Property 'includes' does not exist on type '{}'.
@@ -172,84 +108,12 @@ app/(platform)/trust/verification/[builderId]/page.tsx:51:7 - error TS2322: Type
 51       builder={builderData}
          ~~~~~~~
 
-app/api/admin/builders/route.ts:3:21 - error TS2305: Module '"@/lib/auth"' has no exported member 'AuthenticationError'.
-
-3 import { withAdmin, AuthenticationError, AuthorizationError, AuthErrorType } from "@/lib/auth";
-                      ~~~~~~~~~~~~~~~~~~~
-
-app/api/admin/builders/route.ts:3:42 - error TS2305: Module '"@/lib/auth"' has no exported member 'AuthorizationError'.
-
-3 import { withAdmin, AuthenticationError, AuthorizationError, AuthErrorType } from "@/lib/auth";
-                                           ~~~~~~~~~~~~~~~~~~
-
-app/api/admin/builders/route.ts:11:30 - error TS2345: Argument of type '(req: NextRequest, auth: AuthObject) => Promise<NextResponse<{ success: boolean; data: { id: string; userId: string; name: string | null; email: string; image: string | null; headline: string | null; ... 4 more ...; validationTier: number; }[]; count: number; }> | NextResponse<...>>' is not assignable to parameter of type 'RoleHandler<{ params?: any; }>'.
-  Types of parameters 'auth' and 'context' are incompatible.
-    Type '{ params?: any; }' is missing the following properties from type 'AuthObject': userId, roles, claims
-
-11 export const GET = withAdmin(async (req: NextRequest, auth: AuthObject) => {
-                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-app/api/admin/builders/route.ts:81:43 - error TS18046: 'error' is of type 'unknown'.
-
-81       return NextResponse.json({ message: error.message }, { status: error.statusCode });
-                                             ~~~~~
-
-app/api/admin/builders/route.ts:81:70 - error TS18046: 'error' is of type 'unknown'.
-
-81       return NextResponse.json({ message: error.message }, { status: error.statusCode });
-                                                                        ~~~~~
-
-app/api/admin/session-types/[id]/route.ts:3:21 - error TS2305: Module '"@/lib/auth"' has no exported member 'AuthenticationError'.
-
-3 import { withAdmin, AuthenticationError, AuthorizationError, ResourceNotFoundError, AuthErrorType } from "@/lib/auth";
-                      ~~~~~~~~~~~~~~~~~~~
-
-app/api/admin/session-types/[id]/route.ts:3:42 - error TS2305: Module '"@/lib/auth"' has no exported member 'AuthorizationError'.
-
-3 import { withAdmin, AuthenticationError, AuthorizationError, ResourceNotFoundError, AuthErrorType } from "@/lib/auth";
-                                           ~~~~~~~~~~~~~~~~~~
-
-app/api/admin/session-types/[id]/route.ts:3:62 - error TS2305: Module '"@/lib/auth"' has no exported member 'ResourceNotFoundError'.
-
-3 import { withAdmin, AuthenticationError, AuthorizationError, ResourceNotFoundError, AuthErrorType } from "@/lib/auth";
-                                                               ~~~~~~~~~~~~~~~~~~~~~
-
-app/api/admin/session-types/[id]/route.ts:85:43 - error TS18046: 'error' is of type 'unknown'.
-
-85       return NextResponse.json({ message: error.message }, { status: error.statusCode });
-                                             ~~~~~
-
-app/api/admin/session-types/[id]/route.ts:85:70 - error TS18046: 'error' is of type 'unknown'.
-
-85       return NextResponse.json({ message: error.message }, { status: error.statusCode });
-                                                                        ~~~~~
-
-app/api/admin/session-types/[id]/route.ts:178:43 - error TS18046: 'error' is of type 'unknown'.
-
-178       return NextResponse.json({ message: error.message }, { status: error.statusCode });
-                                              ~~~~~
-
-app/api/admin/session-types/[id]/route.ts:178:70 - error TS18046: 'error' is of type 'unknown'.
-
-178       return NextResponse.json({ message: error.message }, { status: error.statusCode });
-                                                                         ~~~~~
-
-app/api/admin/session-types/[id]/route.ts:248:43 - error TS18046: 'error' is of type 'unknown'.
-
-248       return NextResponse.json({ message: error.message }, { status: error.statusCode });
-                                              ~~~~~
-
-app/api/admin/session-types/[id]/route.ts:248:70 - error TS18046: 'error' is of type 'unknown'.
-
-248       return NextResponse.json({ message: error.message }, { status: error.statusCode });
-                                                                         ~~~~~
-
 app/api/profiles/builder/[id]/route.ts:48:13 - error TS2353: Object literal may only specify known properties, and 'image' does not exist in type 'UserSelect<DefaultArgs>'.
 
 48             image: true,
                ~~~~~
 
-app/api/profiles/builder/[id]/route.ts:68:44 - error TS2339: Property 'skills' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/[id]/route.ts:68:44 - error TS2339: Property 'skills' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 68     const formattedSkills = builderProfile.skills.map(skill => ({
                                               ~~~~~~
@@ -259,45 +123,35 @@ app/api/profiles/builder/[id]/route.ts:68:55 - error TS7006: Parameter 'skill' i
 68     const formattedSkills = builderProfile.skills.map(skill => ({
                                                          ~~~~~
 
-app/api/profiles/builder/[id]/route.ts:78:28 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/[id]/route.ts:78:28 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 78         id: builderProfile.user.id,
                               ~~~~
 
-app/api/profiles/builder/[id]/route.ts:79:30 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/[id]/route.ts:79:30 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 79         name: builderProfile.user.name,
                                 ~~~~
 
-app/api/profiles/builder/[id]/route.ts:80:31 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/[id]/route.ts:80:31 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 80         email: builderProfile.user.email,
                                  ~~~~
 
-app/api/profiles/builder/[id]/route.ts:81:31 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/[id]/route.ts:81:31 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 81         image: builderProfile.user.image,
                                  ~~~~
 
-app/api/profiles/builder/[id]/route.ts:87:33 - error TS2551: Property 'adhdFocus' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'. Did you mean 'adhd_focus'?
-
-87       adhdFocus: builderProfile.adhdFocus,
-                                   ~~~~~~~~~
-
-app/api/profiles/builder/clerk/[clerkId]/route.ts:65:29 - error TS2339: Property 'category' does not exist on type '{ status: SkillStatus; name: string; id: string; createdAt: Date; updatedAt: Date; description: string | null; domain: string; level: number; slug: string; pathways: string[]; prerequisites: string[]; isFundamental: boolean; }'.
+app/api/profiles/builder/clerk/[clerkId]/route.ts:65:29 - error TS2339: Property 'category' does not exist on type '{ description: string | null; id: string; createdAt: Date; updatedAt: Date; slug: string; name: string; status: SkillStatus; domain: string; level: number; pathways: string[]; prerequisites: string[]; isFundamental: boolean; }'.
 
 65       category: skill.skill.category,
                                ~~~~~~~~
 
-app/api/profiles/builder/clerk/[clerkId]/route.ts:76:21 - error TS2339: Property 'image' does not exist on type '{ builderProfile: ({ skills: ({ skill: { status: SkillStatus; name: string; id: string; createdAt: Date; updatedAt: Date; description: string | null; domain: string; ... 4 more ...; isFundamental: boolean; }; } & { ...; })[]; } & { ...; }) | null; } & { ...; }'.
+app/api/profiles/builder/clerk/[clerkId]/route.ts:76:21 - error TS2339: Property 'image' does not exist on type '{ builderProfile: ({ skills: ({ skill: { description: string | null; id: string; createdAt: Date; updatedAt: Date; slug: string; name: string; status: SkillStatus; ... 4 more ...; isFundamental: boolean; }; } & { ...; })[]; } & { ...; }) | null; } & { ...; }'.
 
 76         image: user.image,
                        ~~~~~
-
-app/api/profiles/builder/clerk/[clerkId]/route.ts:82:38 - error TS2551: Property 'adhdFocus' does not exist on type '{ skills: ({ skill: { status: SkillStatus; name: string; id: string; createdAt: Date; updatedAt: Date; description: string | null; domain: string; level: number; slug: string; pathways: string[]; prerequisites: string[]; isFundamental: boolean; }; } & { ...; })[]; } & { ...; }'. Did you mean 'adhd_focus'?
-
-82       adhdFocus: user.builderProfile.adhdFocus,
-                                        ~~~~~~~~~
 
 app/api/profiles/builder/route.ts:214:11 - error TS2322: Type '{ name: string; }' is not assignable to type 'SkillWhereUniqueInput'.
   Type '{ name: string; }' is not assignable to type '{ id: string; slug: string; } & { id?: string | undefined; slug?: string | undefined; AND?: SkillWhereInput | SkillWhereInput[] | undefined; OR?: SkillWhereInput[] | undefined; ... 13 more ...; userProgress?: UserSkillProgressListRelationFilter | undefined; }'.
@@ -335,7 +189,7 @@ app/api/profiles/builder/route.ts:260:13 - error TS2322: Type '{ skill: { create
               ~~~~~~~~~~~
     'proficiency' is declared here.
 
-app/api/profiles/builder/route.ts:268:53 - error TS2339: Property 'skills' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/route.ts:268:53 - error TS2339: Property 'skills' does not exist on type '{ userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; ... 19 more ...; schedulingSettings: JsonValue; }'.
 
 268     const formattedSkills = updatedOrCreatedProfile.skills.map(skill => ({
                                                         ~~~~~~
@@ -350,7 +204,7 @@ app/api/profiles/builder/slug/[slug]/route.ts:40:13 - error TS2353: Object liter
 40             image: true,
                ~~~~~
 
-app/api/profiles/builder/slug/[slug]/route.ts:60:44 - error TS2339: Property 'skills' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/slug/[slug]/route.ts:60:44 - error TS2339: Property 'skills' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 60     const formattedSkills = builderProfile.skills.map(skill => ({
                                               ~~~~~~
@@ -360,57 +214,52 @@ app/api/profiles/builder/slug/[slug]/route.ts:60:55 - error TS7006: Parameter 's
 60     const formattedSkills = builderProfile.skills.map(skill => ({
                                                          ~~~~~
 
-app/api/profiles/builder/slug/[slug]/route.ts:71:28 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/slug/[slug]/route.ts:71:28 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 71         id: builderProfile.user.id,
                               ~~~~
 
-app/api/profiles/builder/slug/[slug]/route.ts:72:30 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/slug/[slug]/route.ts:72:30 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 72         name: builderProfile.user.name,
                                 ~~~~
 
-app/api/profiles/builder/slug/[slug]/route.ts:73:31 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/slug/[slug]/route.ts:73:31 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 73         email: builderProfile.user.email,
                                  ~~~~
 
-app/api/profiles/builder/slug/[slug]/route.ts:74:31 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builder/slug/[slug]/route.ts:74:31 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 74         image: builderProfile.user.image,
                                  ~~~~
-
-app/api/profiles/builder/slug/[slug]/route.ts:80:33 - error TS2551: Property 'adhdFocus' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'. Did you mean 'adhd_focus'?
-
-80       adhdFocus: builderProfile.adhdFocus,
-                                   ~~~~~~~~~
 
 app/api/profiles/builders/route.ts:58:13 - error TS2353: Object literal may only specify known properties, and 'image' does not exist in type 'UserSelect<DefaultArgs>'.
 
 58             image: true,
                ~~~~~
 
-app/api/profiles/builders/route.ts:82:21 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builders/route.ts:82:21 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 82         id: profile.user.id,
                        ~~~~
 
-app/api/profiles/builders/route.ts:83:23 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builders/route.ts:83:23 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 83         name: profile.user.name,
                          ~~~~
 
-app/api/profiles/builders/route.ts:84:24 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builders/route.ts:84:24 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 84         email: profile.user.email,
                           ~~~~
 
-app/api/profiles/builders/route.ts:85:24 - error TS2339: Property 'user' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builders/route.ts:85:24 - error TS2339: Property 'user' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 85         image: profile.user.image,
                           ~~~~
 
-app/api/profiles/builders/route.ts:89:23 - error TS2339: Property 'skills' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/profiles/builders/route.ts:89:23 - error TS2339: Property 'skills' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 89       skills: profile.skills.map(skill => ({
                          ~~~~~~
@@ -419,39 +268,6 @@ app/api/profiles/builders/route.ts:89:34 - error TS7006: Parameter 'skill' impli
 
 89       skills: profile.skills.map(skill => ({
                                     ~~~~~
-
-app/api/profiles/builders/route.ts:95:26 - error TS2551: Property 'adhdFocus' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'. Did you mean 'adhd_focus'?
-
-95       adhdFocus: profile.adhdFocus,
-                            ~~~~~~~~~
-
-app/api/scheduling/availability-exceptions/route.ts:106:30 - error TS2345: Argument of type '(request: NextRequest, context: { params?: any; }, userId: string, userRoles?: UserRole[]) => Promise<NextResponse<unknown>>' is not assignable to parameter of type 'AuthHandler<{ params?: any; }>'.
-  Types of parameters 'userId' and 'auth' are incompatible.
-    Type 'AuthObject' is not assignable to type 'string'.
-
-106 export const POST = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
-                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-app/api/scheduling/availability-exceptions/route.ts:169:35 - error TS2345: Argument of type '(request: NextRequest, context: { params?: any; }, userId: string, userRoles?: UserRole[]) => Promise<NextResponse<unknown>>' is not assignable to parameter of type 'AuthHandler<{ params?: any; }>'.
-  Types of parameters 'userId' and 'auth' are incompatible.
-    Type 'AuthObject' is not assignable to type 'string'.
-
-169 export const GET_BY_ID = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
-                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-app/api/scheduling/availability-exceptions/route.ts:237:29 - error TS2345: Argument of type '(request: NextRequest, context: { params?: any; }, userId: string, userRoles?: UserRole[]) => Promise<NextResponse<unknown>>' is not assignable to parameter of type 'AuthHandler<{ params?: any; }>'.
-  Types of parameters 'userId' and 'auth' are incompatible.
-    Type 'AuthObject' is not assignable to type 'string'.
-
-237 export const PUT = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
-                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-app/api/scheduling/availability-exceptions/route.ts:327:32 - error TS2345: Argument of type '(request: NextRequest, context: { params?: any; }, userId: string, userRoles?: UserRole[]) => Promise<NextResponse<unknown>>' is not assignable to parameter of type 'AuthHandler<{ params?: any; }>'.
-  Types of parameters 'userId' and 'auth' are incompatible.
-    Type 'AuthObject' is not assignable to type 'string'.
-
-327 export const DELETE = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
-                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 app/api/scheduling/availability-rules/route.ts:99:30 - error TS2345: Argument of type '(request: NextRequest, context: { params?: any; }, userId: string, userRoles?: UserRole[]) => Promise<NextResponse<unknown>>' is not assignable to parameter of type 'AuthHandler<{ params?: any; }>'.
   Types of parameters 'userId' and 'auth' are incompatible.
@@ -479,29 +295,29 @@ app/api/scheduling/bookings/confirm/route.ts:5:10 - error TS2724: '"@/lib/schedu
 5 import { calendlyApiClient } from '@/lib/scheduling/calendly/api-client';
            ~~~~~~~~~~~~~~~~~
 
-  lib/scheduling/calendly/api-client.ts:106:14
-    106 export class CalendlyApiClient {
-                     ~~~~~~~~~~~~~~~~~
+  lib/scheduling/calendly/api-client.ts:71:14
+    71 export class CalendlyApiClient {
+                    ~~~~~~~~~~~~~~~~~
     'CalendlyApiClient' is declared here.
 
-app/api/scheduling/bookings/confirm/route.ts:109:11 - error TS2820: Type '"pending"' is not assignable to type 'BookingStatus | undefined'. Did you mean '"PENDING"'?
+app/api/scheduling/bookings/confirm/route.ts:107:11 - error TS2353: Object literal may only specify known properties, and 'clientName' does not exist in type 'Without<BookingCreateInput, BookingUncheckedCreateInput> & BookingUncheckedCreateInput'.
 
-109           status: 'pending',
-              ~~~~~~
+107           clientName: clientDetails.name,
+              ~~~~~~~~~~
 
-  node_modules/.prisma/client/index.d.ts:33078:5
-    33078     status?: $Enums.BookingStatus
-              ~~~~~~
-    The expected type comes from property 'status' which is declared here on type '(Without<BookingCreateInput, BookingUncheckedCreateInput> & BookingUncheckedCreateInput) | (Without<...> & BookingCreateInput)'
+  node_modules/.prisma/client/index.d.ts:19659:5
+    19659     data: XOR<BookingCreateInput, BookingUncheckedCreateInput>
+              ~~~~
+    The expected type comes from property 'data' which is declared here on type '{ select?: BookingSelect<DefaultArgs> | null | undefined; omit?: BookingOmit<DefaultArgs> | null | undefined; include?: BookingInclude<...> | ... 1 more ... | undefined; data: (Without<...> & BookingUncheckedCreateInput) | (Without<...> & BookingCreateInput); }'
 
 app/api/scheduling/bookings/confirm/route.ts:171:23 - error TS2339: Property 'scheduling_url' does not exist on type '{ uri: string; start_time: string; end_time: string; event_type: string | null; invitees_counter: { total: number; active: number; }; status: string; location: { type: string; location: string; }; }'.
 
 171       calendlyBooking.scheduling_url = schedulingUrl;
                           ~~~~~~~~~~~~~~
 
-app/api/scheduling/bookings/confirm/route.ts:183:17 - error TS2322: Type '"failed"' is not assignable to type 'BookingStatus | EnumBookingStatusFieldUpdateOperationsInput | undefined'.
+app/api/scheduling/bookings/confirm/route.ts:183:17 - error TS2322: Type '"FAILED"' is not assignable to type 'BookingStatus | EnumBookingStatusFieldUpdateOperationsInput | undefined'.
 
-183         data: { status: 'failed' }
+183         data: { status: 'FAILED' }
                     ~~~~~~
 
   node_modules/.prisma/client/index.d.ts:33132:5
@@ -509,10 +325,10 @@ app/api/scheduling/bookings/confirm/route.ts:183:17 - error TS2322: Type '"faile
               ~~~~~~
     The expected type comes from property 'status' which is declared here on type '(Without<BookingUpdateInput, BookingUncheckedUpdateInput> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput)'
 
-app/api/scheduling/bookings/confirm/route.ts:196:9 - error TS2322: Type '"confirmed" | "pending_payment"' is not assignable to type 'BookingStatus | EnumBookingStatusFieldUpdateOperationsInput | undefined'.
-  Type '"confirmed"' is not assignable to type 'BookingStatus | EnumBookingStatusFieldUpdateOperationsInput | undefined'. Did you mean '"CONFIRMED"'?
+app/api/scheduling/bookings/confirm/route.ts:196:9 - error TS2322: Type '"CONFIRMED" | "PENDING_PAYMENT"' is not assignable to type 'BookingStatus | EnumBookingStatusFieldUpdateOperationsInput | undefined'.
+  Type '"PENDING_PAYMENT"' is not assignable to type 'BookingStatus | EnumBookingStatusFieldUpdateOperationsInput | undefined'.
 
-196         status: sessionType.price > 0 ? 'pending_payment' : 'confirmed',
+196         status: Number(sessionType.price) > 0 ? 'PENDING_PAYMENT' : 'CONFIRMED',
             ~~~~~~
 
   node_modules/.prisma/client/index.d.ts:33132:5
@@ -520,17 +336,7 @@ app/api/scheduling/bookings/confirm/route.ts:196:9 - error TS2322: Type '"confir
               ~~~~~~
     The expected type comes from property 'status' which is declared here on type '(Without<BookingUpdateInput, BookingUncheckedUpdateInput> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput)'
 
-app/api/scheduling/bookings/confirm/route.ts:196:17 - error TS2365: Operator '>' cannot be applied to types 'Decimal' and 'number'.
-
-196         status: sessionType.price > 0 ? 'pending_payment' : 'confirmed',
-                    ~~~~~~~~~~~~~~~~~~~~~
-
-app/api/scheduling/bookings/confirm/route.ts:202:9 - error TS2367: This comparison appears to be unintentional because the types 'Decimal' and 'number' have no overlap.
-
-202     if (sessionType.price === 0) {
-            ~~~~~~~~~~~~~~~~~~~~~~~
-
-app/api/scheduling/bookings/confirm/route.ts:208:44 - error TS2339: Property 'name' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/scheduling/bookings/confirm/route.ts:208:44 - error TS2339: Property 'name' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 208           builderName: sessionType.builder.name,
                                                ~~~~
@@ -540,25 +346,15 @@ app/api/scheduling/bookings/confirm/route.ts:230:40 - error TS2339: Property 'sc
 230         schedulingUrl: calendlyBooking.scheduling_url,
                                            ~~~~~~~~~~~~~~
 
-app/api/scheduling/bookings/confirm/route.ts:239:37 - error TS2339: Property 'name' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/scheduling/bookings/confirm/route.ts:239:37 - error TS2339: Property 'name' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 239           name: sessionType.builder.name,
                                         ~~~~
 
-app/api/scheduling/bookings/confirm/route.ts:240:38 - error TS2339: Property 'email' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
+app/api/scheduling/bookings/confirm/route.ts:240:38 - error TS2339: Property 'email' does not exist on type '{ id: string; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; domains: string[]; badges: string[]; rating: number | null; ... 18 more ...; schedulingSettings: JsonValue; }'.
 
 240           email: sessionType.builder.email
                                          ~~~~~
-
-app/api/scheduling/bookings/confirm/route.ts:243:24 - error TS2365: Operator '>' cannot be applied to types 'Decimal' and 'number'.
-
-243       paymentRequired: sessionType.price > 0,
-                           ~~~~~~~~~~~~~~~~~~~~~
-
-app/api/scheduling/bookings/confirm/route.ts:244:20 - error TS2365: Operator '>' cannot be applied to types 'Decimal' and 'number'.
-
-244       checkoutUrl: sessionType.price > 0 ? `/api/payment/create-checkout?bookingId=${updatedBooking.id}` : undefined
-                       ~~~~~~~~~~~~~~~~~~~~~
 
 app/api/scheduling/bookings/confirm/route.ts:250:24 - error TS2365: Operator '>' cannot be applied to types 'Decimal' and 'number'.
 
@@ -806,668 +602,55 @@ components/admin/settings-panel.tsx:4:35 - error TS2306: File '/Users/liamj/Docu
 4 import { getSystemSettings } from "@/lib/admin/actions";
                                     ~~~~~~~~~~~~~~~~~~~~~
 
-components/auth/optimized-loading-state.tsx:41:7 - error TS18047: 'pathname' is possibly 'null'.
+components/auth/index.ts:16:10 - error TS2305: Module '"./clerk-auth-form"' has no exported member 'default'.
 
-41       pathname.startsWith(`${path}/`) ||
-         ~~~~~~~~
-
-components/auth/optimized-loading-state.tsx:42:7 - error TS18047: 'pathname' is possibly 'null'.
-
-42       pathname.startsWith("/marketplace/") ||
-         ~~~~~~~~
-
-components/auth/optimized-loading-state.tsx:43:7 - error TS18047: 'pathname' is possibly 'null'.
-
-43       pathname.startsWith("/api/marketplace/") ||
-         ~~~~~~~~
-
-components/auth/optimized-loading-state.tsx:44:7 - error TS18047: 'pathname' is possibly 'null'.
-
-44       pathname.match(/^\/images\//) ||
-         ~~~~~~~~
-
-components/auth/optimized-loading-state.tsx:45:7 - error TS18047: 'pathname' is possibly 'null'.
-
-45       pathname.match(/^\/fonts\//) ||
-         ~~~~~~~~
-
-components/auth/optimized-loading-state.tsx:46:7 - error TS18047: 'pathname' is possibly 'null'.
-
-46       pathname.match(/^\/static\//)
-         ~~~~~~~~
-
-components/booking/booking-button.tsx:83:9 - error TS2322: Type '"sm" | "md" | "lg"' is not assignable to type '"default" | "sm" | "lg" | "icon" | null | undefined'.
-  Type '"md"' is not assignable to type '"default" | "sm" | "lg" | "icon" | null | undefined'.
-
-83         size={size}
-           ~~~~
-
-  components/ui/core/button.tsx:23:7
-     23       size: {
-              ~~~~~~~
-     24         default: "h-9 px-4 py-2",
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ... 
-     27         icon: "h-9 w-9",
-        ~~~~~~~~~~~~~~~~~~~~~~~~
-     28       },
-        ~~~~~~~
-    The expected type comes from property 'size' which is declared here on type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'
-
-components/booking/booking-button.tsx:95:7 - error TS2322: Type '"default" | "primary" | "secondary" | "outline"' is not assignable to type '"link" | "default" | "secondary" | "destructive" | "outline" | "ghost" | null | undefined'.
-  Type '"primary"' is not assignable to type '"link" | "default" | "secondary" | "destructive" | "outline" | "ghost" | null | undefined'.
-
-95       variant={variant}
-         ~~~~~~~
-
-  components/ui/core/button.tsx:11:7
-     11       variant: {
-              ~~~~~~~~~~
-     12         default:
-        ~~~~~~~~~~~~~~~~
-    ... 
-     21         link: "text-primary underline-offset-4 hover:underline",
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     22       },
-        ~~~~~~~
-    The expected type comes from property 'variant' which is declared here on type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'
-
-components/booking/booking-button.tsx:96:7 - error TS2322: Type '"sm" | "md" | "lg"' is not assignable to type '"default" | "sm" | "lg" | "icon" | null | undefined'.
-  Type '"md"' is not assignable to type '"default" | "sm" | "lg" | "icon" | null | undefined'.
-
-96       size={size}
-         ~~~~
-
-  components/ui/core/button.tsx:23:7
-     23       size: {
-              ~~~~~~~
-     24         default: "h-9 px-4 py-2",
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ... 
-     27         icon: "h-9 w-9",
-        ~~~~~~~~~~~~~~~~~~~~~~~~
-     28       },
-        ~~~~~~~
-    The expected type comes from property 'size' which is declared here on type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'
-
-components/booking/index.ts:7:10 - error TS2305: Module '"./booking-button"' has no exported member 'default'.
-
-7 export { default as BookingButton } from './booking-button';
-           ~~~~~~~
-
-components/community/ui/discussion-card.tsx:157:15 - error TS2322: Type '{ src: string | undefined; alt: string; className: string; }' is not assignable to type 'IntrinsicAttributes & Omit<AvatarProps & RefAttributes<HTMLSpanElement>, "ref"> & RefAttributes<HTMLSpanElement>'.
-  Property 'src' does not exist on type 'IntrinsicAttributes & Omit<AvatarProps & RefAttributes<HTMLSpanElement>, "ref"> & RefAttributes<HTMLSpanElement>'.
-
-157               src={discussion.author.avatarUrl}
-                  ~~~
-
-components/community/ui/knowledge-item.tsx:168:15 - error TS2322: Type '{ src: string | undefined; alt: string; className: string; }' is not assignable to type 'IntrinsicAttributes & Omit<AvatarProps & RefAttributes<HTMLSpanElement>, "ref"> & RefAttributes<HTMLSpanElement>'.
-  Property 'src' does not exist on type 'IntrinsicAttributes & Omit<AvatarProps & RefAttributes<HTMLSpanElement>, "ref"> & RefAttributes<HTMLSpanElement>'.
-
-168               src={item.author.avatarUrl}
-                  ~~~
-
-components/community/ui/server-discussion-card.tsx:130:15 - error TS2322: Type '{ src: string | undefined; alt: string; className: string; }' is not assignable to type 'IntrinsicAttributes & Omit<AvatarProps & RefAttributes<HTMLSpanElement>, "ref"> & RefAttributes<HTMLSpanElement>'.
-  Property 'src' does not exist on type 'IntrinsicAttributes & Omit<AvatarProps & RefAttributes<HTMLSpanElement>, "ref"> & RefAttributes<HTMLSpanElement>'.
-
-130               src={discussion.author.avatarUrl}
-                  ~~~
-
-components/index.ts:7:10 - error TS2305: Module '"./user-auth-form"' has no exported member 'default'.
-
-7 export { default as UserAuthForm } from './user-auth-form';
-           ~~~~~~~
-
-components/index.ts:8:10 - error TS2305: Module '"./theme-provider"' has no exported member 'default'.
-
-8 export { default as ThemeProvider } from './theme-provider';
-           ~~~~~~~
-
-components/index.ts:9:10 - error TS2305: Module '"./suspense-user-auth-form"' has no exported member 'default'.
-
-9 export { default as SuspenseUserAuthForm } from './suspense-user-auth-form';
-           ~~~~~~~
-
-components/index.ts:10:10 - error TS2305: Module '"./site-footer"' has no exported member 'default'.
-
-10 export { default as SiteFooter } from './site-footer';
+16 export { default as ClerkAuthForm } from './clerk-auth-form';
             ~~~~~~~
 
-components/index.ts:11:10 - error TS2305: Module '"./search-params-fallback"' has no exported member 'default'.
+components/auth/index.ts:29:10 - error TS2305: Module '"./loading-state"' has no exported member 'default'.
 
-11 export { default as SearchParamsFallback } from './search-params-fallback';
+29 export { default as LoadingState } from './loading-state';
             ~~~~~~~
 
-components/index.ts:22:10 - error TS2305: Module '"./ui/core/loading-spinner"' has no exported member 'default'.
+components/auth/index.ts:30:10 - error TS2724: '"./optimized-loading-state"' has no exported member named 'OptimizedLoadingState'. Did you mean 'OptimizedAuthLoadingState'?
 
-22 export { default as LoadingSpinner } from './ui/core/loading-spinner';
-            ~~~~~~~
+30 export { OptimizedLoadingState } from './optimized-loading-state';
+            ~~~~~~~~~~~~~~~~~~~~~
 
-components/index.ts:35:10 - error TS2305: Module '"./trust/ui/validation-tier-badge"' has no exported member 'default'.
+  components/auth/optimized-loading-state.tsx:29:17
+    29 export function OptimizedAuthLoadingState({
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~
+    'OptimizedAuthLoadingState' is declared here.
 
-35 export { default as ValidationTierBadge } from './trust/ui/validation-tier-badge';
-            ~~~~~~~
+components/auth/index.ts:34:15 - error TS2306: File '/Users/liamj/Documents/development/buildappswith/components/auth/ui/index.ts' is not a module.
 
-components/index.ts:36:10 - error TS2305: Module '"./scheduling/shared/timezone-selector"' has no exported member 'default'.
+34 export * from './ui';
+                 ~~~~~~
 
-36 export { default as TimezoneSelector } from './scheduling/shared/timezone-selector';
-            ~~~~~~~
+components/auth/loading-state.tsx:5:8 - error TS2613: Module '"/Users/liamj/Documents/development/buildappswith/components/auth/progressive-loading-state"' has no default export. Did you mean to use 'import { ProgressiveLoadingState } from "/Users/liamj/Documents/development/buildappswith/components/auth/progressive-loading-state"' instead?
 
-components/index.ts:38:10 - error TS2305: Module '"./scheduling/client/session-type-selector"' has no exported member 'default'.
+5 import ProgressiveLoadingState from "./progressive-loading-state";
+         ~~~~~~~~~~~~~~~~~~~~~~~
 
-38 export { default as SessionTypeSelector } from './scheduling/client/session-type-selector';
-            ~~~~~~~
+components/landing/ui/index.ts:11:15 - error TS2724: '"./testimonial-scroll"' has no exported member named 'TestimonialScrollProps'. Did you mean 'TestimonialScroll'?
 
-components/index.ts:41:10 - error TS2305: Module '"./scheduling/builder/weekly-schedule"' has no exported member 'default'.
+11 export type { TestimonialScrollProps, TestimonialCardProps } from './testimonial-scroll';
+                 ~~~~~~~~~~~~~~~~~~~~~~
 
-41 export { default as WeeklySchedule } from './scheduling/builder/weekly-schedule';
-            ~~~~~~~
+  components/landing/ui/testimonial-scroll.tsx:55:17
+    55 export function TestimonialScroll({
+                       ~~~~~~~~~~~~~~~~~
+    'TestimonialScroll' is declared here.
 
-components/index.ts:42:10 - error TS2305: Module '"./scheduling/builder/session-type-editor"' has no exported member 'default'.
+components/magicui/index.ts:29:15 - error TS2724: '"./text-shimmer"' has no exported member named 'TextShimmerProps'. Did you mean 'TextShimmer'?
 
-42 export { default as SessionTypeEditor } from './scheduling/builder/session-type-editor';
-            ~~~~~~~
+29 export type { TextShimmerProps } from './text-shimmer';
+                 ~~~~~~~~~~~~~~~~
 
-components/index.ts:46:10 - error TS2305: Module '"./providers/providers"' has no exported member 'default'.
-
-46 export { default as providers } from './providers/providers';
-            ~~~~~~~
-
-components/index.ts:47:10 - error TS2305: Module '"./providers/clerk-provider"' has no exported member 'default'.
-
-47 export { default as ClerkProvider } from './providers/clerk-provider';
-            ~~~~~~~
-
-components/index.ts:48:10 - error TS2305: Module '"./profile/user-profile"' has no exported member 'default'.
-
-48 export { default as UserProfile } from './profile/user-profile';
-            ~~~~~~~
-
-components/index.ts:49:10 - error TS2305: Module '"./profile/success-metrics-dashboard"' has no exported member 'default'.
-
-49 export { default as SuccessMetricsDashboard } from './profile/success-metrics-dashboard';
-            ~~~~~~~
-
-components/index.ts:50:10 - error TS2305: Module '"./profile/role-badges"' has no exported member 'default'.
-
-50 export { default as RoleBadges } from './profile/role-badges';
-            ~~~~~~~
-
-components/index.ts:51:10 - error TS2305: Module '"./profile/profile-auth-provider"' has no exported member 'default'.
-
-51 export { default as ProfileAuthProvider } from './profile/profile-auth-provider';
-            ~~~~~~~
-
-components/index.ts:52:10 - error TS2305: Module '"./profile/portfolio-showcase"' has no exported member 'default'.
-
-52 export { default as PortfolioShowcase } from './profile/portfolio-showcase';
-            ~~~~~~~
-
-components/index.ts:53:10 - error TS2305: Module '"./profile/portfolio-gallery"' has no exported member 'default'.
-
-53 export { default as PortfolioGallery } from './profile/portfolio-gallery';
-            ~~~~~~~
-
-components/index.ts:55:10 - error TS2305: Module '"./profile/builder-profile"' has no exported member 'default'.
-
-55 export { default as BuilderProfile } from './profile/builder-profile';
-            ~~~~~~~
-
-components/index.ts:56:10 - error TS2305: Module '"./profile/builder-profile-wrapper"' has no exported member 'default'.
-
-56 export { default as BuilderProfileWrapper } from './profile/builder-profile-wrapper';
-            ~~~~~~~
-
-components/index.ts:57:10 - error TS2305: Module '"./profile/builder-profile-client-wrapper"' has no exported member 'default'.
-
-57 export { default as BuilderProfileClientWrapper } from './profile/builder-profile-client-wrapper';
-            ~~~~~~~
-
-components/index.ts:58:10 - error TS2305: Module '"./profile/app-showcase"' has no exported member 'default'.
-
-58 export { default as AppShowcase } from './profile/app-showcase';
-            ~~~~~~~
-
-components/index.ts:59:10 - error TS2305: Module '"./profile/add-project-form"' has no exported member 'default'.
-
-59 export { default as AddProjectForm } from './profile/add-project-form';
-            ~~~~~~~
-
-components/index.ts:61:10 - error TS2305: Module '"./profile/ui/session-booking-card"' has no exported member 'default'.
-
-61 export { default as SessionBookingCard } from './profile/ui/session-booking-card';
-            ~~~~~~~
-
-components/index.ts:62:10 - error TS2305: Module '"./profile/ui/profile-stats"' has no exported member 'default'.
-
-62 export { default as ProfileStats } from './profile/ui/profile-stats';
-            ~~~~~~~
-
-components/index.ts:63:10 - error TS2305: Module '"./payment/payment-status-indicator"' has no exported member 'default'.
-
-63 export { default as PaymentStatusIndicator } from './payment/payment-status-indicator';
-            ~~~~~~~
-
-components/index.ts:64:15 - error TS2307: Cannot find module './marketplace/builder-list' or its corresponding type declarations.
-
-64 export * from './marketplace/builder-list';
-                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-components/index.ts:65:41 - error TS2307: Cannot find module './marketplace/builder-image' or its corresponding type declarations.
-
-65 export { default as BuilderImage } from './marketplace/builder-image';
-                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-components/index.ts:66:45 - error TS2307: Cannot find module './marketplace/builder-dashboard' or its corresponding type declarations.
-
-66 export { default as BuilderDashboard } from './marketplace/builder-dashboard';
-                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-components/index.ts:67:40 - error TS2307: Cannot find module './marketplace/builder-card' or its corresponding type declarations.
-
-67 export { default as BuilderCard } from './marketplace/builder-card';
-                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-components/index.ts:68:40 - error TS2307: Cannot find module './marketplace/ui/filter-panel' or its corresponding type declarations.
-
-68 export { default as FilterPanel } from './marketplace/ui/filter-panel';
-                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-components/index.ts:71:44 - error TS2307: Cannot find module './marketing/marketing-footer' or its corresponding type declarations.
-
-71 export { default as MarketingFooter } from './marketing/marketing-footer';
-                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-components/index.ts:72:10 - error TS2305: Module '"./marketing/marketing-cta"' has no exported member 'default'.
-
-72 export { default as MarketingCta } from './marketing/marketing-cta';
-            ~~~~~~~
-
-components/index.ts:73:10 - error TS2305: Module '"./marketing/feature-showcase"' has no exported member 'default'.
-
-73 export { default as FeatureShowcase } from './marketing/feature-showcase';
-            ~~~~~~~
-
-components/index.ts:75:10 - error TS2305: Module '"./marketing/ui/trust-proof-companies"' has no exported member 'default'.
-
-75 export { default as TrustProofCompanies } from './marketing/ui/trust-proof-companies';
-            ~~~~~~~
-
-components/index.ts:76:10 - error TS2305: Module '"./marketing/ui/testimonial-card"' has no exported member 'default'.
-
-76 export { default as TestimonialCard } from './marketing/ui/testimonial-card';
-            ~~~~~~~
-
-components/index.ts:77:10 - error TS2305: Module '"./marketing/ui/newsletter-form"' has no exported member 'default'.
-
-77 export { default as NewsletterForm } from './marketing/ui/newsletter-form';
-            ~~~~~~~
-
-components/index.ts:78:10 - error TS2305: Module '"./marketing/ui/marketing-stat"' has no exported member 'default'.
-
-78 export { default as MarketingStat } from './marketing/ui/marketing-stat';
-            ~~~~~~~
-
-components/index.ts:79:10 - error TS2305: Module '"./marketing/ui/marketing-marquee"' has no exported member 'default'.
-
-79 export { default as MarketingMarquee } from './marketing/ui/marketing-marquee';
-            ~~~~~~~
-
-components/index.ts:80:10 - error TS2305: Module '"./marketing/ui/feature-card"' has no exported member 'default'.
-
-80 export { default as FeatureCard } from './marketing/ui/feature-card';
-            ~~~~~~~
-
-components/index.ts:81:10 - error TS2305: Module '"./magicui/word-rotate"' has no exported member 'default'.
-
-81 export { default as WordRotate } from './magicui/word-rotate';
-            ~~~~~~~
-
-components/index.ts:82:10 - error TS2305: Module '"./magicui/typing-animation"' has no exported member 'default'.
-
-82 export { default as TypingAnimation } from './magicui/typing-animation';
-            ~~~~~~~
-
-components/index.ts:83:10 - error TS2305: Module '"./magicui/text-animate"' has no exported member 'default'.
-
-83 export { default as TextAnimate } from './magicui/text-animate';
-            ~~~~~~~
-
-components/index.ts:87:10 - error TS2305: Module '"./magicui/orbiting-circles"' has no exported member 'default'.
-
-87 export { default as OrbitingCircles } from './magicui/orbiting-circles';
-            ~~~~~~~
-
-components/index.ts:88:10 - error TS2305: Module '"./magicui/marquee"' has no exported member 'default'.
-
-88 export { default as marquee } from './magicui/marquee';
-            ~~~~~~~
-
-components/index.ts:89:10 - error TS2305: Module '"./magicui/globe"' has no exported member 'default'.
-
-89 export { default as globe } from './magicui/globe';
-            ~~~~~~~
-
-components/index.ts:90:10 - error TS2305: Module '"./magicui/dot-pattern"' has no exported member 'default'.
-
-90 export { default as DotPattern } from './magicui/dot-pattern';
-            ~~~~~~~
-
-components/index.ts:92:10 - error TS2305: Module '"./magicui/blur-fade"' has no exported member 'default'.
-
-92 export { default as BlurFade } from './magicui/blur-fade';
-            ~~~~~~~
-
-components/index.ts:95:41 - error TS2307: Cannot find module './animated-subscribe-button' or its corresponding type declarations.
-
-95 export { AnimatedSubscribeButton } from './animated-subscribe-button';
-                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-components/index.ts:96:10 - error TS2305: Module '"./magicui/animated-circular-progress-bar"' has no exported member 'default'.
-
-96 export { default as AnimatedCircularProgressBar } from './magicui/animated-circular-progress-bar';
-            ~~~~~~~
-
-components/index.ts:98:10 - error TS2305: Module '"./learning/ui/timeline-item"' has no exported member 'default'.
-
-98 export { default as TimelineItem } from './learning/ui/timeline-item';
-            ~~~~~~~
-
-components/index.ts:99:10 - error TS2305: Module '"./learning/ui/timeline-filter"' has no exported member 'default'.
-
-99 export { default as TimelineFilter } from './learning/ui/timeline-filter';
-            ~~~~~~~
-
-components/index.ts:101:10 - error TS2305: Module '"./landing/trusted-ecosystem"' has no exported member 'default'.
-
-101 export { default as TrustedEcosystem } from './landing/trusted-ecosystem';
-             ~~~~~~~
-
-components/index.ts:102:10 - error TS2305: Module '"./landing/testimonial-section"' has no exported member 'default'.
-
-102 export { default as TestimonialSection } from './landing/testimonial-section';
-             ~~~~~~~
-
-components/index.ts:103:10 - error TS2305: Module '"./landing/skills-tree-section"' has no exported member 'default'.
-
-103 export { default as SkillsTreeSection } from './landing/skills-tree-section';
-             ~~~~~~~
-
-components/index.ts:104:10 - error TS2305: Module '"./landing/skills-carousel"' has no exported member 'default'.
-
-104 export { default as SkillsCarousel } from './landing/skills-carousel';
-             ~~~~~~~
-
-components/index.ts:105:10 - error TS2305: Module '"./landing/performance-optimizations"' has no exported member 'default'.
-
-105 export { default as PerformanceOptimizations } from './landing/performance-optimizations';
-             ~~~~~~~
-
-components/index.ts:107:10 - error TS2305: Module '"./landing/hero-section"' has no exported member 'default'.
-
-107 export { default as HeroSection } from './landing/hero-section';
-             ~~~~~~~
-
-components/index.ts:108:35 - error TS2307: Cannot find module './landing/footer' or its corresponding type declarations.
-
-108 export { default as footer } from './landing/footer';
-                                      ~~~~~~~~~~~~~~~~~~
-
-components/index.ts:109:10 - error TS2305: Module '"./landing/feature-scroll"' has no exported member 'default'.
-
-109 export { default as FeatureScroll } from './landing/feature-scroll';
-             ~~~~~~~
-
-components/index.ts:111:10 - error TS2305: Module '"./landing/cta-section"' has no exported member 'default'.
-
-111 export { default as CtaSection } from './landing/cta-section';
-             ~~~~~~~
-
-components/index.ts:112:10 - error TS2305: Module '"./landing/bento-section"' has no exported member 'default'.
-
-112 export { default as BentoSection } from './landing/bento-section';
-             ~~~~~~~
-
-components/index.ts:113:10 - error TS2305: Module '"./landing/ai-stats"' has no exported member 'default'.
-
-113 export { default as AiStats } from './landing/ai-stats';
-             ~~~~~~~
-
-components/index.ts:114:10 - error TS2305: Module '"./landing/ai-capabilities-marquee"' has no exported member 'default'.
-
-114 export { default as AiCapabilitiesMarquee } from './landing/ai-capabilities-marquee';
-             ~~~~~~~
-
-components/index.ts:116:10 - error TS2305: Module '"./landing/ui/testimonial-scroll"' has no exported member 'default'.
-
-116 export { default as TestimonialScroll } from './landing/ui/testimonial-scroll';
-             ~~~~~~~
-
-components/index.ts:118:10 - error TS2305: Module '"./community/ui/knowledge-item"' has no exported member 'default'.
-
-118 export { default as KnowledgeItem } from './community/ui/knowledge-item';
-             ~~~~~~~
-
-components/index.ts:119:10 - error TS2305: Module '"./community/ui/discussion-card"' has no exported member 'default'.
-
-119 export { default as DiscussionCard } from './community/ui/discussion-card';
-             ~~~~~~~
-
-components/index.ts:120:10 - error TS2305: Module '"./booking/booking-button"' has no exported member 'default'.
-
-120 export { default as BookingButton } from './booking/booking-button';
-             ~~~~~~~
-
-components/index.ts:126:10 - error TS2305: Module '"./admin/session-type-form"' has no exported member 'default'.
-
-126 export { default as SessionTypeForm } from './admin/session-type-form';
-             ~~~~~~~
-
-components/index.ts:127:10 - error TS2305: Module '"./admin/admin-nav"' has no exported member 'default'.
-
-127 export { default as AdminNav } from './admin/admin-nav';
-             ~~~~~~~
-
-components/index.ts:128:10 - error TS2305: Module '"./admin/ui/admin-card"' has no exported member 'default'.
-
-128 export { default as AdminCard } from './admin/ui/admin-card';
-             ~~~~~~~
-
-components/index.ts:134:15 - error TS2306: File '/Users/liamj/Documents/development/buildappswith/components/utils/index.ts' is not a module.
-
-134 export * from './utils';
-                  ~~~~~~~~~
-
-components/landing/ai-capabilities-marquee.tsx:6:47 - error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
-
-6 import { aiCapabilities, aiLimitations } from "./data.tsx";
-                                                ~~~~~~~~~~~~
-
-components/landing/brand-word-rotate.tsx:69:45 - error TS2339: Property 'additionalStyles' does not exist on type '{ className: string; font: string; } | { className: string; font: string; } | { className: string; font: string; } | { className: string; font: string; } | { className: string; font: string; } | { className: string; font: string; additionalStyles: string; }'.
-  Property 'additionalStyles' does not exist on type '{ className: string; font: string; }'.
-
-69     ? cn(brandConfig.className, brandConfig.additionalStyles)
-                                               ~~~~~~~~~~~~~~~~
-
-components/landing/hero-section.tsx:6:29 - error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
-
-6 import { heroContent } from "./data.tsx";
-                              ~~~~~~~~~~~~
-
-components/landing/hero-section.tsx:109:16 - error TS2741: Property 'children' is missing in type '{ delay: number; }' but required in type 'AnimatedSpanProps'.
-
-109               <AnimatedSpan delay={200}>
-                   ~~~~~~~~~~~~
-
-  components/magicui/terminal.tsx:8:3
-    8   children: React.ReactNode;
-        ~~~~~~~~
-    'children' is declared here.
-
-components/landing/hero-section.tsx:127:16 - error TS2741: Property 'children' is missing in type '{ delay: number; }' but required in type 'AnimatedSpanProps'.
-
-127               <AnimatedSpan delay={800}>
-                   ~~~~~~~~~~~~
-
-  components/magicui/terminal.tsx:8:3
-    8   children: React.ReactNode;
-        ~~~~~~~~
-    'children' is declared here.
-
-components/landing/index.ts:7:10 - error TS2305: Module '"./trusted-ecosystem"' has no exported member 'default'.
-
-7 export { default as TrustedEcosystem } from './trusted-ecosystem';
-           ~~~~~~~
-
-components/landing/index.ts:8:10 - error TS2305: Module '"./testimonial-section"' has no exported member 'default'.
-
-8 export { default as TestimonialSection } from './testimonial-section';
-           ~~~~~~~
-
-components/landing/index.ts:9:10 - error TS2305: Module '"./skills-tree-section"' has no exported member 'default'.
-
-9 export { default as SkillsTreeSection } from './skills-tree-section';
-           ~~~~~~~
-
-components/landing/index.ts:10:10 - error TS2305: Module '"./skills-carousel"' has no exported member 'default'.
-
-10 export { default as SkillsCarousel } from './skills-carousel';
-            ~~~~~~~
-
-components/landing/index.ts:11:10 - error TS2305: Module '"./performance-optimizations"' has no exported member 'default'.
-
-11 export { default as PerformanceOptimizations } from './performance-optimizations';
-            ~~~~~~~
-
-components/landing/index.ts:13:10 - error TS2305: Module '"./hero-section"' has no exported member 'default'.
-
-13 export { default as HeroSection } from './hero-section';
-            ~~~~~~~
-
-components/landing/index.ts:14:10 - error TS2305: Module '"./feature-scroll"' has no exported member 'default'.
-
-14 export { default as FeatureScroll } from './feature-scroll';
-            ~~~~~~~
-
-components/landing/index.ts:15:10 - error TS2305: Module '"./cta-section"' has no exported member 'default'.
-
-15 export { default as CtaSection } from './cta-section';
-            ~~~~~~~
-
-components/landing/index.ts:16:10 - error TS2305: Module '"./bento-section"' has no exported member 'default'.
-
-16 export { default as BentoSection } from './bento-section';
-            ~~~~~~~
-
-components/landing/index.ts:17:10 - error TS2305: Module '"./ai-stats"' has no exported member 'default'.
-
-17 export { default as AiStats } from './ai-stats';
-            ~~~~~~~
-
-components/landing/index.ts:18:10 - error TS2305: Module '"./ai-capabilities-marquee"' has no exported member 'default'.
-
-18 export { default as AiCapabilitiesMarquee } from './ai-capabilities-marquee';
-            ~~~~~~~
-
-components/landing/navbar.tsx:9:30 - error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
-
-9 import { mainNavItems } from "./data.tsx";
-                               ~~~~~~~~~~~~
-
-components/landing/skills-tree-section.tsx:5:28 - error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
-
-5 import { skillsData } from "./data.tsx";
-                             ~~~~~~~~~~~~
-
-components/landing/ui/index.ts:7:10 - error TS2305: Module '"./testimonial-scroll"' has no exported member 'default'.
-
-7 export { default as TestimonialScroll } from './testimonial-scroll';
-           ~~~~~~~
-
-components/learning/timeline.tsx:3:10 - error TS2305: Module '"@/lib/learning/types"' has no exported member 'LearningCapability'.
-
-3 import { LearningCapability } from "@/lib/learning/types";
-           ~~~~~~~~~~~~~~~~~~
-
-components/learning/ui/timeline-filter.tsx:40:11 - error TS2339: Property 'loading' does not exist on type '{ setFilter: (filter: LearningFilter) => void; setTimeframe: (timeframe: LearningTimeframe) => void; setSort: (sort: LearningSort) => void; ... 5 more ...; search: string; }'.
-
-40   const { loading, error } = useLearningState();
-             ~~~~~~~
-
-components/learning/ui/timeline-filter.tsx:40:20 - error TS2339: Property 'error' does not exist on type '{ setFilter: (filter: LearningFilter) => void; setTimeframe: (timeframe: LearningTimeframe) => void; setSort: (sort: LearningSort) => void; ... 5 more ...; search: string; }'.
-
-40   const { loading, error } = useLearningState();
-                      ~~~~~
-
-components/learning/ui/timeline-item.tsx:7:10 - error TS2305: Module '"@/lib/learning/types"' has no exported member 'LearningCapability'.
-
-7 import { LearningCapability } from "@/lib/learning/types";
-           ~~~~~~~~~~~~~~~~~~
-
-components/learning/ui/timeline-item.tsx:73:47 - error TS7006: Parameter 'example' implicitly has an 'any' type.
-
-73                     {capability.examples.map((example, index) => (
-                                                 ~~~~~~~
-
-components/learning/ui/timeline-item.tsx:73:56 - error TS7006: Parameter 'index' implicitly has an 'any' type.
-
-73                     {capability.examples.map((example, index) => (
-                                                          ~~~~~
-
-components/magicui/index.ts:7:10 - error TS2305: Module '"./word-rotate"' has no exported member 'default'.
-
-7 export { default as WordRotate } from './word-rotate';
-           ~~~~~~~
-
-components/magicui/index.ts:8:10 - error TS2305: Module '"./typing-animation"' has no exported member 'default'.
-
-8 export { default as TypingAnimation } from './typing-animation';
-           ~~~~~~~
-
-components/magicui/index.ts:9:10 - error TS2305: Module '"./text-animate"' has no exported member 'default'.
-
-9 export { default as TextAnimate } from './text-animate';
-           ~~~~~~~
-
-components/magicui/index.ts:13:10 - error TS2305: Module '"./orbiting-circles"' has no exported member 'default'.
-
-13 export { default as OrbitingCircles } from './orbiting-circles';
-            ~~~~~~~
-
-components/magicui/index.ts:14:10 - error TS2305: Module '"./marquee"' has no exported member 'default'.
-
-14 export { default as marquee } from './marquee';
-            ~~~~~~~
-
-components/magicui/index.ts:15:10 - error TS2305: Module '"./globe"' has no exported member 'default'.
-
-15 export { default as globe } from './globe';
-            ~~~~~~~
-
-components/magicui/index.ts:16:10 - error TS2305: Module '"./dot-pattern"' has no exported member 'default'.
-
-16 export { default as DotPattern } from './dot-pattern';
-            ~~~~~~~
-
-components/magicui/index.ts:18:10 - error TS2305: Module '"./blur-fade"' has no exported member 'default'.
-
-18 export { default as BlurFade } from './blur-fade';
-            ~~~~~~~
-
-components/magicui/index.ts:22:10 - error TS2305: Module '"./animated-circular-progress-bar"' has no exported member 'default'.
-
-22 export { default as AnimatedCircularProgressBar } from './animated-circular-progress-bar';
-            ~~~~~~~
-
-components/magicui/particles.tsx:103:9 - error TS2451: Cannot redeclare block-scoped variable 'animate'.
-
-103   const animate = () => {
-            ~~~~~~~
-
-components/magicui/particles.tsx:306:9 - error TS2451: Cannot redeclare block-scoped variable 'animate'.
-
-306   const animate = () => {
-            ~~~~~~~
+  components/magicui/text-shimmer.tsx:21:17
+    21 export function TextShimmer({ children, className, shimmerWidth = 200 }: TextShimmerProps) {
+                       ~~~~~~~~~~~
+    'TextShimmer' is declared here.
 
 components/marketplace/components/builder-dashboard/builder-dashboard.tsx:292:17 - error TS2322: Type '"entry" | "expert" | "established"' is not assignable to type 'ValidationTier'.
   Type '"entry"' is not assignable to type 'ValidationTier'.
@@ -1497,66 +680,21 @@ components/marketplace/components/builder-dashboard/builder-dashboard.tsx:293:17
          ~~~~~~~
     The expected type comes from property 'metrics' which is declared here on type 'IntrinsicAttributes & SuccessMetricsDashboardProps'
 
-components/marketplace/hooks/use-builder-filter.ts:37:25 - error TS18047: 'searchParams' is possibly 'null'.
-
-37     const searchQuery = searchParams.get('q');
-                           ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:43:20 - error TS18047: 'searchParams' is possibly 'null'.
-
-43     const skills = searchParams.get('skills');
-                      ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:49:19 - error TS18047: 'searchParams' is possibly 'null'.
-
-49     const tiers = searchParams.get('tiers');
-                     ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:55:26 - error TS18047: 'searchParams' is possibly 'null'.
-
-55     const availability = searchParams.get('availability');
-                            ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:61:22 - error TS18047: 'searchParams' is possibly 'null'.
-
-61     const featured = searchParams.get('featured');
-                        ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:67:20 - error TS18047: 'searchParams' is possibly 'null'.
-
-67     const sortBy = searchParams.get('sort');
-                      ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:73:21 - error TS18047: 'searchParams' is possibly 'null'.
-
-73     const minRate = searchParams.get('minRate');
-                       ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:78:21 - error TS18047: 'searchParams' is possibly 'null'.
-
-78     const maxRate = searchParams.get('maxRate');
-                       ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:104:40 - error TS18047: 'searchParams' is possibly 'null'.
-
-104     const params = new URLSearchParams(searchParams.toString());
-                                           ~~~~~~~~~~~~
-
-components/marketplace/hooks/use-builder-filter.ts:192:11 - error TS2322: Type '(string | number)[] | undefined' is not assignable to type 'undefined'.
+components/marketplace/hooks/use-builder-filter.ts:184:11 - error TS2322: Type '(string | number)[] | undefined' is not assignable to type 'undefined'.
   Type '(string | number)[]' is not assignable to type 'undefined'.
 
-192           newFilters[key] = newArray.length > 0 ? newArray : undefined;
+184           newFilters[key] = newArray.length > 0 ? newArray : undefined;
               ~~~~~~~~~~~~~~~
 
-components/marketplace/hooks/use-builder-filter.ts:195:11 - error TS2322: Type '(string | number)[]' is not assignable to type 'undefined'.
+components/marketplace/hooks/use-builder-filter.ts:187:11 - error TS2322: Type '(string | number)[]' is not assignable to type 'undefined'.
 
-195           newFilters[key] = [...currentArray, value];
+187           newFilters[key] = [...currentArray, value];
               ~~~~~~~~~~~~~~~
 
-components/marketplace/hooks/use-builder-filter.ts:204:11 - error TS2322: Type 'string | number' is not assignable to type 'undefined'.
+components/marketplace/hooks/use-builder-filter.ts:196:11 - error TS2322: Type 'string | number' is not assignable to type 'undefined'.
   Type 'string' is not assignable to type 'undefined'.
 
-204           newFilters[key] = value;
+196           newFilters[key] = value;
               ~~~~~~~~~~~~~~~
 
 components/payment/checkout-button.tsx:76:9 - error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 'ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...> | (() => ReactNode)'.
@@ -1603,6 +741,16 @@ components/platform/platform-header.tsx:236:61 - error TS2339: Property 'builder
 236   const userMenuItems = getUserMenuItems(user?.roles, user?.builderProfile?.id || user?.id);
                                                                 ~~~~~~~~~~~~~~
 
+components/profile/builder-profile-client-wrapper.tsx:87:9 - error TS2740: Type 'BuilderProfileData' is missing the following properties from type 'BuilderProfileData': title, joinDate, completedProjects, rating, and 2 more.
+
+87         profile={profile}
+           ~~~~~~~
+
+  components/profile/builder-profile.tsx:88:3
+    88   profile: BuilderProfileData;
+         ~~~~~~~
+    The expected type comes from property 'profile' which is declared here on type 'IntrinsicAttributes & BuilderProfileProps'
+
 components/profile/builder-profile-wrapper.tsx:71:30 - error TS2322: Type 'number' is not assignable to type 'ValidationTier'.
 
 71         <ValidationTierBadge tier={builder.validationTier} />
@@ -1618,6 +766,16 @@ components/profile/builder-profile-wrapper.tsx:76:9 - error TS2322: Type '{ buil
 
 76         builder={filteredBuilder}
            ~~~~~~~
+
+components/profile/builder-profile-wrapper.tsx:138:13 - error TS2322: Type '"primary"' is not assignable to type '"default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | undefined'.
+
+138             variant="primary"
+                ~~~~~~~
+
+  components/booking/booking-button.tsx:23:3
+    23   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+         ~~~~~~~
+    The expected type comes from property 'variant' which is declared here on type 'IntrinsicAttributes & BookingButtonProps'
 
 components/profile/builder-profile.tsx:42:3 - error TS2305: Module '"@/lib/profile/types"' has no exported member 'ExpertiseAreas'.
 
@@ -1729,26 +887,16 @@ components/providers/datadog-rum-provider.tsx:32:19 - error TS2339: Property 'us
 32   const { userId, user, isSignedIn } = useAuth();
                      ~~~~
 
+components/providers/enhanced-clerk-provider.tsx:8:8 - error TS2613: Module '"/Users/liamj/Documents/development/buildappswith/components/auth/progressive-loading-state"' has no default export. Did you mean to use 'import { ProgressiveLoadingState } from "/Users/liamj/Documents/development/buildappswith/components/auth/progressive-loading-state"' instead?
+
+8 import ProgressiveLoadingState from "@/components/auth/progressive-loading-state";
+         ~~~~~~~~~~~~~~~~~~~~~~~
+
 components/providers/enhanced-clerk-provider.tsx:130:7 - error TS2322: Type '{ children: Element; appearance: { baseTheme: BaseThemeTaggedType | undefined; elements: { formButtonPrimary: string; card: string; formButtonReset: string; ... 8 more ...; dividerText: string; }; }; publishableKey: string | undefined; signInUrl: string; signUpUrl: string; telemetry: boolean; }' is not assignable to type 'IntrinsicAttributes & NextAppClerkProviderProps'.
   Property 'telemetry' does not exist on type 'IntrinsicAttributes & NextAppClerkProviderProps'.
 
 130       telemetry={false}
           ~~~~~~~~~
-
-components/providers/index.ts:7:10 - error TS2305: Module '"./providers"' has no exported member 'default'.
-
-7 export { default as providers } from './providers';
-           ~~~~~~~
-
-components/providers/index.ts:8:10 - error TS2305: Module '"./clerk-provider"' has no exported member 'default'.
-
-8 export { default as ClerkProvider } from './clerk-provider';
-           ~~~~~~~
-
-components/providers/index.ts:11:10 - error TS2305: Module '"./providers"' has no exported member 'default'.
-
-11 export { default as Providers } from './providers';
-            ~~~~~~~
 
 components/scheduling/builder/availability/availability-management.tsx:6:10 - error TS2305: Module '"@/lib/scheduling/types"' has no exported member 'BuilderSchedulingProfile'.
 
@@ -1760,45 +908,100 @@ components/scheduling/calendly/booking-confirmation.tsx:129:33 - error TS2345: A
 129                     {formatDate(new Date(booking.startTime))}
                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-components/scheduling/calendly/calendly-calendar.tsx:162:24 - error TS7006: Parameter 'date' implicitly has an 'any' type.
+components/scheduling/calendly/calendly-calendar.tsx:161:24 - error TS7006: Parameter 'date' implicitly has an 'any' type.
 
-162             disabled={(date) => {
+161             disabled={(date) => {
                            ~~~~
 
-components/scheduling/calendly/calendly-embed-optimized.tsx:34:5 - error TS2687: All declarations of 'Calendly' must have identical modifiers.
+components/scheduling/calendly/calendly-calendar.tsx:232:26 - error TS18048: 'slot.inviteesRemaining' is possibly 'undefined'.
 
-34     Calendly: any;
+232                         {slot.inviteesRemaining < 5 && (
+                             ~~~~~~~~~~~~~~~~~~~~~~
+
+components/scheduling/calendly/calendly-calendar.tsx:256:26 - error TS18048: 'slot.inviteesRemaining' is possibly 'undefined'.
+
+256                         {slot.inviteesRemaining < 5 && (
+                             ~~~~~~~~~~~~~~~~~~~~~~
+
+components/scheduling/calendly/calendly-calendar.tsx:280:26 - error TS18048: 'slot.inviteesRemaining' is possibly 'undefined'.
+
+280                         {slot.inviteesRemaining < 5 && (
+                             ~~~~~~~~~~~~~~~~~~~~~~
+
+components/scheduling/calendly/calendly-embed-optimized.tsx:35:5 - error TS2687: All declarations of 'Calendly' must have identical modifiers.
+
+35     Calendly: any;
        ~~~~~~~~
 
-components/scheduling/calendly/calendly-embed-optimized.tsx:34:5 - error TS2717: Subsequent property declarations must have the same type.  Property 'Calendly' must be of type '{ initInlineWidget: (options: { url: string; parentElement: HTMLElement; prefill?: Record<string, string> | undefined; utm?: Record<string, string> | undefined; }) => void; } | undefined', but here has type 'any'.
+components/scheduling/calendly/calendly-embed-optimized.tsx:35:5 - error TS2717: Subsequent property declarations must have the same type.  Property 'Calendly' must be of type 'CalendlyWindowType | undefined', but here has type 'any'.
 
-34     Calendly: any;
+35     Calendly: any;
        ~~~~~~~~
 
-  components/scheduling/calendly/calendly-embed.tsx:278:5
-    278     Calendly?: {
+  components/scheduling/calendly/calendly-model.ts:119:5
+    119     Calendly?: CalendlyWindowType;
             ~~~~~~~~
     'Calendly' was also declared here.
 
-components/scheduling/calendly/calendly-embed-optimized.tsx:102:11 - error TS2353: Object literal may only specify known properties, and 'embedType' does not exist in type '{ url: string; parentElement: HTMLElement; prefill?: Record<string, string> | undefined; utm?: Record<string, string> | undefined; }'.
+components/scheduling/calendly/calendly-embed-optimized.tsx:112:11 - error TS2353: Object literal may only specify known properties, and 'resize' does not exist in type '{ url: string; parentElement: HTMLElement; prefill?: Record<string, string> | undefined; utm?: Record<string, string> | undefined; hideEventTypeDetails?: boolean | undefined; ... 5 more ...; height?: string | undefined; }'.
 
-102           embedType: 'Inline',
-              ~~~~~~~~~
+112           resize: false
+              ~~~~~~
 
-components/scheduling/calendly/calendly-embed.tsx:162:9 - error TS2353: Object literal may only specify known properties, and 'embedType' does not exist in type '{ url: string; parentElement: HTMLElement; prefill?: Record<string, string> | undefined; utm?: Record<string, string> | undefined; }'.
+components/scheduling/calendly/calendly-embed.tsx:201:32 - error TS2774: This condition will always return true since this function is always defined. Did you mean to call it instead?
 
-162         embedType: 'Inline',
-            ~~~~~~~~~
-
-components/scheduling/calendly/calendly-embed.tsx:219:32 - error TS2774: This condition will always return true since this function is always defined. Did you mean to call it instead?
-
-219         if (window.Calendly && window.Calendly.initInlineWidget) {
+201         if (window.Calendly && window.Calendly.initInlineWidget) {
                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-components/scheduling/calendly/calendly-embed.tsx:278:5 - error TS2687: All declarations of 'Calendly' must have identical modifiers.
+components/scheduling/calendly/calendly-embed.tsx:260:5 - error TS2717: Subsequent property declarations must have the same type.  Property 'Calendly' must be of type 'CalendlyWindowType | undefined', but here has type '{ initInlineWidget: (options: { url: string; parentElement: HTMLElement; prefill?: Record<string, string> | undefined; utm?: Record<string, string> | undefined; }) => void; } | undefined'.
 
-278     Calendly?: {
+260     Calendly?: {
         ~~~~~~~~
+
+  components/scheduling/calendly/calendly-model.ts:119:5
+    119     Calendly?: CalendlyWindowType;
+            ~~~~~~~~
+    'Calendly' was also declared here.
+
+components/scheduling/calendly/calendly-model.ts:119:5 - error TS2687: All declarations of 'Calendly' must have identical modifiers.
+
+119     Calendly?: CalendlyWindowType;
+        ~~~~~~~~
+
+components/scheduling/calendly/index.ts:13:10 - error TS2305: Module '"./calendly-embed-optimized"' has no exported member 'default'.
+
+13 export { default as CalendlyEmbedOptimized } from './calendly-embed-optimized';
+            ~~~~~~~
+
+components/scheduling/calendly/index.ts:22:3 - error TS2305: Module '"./calendly-model"' has no exported member 'CalendlyInvitee'.
+
+22   CalendlyInvitee,
+     ~~~~~~~~~~~~~~~
+
+components/scheduling/calendly/index.ts:23:3 - error TS2305: Module '"./calendly-model"' has no exported member 'CalendlyWebhookEvent'.
+
+23   CalendlyWebhookEvent,
+     ~~~~~~~~~~~~~~~~~~~~
+
+components/scheduling/calendly/index.ts:24:3 - error TS2305: Module '"./calendly-model"' has no exported member 'CalendlyAvailableTimes'.
+
+24   CalendlyAvailableTimes,
+     ~~~~~~~~~~~~~~~~~~~~~~
+
+components/scheduling/calendly/index.ts:25:3 - error TS2305: Module '"./calendly-model"' has no exported member 'CalendlySchedulingUrl'.
+
+25   CalendlySchedulingUrl,
+     ~~~~~~~~~~~~~~~~~~~~~
+
+components/scheduling/calendly/index.ts:26:3 - error TS2724: '"./calendly-model"' has no exported member named 'CalendlyBookingDetails'. Did you mean 'CalendlyBooking'?
+
+26   CalendlyBookingDetails,
+     ~~~~~~~~~~~~~~~~~~~~~~
+
+components/scheduling/calendly/index.ts:27:3 - error TS2305: Module '"./calendly-model"' has no exported member 'CalendlySessionType'.
+
+27   CalendlySessionType
+     ~~~~~~~~~~~~~~~~~~~
 
 components/scheduling/client/booking-calendar.tsx:341:26 - error TS2304: Cannot find name 'Calendar'.
 
@@ -1810,30 +1013,25 @@ components/scheduling/client/booking-calendar.tsx:345:38 - error TS7006: Paramet
 345                           disabled={(date) => {
                                          ~~~~
 
-components/scheduling/client/booking-flow.tsx:270:7 - error TS2554: Expected 2-4 arguments, but got 5.
+components/scheduling/client/booking-flow.tsx:271:7 - error TS2554: Expected 2-4 arguments, but got 5.
 
-270       customQuestionResponse
+271       customQuestionResponse
           ~~~~~~~~~~~~~~~~~~~~~~
 
-components/scheduling/client/booking-flow.tsx:432:35 - error TS2339: Property 'userName' does not exist on type 'ClientBookingState'.
+components/scheduling/client/booking-flow.tsx:433:35 - error TS2339: Property 'userName' does not exist on type 'ClientBookingState'.
 
-432                       name: state.userName || (isSignedIn ? 'User' : 'Guest'),
+433                       name: state.userName || (isSignedIn ? 'User' : 'Guest'),
                                       ~~~~~~~~
 
-components/scheduling/client/booking-flow.tsx:433:36 - error TS2339: Property 'userEmail' does not exist on type 'ClientBookingState'.
+components/scheduling/client/booking-flow.tsx:434:36 - error TS2339: Property 'userEmail' does not exist on type 'ClientBookingState'.
 
-433                       email: state.userEmail || (isSignedIn ? 'user@example.com' : 'guest@example.com'),
+434                       email: state.userEmail || (isSignedIn ? 'user@example.com' : 'guest@example.com'),
                                        ~~~~~~~~~
 
-components/scheduling/client/booking-flow.tsx:478:30 - error TS2353: Object literal may only specify known properties, and 'error' does not exist in type '{ message: string; code?: string | undefined; }'.
+components/scheduling/client/booking-flow.tsx:479:30 - error TS2353: Object literal may only specify known properties, and 'error' does not exist in type '{ message: string; code?: string | undefined; }'.
 
-478                   payload: { error: error instanceof Error ? error : new Error('Unknown error') }
+479                   payload: { error: error instanceof Error ? error : new Error('Unknown error') }
                                  ~~~~~
-
-components/scheduling/client/integrated-booking.tsx:9:10 - error TS2614: Module '"@/components/scheduling/calendly/calendly-embed"' has no exported member 'CalendlyEmbed'. Did you mean to use 'import CalendlyEmbed from "@/components/scheduling/calendly/calendly-embed"' instead?
-
-9 import { CalendlyEmbed } from '@/components/scheduling/calendly/calendly-embed';
-           ~~~~~~~~~~~~~
 
 components/scheduling/client/stripe-booking-form.tsx:84:11 - error TS2353: Object literal may only specify known properties, and 'title' does not exist in type 'ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...> | (() => ReactNode)'.
 
@@ -1844,11 +1042,6 @@ components/scheduling/client/stripe-booking-form.tsx:99:9 - error TS2353: Object
 
 99         title: 'Error',
            ~~~~~
-
-components/scheduling/index.ts:34:15 - error TS2306: File '/Users/liamj/Documents/development/buildappswith/components/scheduling/ui/index.ts' is not a module.
-
-34 export * from './ui';
-                 ~~~~~~
 
 components/scheduling/shared/timezone-selector.tsx:11:58 - error TS2306: File '/Users/liamj/Documents/development/buildappswith/lib/scheduling/utils.ts' is not a module.
 
@@ -1914,36 +1107,6 @@ hooks/index.ts:14:15 - error TS2306: File '/Users/liamj/Documents/development/bu
 
 14 export * from './community';
                  ~~~~~~~~~~~~~
-
-instrumentation-client.ts:52:30 - error TS2339: Property 'BrowserTracing' does not exist on type '{ default: typeof import("/Users/liamj/Documents/development/buildappswith/node_modules/.pnpm/@sentry+nextjs@9.14.0_@opentelemetry+context-async-hooks@1.30.1_@opentelemetry+api@1.9._18ea08ac16d476d9805e801211987b15/node_modules/@sentry/nextjs/build/types/index.types"); ... 226 more ...; winterCGFetchIntegration: (op...'.
-
-52       if (SentryIntegrations.BrowserTracing) {
-                                ~~~~~~~~~~~~~~
-
-instrumentation-client.ts:53:54 - error TS2339: Property 'BrowserTracing' does not exist on type '{ default: typeof import("/Users/liamj/Documents/development/buildappswith/node_modules/.pnpm/@sentry+nextjs@9.14.0_@opentelemetry+context-async-hooks@1.30.1_@opentelemetry+api@1.9._18ea08ac16d476d9805e801211987b15/node_modules/@sentry/nextjs/build/types/index.types"); ... 226 more ...; winterCGFetchIntegration: (op...'.
-
-53         Sentry.addIntegration(new SentryIntegrations.BrowserTracing());
-                                                        ~~~~~~~~~~~~~~
-
-instrumentation-client.ts:79:47 - error TS7006: Parameter 'context' implicitly has an 'any' type.
-
-79 export const onRouterTransitionStart = async (context) => {
-                                                 ~~~~~~~
-
-instrumentation-client.ts:88:12 - error TS2339: Property 'startTransaction' does not exist on type '{ default: typeof import("/Users/liamj/Documents/development/buildappswith/node_modules/.pnpm/@sentry+nextjs@9.14.0_@opentelemetry+context-async-hooks@1.30.1_@opentelemetry+api@1.9._18ea08ac16d476d9805e801211987b15/node_modules/@sentry/nextjs/build/types/index.types"); ... 226 more ...; winterCGFetchIntegration: (op...'.
-
-88     Sentry.startTransaction({
-              ~~~~~~~~~~~~~~~~
-
-instrumentation-client.ts:103:50 - error TS7006: Parameter 'context' implicitly has an 'any' type.
-
-103 export const onRouterTransitionComplete = async (context) => {
-                                                     ~~~~~~~
-
-instrumentation-client.ts:112:38 - error TS2339: Property 'getCurrentHub' does not exist on type '{ default: typeof import("/Users/liamj/Documents/development/buildappswith/node_modules/.pnpm/@sentry+nextjs@9.14.0_@opentelemetry+context-async-hooks@1.30.1_@opentelemetry+api@1.9._18ea08ac16d476d9805e801211987b15/node_modules/@sentry/nextjs/build/types/index.types"); ... 226 more ...; winterCGFetchIntegration: (op...'.
-
-112     const activeTransaction = Sentry.getCurrentHub().getScope()?.getTransaction();
-                                         ~~~~~~~~~~~~~
 
 instrumentation.ts:35:38 - error TS7006: Parameter 'error' implicitly has an 'any' type.
 
@@ -2105,6 +1268,16 @@ lib/auth/data-access.ts:53:9 - error TS2353: Object literal may only specify kno
              ~~~~
     The expected type comes from property 'data' which is declared here on type '{ select?: UserSelect<DefaultArgs> | null | undefined; omit?: UserOmit<DefaultArgs> | null | undefined; include?: UserInclude<DefaultArgs> | null | undefined; data: (Without<...> & UserUncheckedCreateInput) | (Without<...> & UserCreateInput); }'
 
+lib/auth/index.ts:43:3 - error TS2300: Duplicate identifier 'AuthErrorType'.
+
+43   AuthErrorType,
+     ~~~~~~~~~~~~~
+
+lib/auth/index.ts:84:16 - error TS2300: Duplicate identifier 'AuthErrorType'.
+
+84   AuthError as AuthErrorType,
+                  ~~~~~~~~~~~~~
+
 lib/auth/security-logging.ts:35:28 - error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
 
 35     const ip = headersList.get('x-forwarded-for') ||
@@ -2214,135 +1387,87 @@ lib/contexts/profile-context.tsx:44:62 - error TS2345: Argument of type '{ id: s
 44   const [profile, setProfile] = useState<BuilderProfileData>(mockEstablishedTierProfile);
                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-lib/datadog/auth-monitoring.ts:126:20 - error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
-  Type 'null' is not assignable to type 'string'.
+lib/datadog/init.ts:85:42 - error TS2551: Property 'sessionReplaySampleRate' does not exist on type '{ enabled: boolean; applicationId: string; clientToken: string; site: string; service: string; env: DatadogEnvironment; version: string; sessionSampleRate: number; replaySampleRate: number; ... 4 more ...; actionNameAttribute: string; }'. Did you mean 'sessionSampleRate'?
 
-126     finishAuthSpan(spanId, true);
-                       ~~~~~~
+85           replaySampleRate: mergedConfig.sessionReplaySampleRate,
+                                            ~~~~~~~~~~~~~~~~~~~~~~~
 
-lib/datadog/auth-monitoring.ts:144:20 - error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
-  Type 'null' is not assignable to type 'string'.
+lib/datadog/sentry-integration.ts:11:15 - error TS2724: '"@sentry/nextjs"' has no exported member named 'Integration'. Did you mean 'fsIntegration'?
 
-144     finishAuthSpan(spanId, false, errorMessage);
-                       ~~~~~~
+11 import type { Integration, EventProcessor, Event } from '@sentry/nextjs';
+                 ~~~~~~~~~~~
 
-lib/datadog/auth-monitoring.ts:204:20 - error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
-  Type 'null' is not assignable to type 'string'.
+lib/datadog/sentry-integration.ts:11:28 - error TS2724: '"@sentry/nextjs"' has no exported member named 'EventProcessor'. Did you mean 'addEventProcessor'?
 
-204     finishAuthSpan(spanId, hasRequiredRole);
-                       ~~~~~~
-
-lib/datadog/auth-monitoring.ts:223:20 - error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
-  Type 'null' is not assignable to type 'string'.
-
-223     finishAuthSpan(spanId, false, errorMessage);
-                       ~~~~~~
-
-lib/datadog/auth-monitoring.ts:278:20 - error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
-  Type 'null' is not assignable to type 'string'.
-
-278     finishAuthSpan(spanId, hasPermission);
-                       ~~~~~~
-
-lib/datadog/auth-monitoring.ts:296:20 - error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
-  Type 'null' is not assignable to type 'string'.
-
-296     finishAuthSpan(spanId, false, errorMessage);
-                       ~~~~~~
-
-lib/datadog/client.ts:15:1 - error TS2308: Module './interfaces' has already exported a member named 'RumConfig'. Consider explicitly re-exporting to resolve the ambiguity.
-
-15 export * from './rum-config';
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-lib/datadog/client.ts:15:1 - error TS2308: Module './interfaces' has already exported a member named 'RumUserInfo'. Consider explicitly re-exporting to resolve the ambiguity.
-
-15 export * from './rum-config';
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-lib/datadog/client/empty-tracer.client.ts:99:5 - error TS1117: An object literal cannot have multiple properties with the same name.
-
-99     activate: (span: any, fn: any) => fn()
-       ~~~~~~~~
-
-lib/datadog/sentry-integration.ts:17:5 - error TS7034: Variable 'tracer' implicitly has type 'any' in some locations where its type cannot be determined.
-
-17 let tracer = null;
-       ~~~~~~
-
-lib/datadog/sentry-integration.ts:43:21 - error TS7005: Variable 'tracer' implicitly has an 'any' type.
-
-43   if (!isServer || !tracer) return null;
-                       ~~~~~~
-
-lib/datadog/sentry-integration.ts:77:57 - error TS2724: '"/Users/liamj/Documents/development/buildappswith/node_modules/.pnpm/@sentry+nextjs@9.14.0_@opentelemetry+context-async-hooks@1.30.1_@opentelemetry+api@1.9._18ea08ac16d476d9805e801211987b15/node_modules/@sentry/nextjs/build/types/index.types"' has no exported member named 'Integration'. Did you mean 'fsIntegration'?
-
-77 export class DatadogSentryIntegration implements Sentry.Integration {
-                                                           ~~~~~~~~~~~
-
-lib/datadog/sentry-integration.ts:86:48 - error TS2724: '"/Users/liamj/Documents/development/buildappswith/node_modules/.pnpm/@sentry+nextjs@9.14.0_@opentelemetry+context-async-hooks@1.30.1_@opentelemetry+api@1.9._18ea08ac16d476d9805e801211987b15/node_modules/@sentry/nextjs/build/types/index.types"' has no exported member named 'EventProcessor'. Did you mean 'addEventProcessor'?
-
-86     addGlobalEventProcessor: (callback: Sentry.EventProcessor) => void,
-                                                  ~~~~~~~~~~~~~~
-
-lib/datadog/sentry-integration.ts:89:23 - error TS7005: Variable 'tracer' implicitly has an 'any' type.
-
-89     if (!isServer || !tracer) return;
-                         ~~~~~~
+11 import type { Integration, EventProcessor, Event } from '@sentry/nextjs';
+                              ~~~~~~~~~~~~~~
 
 lib/datadog/server-actions.ts:27:14 - error TS2367: This comparison appears to be unintentional because the types '"development" | "test"' and '"staging"' have no overlap.
 
 27              env === 'staging')
                 ~~~~~~~~~~~~~~~~~
 
-lib/datadog/server/tracer.server.ts:71:14 - error TS2339: Property 'configureTracerIntegrations' does not exist on type 'TracerInterface'.
+lib/datadog/server-tracer.ts:32:25 - error TS2339: Property 'scope' does not exist on type 'never'.
 
-71         this.configureTracerIntegrations(ddTrace);
+32     const span = tracer.scope().active();
+                           ~~~~~
+
+lib/datadog/server-tracer.ts:70:25 - error TS2339: Property 'startSpan' does not exist on type 'never'.
+
+70     const span = tracer.startSpan('auth.verify', {
+                           ~~~~~~~~~
+
+lib/datadog/server/tracer.server.ts:61:11 - error TS2353: Object literal may only specify known properties, and 'analytics' does not exist in type 'TracerOptions'.
+
+61           analytics: true,
+             ~~~~~~~~~
+
+lib/datadog/server/tracer.server.ts:86:14 - error TS2339: Property 'configureTracerIntegrations' does not exist on type 'TracerInterface'.
+
+86         this.configureTracerIntegrations(ddTrace);
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-lib/datadog/server/tracer.server.ts:198:3 - error TS1042: 'private' modifier cannot be used here.
+lib/datadog/server/tracer.server.ts:137:3 - error TS2322: Type '(name: string, options?: any) => Span | null' is not assignable to type '(name: string, options?: any) => Span'.
+  Type 'Span | null' is not assignable to type 'Span'.
+    Type 'null' is not assignable to type 'Span'.
 
-198   private configureTracerIntegrations(tracer: any): void {
-      ~~~~~~~
+137   startSpan(name: string, options?: any): Span | null {
+      ~~~~~~~~~
 
-lib/datadog/server/tracer.server.ts:198:3 - error TS1184: Modifiers cannot appear here.
+  lib/datadog/interfaces/tracer.ts:73:3
+    73   startSpan(name: string, options?: any): Span;
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    The expected type comes from property 'startSpan' which is declared here on type 'TracerInterface'
 
-198   private configureTracerIntegrations(tracer: any): void {
-      ~~~~~~~
+lib/datadog/server/tracer.server.ts:221:9 - error TS2353: Object literal may only specify known properties, and 'router' does not exist in type 'next'.
 
-lib/datadog/server/tracer.server.ts:198:11 - error TS2353: Object literal may only specify known properties, and 'configureTracerIntegrations' does not exist in type 'TracerInterface'.
+221         router: true,
+            ~~~~~~
 
-198   private configureTracerIntegrations(tracer: any): void {
-              ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/datadog/server/tracer.server.ts:233:43 - error TS2339: Property 'config' does not exist on type 'Tracer'.
 
-lib/datadog/tracer.ts:51:9 - error TS2322: Type '(message: string) => void' is not assignable to type '(err: string | Error) => void'.
-  Types of parameters 'message' and 'err' are incompatible.
-    Type 'string | Error' is not assignable to type 'string'.
-      Type 'Error' is not assignable to type 'string'.
+233         service: `${tracerInstance.tracer.config.service}-db`
+                                              ~~~~~~
 
-51         error: (message: string) => console.error(`[Datadog APM Error] ${message}`),
-           ~~~~~
+lib/datadog/server/tracer.server.ts:238:9 - error TS2353: Object literal may only specify known properties, and 'app' does not exist in type 'express'.
 
-lib/datadog/tracer.ts:71:7 - error TS2559: Type 'true' has no properties in common with type '{ request?: ((span?: Span | undefined, req?: IncomingMessage | undefined, res?: ServerResponse<IncomingMessage> | undefined) => any) | undefined; }'.
+238         app: undefined, // Auto-detected
+            ~~~
 
-71       hooks: true,
-         ~~~~~
+lib/datadog/tracer.ts:36:7 - error TS2353: Object literal may only specify known properties, and 'analytics' does not exist in type 'TracerOptions'.
 
-lib/datadog/tracer.ts:83:16 - error TS2345: Argument of type '"prisma"' is not assignable to parameter of type 'keyof Plugins'.
+36       analytics: true,
+         ~~~~~~~~~
 
-83     tracer.use('prisma', {
-                  ~~~~~~~~
+lib/datadog/tracer.ts:78:7 - error TS2353: Object literal may only specify known properties, and 'router' does not exist in type 'next'.
 
-lib/datadog/tracer.ts:90:7 - error TS2559: Type 'true' has no properties in common with type '{ request?: ((span?: Span | undefined, req?: IncomingMessage | undefined, res?: ServerResponse<IncomingMessage> | undefined) => any) | undefined; }'.
+78       router: true,
+         ~~~~~~
 
-90       hooks: true,
-         ~~~~~
+lib/datadog/tracer.ts:95:7 - error TS2353: Object literal may only specify known properties, and 'app' does not exist in type 'express'.
 
-lib/datadog/tracer.ts:120:7 - error TS2322: Type 'Span | null' is not assignable to type 'Span | SpanContext | undefined'.
-  Type 'null' is not assignable to type 'Span | SpanContext | undefined'.
-
-120       childOf: tracer.scope().active(),
-          ~~~~~~~
+95       app: undefined, // This will be automatically detected
+         ~~~
 
 lib/db-error-handling.ts:91:34 - error TS2339: Property 'CRITICAL' does not exist on type 'typeof DatabaseErrorCategory'.
 
@@ -2552,17 +1677,17 @@ lib/middleware/profile-auth.ts:92:18 - error TS2322: Type 'string | null' is not
               ~~~~~~~
     The expected type comes from property 'clerkId' which is declared here on type 'UserWhereUniqueInput'
 
-lib/middleware/profile-auth.ts:153:39 - error TS2339: Property 'builderProfile' does not exist on type '{ name: string | null; id: string; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
+lib/middleware/profile-auth.ts:153:39 - error TS2339: Property 'builderProfile' does not exist on type '{ id: string; name: string | null; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
 
 153           const builderProfile = user.builderProfile;
                                           ~~~~~~~~~~~~~~
 
-lib/middleware/profile-auth.ts:181:38 - error TS2339: Property 'clientProfile' does not exist on type '{ name: string | null; id: string; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
+lib/middleware/profile-auth.ts:181:38 - error TS2339: Property 'clientProfile' does not exist on type '{ id: string; name: string | null; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
 
 181           const clientProfile = user.clientProfile;
                                          ~~~~~~~~~~~~~
 
-lib/middleware/profile-auth.ts:213:11 - error TS2322: Type '"client" | "builder" | "unknown"' is not assignable to type '"client" | "builder"'.
+lib/middleware/profile-auth.ts:213:11 - error TS2322: Type '"client" | "unknown" | "builder"' is not assignable to type '"client" | "builder"'.
   Type '"unknown"' is not assignable to type '"client" | "builder"'.
 
 213           profileType: profileType || 'unknown',
@@ -2645,8 +1770,8 @@ lib/payment/api.ts:309:22 - error TS18048: 'checkoutResult.data' is possibly 'un
 309         redirectUrl: checkoutResult.data.url,
                          ~~~~~~~~~~~~~~~~~~~
 
-lib/profile/actions.ts:196:9 - error TS2322: Type 'JsonValue' is not assignable to type 'NullableJsonNullValueInput | InputJsonValue | undefined'.
-  Type 'null' is not assignable to type 'NullableJsonNullValueInput | InputJsonValue | undefined'.
+lib/profile/actions.ts:196:9 - error TS2322: Type 'JsonValue' is not assignable to type 'InputJsonValue | NullableJsonNullValueInput | undefined'.
+  Type 'null' is not assignable to type 'InputJsonValue | NullableJsonNullValueInput | undefined'.
 
 196         socialLinks: data.socialLinks !== undefined ? data.socialLinks : user.builderProfile.socialLinks,
             ~~~~~~~~~~~
@@ -2656,8 +1781,8 @@ lib/profile/actions.ts:196:9 - error TS2322: Type 'JsonValue' is not assignable 
               ~~~~~~~~~~~
     The expected type comes from property 'socialLinks' which is declared here on type '(Without<BuilderProfileUpdateInput, BuilderProfileUncheckedUpdateInput> & BuilderProfileUncheckedUpdateInput) | (Without<...> & BuilderProfileUpdateInput)'
 
-lib/profile/actions.ts:197:9 - error TS2322: Type 'any[] | null' is not assignable to type 'InputJsonValue[] | BuilderProfileUpdateportfolioItemsInput | undefined'.
-  Type 'null' is not assignable to type 'InputJsonValue[] | BuilderProfileUpdateportfolioItemsInput | undefined'.
+lib/profile/actions.ts:197:9 - error TS2322: Type 'any[] | null' is not assignable to type 'BuilderProfileUpdateportfolioItemsInput | InputJsonValue[] | undefined'.
+  Type 'null' is not assignable to type 'BuilderProfileUpdateportfolioItemsInput | InputJsonValue[] | undefined'.
 
 197         portfolioItems: data.portfolioItems !== undefined ? data.portfolioItems : user.builderProfile.portfolioItems,
             ~~~~~~~~~~~~~~
@@ -2677,47 +1802,47 @@ lib/profile/actions.ts:551:9 - error TS2353: Object literal may only specify kno
              ~~~~
     The expected type comes from property 'data' which is declared here on type '{ select?: UserSelect<DefaultArgs> | null | undefined; omit?: UserOmit<DefaultArgs> | null | undefined; include?: UserInclude<DefaultArgs> | null | undefined; data: (Without<...> & UserUncheckedUpdateInput) | (Without<...> & UserUpdateInput); where: UserWhereUniqueInput; }'
 
-lib/profile/actions.ts:600:19 - error TS2339: Property 'title' does not exist on type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
+lib/profile/actions.ts:600:19 - error TS2339: Property 'title' does not exist on type '{ builderProfile: { userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 20 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
 
 600       title: user.title,
                       ~~~~~
 
-lib/profile/actions.ts:601:17 - error TS2339: Property 'bio' does not exist on type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
+lib/profile/actions.ts:601:17 - error TS2339: Property 'bio' does not exist on type '{ builderProfile: { userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 20 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
 
 601       bio: user.bio,
                     ~~~
 
-lib/profile/actions.ts:602:22 - error TS2339: Property 'location' does not exist on type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
+lib/profile/actions.ts:602:22 - error TS2339: Property 'location' does not exist on type '{ builderProfile: { userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 20 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
 
 602       location: user.location,
                          ~~~~~~~~
 
-lib/profile/actions.ts:603:21 - error TS2339: Property 'website' does not exist on type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
+lib/profile/actions.ts:603:21 - error TS2339: Property 'website' does not exist on type '{ builderProfile: { userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 20 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
 
 603       website: user.website,
                         ~~~~~~~
 
-lib/profile/actions.ts:664:19 - error TS2339: Property 'title' does not exist on type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
+lib/profile/actions.ts:664:19 - error TS2339: Property 'title' does not exist on type '{ builderProfile: { userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 20 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
 
 664       title: user.title,
                       ~~~~~
 
-lib/profile/actions.ts:665:17 - error TS2339: Property 'bio' does not exist on type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
+lib/profile/actions.ts:665:17 - error TS2339: Property 'bio' does not exist on type '{ builderProfile: { userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 20 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
 
 665       bio: user.bio,
                     ~~~
 
-lib/profile/actions.ts:666:22 - error TS2339: Property 'location' does not exist on type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
+lib/profile/actions.ts:666:22 - error TS2339: Property 'location' does not exist on type '{ builderProfile: { userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 20 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
 
 666       location: user.location,
                          ~~~~~~~~
 
-lib/profile/actions.ts:667:21 - error TS2339: Property 'website' does not exist on type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
+lib/profile/actions.ts:667:21 - error TS2339: Property 'website' does not exist on type '{ builderProfile: { userId: string; id: string; displayName: string | null; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 20 more ...; schedulingSettings: JsonValue; } | null; } & { ...; }'.
 
 667       website: user.website,
                         ~~~~~~~
 
-lib/profile/actions.ts:745:28 - error TS2339: Property 'interests' does not exist on type '{ name: string | null; id: string; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
+lib/profile/actions.ts:745:28 - error TS2339: Property 'interests' does not exist on type '{ verified: boolean; name: string | null; id: string; createdAt: Date; updatedAt: Date; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; clerkId: string | null; isDemo: boolean; }'.
 
 745     const interests = user.interests || []
                                ~~~~~~~~~
@@ -2817,8 +1942,8 @@ lib/profile/api.ts:200:7 - error TS2353: Object literal may only specify known p
 200       success: false,
           ~~~~~~~
 
-lib/profile/data-service.ts:102:5 - error TS2322: Type '{ name: string | null; id: string; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }' is not assignable to type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; clientProfile: { ...; } | null; } & { ...; }'.
-  Type '{ name: string | null; id: string; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }' is missing the following properties from type '{ builderProfile: { userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; clientProfile: { ...; } | null; }': builderProfile, clientProfile
+lib/profile/data-service.ts:102:5 - error TS2322: Type '{ id: string; name: string | null; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }' is not assignable to type '{ builderProfile: { id: string; availability: string; createdAt: Date; updatedAt: Date; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; clientProfile: { ...; } | null; } & { ...; }'.
+  Type '{ id: string; name: string | null; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }' is missing the following properties from type '{ builderProfile: { id: string; availability: string; createdAt: Date; updatedAt: Date; userId: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; ... 19 more ...; schedulingSettings: JsonValue; } | null; clientProfile: { ...; } | null; }': builderProfile, clientProfile
 
 102     user = await db.user.create({
         ~~~~
@@ -2863,12 +1988,12 @@ lib/profile/data-service.ts:353:9 - error TS2353: Object literal may only specif
              ~~~~
     The expected type comes from property 'data' which is declared here on type '{ select?: UserSelect<DefaultArgs> | null | undefined; omit?: UserOmit<DefaultArgs> | null | undefined; include?: UserInclude<DefaultArgs> | null | undefined; data: (Without<...> & UserUncheckedUpdateInput) | (Without<...> & UserUpdateInput); where: UserWhereUniqueInput; }'
 
-lib/profile/data-service.ts:353:43 - error TS2339: Property 'image' does not exist on type '{ name: string | null; id: string; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
+lib/profile/data-service.ts:353:43 - error TS2339: Property 'image' does not exist on type '{ id: string; name: string | null; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
 
 353         image: userData.image_url || user.image,
                                               ~~~~~
 
-lib/profile/data-service.ts:371:43 - error TS2339: Property 'image' does not exist on type '{ name: string | null; id: string; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
+lib/profile/data-service.ts:371:43 - error TS2339: Property 'image' does not exist on type '{ id: string; name: string | null; email: string; emailVerified: Date | null; imageUrl: string | null; roles: UserRole[]; isFounder: boolean; stripeCustomerId: string | null; ... 4 more ...; updatedAt: Date; }'.
 
 371           ...(userData.image_url !== user.image ? ['image'] : []),
                                               ~~~~~
@@ -2943,135 +2068,36 @@ lib/profile/schemas.ts:93:3 - error TS2339: Property 'partial' does not exist on
 93 ).partial();
      ~~~~~~~
 
-lib/scheduling/actions.ts:281:11 - error TS2322: Type '{ createdAt: string; updatedAt: string; builderId: string; startTime: string; endTime: string; isRecurring: boolean; dayOfWeek: number; id: string; }' is not assignable to type 'AvailabilityRule'.
-  Types of property 'dayOfWeek' are incompatible.
-    Type 'number' is not assignable to type 'DayOfWeek'.
+lib/profile/schemas.ts:101:32 - error TS2693: 'ValidationTier' only refers to a type, but is being used as a value here.
 
-281     const mockRule: AvailabilityRule = {
-              ~~~~~~~~
+101   validationTier: z.nativeEnum(ValidationTier),
+                                   ~~~~~~~~~~~~~~
 
-lib/scheduling/calendly/api-client.ts:71:11 - error TS2395: Individual declarations in merged declaration 'CalendlyEventTypesResponse' must be all exported or all local.
+lib/scheduling/calendly/service.ts:296:25 - error TS2352: Conversion of type 'string | number | boolean | JsonObject | JsonArray | null' to type 'SchedulingSettings' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'JsonValue[]' is missing the following properties from type 'SchedulingSettings': id, builderId
 
-71 interface CalendlyEventTypesResponse {
-             ~~~~~~~~~~~~~~~~~~~~~~~~~~
+296       builderTimezone: (sessionType.builder?.schedulingSettings as SchedulingSettings)?.timezone || undefined
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-lib/scheduling/calendly/api-client.ts:82:11 - error TS2395: Individual declarations in merged declaration 'CalendlyEventTypeResponse' must be all exported or all local.
+lib/scheduling/calendly/webhook-security.ts:256:36 - error TS2339: Property 'name' does not exist on type '{}'.
 
-82 interface CalendlyEventTypeResponse {
-             ~~~~~~~~~~~~~~~~~~~~~~~~~
+256     eventType: payload.event_type?.name,
+                                       ~~~~
 
-lib/scheduling/calendly/api-client.ts:89:11 - error TS2395: Individual declarations in merged declaration 'CalendlyUserResponse' must be all exported or all local.
+lib/scheduling/calendly/webhook-security.ts:257:36 - error TS2339: Property 'email' does not exist on type '{}'.
 
-89 interface CalendlyUserResponse {
-             ~~~~~~~~~~~~~~~~~~~~
+257     inviteeEmail: payload.invitee?.email,
+                                       ~~~~~
 
-lib/scheduling/calendly/api-client.ts:99:11 - error TS2395: Individual declarations in merged declaration 'CalendlyOrganizationResponse' must be all exported or all local.
+lib/scheduling/calendly/webhook-security.ts:258:29 - error TS2339: Property 'uuid' does not exist on type '{}'.
 
-99 interface CalendlyOrganizationResponse {
-             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+258     eventId: payload.event?.uuid,
+                                ~~~~
 
-lib/scheduling/calendly/api-client.ts:625:18 - error TS2395: Individual declarations in merged declaration 'CalendlyUserResponse' must be all exported or all local.
+lib/scheduling/calendly/webhook-security.ts:259:33 - error TS2339: Property 'uuid' does not exist on type '{}'.
 
-625 export interface CalendlyUserResponse {
-                     ~~~~~~~~~~~~~~~~~~~~
-
-lib/scheduling/calendly/api-client.ts:640:18 - error TS2395: Individual declarations in merged declaration 'CalendlyOrganizationResponse' must be all exported or all local.
-
-640 export interface CalendlyOrganizationResponse {
-                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-lib/scheduling/calendly/api-client.ts:648:18 - error TS2395: Individual declarations in merged declaration 'CalendlyEventTypesResponse' must be all exported or all local.
-
-648 export interface CalendlyEventTypesResponse {
-                     ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-lib/scheduling/calendly/api-client.ts:653:18 - error TS2395: Individual declarations in merged declaration 'CalendlyEventTypeResponse' must be all exported or all local.
-
-653 export interface CalendlyEventTypeResponse {
-                     ~~~~~~~~~~~~~~~~~~~~~~~~~
-
-lib/scheduling/calendly/conflict-handler.ts:52:48 - error TS2322: Type '"IN_PROGRESS"' is not assignable to type 'BookingStatus'.
-
-52         status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] },
-                                                  ~~~~~~~~~~~~~
-
-lib/scheduling/calendly/conflict-handler.ts:237:50 - error TS2322: Type '"IN_PROGRESS"' is not assignable to type 'BookingStatus'.
-
-237           status: { in: ['PENDING', 'CONFIRMED', 'IN_PROGRESS'] },
-                                                     ~~~~~~~~~~~~~
-
-lib/scheduling/calendly/conflict-handler.ts:434:39 - error TS2339: Property 'name' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
-
-434         builderName: booking.builder?.name,
-                                          ~~~~
-
-lib/scheduling/calendly/refund-service.ts:72:31 - error TS2339: Property 'toNumber' does not exist on type 'number'.
-
-72       amount: booking.amount?.toNumber(),
-                                 ~~~~~~~~
-
-lib/scheduling/calendly/refund-service.ts:79:47 - error TS2339: Property 'toNumber' does not exist on type 'number'.
-
-79       amount: booking.amount ? booking.amount.toNumber() * 0.5 : undefined,
-                                                 ~~~~~~~~
-
-lib/scheduling/calendly/refund-service.ts:130:54 - error TS2345: Argument of type '{ clientId: string | null; builderId: string; sessionTypeId: string | null; clientTimezone: string | null; status: BookingStatus; id: string; createdAt: Date; updatedAt: Date; ... 15 more ...; lastTransition: Date | null; }' is not assignable to parameter of type '{ id: string; startTime: Date; paymentStatus?: string | undefined; stripeSessionId?: string | null | undefined; amount?: number | null | undefined; }'.
-  Types of property 'amount' are incompatible.
-    Type 'Decimal | null' is not assignable to type 'number | null | undefined'.
-      Type 'Decimal' is not assignable to type 'number'.
-
-130     const refundPolicy = await calculateRefundPolicy(booking)
-                                                         ~~~~~~~
-
-lib/scheduling/calendly/refund-service.ts:137:11 - error TS2353: Object literal may only specify known properties, and 'cancellationReason' does not exist in type '(Without<BookingUpdateInput, BookingUncheckedUpdateInput> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput)'.
-
-137           cancellationReason: reason,
-              ~~~~~~~~~~~~~~~~~~
-
-  node_modules/.prisma/client/index.d.ts:19715:5
-    19715     data: XOR<BookingUpdateInput, BookingUncheckedUpdateInput>
-              ~~~~
-    The expected type comes from property 'data' which is declared here on type '{ select?: BookingSelect<DefaultArgs> | null | undefined; omit?: BookingOmit<DefaultArgs> | null | undefined; include?: BookingInclude<...> | ... 1 more ... | undefined; data: (Without<...> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput); where: BookingWhereUniqueInput; }'
-
-lib/scheduling/calendly/refund-service.ts:182:11 - error TS2353: Object literal may only specify known properties, and 'cancellationReason' does not exist in type '(Without<BookingUpdateInput, BookingUncheckedUpdateInput> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput)'.
-
-182           cancellationReason: reason,
-              ~~~~~~~~~~~~~~~~~~
-
-  node_modules/.prisma/client/index.d.ts:19715:5
-    19715     data: XOR<BookingUpdateInput, BookingUncheckedUpdateInput>
-              ~~~~
-    The expected type comes from property 'data' which is declared here on type '{ select?: BookingSelect<DefaultArgs> | null | undefined; omit?: BookingOmit<DefaultArgs> | null | undefined; include?: BookingInclude<...> | ... 1 more ... | undefined; data: (Without<...> & BookingUncheckedUpdateInput) | (Without<...> & BookingUpdateInput); where: BookingWhereUniqueInput; }'
-
-lib/scheduling/calendly/refund-service.ts:215:27 - error TS2339: Property 'currency' does not exist on type '{ clientId: string | null; builderId: string; sessionTypeId: string | null; clientTimezone: string | null; status: BookingStatus; id: string; createdAt: Date; updatedAt: Date; ... 15 more ...; lastTransition: Date | null; }'.
-
-215         currency: booking.currency || 'USD',
-                              ~~~~~~~~
-
-lib/scheduling/calendly/refund-service.ts:293:54 - error TS2345: Argument of type '{ clientId: string | null; builderId: string; sessionTypeId: string | null; clientTimezone: string | null; status: BookingStatus; id: string; createdAt: Date; updatedAt: Date; ... 15 more ...; lastTransition: Date | null; }' is not assignable to parameter of type '{ id: string; startTime: Date; paymentStatus?: string | undefined; stripeSessionId?: string | null | undefined; amount?: number | null | undefined; }'.
-  Types of property 'amount' are incompatible.
-    Type 'Decimal | null' is not assignable to type 'number | null | undefined'.
-      Type 'Decimal' is not assignable to type 'number'.
-
-293     const refundPolicy = await calculateRefundPolicy(booking)
-                                                         ~~~~~~~
-
-lib/scheduling/calendly/service.ts:295:45 - error TS2339: Property 'timezone' does not exist on type '{ userId: string; id: string; createdAt: Date; updatedAt: Date; availability: string; bio: string | null; headline: string | null; hourlyRate: Decimal | null; featuredBuilder: boolean; ... 18 more ...; schedulingSettings: JsonValue; }'.
-
-295       builderTimezone: sessionType.builder?.timezone || undefined
-                                                ~~~~~~~~
-
-lib/scheduling/calendly/service.ts:332:7 - error TS2322: Type 'string | null' is not assignable to type 'string'.
-  Type 'null' is not assignable to type 'string'.
-
-332       clientId: booking.clientId,
-          ~~~~~~~~
-
-lib/scheduling/calendly/service.ts:342:7 - error TS2322: Type 'PaymentStatus' is not assignable to type '"UNPAID" | "PAID" | "REFUNDED" | "FAILED"'.
-  Type '"CANCELLED"' is not assignable to type '"UNPAID" | "PAID" | "REFUNDED" | "FAILED"'.
-
-342       paymentStatus: booking.paymentStatus,
-          ~~~~~~~~~~~~~
+259     inviteeId: payload.invitee?.uuid,
+                                    ~~~~
 
 lib/scheduling/index.ts:8:15 - error TS2306: File '/Users/liamj/Documents/development/buildappswith/lib/scheduling/api.ts' is not a module.
 
@@ -3168,62 +2194,29 @@ lib/scheduling/state-machine/storage.ts:276:20 - error TS2339: Property 'stateTr
 276       await prisma.stateTransitionLog.deleteMany({
                        ~~~~~~~~~~~~~~~~~~
 
-lib/stripe/actions.ts:80:11 - error TS2741: Property 'success' is missing in type 'BuilderProfileResponse' but required in type '{ success: boolean; data?: BuilderProfileResponse | undefined; error?: string | undefined; }'.
+lib/stripe/actions.ts:140:11 - error TS2739: Type '{ builderId: string; builderName: string; sessionType: string; sessionPrice: number; userEmail: string; bookingId: string; metadata: StripeCheckoutMetadata; userId: string; successUrl: string; cancelUrl: string; paymentOption: "full" | ... 2 more ... | undefined; clientName: string; }' is missing the following properties from type 'BookingCheckoutParams': startTime, endTime, timeZone
 
-80     const builderProfileResponse: { success: boolean; data?: BuilderProfileDataType; error?: string } = await getBuilderProfileById(builderId);
-             ~~~~~~~~~~~~~~~~~~~~~~
-
-  lib/stripe/actions.ts:80:37
-    80     const builderProfileResponse: { success: boolean; data?: BuilderProfileDataType; error?: string } = await getBuilderProfileById(builderId);
-                                           ~~~~~~~
-    'success' is declared here.
-
-lib/stripe/actions.ts:108:11 - error TS2353: Object literal may only specify known properties, and 'notes' does not exist in type 'Without<BookingCreateInput, BookingUncheckedCreateInput> & BookingUncheckedCreateInput'.
-
-108           notes: notes,
-              ~~~~~
-
-  node_modules/.prisma/client/index.d.ts:19659:5
-    19659     data: XOR<BookingCreateInput, BookingUncheckedCreateInput>
-              ~~~~
-    The expected type comes from property 'data' which is declared here on type '{ select?: BookingSelect<DefaultArgs> | null | undefined; omit?: BookingOmit<DefaultArgs> | null | undefined; include?: BookingInclude<...> | ... 1 more ... | undefined; data: (Without<...> & BookingUncheckedCreateInput) | (Without<...> & BookingCreateInput); }'
-
-lib/stripe/actions.ts:146:7 - error TS2353: Object literal may only specify known properties, and 'metadata' does not exist in type 'BookingCheckoutParams'.
-
-146       metadata: metadata, // StripeCheckoutMetadata is compatible here
-          ~~~~~~~~
-
-lib/stripe/actions.ts:254:15 - error TS2367: This comparison appears to be unintentional because the types 'PaymentStatus.UNPAID | PaymentStatus.FAILED' and 'PaymentStatus.PAID' have no overlap.
-
-254           if (bookingData.paymentStatus !== SchedulingPaymentStatus.PAID) {
-                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+140     const bookingCheckoutParams: BookingCheckoutParams = {
+              ~~~~~~~~~~~~~~~~~~~~~
 
 
-Found 548 errors in 131 files.
+Found 362 errors in 104 files.
 
 Errors  Files
-     1  app/(marketing)/metadata.ts:99
      3  app/(platform)/book/[builderId]/page.tsx:110
-     5  app/(platform)/builder/[slug]/page.tsx:21
-     2  app/(platform)/builder/profile/components/metrics-display.tsx:3
-     6  app/(platform)/builder/profile/components/portfolio-gallery.tsx:7
-     2  app/(platform)/builder/profile/components/validation-tier.tsx:3
-     1  app/(platform)/marketplace/page.tsx:5
+     6  app/(platform)/builder/[slug]/page.tsx:21
      2  app/(platform)/profile/[id]/page.tsx:88
-     2  app/(platform)/profile/page.tsx:13
+     1  app/(platform)/profile/page.tsx:48
      1  app/(platform)/profile/profile-settings/availability/page.tsx:22
      3  app/(platform)/profile/profile-settings/page.tsx:46
      1  app/(platform)/trust/verification/[builderId]/page.tsx:51
-     5  app/api/admin/builders/route.ts:3
-     9  app/api/admin/session-types/[id]/route.ts:3
-     8  app/api/profiles/builder/[id]/route.ts:48
-     3  app/api/profiles/builder/clerk/[clerkId]/route.ts:65
+     7  app/api/profiles/builder/[id]/route.ts:48
+     2  app/api/profiles/builder/clerk/[clerkId]/route.ts:65
      5  app/api/profiles/builder/route.ts:214
-     8  app/api/profiles/builder/slug/[slug]/route.ts:40
-     8  app/api/profiles/builders/route.ts:58
-     4  app/api/scheduling/availability-exceptions/route.ts:106
+     7  app/api/profiles/builder/slug/[slug]/route.ts:40
+     7  app/api/profiles/builders/route.ts:58
      3  app/api/scheduling/availability-rules/route.ts:99
-    14  app/api/scheduling/bookings/confirm/route.ts:5
+    10  app/api/scheduling/bookings/confirm/route.ts:5
      1  app/api/scheduling/bookings/create/route.ts:29
      1  app/api/scheduling/bookings/initialize/route.ts:25
      2  app/api/scheduling/builder-settings/route.ts:44
@@ -3238,34 +2231,20 @@ Errors  Files
      3  app/onboarding/page.tsx:43
      1  components/admin/admin-dashboard.tsx:111
      1  components/admin/settings-panel.tsx:4
-     6  components/auth/optimized-loading-state.tsx:41
-     3  components/booking/booking-button.tsx:83
-     1  components/booking/index.ts:7
-     1  components/community/ui/discussion-card.tsx:157
-     1  components/community/ui/knowledge-item.tsx:168
-     1  components/community/ui/server-discussion-card.tsx:130
-    73  components/index.ts:7
-     1  components/landing/ai-capabilities-marquee.tsx:6
-     1  components/landing/brand-word-rotate.tsx:69
-     3  components/landing/hero-section.tsx:6
-    11  components/landing/index.ts:7
-     1  components/landing/navbar.tsx:9
-     1  components/landing/skills-tree-section.tsx:5
-     1  components/landing/ui/index.ts:7
-     1  components/learning/timeline.tsx:3
-     2  components/learning/ui/timeline-filter.tsx:40
-     3  components/learning/ui/timeline-item.tsx:7
-     9  components/magicui/index.ts:7
-     2  components/magicui/particles.tsx:103
+     4  components/auth/index.ts:16
+     1  components/auth/loading-state.tsx:5
+     1  components/landing/ui/index.ts:11
+     1  components/magicui/index.ts:29
      2  components/marketplace/components/builder-dashboard/builder-dashboard.tsx:292
-    12  components/marketplace/hooks/use-builder-filter.ts:37
+     3  components/marketplace/hooks/use-builder-filter.ts:184
      1  components/payment/checkout-button.tsx:76
      1  components/payment/index.ts:13
      1  components/payment/payment-confirmation.tsx:43
      1  components/payment/payment-status-indicator.tsx:6
      1  components/payment/stripe-provider.tsx:47
      1  components/platform/platform-header.tsx:236
-     2  components/profile/builder-profile-wrapper.tsx:71
+     1  components/profile/builder-profile-client-wrapper.tsx:87
+     3  components/profile/builder-profile-wrapper.tsx:71
     10  components/profile/builder-profile.tsx:42
      3  components/profile/client-profile.tsx:11
      3  components/profile/portfolio-gallery.tsx:77
@@ -3273,38 +2252,36 @@ Errors  Files
      1  components/profile/role-badges.tsx:53
      1  components/profile/success-metrics-dashboard.tsx:132
      1  components/providers/datadog-rum-provider.tsx:32
-     1  components/providers/enhanced-clerk-provider.tsx:130
-     3  components/providers/index.ts:7
+     2  components/providers/enhanced-clerk-provider.tsx:8
      1  components/scheduling/builder/availability/availability-management.tsx:6
      1  components/scheduling/calendly/booking-confirmation.tsx:129
-     1  components/scheduling/calendly/calendly-calendar.tsx:162
-     3  components/scheduling/calendly/calendly-embed-optimized.tsx:34
-     3  components/scheduling/calendly/calendly-embed.tsx:162
+     4  components/scheduling/calendly/calendly-calendar.tsx:161
+     3  components/scheduling/calendly/calendly-embed-optimized.tsx:35
+     2  components/scheduling/calendly/calendly-embed.tsx:201
+     1  components/scheduling/calendly/calendly-model.ts:119
+     7  components/scheduling/calendly/index.ts:13
      2  components/scheduling/client/booking-calendar.tsx:341
-     4  components/scheduling/client/booking-flow.tsx:270
-     1  components/scheduling/client/integrated-booking.tsx:9
+     4  components/scheduling/client/booking-flow.tsx:271
      2  components/scheduling/client/stripe-booking-form.tsx:84
-     1  components/scheduling/index.ts:34
      2  components/scheduling/shared/timezone-selector.tsx:11
      1  components/ui/core/calendar.tsx:5
      3  components/user-auth-form.tsx:62
      7  hooks/index.ts:7
-     6  instrumentation-client.ts:52
      1  instrumentation.ts:35
     21  lib/admin/api.ts:21
      1  lib/admin/index.ts:9
      7  lib/auth/api-protection.ts:53
      1  lib/auth/data-access.ts:53
+     2  lib/auth/index.ts:43
     10  lib/auth/security-logging.ts:35
      4  lib/community/index.ts:11
      1  lib/contexts/profile-context.tsx:44
-     6  lib/datadog/auth-monitoring.ts:126
-     2  lib/datadog/client.ts:15
-     1  lib/datadog/client/empty-tracer.client.ts:99
-     5  lib/datadog/sentry-integration.ts:17
+     1  lib/datadog/init.ts:85
+     2  lib/datadog/sentry-integration.ts:11
      1  lib/datadog/server-actions.ts:27
-     4  lib/datadog/server/tracer.server.ts:71
-     5  lib/datadog/tracer.ts:51
+     2  lib/datadog/server-tracer.ts:32
+     6  lib/datadog/server/tracer.server.ts:61
+     3  lib/datadog/tracer.ts:36
      2  lib/db-error-handling.ts:91
      9  lib/db-monitoring.ts:48
     14  lib/db.ts:40
@@ -3322,15 +2299,12 @@ Errors  Files
     19  lib/profile/api.ts:9
     10  lib/profile/data-service.ts:102
     12  lib/profile/index.ts:8
-     1  lib/profile/schemas.ts:93
-     1  lib/scheduling/actions.ts:281
-     8  lib/scheduling/calendly/api-client.ts:71
-     3  lib/scheduling/calendly/conflict-handler.ts:52
-     7  lib/scheduling/calendly/refund-service.ts:72
-     3  lib/scheduling/calendly/service.ts:295
+     2  lib/profile/schemas.ts:93
+     1  lib/scheduling/calendly/service.ts:296
+     4  lib/scheduling/calendly/webhook-security.ts:256
      2  lib/scheduling/index.ts:8
      3  lib/scheduling/mock-data.ts:2
      1  lib/scheduling/real-data/scheduling-service-ext.ts:82
      6  lib/scheduling/state-machine/storage.ts:154
-     4  lib/stripe/actions.ts:80
+     1  lib/stripe/actions.ts:140
  ELIFECYCLE  Command failed with exit code 1.

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
-import { UserRole } from "@/lib/auth/types";
+import { UserRole } from "@/lib/types/enums";
 import * as Sentry from "@sentry/nextjs";
 
 // UI Components

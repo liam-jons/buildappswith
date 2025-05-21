@@ -1,7 +1,11 @@
 /**
- * ui components barrel export file
- * Version: 1.0.0
+ * Landing UI Components Barrel Export
+ * Version: 2.1.0
+ * Updated to use standardized named exports
  */
 
-// Export components
-export { default as TestimonialScroll } from './testimonial-scroll';
+// Export components with named exports
+export { TestimonialScroll, TestimonialCard } from './testimonial-scroll';
+
+// Export types
+export type { TestimonialScrollProps, TestimonialCardProps } from './testimonial-scroll';

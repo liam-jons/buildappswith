@@ -84,7 +84,7 @@ export const GET = withProfileAccess(
       headline: builderProfile.headline,
       skills: formattedSkills,
       availableForHire: builderProfile.availableForHire,
-      adhdFocus: builderProfile.adhdFocus,
+      adhdFocus: builderProfile.adhd_focus,
       validationTier: builderProfile.validationTier,
       socialLinks: builderProfile.socialLinks,
       createdAt: builderProfile.createdAt,

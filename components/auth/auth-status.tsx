@@ -4,7 +4,7 @@
  * This component demonstrates the use of the Clerk Express SDK authentication hooks
  * to display the current authentication status and user information.
  *
- * Version: 2.0.0 (Updated for Clerk Express SDK)
+ * Version: 3.0.0 (Updated for standardized enums and types)
  */
 
 'use client';
@@ -20,7 +20,10 @@ import {
   useAuthStatus
 } from '@/lib/auth';
 import { Button } from '@/components/ui/core/button';
-import { UserRole } from '@/lib/auth';
+import { 
+  UserRole, 
+  AuthStatus as AuthStatusEnum 
+} from '@/lib/types/enums';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -35,7 +38,7 @@ interface AuthStatusProps {
  */
 export function AuthStatus({ className, compact = false }: AuthStatusProps) {
   // Use Express SDK hooks for improved performance via hooks/auth
-  const { isSignedIn, isLoaded, roles, hasRole } = useAuth();
+  const { isSignedIn, isLoaded, status, roles, hasRole } = useAuth();
   const { user } = useUser();
   const isAdmin = useIsAdmin();
   const isBuilder = useIsBuilder();
@@ -43,7 +46,7 @@ export function AuthStatus({ className, compact = false }: AuthStatusProps) {
   const signOut = useSignOut();
 
   // Handle loading state
-  if (!isLoaded) {
+  if (status === AuthStatusEnum.LOADING || !isLoaded) {
     return (
       <div className={`p-4 rounded-md bg-slate-100 ${className}`}>
         <p className="text-slate-600">Loading authentication status...</p>
@@ -52,7 +55,7 @@ export function AuthStatus({ className, compact = false }: AuthStatusProps) {
   }
 
   // Handle unauthenticated state
-  if (!isSignedIn) {
+  if (status === AuthStatusEnum.UNAUTHENTICATED || !isSignedIn) {
     return (
       <div className={`p-4 rounded-md bg-slate-100 ${className}`}>
         {!compact && <h3 className="text-lg font-medium mb-2">Not Authenticated</h3>}
@@ -113,7 +116,9 @@ export function AuthStatus({ className, compact = false }: AuthStatusProps) {
                     ? 'bg-purple-100 text-purple-800'
                     : role === UserRole.BUILDER
                     ? 'bg-blue-100 text-blue-800'
-                    : 'bg-green-100 text-green-800'
+                    : role === UserRole.CLIENT
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-yellow-100 text-yellow-800'
                 }`}
               >
                 {role}
@@ -187,13 +192,13 @@ export function AuthStatus({ className, compact = false }: AuthStatusProps) {
  * Protected version of AuthStatus that requires authentication
  */
 export function ProtectedAuthStatus(props: AuthStatusProps) {
-  const { isSignedIn, isLoaded } = useAuthStatus();
+  const { status, isSignedIn, isLoaded } = useAuthStatus();
 
-  if (isLoaded === false) { // Check for false explicitly, as isLoaded is true when done loading
+  if (status === AuthStatusEnum.LOADING || isLoaded === false) { 
     return <div>Loading...</div>;
   }
 
-  if (!isSignedIn) {
+  if (status === AuthStatusEnum.UNAUTHENTICATED || !isSignedIn) {
     return (
       <div className={`p-4 rounded-md bg-slate-100 ${props.className}`}>
         <p className="text-slate-600">
@@ -218,16 +223,16 @@ export function ProtectedAuthStatus(props: AuthStatusProps) {
  */
 export function HeaderAuthStatus({ className }: AuthStatusProps) {
   const { user } = useUser();
-  const { isSignedIn, isLoaded } = useAuthStatus();
+  const { status, isSignedIn, isLoaded } = useAuthStatus();
   const signOut = useSignOut();
   const router = useRouter();
 
   const initials = useMemo(() => {
-    if (isLoaded === false) { // Check for false explicitly, as isLoaded is true when done loading
+    if (status === AuthStatusEnum.LOADING || isLoaded === false) {
       return <div className="text-slate-500">Loading...</div>;
     }
 
-    if (!isSignedIn) {
+    if (status === AuthStatusEnum.UNAUTHENTICATED || !isSignedIn) {
       return (
         <Button
           variant="ghost"
@@ -253,7 +258,7 @@ export function HeaderAuthStatus({ className }: AuthStatusProps) {
         </Button>
       </div>
     );
-  }, [isLoaded, isSignedIn, user, signOut]);
+  }, [status, isLoaded, isSignedIn, user, signOut]);
 
   return initials;
 }

@@ -33,6 +33,9 @@ export function useBuilderFilter() {
   const [filters, setFilters] = useState<MarketplaceFilters>(() => {
     const initialFilters: MarketplaceFilters = {};
     
+    // Handle null searchParams
+    if (!searchParams) return initialFilters;
+    
     // Extract search query
     const searchQuery = searchParams.get('q');
     if (searchQuery) {
@@ -99,68 +102,57 @@ export function useBuilderFilter() {
     loadFilterOptions();
   }, []);
   
-  // Update URL when filters change
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
+  // Function to update URL parameters based on current filters
+  const updateURLParams = useCallback(() => {
+    const params = new URLSearchParams();
     
-    // Update search query
+    // Add search query
     if (filters.searchQuery) {
       params.set('q', filters.searchQuery);
-    } else {
-      params.delete('q');
     }
     
-    // Update skills
+    // Add skills
     if (filters.skills && filters.skills.length > 0) {
       params.set('skills', filters.skills.join(','));
-    } else {
-      params.delete('skills');
     }
     
-    // Update validation tiers
+    // Add tiers
     if (filters.validationTiers && filters.validationTiers.length > 0) {
       params.set('tiers', filters.validationTiers.join(','));
-    } else {
-      params.delete('tiers');
     }
     
-    // Update availability
+    // Add availability
     if (filters.availability && filters.availability.length > 0) {
       params.set('availability', filters.availability.join(','));
-    } else {
-      params.delete('availability');
     }
     
-    // Update featured flag
+    // Add featured flag
     if (filters.featured) {
       params.set('featured', 'true');
-    } else {
-      params.delete('featured');
     }
     
-    // Update sort option
+    // Add sort option
     if (filters.sortBy) {
       params.set('sort', filters.sortBy);
-    } else {
-      params.delete('sort');
     }
     
-    // Update price range
-    if (filters.minHourlyRate) {
-      params.set('minRate', filters.minHourlyRate.toString());
-    } else {
-      params.delete('minRate');
+    // Add price range
+    if (typeof filters.minHourlyRate === 'number') {
+      params.set('minRate', String(filters.minHourlyRate));
     }
     
-    if (filters.maxHourlyRate) {
-      params.set('maxRate', filters.maxHourlyRate.toString());
-    } else {
-      params.delete('maxRate');
+    if (typeof filters.maxHourlyRate === 'number') {
+      params.set('maxRate', String(filters.maxHourlyRate));
     }
     
     // Update URL without triggering a navigation
     router.replace(`?${params.toString()}`);
-  }, [filters, router, searchParams]);
+  }, [filters, router]);
+  
+  // Update URL when filters change
+  useEffect(() => {
+    updateURLParams();
+  }, [filters, updateURLParams]);
   
   // Method to update filters
   const updateFilters = useCallback((newFilters: Partial<MarketplaceFilters>) => {

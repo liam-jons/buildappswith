@@ -1,6 +1,6 @@
 // Server component version of the DiscussionCard
 
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, Avatar, Badge } from "@/components/ui";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, Avatar, AvatarImage, AvatarFallback, Badge } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 // Types and interfaces
@@ -126,13 +126,17 @@ export function ServerDiscussionCard({
           isCompact ? "text-xs" : "text-sm"
         )}>
           <div className="flex items-center gap-2">
-            <Avatar 
-              src={discussion.author.avatarUrl} 
-              alt={discussion.author.name}
-              className={cn(
+            <Avatar className={cn(
                 isCompact ? "h-5 w-5" : "h-6 w-6"
-              )}
-            />
+              )}>
+              <AvatarImage 
+                src={discussion.author.avatarUrl} 
+                alt={discussion.author.name}
+              />
+              <AvatarFallback>
+                {discussion.author.name.substring(0, 2)}
+              </AvatarFallback>
+            </Avatar>
             <span className="text-muted-foreground">
               {discussion.author.name}
             </span>

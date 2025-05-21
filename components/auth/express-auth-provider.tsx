@@ -7,7 +7,7 @@ import { AuthErrorBoundary } from './auth-error-boundary';
 import {
   ExpressAuthProvider as BaseExpressAuthProvider
 } from '@/lib/auth/hooks';
-import { UserRole } from '@/lib/auth/types';
+import { UserRole } from '@/lib/types/enums';
 
 /**
  * Express SDK authentication provider

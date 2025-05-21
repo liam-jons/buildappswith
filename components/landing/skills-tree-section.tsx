@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { SkillsTreeSectionProps } from "./types";
-import { skillsData } from "./data.tsx";
+import { skillsData } from "./data";
 import { motion } from "framer-motion";
 // Import Image if needed later
 // import Image from "next/image";

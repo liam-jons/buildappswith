@@ -4,8 +4,15 @@ import { AnimatePresence, motion, MotionProps } from "motion/react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
+// Define the brand config type
+interface BrandConfig {
+  className: string;
+  font: string;
+  additionalStyles?: string;
+}
+
 // Brand configurations with approximate colors and fonts
-const brandConfigs = {
+const brandConfigs: Record<string, BrandConfig> = {
   Claude: {
     className: "text-[#D97757]", // Claude's orange/coral color
     font: "Inter, sans-serif",
@@ -66,7 +73,7 @@ export function BrandWordRotate({
   
   // Use brand styling if available, otherwise use a distinguished color
   const wordClassName = brandConfig 
-    ? cn(brandConfig.className, brandConfig.additionalStyles)
+    ? cn(brandConfig.className, brandConfig.additionalStyles || "")
     : "text-purple-600 dark:text-purple-400"; // Default purple for non-brand words
   const wordFont = brandConfig?.font;
 

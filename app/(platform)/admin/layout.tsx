@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import ProtectedRoute from "@/components/auth/protected-route";
 import { AdminNav } from "@/components/admin/admin-nav";
-import { UserRole } from "@/lib/auth/types";
+import { UserRole } from "@/lib/types/enums";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",

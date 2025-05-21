@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-interface ProgressiveLoadingStateProps {
+export interface ProgressiveLoadingStateProps {
   state?: 'initializing' | 'connecting' | 'timeout';
 }
 
@@ -10,7 +10,7 @@ interface ProgressiveLoadingStateProps {
  * Progressive loading state component
  * Shows meaningful loading indicators with proper feedback
  */
-export default function ProgressiveLoadingState({ state = 'initializing' }: ProgressiveLoadingStateProps) {
+export function ProgressiveLoadingState({ state = 'initializing' }: ProgressiveLoadingStateProps) {
   const [stage, setStage] = useState<'initializing' | 'connecting' | 'timeout'>(state);
   const [networkCheck, setNetworkCheck] = useState<'checking' | 'online' | 'offline'>('checking');
   

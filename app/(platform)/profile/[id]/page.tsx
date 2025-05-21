@@ -8,10 +8,10 @@ import { auth } from "@clerk/nextjs/server";
 
 // Import actions from domain
 import { getUserProfile } from "@/lib/profile/actions";
-import { UserRole } from "@/lib/auth/types";
+import { UserRole } from "@/lib/types/enums";
 
 // Import components from barrel exports
-import { BuilderProfile, ClientProfile } from "@/components/profile";
+import { BuilderProfileWrapper, ClientDashboard } from "@/components/profile";
 import { Skeleton } from "@/components/ui";
 
 // Generate metadata for the page
@@ -84,14 +84,13 @@ export default async function UserProfilePage({
       {/* Conditional rendering based on role */}
       <Suspense fallback={<Skeleton className="w-full h-[600px]" />}>
         {isBuilder ? (
-          <BuilderProfile 
-            userId={params.id} 
+          <BuilderProfileWrapper 
+            profileId={params.id}
             isPublicView={!isOwnProfile} 
           />
         ) : isClient ? (
-          <ClientProfile 
-            userId={params.id} 
-            isPublicView={!isOwnProfile}
+          <ClientDashboard
+            userId={params.id}
           />
         ) : (
           <div className="p-6 bg-muted rounded-lg">

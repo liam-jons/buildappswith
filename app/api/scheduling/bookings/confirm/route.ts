@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
           clientId: userId,
           clientName: clientDetails.name,
           clientEmail: clientDetails.email,
-          status: 'pending',
+          status: 'PENDING',
           createdAt: new Date(),
           userProvidedGoal: pathway,
           customQuestionResponse: notes ? [{ question: 'Notes', answer: notes }] : undefined
@@ -180,7 +180,7 @@ export async function POST(req: NextRequest) {
       // Update booking status to failed
       await prisma.booking.update({
         where: { id: booking.id },
-        data: { status: 'failed' }
+        data: { status: 'FAILED' }
       });
       
       return errorResponse('Failed to create booking', 500);
@@ -193,13 +193,13 @@ export async function POST(req: NextRequest) {
         calendlyEventUri: calendlyBooking.uri,
         startTime: timeSlot.startTime,
         endTime: timeSlot.endTime,
-        status: sessionType.price > 0 ? 'pending_payment' : 'confirmed',
+        status: Number(sessionType.price) > 0 ? 'PENDING_PAYMENT' : 'CONFIRMED',
         userTimezone: clientDetails.timezone
       }
     });
     
     // Send confirmation email (for free sessions)
-    if (sessionType.price === 0) {
+    if (Number(sessionType.price) === 0) {
       try {
         await sendBookingConfirmationEmail({
           to: clientDetails.email,
@@ -240,8 +240,8 @@ export async function POST(req: NextRequest) {
           email: sessionType.builder.email
         }
       },
-      paymentRequired: sessionType.price > 0,
-      checkoutUrl: sessionType.price > 0 ? `/api/payment/create-checkout?bookingId=${updatedBooking.id}` : undefined
+      paymentRequired: Number(sessionType.price) > 0,
+      checkoutUrl: Number(sessionType.price) > 0 ? `/api/payment/create-checkout?bookingId=${updatedBooking.id}` : undefined
     };
     
     logger.info('Booking confirmation created successfully', {

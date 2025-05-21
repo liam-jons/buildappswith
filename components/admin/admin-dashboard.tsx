@@ -8,7 +8,7 @@
 import { Card } from "@/components/ui/core";
 import { AdminNav } from "./admin-nav";
 import { AdminCard } from "./ui/admin-card";
-import { UserRole } from "@/lib/auth/types";
+import { UserRole } from "@/lib/types/enums";
 
 interface AdminDashboardProps {
   roles: UserRole[];

@@ -9,7 +9,7 @@ import {
   CardTitle
 } from "@/components/ui";
 
-import Particles from '@/components/magicui/particles';
+import { Particles } from '@/components/magicui/particles';
 import { ArrowDown, ArrowUp, Star } from 'lucide-react';
 
 type MetricsDisplayProps = {

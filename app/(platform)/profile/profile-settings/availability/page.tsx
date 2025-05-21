@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import AvailabilityManagement from '@/components/scheduling/builder/availability/availability-management';
-import { UserRole } from '@/lib/auth/types';
+import { UserRole } from '@/lib/types/enums';
 import { LoadingSpinner } from '@/components/ui';
 
 export default function AvailabilityPage() {

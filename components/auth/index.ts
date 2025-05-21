@@ -1,56 +1,34 @@
 /**
- * Authentication Components
+ * Authentication Components Barrel Export
  * 
- * This barrel file exports all authentication components
- * and provides a centralized entry point for authentication-related UI.
+ * This file exports all authentication components following the
+ * domain-first organization pattern used across the codebase.
  * 
- * Version: 2.0.0 (Updated for Clerk Express SDK)
+ * Version: 3.0.0 (Updated for Clerk Express SDK)
  */
 
 'use client';
 
 // Authentication status components
-/*
-export { 
-  AuthStatus, 
-  ProtectedAuthStatus, 
-  HeaderAuthStatus 
-} from './auth-status';
-*/
+export { AuthStatus } from './auth-status';
 
 // Authentication form component
-// export { default as ClerkAuthForm } from './clerk-auth-form'; 
+export { default as ClerkAuthForm } from './clerk-auth-form'; 
 
 // Protection components
-// export { default as ProtectedRoute } from './protected-route';
-/*
-export { 
-  RoleProtected, 
-  PermissionProtected 
-} from './role-protected';
-*/
+export { default as ProtectedRoute } from './protected-route';
+export { RoleProtected } from './role-protected';
 
 // Authentication providers
-/*
-export { 
-  ExpressAuthProvider, 
-  EnhancedAuthProvider, 
-  useExpressAuth, 
-  useAuthLoaded 
-} from './express-auth-provider';
-*/
+export { ExpressAuthProvider } from './express-auth-provider';
 
 // Error boundary for authentication errors
-/*
-export { 
-  AuthErrorBoundary, 
-  dispatchAuthError, 
-  withAuthErrorHandling 
-} from './auth-error-boundary';
-*/
+export { AuthErrorBoundary } from './auth-error-boundary';
 
-// Loading state component
-// export { default as LoadingState } from './loading-state';
+// Loading state components
+export { default as LoadingState } from './loading-state';
+export { OptimizedLoadingState } from './optimized-loading-state';
+export { ProgressiveLoadingState } from './progressive-loading-state';
 
 // Re-export subdirectory components
-// export * from './ui';
+export * from './ui';

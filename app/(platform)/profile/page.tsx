@@ -10,7 +10,6 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { UserProfile } from "@/components/profile";
-import { ProfileSkeleton } from "@/components/profile/ui";
 import { getPublicUserProfile } from "@/lib/profile/actions";
 
 // Metadata for SEO

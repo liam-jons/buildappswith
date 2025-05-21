@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/core/dialog';
 import { Button } from '@/components/ui/core/button';
 import { BookingFlow } from '@/components/scheduling/client/booking-flow';
-import { CalendlyEmbed } from '@/components/scheduling/calendly/calendly-embed';
+import CalendlyEmbed from '@/components/scheduling/calendly/calendly-embed';
 import { X } from 'lucide-react';
 import { SessionType } from '@/lib/scheduling/types';
 

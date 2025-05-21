@@ -6,7 +6,7 @@ import { ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { mainNavItems } from "./data.tsx";
+import { mainNavItems } from "./data";
 import { NavigationItem, NavbarProps } from "./types";
 import { AnimatedSubscribeButton } from "../magicui/animated-subscribe-button";
 

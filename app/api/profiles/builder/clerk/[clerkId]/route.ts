@@ -79,7 +79,7 @@ export async function GET(
       headline: user.builderProfile.headline,
       skills: formattedSkills,
       availableForHire: user.builderProfile.availableForHire,
-      adhdFocus: user.builderProfile.adhdFocus,
+      adhdFocus: user.builderProfile.adhd_focus,
       validationTier: user.builderProfile.validationTier,
       socialLinks: user.builderProfile.socialLinks,
       createdAt: user.builderProfile.createdAt,

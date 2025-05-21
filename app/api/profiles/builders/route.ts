@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
         category: skill.skill.category,
       })),
       availableForHire: profile.availableForHire,
-      adhdFocus: profile.adhdFocus,
+      adhdFocus: profile.adhd_focus,
       validationTier: profile.validationTier,
       socialLinks: profile.socialLinks,
       featured: profile.featured,

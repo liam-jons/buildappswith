@@ -3,26 +3,50 @@
  * 
  * This file defines the common types used throughout the authentication system.
  * 
- * Version: 2.0.0
+ * Version: 3.0.0
  */
 
-import { getAuth as clerkGetAuth } from "@clerk/nextjs/server"; // Added import for getAuth type inference
+import { getAuth as clerkGetAuth } from "@clerk/nextjs/server";
+import { 
+  UserRole, 
+  AuthStatus, 
+  ProfileType,
+  AccessType
+} from '@/lib/types/enums';
 
 /**
- * User roles in the system
+ * Permission type - defines all possible permissions in the system
  */
-export enum UserRole {
-  ADMIN = 'ADMIN',
-  BUILDER = 'BUILDER',
-  CLIENT = 'CLIENT',
+export type Permission = 
+  | 'view:profile'
+  | 'edit:profile'
+  | 'view:builder'
+  | 'edit:builder'
+  | 'manage:bookings'
+  | 'manage:sessions'
+  | 'admin:access'
+  | 'payment:view'
+  | 'payment:manage';
+
+/**
+ * Role-Permission mapping interface
+ */
+export interface RolePermission {
+  role: UserRole;
+  permissions: Permission[];
 }
+
+/**
+ * Permission checker function type
+ */
+export type PermissionChecker = (permission: Permission) => boolean;
 
 /**
  * Clerk user metadata shape
  */
 export interface ClerkUserPublicMetadata {
   roles?: UserRole[];
-  permissions?: string[];
+  permissions?: Permission[];
   [key: string]: unknown;
 }
 
@@ -40,19 +64,18 @@ export interface ClerkSessionClaims {
  * roles, and other essential information.
  */
 export interface AuthUser {
-  id: string;            // Database user ID
-  clerkId: string;       // Clerk user ID
+  id: string;                 // Database user ID
+  clerkId: string;            // Clerk user ID
   name: string | null;
   email: string;
   imageUrl: string | null;    // Typically from Clerk or DB user.imageUrl
   roles: UserRole[];
-  verified: boolean;       // Email verification status
+  verified: boolean;          // Email verification status
   stripeCustomerId?: string | null;
-  isFounder: boolean;      // Added property
-  isDemo: boolean;         // Added property
-  // Add other relevant fields from your database's User model as needed
-  // e.g., builderProfileId?: string | null;
-  //       clientProfileId?: string | null;
+  isFounder: boolean;         // Added property
+  isDemo: boolean;            // Added property
+  builderProfileId?: string | null;
+  clientProfileId?: string | null;
 }
 
 /**
@@ -79,6 +102,15 @@ export interface AuthError {
 }
 
 /**
+ * Authentication state representing the current auth status and user data
+ */
+export interface AuthState {
+  status: AuthStatus;
+  user: AuthUser | null;
+  error?: AuthError | null;
+}
+
+/**
  * Standardized API response for authentication operations
  */
 export interface AuthResponse<T = any> {
@@ -102,6 +134,7 @@ export interface AuthOptions {
 export interface AuthMiddlewareOptions {
   requireAuth?: boolean;
   requireRoles?: UserRole[];
+  requirePermissions?: Permission[];
 }
 
 /**
@@ -109,16 +142,26 @@ export interface AuthMiddlewareOptions {
  */
 export interface AuthContextType {
   user: AuthUser | null;
+  status: AuthStatus;
   isLoaded: boolean;
   isSignedIn: boolean;
   roles: UserRole[];
   hasRole: (role: UserRole) => boolean;
-  hasPermission: (permission: string) => boolean;
+  hasPermission: (permission: Permission) => boolean;
   isAdmin: boolean;
   isBuilder: boolean;
   isClient: boolean;
   signOut: (options?: { callbackUrl?: string }) => Promise<void>;
   getToken: (options?: { template?: string; skipCache?: boolean }) => Promise<string | null>;
+}
+
+/**
+ * Auth provider props
+ */
+export interface AuthProviderProps {
+  children: React.ReactNode;
+  initialState?: Partial<AuthState>;
+  onError?: (error: AuthError) => void;
 }
 
 /**
@@ -129,6 +172,84 @@ export interface AuthObject {
   userId: string;
   roles: UserRole[];
   claims: ReturnType<typeof clerkGetAuth>['sessionClaims'];
-  // Consider adding orgId if it's consistently available from getAuth and needed by handlers
-  // orgId?: string | null; 
+  permissions?: Permission[];
+}
+
+/**
+ * Profile route context for middleware
+ */
+export interface ProfileRouteContext {
+  userId: string;
+  clerkId: string;
+  user: {
+    id: string;
+    roles: UserRole[];
+    [key: string]: any;
+  };
+  profileId?: string;
+  profileType?: ProfileType;
+  isOwner: boolean;
+  isAdmin: boolean;
+}
+
+/**
+ * Profile route handler type
+ */
+export type ProfileRouteHandler = (
+  req: Request,
+  context: ProfileRouteContext
+) => Promise<Response> | Response;
+
+/**
+ * Type guard to check if a value is a valid Permission
+ */
+export function isValidPermission(value: string): value is Permission {
+  const validPermissions: Permission[] = [
+    'view:profile',
+    'edit:profile',
+    'view:builder',
+    'edit:builder',
+    'manage:bookings',
+    'manage:sessions',
+    'admin:access',
+    'payment:view',
+    'payment:manage'
+  ];
+  
+  return validPermissions.includes(value as Permission);
+}
+
+/**
+ * Helper function to get default permissions for a role
+ */
+export function getDefaultPermissionsForRole(role: UserRole): Permission[] {
+  switch (role) {
+    case UserRole.ADMIN:
+      return [
+        'view:profile',
+        'edit:profile',
+        'view:builder',
+        'edit:builder',
+        'manage:bookings',
+        'manage:sessions',
+        'admin:access',
+        'payment:view',
+        'payment:manage'
+      ];
+    case UserRole.BUILDER:
+      return [
+        'view:profile',
+        'edit:profile',
+        'manage:bookings',
+        'manage:sessions'
+      ];
+    case UserRole.CLIENT:
+      return [
+        'view:profile',
+        'edit:profile',
+        'view:builder'
+      ];
+    default:
+      return ['view:profile'];
+  }
 }

@@ -1,17 +1,18 @@
 /**
  * Middleware Error Handling
- * Version: 1.0.78
+ * Version: 1.1.0
  * 
  * Provides standardized error handling for middleware components
  * with detailed logging and telemetry integration.
+ * Updated to use standardized API response types.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { ApiError, ApiErrorCode } from '../types/api-types';
+import { createErrorResponse } from '../utils/api-utils';
+import { logger } from '../logger';
 
-export type MiddlewareError = {
-  code: string;
-  message: string;
-  details?: Record<string, any>;
+export type MiddlewareError = ApiError & {
   statusCode?: number;
 };
 
@@ -37,8 +38,8 @@ export function handleMiddlewareError(
     error: formatError(error),
   };
   
-  // Log the error (this would ideally use a structured logger)
-  console.error('[Middleware Error]', JSON.stringify(errorDetails, null, 2));
+  // Log the error using structured logger
+  logger.error('[Middleware Error]', errorDetails);
   
   // In production, we would send this to a monitoring service like Datadog or Sentry
   if (process.env.NODE_ENV === 'production') {
@@ -48,14 +49,16 @@ export function handleMiddlewareError(
   
   // Handle API requests with JSON responses
   if (isApiRequest) {
+    const errorCode = isMiddlewareError(error) ? error.code : ApiErrorCode.INTERNAL_ERROR;
+    const errorMessage = error.message || 'An error occurred processing your request';
+    const statusCode = (isMiddlewareError(error) && error.statusCode) ? error.statusCode : 500;
+    const details = isMiddlewareError(error) ? error.details : undefined;
+    
+    const errorResponse = createErrorResponse(errorCode, errorMessage, details, statusCode);
+    
     return NextResponse.json(
-      {
-        error: isMiddlewareError(error) ? error.code : 'middleware_error',
-        message: error.message || 'An error occurred processing your request',
-      },
-      { 
-        status: (isMiddlewareError(error) && error.statusCode) ? error.statusCode : 500 
-      }
+      errorResponse,
+      { status: statusCode }
     );
   }
   
@@ -109,6 +112,26 @@ export function createMiddlewareError(
     details,
     statusCode,
   };
+}
+
+/**
+ * Creates a standard middleware not found error
+ */
+export function createMiddlewareNotFoundError(
+  message: string = 'Resource not found',
+  details?: Record<string, any>
+): MiddlewareError {
+  return createMiddlewareError(ApiErrorCode.NOT_FOUND, message, details, 404);
+}
+
+/**
+ * Creates a standard middleware unauthorized error
+ */
+export function createMiddlewareUnauthorizedError(
+  message: string = 'Unauthorized',
+  details?: Record<string, any>
+): MiddlewareError {
+  return createMiddlewareError(ApiErrorCode.UNAUTHORIZED, message, details, 401);
 }
 
 /**

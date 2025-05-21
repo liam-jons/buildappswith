@@ -10,13 +10,16 @@ import { formatDate } from "@/lib/utils/format-utils";
 
 // Internal components using barrel exports
 import { 
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-  Badge,
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent, 
+  CardFooter, 
   Avatar,
+  AvatarImage,
+  AvatarFallback, 
+  Badge,
   Button
 } from "@/components/ui";
 
@@ -164,11 +167,15 @@ export function KnowledgeItem({
 
         <CardFooter className="flex justify-between pt-0 text-sm">
           <div className="flex items-center gap-2">
-            <Avatar 
-              src={item.author.avatarUrl} 
-              alt={item.author.name}
-              className="h-6 w-6"
-            />
+            <Avatar className="h-6 w-6">
+              <AvatarImage 
+                src={item.author.avatarUrl} 
+                alt={item.author.name}
+              />
+              <AvatarFallback>
+                {item.author.name.substring(0, 2)}
+              </AvatarFallback>
+            </Avatar>
             <span className="text-muted-foreground">
               {item.author.name}
             </span>

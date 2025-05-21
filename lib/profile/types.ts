@@ -5,11 +5,12 @@
  * TypeScript type definitions for profiles
  */
 
-export enum ValidationTier {
-  TIER1 = 1,
-  TIER2 = 2,
-  TIER3 = 3
-}
+import { ValidationTier as TrustValidationTier } from '@/lib/trust/types';
+
+/**
+ * Re-export ValidationTier from trust domain for consistency
+ */
+export type ValidationTier = TrustValidationTier;
 
 export enum UserRole {
   CLIENT = "CLIENT",

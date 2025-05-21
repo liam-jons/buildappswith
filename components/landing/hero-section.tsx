@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { BrandWordRotate } from "./brand-word-rotate";
 import { HeroContent, HeroSectionProps } from "./types";
-import { heroContent } from "./data.tsx";
+import { heroContent } from "./data";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AuroraText } from "@/components/magicui/aurora-text";
@@ -107,7 +107,8 @@ export function HeroSection({
                 Welcome to Build Apps With - Your AI App Development Platform
               </AnimatedSpan>
               <AnimatedSpan delay={200}>
-                
+                {/* Intentional spacing */}
+                &nbsp;
               </AnimatedSpan>
               <AnimatedSpan delay={300} className="text-blue-500">
                 Available commands:
@@ -125,7 +126,8 @@ export function HeroSection({
                   marketplace   - Find AI builders and experts
               </AnimatedSpan>
               <AnimatedSpan delay={800}>
-                
+                {/* Intentional spacing */}
+                &nbsp;
               </AnimatedSpan>
               <AnimatedSpan delay={900} className="text-slate-900 dark:text-slate-100">
                 $ buildappswith accelerate

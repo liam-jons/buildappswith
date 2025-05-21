@@ -10,7 +10,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 import { useAuth, useUser, useSignOut } from "@/lib/auth/hooks";
-import { UserRole } from "@/lib/auth/types";
+import { UserRole } from "@/lib/types/enums";
 import ViewingPreferences from "@/components/platform/viewing-preferences";
 import { AuroraText } from "@/components/magicui/aurora-text";
 

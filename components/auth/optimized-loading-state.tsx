@@ -3,9 +3,9 @@
 import { useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import React from "react";
-import ProgressiveLoadingState from "./progressive-loading-state";
+import { ProgressiveLoadingState } from "./progressive-loading-state";
 
-interface OptimizedAuthLoadingStateProps {
+export interface OptimizedAuthLoadingStateProps {
   children: React.ReactNode;
   maxWaitTime?: number;
 }
@@ -36,6 +36,9 @@ export function OptimizedAuthLoadingState({
   
   // Check if we're on a public path
   const isPublicPath = React.useMemo(() => {
+    // Handle null pathname safely
+    if (!pathname) return true; // Treat null pathname as public for safety
+    
     return publicPaths.some(path => 
       pathname === path || 
       pathname.startsWith(`${path}/`) ||

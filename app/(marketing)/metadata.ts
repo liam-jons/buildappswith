@@ -95,10 +95,10 @@ export const metadata: Metadata = {
     ],
   },
   
-  // Theme colour
-  themeColour: [
-    { media: '(prefers-color-scheme: light)', colour: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', colour: '#000000' },
+  // Theme color
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
   ],
   
   // Application data

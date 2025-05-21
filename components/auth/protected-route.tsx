@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth, useHasAnyRole, useHasAllRoles } from '@/lib/auth';
-import { UserRole } from '@/lib/auth/types';
+import { UserRole } from '@/lib/types/enums';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect, useMemo } from 'react';
 

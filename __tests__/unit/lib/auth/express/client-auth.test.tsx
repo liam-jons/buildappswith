@@ -14,7 +14,7 @@ import {
   ExpressAuthProvider,
   useAuthContext
 } from '@/lib/auth/hooks';
-import { UserRole } from '@/lib/auth/types';
+import { UserRole } from '@/lib/types/enums';
 
 // Mock Clerk client hooks
 vi.mock('@clerk/nextjs', () => ({

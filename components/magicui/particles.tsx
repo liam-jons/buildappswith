@@ -155,7 +155,7 @@ export const Particles: React.FC<ParticlesProps> = ({
       context.current = canvasRef.current.getContext("2d");
     }
     initCanvas();
-    animate();
+    animateParticles();
 
     const handleResize = () => {
       if (resizeTimeout.current) {
@@ -303,7 +303,7 @@ export const Particles: React.FC<ParticlesProps> = ({
     return remapped > 0 ? remapped : 0;
   };
 
-  const animate = () => {
+  const animateParticles = () => {
     clearContext();
     circles.current.forEach((circle: Circle, i: number) => {
       // Handle the alpha value

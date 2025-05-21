@@ -8,7 +8,7 @@ import { logger } from '@/lib/logger';
 const prisma = new PrismaClient();
 
 // GET /api/admin/builders - Get all builders
-export const GET = withAdmin(async (req: NextRequest, auth: AuthObject) => {
+export const GET = withAdmin(async (req: NextRequest, context: { params?: any }, auth) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
@@ -78,11 +78,24 @@ export const GET = withAdmin(async (req: NextRequest, auth: AuthObject) => {
     });
 
     if (error instanceof AuthenticationError || error instanceof AuthorizationError) {
-      return NextResponse.json({ message: error.message }, { status: error.statusCode });
+      return NextResponse.json(
+        { success: false, message: error.message }, 
+        { status: error.statusCode }
+      );
     }
     
+    // Handle any Error type
+    if (error instanceof Error) {
+      const statusCode = (error as any).statusCode || 500;
+      return NextResponse.json(
+        { success: false, message: error.message || 'An unexpected error occurred' }, 
+        { status: statusCode }
+      );
+    }
+    
+    // Fallback for unknown error types
     return NextResponse.json(
-      { message: 'An unexpected error occurred' }, 
+      { success: false, message: 'An unexpected error occurred' }, 
       { status: 500 }
     );
   }

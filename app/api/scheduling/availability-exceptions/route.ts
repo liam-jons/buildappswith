@@ -103,7 +103,9 @@ export async function GET(request: NextRequest) {
 /**
  * POST handler for creating a new availability exception
  */
-export const POST = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
+export const POST = withAuth(async (request: NextRequest, context: { params?: any }, auth) => {
+  const userId = auth.userId;
+  const userRoles = auth.roles;
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
@@ -166,7 +168,9 @@ export const POST = withAuth(async (request: NextRequest, context: { params?: an
 /**
  * GET handler for fetching a specific availability exception
  */
-export const GET_BY_ID = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
+export const GET_BY_ID = withAuth(async (request: NextRequest, context: { params?: any }, auth) => {
+  const userId = auth.userId;
+  const userRoles = auth.roles;
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
@@ -234,7 +238,9 @@ export const GET_BY_ID = withAuth(async (request: NextRequest, context: { params
 /**
  * PUT handler for updating an existing availability exception
  */
-export const PUT = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
+export const PUT = withAuth(async (request: NextRequest, context: { params?: any }, auth) => {
+  const userId = auth.userId;
+  const userRoles = auth.roles;
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
@@ -324,7 +330,9 @@ export const PUT = withAuth(async (request: NextRequest, context: { params?: any
 /**
  * DELETE handler for deleting an availability exception
  */
-export const DELETE = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
+export const DELETE = withAuth(async (request: NextRequest, context: { params?: any }, auth) => {
+  const userId = auth.userId;
+  const userRoles = auth.roles;
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
