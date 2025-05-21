@@ -4,7 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "./clerk-provider";
 import { Toaster } from "sonner";
 import { AuthErrorBoundary } from "../auth/auth-error-boundary";
-import { DatadogRumProvider, retrieveTraceContext } from "./datadog-rum-provider";
+// import { DatadogRumProvider, retrieveTraceContext } from "./datadog-rum-provider";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -15,7 +15,7 @@ interface ProvidersProps {
  */
 export function Providers({ children }: ProvidersProps) {
   // Retrieve trace context from localStorage for SPA navigation if available
-  const traceContext = typeof window !== 'undefined' ? retrieveTraceContext() : null;
+  // const traceContext = typeof window !== 'undefined' ? retrieveTraceContext() : null;
   
   return (
     <ThemeProvider
@@ -25,12 +25,13 @@ export function Providers({ children }: ProvidersProps) {
       disableTransitionOnChange
     >
       <ClerkProvider>
-        <DatadogRumProvider traceContext={traceContext}>
+        {/* Datadog temporarily disabled - API version issues */}
+        {/* <DatadogRumProvider traceContext={traceContext}> */}
           <AuthErrorBoundary>
             <Toaster richColors />
             {children}
           </AuthErrorBoundary>
-        </DatadogRumProvider>
+        {/* </DatadogRumProvider> */}
       </ClerkProvider>
     </ThemeProvider>
   );

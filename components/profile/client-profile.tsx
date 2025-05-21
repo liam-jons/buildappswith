@@ -7,7 +7,9 @@ import { getClientProfileData } from "@/lib/profile/actions";
 
 // Internal components using barrel exports
 import { ProfileStats } from "@/components/profile/ui";
-import { Card, CardContent, CardHeader, CardTitle, Avatar, Skeleton } from "@/components/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/core";
+import { Avatar } from "@/components/ui/core/avatar";
+import { Skeleton } from "@/components/ui/core/skeleton";
 import { BookingHistoryList } from "@/components/scheduling";
 
 // Types and interfaces

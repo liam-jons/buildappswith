@@ -29,7 +29,6 @@ import {
   TargetIcon
 } from "@radix-ui/react-icons";
 import { ValidationTierBadge } from "@/components/trust/ui/validation-tier-badge";
-import { ValidationTier } from "@/lib/trust/types";
 import { PortfolioShowcase, PortfolioProject } from "./portfolio-showcase";
 import { AppShowcase, AppItem } from "./app-showcase";
 import { SuccessMetricsDashboard, MetricsCategory } from "./success-metrics-dashboard";
@@ -40,49 +39,11 @@ import {
   SpecializationArea, 
   SpecializationContent,
   ExpertiseAreas,
-  Testimonial
+  Testimonial,
+  BuilderProfileData
 } from "@/lib/profile/types";
-
-export interface BuilderProfileData {
-  id: string;
-  name: string;
-  title: string;
-  bio: string;
-  avatarUrl?: string;
-  coverImageUrl?: string;
-  validationTier: ValidationTier;
-  joinDate: Date;
-  completedProjects: number;
-  rating: number;
-  responseRate: number;
-  skills: string[];
-  roles?: UserRole[];
-  isFounder?: boolean;
-  adhdFocus?: boolean;
-  isDemo?: boolean; // Flag indicating a demo account
-  availability?: {
-    status: "available" | "limited" | "unavailable";
-    nextAvailable?: Date;
-  };
-  socialLinks?: {
-    website?: string;
-    linkedin?: string;
-    github?: string;
-    twitter?: string;
-  };
-  portfolio: PortfolioProject[];
-  apps?: AppItem[];
-  metrics?: MetricsCategory[];
-  expertiseAreas?: ExpertiseAreas;
-  sessionTypes?: Array<{
-    id: string;
-    name: string;
-    description?: string;
-    duration: number;
-    price?: number;
-    calendlyEventTypeUri?: string;
-  }>;
-}
+import { ValidationTier } from "@/lib/marketplace/types";
+import { validationTierToString } from "@/lib/utils/type-converters";
 
 interface BuilderProfileProps {
   profile: BuilderProfileData;
@@ -113,26 +74,30 @@ export function BuilderProfile({
   const [showFullBio, setShowFullBio] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("expertise");
   
-  // Format bio with show more/less if longer than 280 characters
-  const bioIsTruncated = profile.bio.length > 280;
-  const displayBio = showFullBio ? profile.bio : bioIsTruncated ? profile.bio.slice(0, 280) + "..." : profile.bio;
+  // Format bio with show more/less if longer than 280 characters (handle undefined bio)
+  const bioIsTruncated = profile.bio && profile.bio.length > 280;
+  const displayBio = showFullBio 
+    ? profile.bio 
+    : bioIsTruncated 
+      ? profile.bio!.slice(0, 280) + "..." 
+      : profile.bio || '';
   
-  // Get appropriate availability label and styling
+  // Get appropriate availability label and styling (availability is now a string)
   const availabilityLabel = profile.availability ? {
     available: "Available Now",
-    limited: "Limited Availability",
+    limited: "Limited Availability", 
     unavailable: "Unavailable"
-  }[profile.availability.status] : "Availability Unknown";
+  }[profile.availability as 'available' | 'limited' | 'unavailable'] || profile.availability : "Availability Unknown";
   
   const availabilityStyle = profile.availability ? {
     available: "text-green-600 dark:text-green-500 bg-green-50 dark:bg-green-950/30",
     limited: "text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/30",
-    unavailable: "text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-950/30"
-  }[profile.availability.status] : "text-muted-foreground bg-muted";
+    unavailable: "text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-950/30"  
+  }[profile.availability as 'available' | 'limited' | 'unavailable'] || "text-muted-foreground bg-muted" : "text-muted-foreground bg-muted";
   
   // Determine tabs to show
-  const showAppsTab = !!profile.apps && (profile.apps.length > 0 || isOwner);
-  const showMetricsTab = !!profile.metrics && profile.metrics.length > 0;
+  const showAppsTab = false; // Apps feature temporarily disabled while using unified interface
+  const showMetricsTab = false; // Metrics feature temporarily disabled while using unified interface
   
   return (
     <div className={cn("w-full", className)}>
@@ -141,7 +106,7 @@ export function BuilderProfile({
         {profile.coverImageUrl && (
           <Image
             src={profile.coverImageUrl}
-            alt={`${profile.name}'s cover image`}
+            alt={`${profile.name || profile.displayName}'s cover image`}
             fill
             className="object-cover"
           />
@@ -180,7 +145,7 @@ export function BuilderProfile({
             {profile.avatarUrl && (
               <Image
                 src={profile.avatarUrl}
-                alt={profile.name}
+                alt={profile.name || profile.displayName || 'Profile'}
                 fill
                 className="object-cover"
               />
@@ -190,14 +155,14 @@ export function BuilderProfile({
           {/* Name and basic info */}
           <div className="flex-grow">
             <div className="flex flex-wrap items-center gap-3 mb-1">
-              <h1 className="text-2xl md:text-3xl font-bold">{profile.name}</h1>
-              <ValidationTierBadge tier={profile.validationTier} />
+              <h1 className="text-2xl md:text-3xl font-bold">{profile.name || profile.displayName}</h1>
+              <ValidationTierBadge tier={validationTierToString(profile.validationTier)} />
               
               {/* Demo Account Badge */}
-              {profile.isDemo && <DemoBadge size="medium" />}
+              {/* TODO: Add isDemo flag to unified interface if needed */}
               
               {/* ADHD Focus Badge */}
-              {profile.adhdFocus && (
+              {profile.adhd_focus && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-800 dark:bg-purple-950/50 dark:text-purple-400 rounded-full text-xs font-medium">
                   <HeartFilledIcon className="h-3 w-3" />
                   ADHD Focus
@@ -206,23 +171,15 @@ export function BuilderProfile({
             </div>
             
             {/* Role badges if available */}
-            {profile.roles && profile.roles.length > 0 && (
-              <div className="mb-2">
-                <MultiRoleBadge 
-                  roles={profile.roles} 
-                  isFounder={profile.isFounder}
-                  size="sm"
-                />
-              </div>
-            )}
+            {/* TODO: Add roles to unified interface if needed */}
             
-            <h2 className="text-lg text-muted-foreground mb-2">{profile.title}</h2>
+            <h2 className="text-lg text-muted-foreground mb-2">{profile.title || profile.headline}</h2>
             
             {/* Key stats */}
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
               <div className="flex items-center gap-1.5">
                 <StarFilledIcon className="h-4 w-4 text-amber-500" />
-                <span>{profile.rating.toFixed(1)} Rating</span>
+                <span>{(profile.rating || 0).toFixed(1)} Rating</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <CheckIcon className="h-4 w-4 text-green-500" />
@@ -230,7 +187,7 @@ export function BuilderProfile({
               </div>
               <div className="flex items-center gap-1.5">
                 <CalendarIcon className="h-4 w-4 text-blue-500" />
-                <span>Joined {profile.joinDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</span>
+                <span>Joined {profile.joinDate ? profile.joinDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) : 'Recently'}</span>
               </div>
             </div>
           </div>
@@ -241,7 +198,7 @@ export function BuilderProfile({
               <>
                 <IntegratedBooking
                   builderId={profile.id}
-                  sessionTypes={profile.sessionTypes || []}
+                  sessionTypes={[]}
                   className="gap-1.5"
                 >
                   <CalendarIcon className="h-4 w-4" />
@@ -288,9 +245,9 @@ export function BuilderProfile({
             )}>
               {availabilityLabel}
             </div>
-            {profile.availability?.status === "unavailable" && profile.availability.nextAvailable && (
+            {profile.availability === "unavailable" && (
               <p className="text-sm text-muted-foreground mt-2">
-                Available from {profile.availability.nextAvailable.toLocaleDateString()}
+                Currently unavailable
               </p>
             )}
           </section>
@@ -299,7 +256,7 @@ export function BuilderProfile({
           <section>
             <h3 className="text-lg font-medium mb-3">Skills</h3>
             <div className="flex flex-wrap gap-2">
-              {profile.skills.map((skill) => (
+              {profile.topSkills.map((skill: string) => (
                 <span
                   key={skill}
                   className="px-2.5 py-1 bg-muted rounded-full text-sm"
@@ -407,7 +364,7 @@ export function BuilderProfile({
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-medium">Portfolio Projects</h3>
                   
-                  {onViewAllProjects && profile.portfolio.length > 3 && (
+                  {onViewAllProjects && profile.portfolioItems.length > 3 && (
                     <Button 
                       variant="ghost" 
                       size="sm" 
@@ -421,7 +378,7 @@ export function BuilderProfile({
                 </div>
                 
                 <PortfolioShowcase 
-                  projects={profile.portfolio}
+                  projects={profile.portfolioItems}
                   isOwner={isOwner}
                   onAddProject={onAddProject}
                   onViewAllProjects={onViewAllProjects}
@@ -436,26 +393,16 @@ export function BuilderProfile({
                 <section>
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-medium">
-                      {profile.adhdFocus 
+                      {profile.adhd_focus 
                         ? "AI Applications for ADHD" 
                         : "AI Applications"}
                     </h3>
                     
-                    {onViewAllApps && profile.apps && profile.apps.length > 3 && (
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={onViewAllApps}
-                        className="gap-1.5 text-muted-foreground hover:text-foreground"
-                      >
-                        <MixerHorizontalIcon className="h-4 w-4" />
-                        View All
-                      </Button>
-                    )}
+                    {/* Apps feature temporarily disabled */}
                   </div>
                   
                   <AppShowcase 
-                    apps={profile.apps || []}
+                    apps={[]}
                     isOwner={isOwner}
                     onAddApp={onAddApp}
                     onViewAllApps={onViewAllApps}
@@ -471,7 +418,7 @@ export function BuilderProfile({
                 <section>
                   <SuccessMetricsDashboard
                     validationTier={profile.validationTier}
-                    metrics={profile.metrics || []}
+                    metrics={[]}
                   />
                 </section>
               </TabsContent>
@@ -505,7 +452,7 @@ export function BuilderProfile({
                       </p>
                       
                       <ul className="space-y-2 mb-6">
-                        {profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].bulletPoints.map((point, i) => (
+                        {profile.expertiseAreas[SpecializationArea.ADHD_PRODUCTIVITY].bulletPoints.map((point: string, i: number) => (
                           <li key={i} className="flex items-start gap-2">
                             <CheckIcon className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                             <span>{point}</span>
@@ -543,7 +490,7 @@ export function BuilderProfile({
                       </p>
                       
                       <ul className="space-y-2 mb-6">
-                        {profile.expertiseAreas[SpecializationArea.AI_LITERACY].bulletPoints.map((point, i) => (
+                        {profile.expertiseAreas[SpecializationArea.AI_LITERACY].bulletPoints.map((point: string, i: number) => (
                           <li key={i} className="flex items-start gap-2">
                             <CheckIcon className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                             <span>{point}</span>
@@ -581,7 +528,7 @@ export function BuilderProfile({
                       </p>
                       
                       <ul className="space-y-2 mb-6">
-                        {profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].bulletPoints.map((point, i) => (
+                        {profile.expertiseAreas[SpecializationArea.BUILDING_WITH_AI].bulletPoints.map((point: string, i: number) => (
                           <li key={i} className="flex items-start gap-2">
                             <CheckIcon className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                             <span>{point}</span>
@@ -619,7 +566,7 @@ export function BuilderProfile({
                       </p>
                       
                       <ul className="space-y-2 mb-6">
-                        {profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].bulletPoints.map((point, i) => (
+                        {profile.expertiseAreas[SpecializationArea.BUSINESS_VALUE].bulletPoints.map((point: string, i: number) => (
                           <li key={i} className="flex items-start gap-2">
                             <CheckIcon className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                             <span>{point}</span>

@@ -40,7 +40,9 @@ const onboardingSchema = z.object({
 type OnboardingData = z.infer<typeof onboardingSchema>;
 
 export default function OnboardingPage() {
-  const { user, isLoading, isAuthenticated, updateSession } = useAuth();
+  const { user, status, isLoaded, isSignedIn } = useAuth();
+  const isLoading = !isLoaded;
+  const isAuthenticated = isSignedIn;
 
   const form = useForm<OnboardingData>({
     resolver: zodResolver(onboardingSchema),
@@ -75,7 +77,7 @@ export default function OnboardingPage() {
       // Note: Since we're now using Clerk, we should update the user profile via an API endpoint
       // For MVP just redirect to dashboard after form submission
       // This will be replaced with a proper API call in a future update
-      await updateSession();
+      // Note: updateSession was removed as it's not available in current auth context
       
       // TODO: Replace with API call to update user profile
       // For now, just show success message

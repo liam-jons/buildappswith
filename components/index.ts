@@ -5,9 +5,11 @@
  */
 
 // Export components
-export { UserAuthForm } from './user-auth-form';
+// Note: UserAuthForm and SuspenseUserAuthForm removed from exports
+// These components use deprecated Clerk API patterns and are not currently used
+// export { UserAuthForm } from './user-auth-form';
 export { ThemeProvider } from './theme-provider';
-export { SuspenseUserAuthForm } from './suspense-user-auth-form';
+// export { SuspenseUserAuthForm } from './suspense-user-auth-form';
 export { SiteFooter } from './site-footer';
 export { SearchParamsFallback } from './search-params-fallback';
 export * from './ui/core/tooltip';

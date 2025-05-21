@@ -35,7 +35,7 @@ const profileSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }).optional(),
-  role: z.enum([UserRole.CLIENT, UserRole.BUILDER, UserRole.ADMIN], {
+  role: z.enum([UserRole.CLIENT, UserRole.BUILDER, UserRole.ADMIN, UserRole.SUBSCRIBER], {
     required_error: "Please select a role.",
   }),
 });
@@ -43,7 +43,9 @@ const profileSchema = z.object({
 type ProfileData = z.infer<typeof profileSchema>;
 
 export default function ProfilePage() {
-  const { user, isLoading, isAuthenticated, updateSession } = useAuth();
+  const { user, status, isLoaded, isSignedIn } = useAuth();
+  const isLoading = !isLoaded;
+  const isAuthenticated = isSignedIn;
 
   const form = useForm<ProfileData>({
     resolver: zodResolver(profileSchema),
@@ -83,7 +85,7 @@ export default function ProfilePage() {
       // Since we're now using Clerk, we need to update the user profile via an API endpoint
       // For MVP, just show success message without actually updating
       // This will be replaced with a proper API call in a future update
-      await updateSession();
+      // Note: updateSession was removed as it's not available in current auth context
       
       // TODO: Replace with API call to update user profile
       // For now, just show success message

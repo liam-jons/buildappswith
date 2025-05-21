@@ -50,9 +50,8 @@ export async function findOrCreateUser(clerkId: string, userData: any) {
         where: { id: user.id },
         data: { 
           clerkId,
-          // Update image fields if available
+          // Update image field if available
           ...(userData.image_url && {
-            image: userData.image_url,
             imageUrl: userData.image_url
           })
         },
@@ -72,7 +71,7 @@ export async function findOrCreateUser(clerkId: string, userData: any) {
           clerkId
         });
         
-        // Create audit log entry
+        // Create audit log entry (placeholder until auditLog table implemented)
         await createAuditLog({
           userId: user.id,
           action: 'USER_CLERK_LINKED',
@@ -104,7 +103,6 @@ export async function findOrCreateUser(clerkId: string, userData: any) {
         clerkId,
         email,
         name,
-        image: userData.image_url,
         imageUrl: userData.image_url,
         roles,
         emailVerified: userData.email_addresses?.[0]?.verification?.status === 'verified' ? 
@@ -121,7 +119,7 @@ export async function findOrCreateUser(clerkId: string, userData: any) {
     // Create profiles based on roles if needed
     await ensureProfilesForUser(user.id, roles);
     
-    // Create audit log entry
+    // Create audit log entry (placeholder until auditLog table implemented)
     await createAuditLog({
       userId: user.id,
       action: 'USER_CREATED',
@@ -170,7 +168,7 @@ export async function ensureProfilesForUser(userId: string, roles: UserRole[]) {
         
         logger.info('Created builder profile for user', { userId });
         
-        // Create audit log entry
+        // Create audit log entry (placeholder until auditLog table implemented)
         await createAuditLog({
           userId,
           action: 'PROFILE_CREATED',
@@ -198,7 +196,7 @@ export async function ensureProfilesForUser(userId: string, roles: UserRole[]) {
         
         logger.info('Created client profile for user', { userId });
         
-        // Create audit log entry
+        // Create audit log entry (placeholder until auditLog table implemented)
         await createAuditLog({
           userId,
           action: 'PROFILE_CREATED',
@@ -245,7 +243,7 @@ export async function syncUserRoles(userId: string, clerkId: string, newRoles: U
       roles: newRoles
     });
     
-    // Create audit log entry
+    // Create audit log entry (placeholder until auditLog table implemented)
     await createAuditLog({
       userId,
       action: 'ROLES_UPDATED',
@@ -320,7 +318,8 @@ export async function syncUserData(clerkId: string, userData: any) {
           });
           
           // Create audit log entry
-          await createAuditLog({
+          // Create audit log entry (placeholder until auditLog table implemented)
+    await createAuditLog({
             userId: user.id,
             action: 'EMAIL_DOMAIN_CHANGE',
             targetId: user.id,
@@ -350,14 +349,13 @@ export async function syncUserData(clerkId: string, userData: any) {
       data: {
         email: primaryEmail || user.email,
         name,
-        image: userData.image_url || user.image,
         imageUrl: userData.image_url || user.imageUrl,
         emailVerified: isVerified ? (user.emailVerified || new Date()) : null,
         roles: clerkRoles
       }
     });
     
-    // Create audit log entry
+    // Create audit log entry (placeholder until auditLog table implemented)
     await createAuditLog({
       userId: user.id,
       action: 'USER_UPDATED',
@@ -368,7 +366,7 @@ export async function syncUserData(clerkId: string, userData: any) {
         fields: [
           ...(primaryEmail !== user.email ? ['email'] : []),
           ...(name !== user.name ? ['name'] : []),
-          ...(userData.image_url !== user.image ? ['image'] : []),
+          ...(userData.image_url !== user.imageUrl ? ['imageUrl'] : []),
           ...(JSON.stringify(clerkRoles) !== JSON.stringify(user.roles) ? ['roles'] : [])
         ]
       }
@@ -407,25 +405,27 @@ export async function createAuditLog({
   ipAddress?: string;
   userAgent?: string;
 }) {
+  // TODO: Implement when auditLog table is created
   try {
-    return await db.auditLog.create({
-      data: {
-        userId,
-        action,
-        targetId,
-        targetType,
-        details,
-        ipAddress,
-        userAgent,
-      }
-    });
+    // return await db.auditLog.create({
+    //   data: {
+    //     userId,
+    //     action,
+    //     targetId,
+    //     targetType,
+    //     details,
+    //     ipAddress,
+    //     userAgent,
+    //   }
+    // });
+    logger.info('Audit log entry (placeholder)', { userId, action, targetId, targetType });
+    return null;
   } catch (error) {
     logger.error('Error creating audit log', { 
       error: error instanceof Error ? error.message : 'Unknown error',
       userId,
       action
     });
-    // Don't throw the error to prevent disrupting the main flow
     return null;
   }
 }
@@ -477,7 +477,8 @@ export async function reconcileEmailDiscrepancy(userId: string, clerkId: string)
       });
       
       // Create audit log entry
-      await createAuditLog({
+      // Create audit log entry (placeholder until auditLog table implemented)
+    await createAuditLog({
         userId,
         action: 'EMAIL_RECONCILED',
         targetId: userId,

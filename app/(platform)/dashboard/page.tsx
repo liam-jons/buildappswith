@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 
 // Import authentication utilities
-import { getUserRoles } from "@/lib/auth/actions";
+import { getUserRoles, getCurrentUserId } from "@/lib/auth/actions";
 
 // Import domain-specific components
 import { DashboardSkeleton } from "@/components/ui";
@@ -24,8 +24,9 @@ export const metadata: Metadata = {
  */
 async function RoleDashboard() {
   try {
-    // Get user roles from server action with enhanced logging
+    // Get user roles and user ID from server actions with enhanced logging
     const { roles, primaryRole } = await getUserRoles();
+    const userId = await getCurrentUserId();
 
     // Add detailed debug information in development
     const debugInfo = process.env.NODE_ENV === 'development' ? (
@@ -53,7 +54,7 @@ async function RoleDashboard() {
       case "CLIENT":
         return (
           <>
-            <ClientDashboard roles={roles} />
+            <ClientDashboard userId={userId || ''} />
             {debugInfo}
           </>
         );

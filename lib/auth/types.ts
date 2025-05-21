@@ -174,7 +174,7 @@ export interface AuthProviderProps {
 export interface AuthObject {
   userId: string;
   roles: UserRole[];
-  claims: ReturnType<typeof clerkGetAuth>['sessionClaims'];
+  claims: ClerkSessionClaims | null;
   permissions?: Permission[];
 }
 

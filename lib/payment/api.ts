@@ -306,7 +306,7 @@ export async function completeBookingWithPayment(
       success: true,
       message: "Booking created and checkout initiated",
       data: {
-        redirectUrl: checkoutResult.data.url,
+        redirectUrl: checkoutResult.data?.url || '',
       },
     };
   } catch (error) {

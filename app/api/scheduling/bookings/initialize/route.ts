@@ -25,12 +25,13 @@ const InitializeBookingSchema = z.object({
 export const POST = withOptionalAuth(async (
   req: NextRequest, 
   context: { params?: any }, 
-  userId?: string, 
-  userRoles?: UserRole[]
+  auth?
 ) => {
   const startTime = performance.now();
   const path = req.nextUrl.pathname;
   const method = req.method;
+  const userId = auth?.userId;
+  const userRoles = auth?.roles;
   const userLogId = userId || 'anonymous';
 
   try {

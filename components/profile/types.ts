@@ -38,8 +38,8 @@ export interface ProfileComponentProps extends BaseComponentProps {
 export interface BuilderProfileWrapperProps extends 
   ProfileComponentProps,
   LoadableProps {
-  /** Profile data (required for wrapper) */
-  profile: BuilderProfileData;
+  /** Profile data (optional - will be fetched if not provided) */
+  profile?: BuilderProfileData;
   /** User role context */
   userRole?: UserRole;
   /** Profile auth context */

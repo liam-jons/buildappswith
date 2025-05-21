@@ -30,9 +30,9 @@ const updateSessionTypeSchema = z.object({
 export const PATCH = withAuth(async (
   request: NextRequest,
   context: { params?: { id?: string } },
-  userId: string, 
-  userRoles: UserRole[]
+  auth
 ) => {
+  const { userId, roles: userRoles } = auth;
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
@@ -114,9 +114,9 @@ export const PATCH = withAuth(async (
 export const DELETE = withAuth(async (
   request: NextRequest,
   context: { params?: { id?: string } },
-  userId: string, 
-  userRoles: UserRole[] 
+  auth
 ) => {
+  const { userId, roles: userRoles } = auth;
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;

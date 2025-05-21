@@ -5,17 +5,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/core/t
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/core/card";
 import { Button } from "@/components/ui/core/button";
 import { BarChart, Calendar, Settings, User } from "lucide-react";
-
-interface ClientDashboardProps {
-  roles: string[];
-}
+import { ClientDashboardProps } from './types';
 
 /**
  * Client Dashboard
  * 
  * Dashboard view for client users with booking history and preferences
  */
-export function ClientDashboard({ roles }: ClientDashboardProps) {
+export function ClientDashboard({ userId, view = 'overview', loading = false, className }: ClientDashboardProps) {
   const [activeTab, setActiveTab] = useState("overview");
 
   return (

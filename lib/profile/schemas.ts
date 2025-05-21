@@ -6,7 +6,11 @@
  */
 
 import { z } from 'zod';
-import { UserRole, ValidationTier, SpecializationArea } from './types';
+import { UserRole, SpecializationArea } from './types';
+import { ValidationTier } from '@/lib/marketplace/types';
+
+// Re-export ValidationTier for schemas
+export { ValidationTier };
 
 // Base schemas
 export const profileImageSchema = z.object({
@@ -90,7 +94,7 @@ export const specializationContentSchema = z.object({
 export const expertiseAreasSchema = z.record(
   z.nativeEnum(SpecializationArea),
   specializationContentSchema
-).partial();
+);
 
 // Main schema for creating a builder profile
 export const createBuilderProfileSchema = z.object({

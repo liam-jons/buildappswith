@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/core/tabs";
 // Removed TextShimmer import
 import { InfoCircledIcon, LightningBoltIcon, BarChartIcon, LapTimerIcon, RocketIcon } from "@radix-ui/react-icons";
-import { ValidationTier } from "@/lib/trust/types";
+import { ValidationTier } from "@/lib/marketplace/types";
+import { getValidationTierStyle, validationTierToString } from "@/lib/utils/type-converters";
 import {
   Tooltip,
   TooltipContent,
@@ -123,13 +124,7 @@ interface MetricCardProps {
 
 function MetricCard({ metric, validationTier }: MetricCardProps) {
   // Get color based on validation tier
-  const tierColorMap = {
-    entry: "from-blue-500/20 to-blue-400/0 border-blue-200 dark:border-blue-800",
-    established: "from-purple-500/20 to-purple-400/0 border-purple-200 dark:border-purple-800",
-    expert: "from-amber-500/20 to-amber-400/0 border-amber-200 dark:border-amber-800",
-  };
-  
-  const tierColor = tierColorMap[validationTier];
+  const tierStyle = getValidationTierStyle(validationTier);
   
   // Get trend indicator
   const trendIndicator = metric.trend ? {
@@ -151,7 +146,8 @@ function MetricCard({ metric, validationTier }: MetricCardProps) {
           <div 
             className={cn(
               "relative h-full p-4 rounded-lg border bg-gradient-to-br",
-              tierColor,
+              tierStyle.borderClass,
+              tierStyle.bgClass,
               metric.isHighlighted && "ring-2 ring-offset-2 ring-primary/50"
             )}
           >

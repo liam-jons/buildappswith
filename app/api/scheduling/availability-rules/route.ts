@@ -97,10 +97,11 @@ export async function GET(request: NextRequest) {
 /**
  * POST handler for creating a new availability rule
  */
-export const POST = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
+export const POST = withAuth(async (request: NextRequest, context: { params?: any }, auth) => {
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
+  const { userId, roles: userRoles } = auth;
 
   try {
     // Parse request body
@@ -160,11 +161,12 @@ export const POST = withAuth(async (request: NextRequest, context: { params?: an
 /**
  * PUT handler for updating an existing availability rule
  */
-export const PUT = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
+export const PUT = withAuth(async (request: NextRequest, context: { params?: any }, auth) => {
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
   const ruleId = context.params?.id;
+  const { userId, roles: userRoles } = auth;
 
   try {
     if (!ruleId) {
@@ -285,11 +287,12 @@ export const PUT = withAuth(async (request: NextRequest, context: { params?: any
 /**
  * DELETE handler for removing an availability rule
  */
-export const DELETE = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[] = []) => {
+export const DELETE = withAuth(async (request: NextRequest, context: { params?: any }, auth) => {
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
   const ruleId = context.params?.id;
+  const { userId, roles: userRoles } = auth;
 
   try {
     if (!ruleId) {

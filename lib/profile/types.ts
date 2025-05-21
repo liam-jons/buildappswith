@@ -8,6 +8,9 @@
 import { ValidationTier } from '@/lib/marketplace/types';
 import { StandardApiResponse } from '@/lib/types/api-types';
 
+// Re-export ValidationTier for other profile files
+export { ValidationTier };
+
 export enum UserRole {
   CLIENT = "CLIENT",
   BUILDER = "BUILDER",
@@ -99,6 +102,7 @@ export interface Metric {
 }
 
 export type ExpertiseAreasUpdate = Record<string, any>;
+export type ExpertiseAreas = Record<string, any>;
 
 export interface SessionTypeWithId {
   id: string;

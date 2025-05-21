@@ -212,12 +212,30 @@ export const environmentConfigs: Record<string, Partial<MiddlewareConfig>> = {
       rateLimit: {
         // Higher limits for development
         enabled: false, // Disable rate limiting in development by default
+        defaultLimit: 100,
+        windowSize: 60,
+        typeConfig: {
+          api: 100,
+          auth: 20,
+          timeline: 50,
+          profiles: 60,
+          marketplace: 40,
+        },
       },
     },
   },
   production: {
     // Stricter security in production
     api: {
+      csrf: {
+        enabled: true,
+        excludePatterns: [/^\/api\/auth\//, /^\/api\/webhooks\//, /^\/api\/webhook\//],
+        cookieName: 'buildappswith_csrf',
+        headerName: 'X-CSRF-Token',
+        tokenByteSize: 32,
+        tokenExpiry: 60 * 60 * 2,
+      },
+      rateLimit: getRateLimitConfig(),
       securityHeaders: {
         // Ensure HTTPS enforced in production
         strictTransportSecurity: 'max-age=31536000; includeSubDomains; preload',
@@ -227,8 +245,25 @@ export const environmentConfigs: Record<string, Partial<MiddlewareConfig>> = {
   test: {
     // Disable rate limiting in tests
     api: {
+      csrf: {
+        enabled: false,
+        excludePatterns: [],
+        cookieName: 'buildappswith_csrf',
+        headerName: 'X-CSRF-Token',
+        tokenByteSize: 32,
+        tokenExpiry: 60 * 60 * 2,
+      },
       rateLimit: {
         enabled: false,
+        defaultLimit: 1000,
+        windowSize: 60,
+        typeConfig: {
+          api: 1000,
+          auth: 1000,
+          timeline: 1000,
+          profiles: 1000,
+          marketplace: 1000,
+        },
       },
       // Simplified security headers for testing
       securityHeaders: {

@@ -31,7 +31,7 @@ export async function logSecurityEvent({
 }) {
   try {
     // Get request information
-    const headersList = headers();
+    const headersList = await headers();
     const ip = headersList.get('x-forwarded-for') || 
                headersList.get('x-real-ip') || 
                'unknown';
@@ -75,17 +75,18 @@ export async function logSecurityEvent({
     
     // Store in audit log if we have a userId
     if (userId) {
-      await db.auditLog.create({
-        data: {
-          userId,
-          action,
-          targetId,
-          targetType,
-          details: enhancedDetails,
-          ipAddress: ip.split(',')[0].trim(),
-          userAgent: userAgent.substring(0, 255)
-        }
-      });
+      // TODO: Implement audit log when AuditLog model is added to schema
+      // await db.auditLog.create({
+      //   data: {
+      //     userId,
+      //     action,
+      //     targetId,
+      //     targetType,
+      //     details: enhancedDetails,
+      //     ipAddress: ip.split(',')[0].trim(),
+      //     userAgent: userAgent.substring(0, 255)
+      //   }
+      // });
     }
     
     return true;
@@ -121,7 +122,7 @@ export async function logWebhookEvent({
 }) {
   try {
     // Get IP and request info
-    const headersList = headers();
+    const headersList = await headers();
     const ip = headersList.get('x-forwarded-for') || 
                headersList.get('x-real-ip') || 
                'unknown';
@@ -157,53 +158,54 @@ export async function logWebhookEvent({
     
     // Store in audit log if we have a userId
     if (userId) {
-      await db.auditLog.create({
-        data: {
-          userId,
-          action: `WEBHOOK_${eventType.toUpperCase()}`,
-          targetId: webhookId,
-          targetType: 'WebhookEvent',
-          details: enhancedDetails,
-          ipAddress: ip.split(',')[0].trim(),
-          userAgent: headersList.get('user-agent') || undefined
-        }
-      });
+      // TODO: Implement audit log when AuditLog model is added to schema
+      // await db.auditLog.create({
+      //   data: {
+      //     userId,
+      //     action: `WEBHOOK_${eventType.toUpperCase()}`,
+      //     targetId: webhookId,
+      //     targetType: 'WebhookEvent',
+      //     details: enhancedDetails,
+      //     ipAddress: ip.split(',')[0].trim(),
+      //     userAgent: headersList.get('user-agent') || undefined
+      //   }
+      // });
     }
     
-    // Store webhook event in database
-    await db.webhookEvent.upsert({
-      where: { svixId: webhookId },
-      update: {
-        processed: status === 'success',
-        processingError: error ? 
-          (error instanceof Error ? error.message : error.toString()) : 
-          undefined,
-        processingCount: { increment: 1 },
-        lastProcessed: new Date()
-      },
-      create: {
-        svixId: webhookId,
-        type: eventType,
-        payload: details || {},
-        processed: status === 'success',
-        processingError: error ? 
-          (error instanceof Error ? error.message : error.toString()) : 
-          undefined
-      }
-    });
+    // Store webhook event in database (commented out - webhookEvent table not in schema)
+    // await db.webhookEvent.upsert({
+    //   where: { svixId: webhookId },
+    //   update: {
+    //     processed: status === 'success',
+    //     processingError: error ? 
+    //       (error instanceof Error ? error.message : error.toString()) : 
+    //       undefined,
+    //     processingCount: { increment: 1 },
+    //     lastProcessed: new Date()
+    //   },
+    //   create: {
+    //     svixId: webhookId,
+    //     type: eventType,
+    //     payload: details || {},
+    //     processed: status === 'success',
+    //     processingError: error ? 
+    //       (error instanceof Error ? error.message : error.toString()) : 
+    //       undefined
+    //   }
+    // });
     
-    // Record metric
-    await db.webhookMetric.create({
-      data: {
-        type: eventType,
-        status,
-        processingTime: details?.processingTime || 0,
-        error: error ? 
-          (error instanceof Error ? error.message : error.toString()) : 
-          undefined,
-        timestamp: new Date()
-      }
-    });
+    // Record metric (commented out - webhookMetric table not in schema)
+    // await db.webhookMetric.create({
+    //   data: {
+    //     type: eventType,
+    //     status,
+    //     processingTime: details?.processingTime || 0,
+    //     error: error ? 
+    //       (error instanceof Error ? error.message : error.toString()) : 
+    //       undefined,
+    //     timestamp: new Date()
+    //   }
+    // });
     
     return true;
   } catch (error) {

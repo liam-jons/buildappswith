@@ -2,7 +2,7 @@
  * Client-side API functions for admin operations
  */
 
-import { AdminErrorType, AdminClientResult, BuilderVerificationParams, SystemSettings } from "./types";
+import { AdminClientErrorType, AdminClientResult, BuilderVerificationParams, SystemSettings } from "./types";
 
 /**
  * Fetches administrative dashboard data
@@ -18,7 +18,7 @@ export async function fetchAdminDashboard(): Promise<AdminClientResult<any>> {
         success: false,
         message: "Failed to fetch admin dashboard data",
         error: {
-          type: AdminErrorType.RETRIEVAL,
+          type: AdminClientErrorType.RETRIEVAL,
           detail: `Server responded with ${response.status}`,
         },
       };
@@ -31,7 +31,7 @@ export async function fetchAdminDashboard(): Promise<AdminClientResult<any>> {
         success: false,
         message: data.message || "Failed to fetch admin dashboard data",
         error: {
-          type: AdminErrorType.RETRIEVAL,
+          type: AdminClientErrorType.RETRIEVAL,
           detail: data.error?.detail || "Unknown error",
         },
       };
@@ -48,7 +48,7 @@ export async function fetchAdminDashboard(): Promise<AdminClientResult<any>> {
       success: false,
       message: "Failed to fetch admin dashboard data",
       error: {
-        type: AdminErrorType.NETWORK,
+        type: AdminClientErrorType.NETWORK,
         detail: error instanceof Error ? error.message : "Unknown error",
       },
     };
@@ -69,7 +69,7 @@ export async function getSystemSettings(): Promise<AdminClientResult<SystemSetti
         success: false,
         message: "Failed to retrieve system settings",
         error: {
-          type: AdminErrorType.RETRIEVAL,
+          type: AdminClientErrorType.RETRIEVAL,
           detail: `Server responded with ${response.status}`,
         },
       };
@@ -82,7 +82,7 @@ export async function getSystemSettings(): Promise<AdminClientResult<SystemSetti
         success: false,
         message: data.message || "Failed to retrieve system settings",
         error: {
-          type: AdminErrorType.RETRIEVAL,
+          type: AdminClientErrorType.RETRIEVAL,
           detail: data.error?.detail || "Unknown error",
         },
       };
@@ -99,7 +99,7 @@ export async function getSystemSettings(): Promise<AdminClientResult<SystemSetti
       success: false,
       message: "Failed to retrieve system settings",
       error: {
-        type: AdminErrorType.NETWORK,
+        type: AdminClientErrorType.NETWORK,
         detail: error instanceof Error ? error.message : "Unknown error",
       },
     };
@@ -129,7 +129,7 @@ export async function updateSystemSettings(
         success: false,
         message: "Failed to update system settings",
         error: {
-          type: AdminErrorType.UPDATE,
+          type: AdminClientErrorType.UPDATE,
           detail: `Server responded with ${response.status}`,
         },
       };
@@ -142,7 +142,7 @@ export async function updateSystemSettings(
         success: false,
         message: data.message || "Failed to update system settings",
         error: {
-          type: AdminErrorType.UPDATE,
+          type: AdminClientErrorType.UPDATE,
           detail: data.error?.detail || "Unknown error",
         },
       };
@@ -159,7 +159,7 @@ export async function updateSystemSettings(
       success: false,
       message: "Failed to update system settings",
       error: {
-        type: AdminErrorType.NETWORK,
+        type: AdminClientErrorType.NETWORK,
         detail: error instanceof Error ? error.message : "Unknown error",
       },
     };
@@ -193,7 +193,7 @@ export async function getVerificationQueue(
         success: false,
         message: "Failed to retrieve verification queue",
         error: {
-          type: AdminErrorType.RETRIEVAL,
+          type: AdminClientErrorType.RETRIEVAL,
           detail: `Server responded with ${response.status}`,
         },
       };
@@ -206,7 +206,7 @@ export async function getVerificationQueue(
         success: false,
         message: data.message || "Failed to retrieve verification queue",
         error: {
-          type: AdminErrorType.RETRIEVAL,
+          type: AdminClientErrorType.RETRIEVAL,
           detail: data.error?.detail || "Unknown error",
         },
       };
@@ -223,7 +223,7 @@ export async function getVerificationQueue(
       success: false,
       message: "Failed to retrieve verification queue",
       error: {
-        type: AdminErrorType.NETWORK,
+        type: AdminClientErrorType.NETWORK,
         detail: error instanceof Error ? error.message : "Unknown error",
       },
     };
@@ -255,7 +255,7 @@ export async function updateBuilderStatus(
         success: false,
         message: "Failed to update builder verification status",
         error: {
-          type: AdminErrorType.UPDATE,
+          type: AdminClientErrorType.UPDATE,
           detail: `Server responded with ${response.status}`,
         },
       };
@@ -268,7 +268,7 @@ export async function updateBuilderStatus(
         success: false,
         message: data.message || "Failed to update builder verification status",
         error: {
-          type: AdminErrorType.UPDATE,
+          type: AdminClientErrorType.UPDATE,
           detail: data.error?.detail || "Unknown error",
         },
       };
@@ -285,7 +285,7 @@ export async function updateBuilderStatus(
       success: false,
       message: "Failed to update builder verification status",
       error: {
-        type: AdminErrorType.NETWORK,
+        type: AdminClientErrorType.NETWORK,
         detail: error instanceof Error ? error.message : "Unknown error",
       },
     };
@@ -323,7 +323,7 @@ export async function manageSessionType(
         success: false,
         message: "Failed to manage session type",
         error: {
-          type: AdminErrorType.OPERATION,
+          type: AdminClientErrorType.OPERATION,
           detail: `Server responded with ${response.status}`,
         },
       };
@@ -336,7 +336,7 @@ export async function manageSessionType(
         success: false,
         message: responseData.message || "Failed to manage session type",
         error: {
-          type: AdminErrorType.OPERATION,
+          type: AdminClientErrorType.OPERATION,
           detail: responseData.error?.detail || "Unknown error",
         },
       };
@@ -353,7 +353,7 @@ export async function manageSessionType(
       success: false,
       message: "Failed to manage session type",
       error: {
-        type: AdminErrorType.NETWORK,
+        type: AdminClientErrorType.NETWORK,
         detail: error instanceof Error ? error.message : "Unknown error",
       },
     };
@@ -390,7 +390,7 @@ export async function manageUserRole(
         success: false,
         message: "Failed to manage user role",
         error: {
-          type: AdminErrorType.UPDATE,
+          type: AdminClientErrorType.UPDATE,
           detail: `Server responded with ${response.status}`,
         },
       };
@@ -403,7 +403,7 @@ export async function manageUserRole(
         success: false,
         message: data.message || "Failed to manage user role",
         error: {
-          type: AdminErrorType.UPDATE,
+          type: AdminClientErrorType.UPDATE,
           detail: data.error?.detail || "Unknown error",
         },
       };
@@ -420,7 +420,7 @@ export async function manageUserRole(
       success: false,
       message: "Failed to manage user role",
       error: {
-        type: AdminErrorType.NETWORK,
+        type: AdminClientErrorType.NETWORK,
         detail: error instanceof Error ? error.message : "Unknown error",
       },
     };

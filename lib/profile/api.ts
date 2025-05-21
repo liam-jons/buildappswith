@@ -6,12 +6,12 @@
  */
 
 import { 
-  BuilderProfile, 
+  BuilderProfileData, 
   BuilderProfileResponse, 
-  BuilderProfilesResponse,
-  CreateProfileRequest,
-  UpdateProfileRequest
+  BuilderProfileResponseData,
+  UpdateBuilderProfileData
 } from './types';
+import { StandardApiResponse } from '@/lib/types/api-types';
 
 /**
  * Get a builder profile by its ID
@@ -27,7 +27,7 @@ export async function getBuilderProfileById(id: string): Promise<BuilderProfileR
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || 'Failed to fetch profile' };
+      return { success: false, error: { message: error.message || 'Failed to fetch profile', code: 'fetch_error' } };
     }
 
     const data = await response.json();
@@ -35,7 +35,7 @@ export async function getBuilderProfileById(id: string): Promise<BuilderProfileR
   } catch (error) {
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'An unexpected error occurred' 
+      error: { message: error instanceof Error ? error.message : 'An unexpected error occurred', code: 'unexpected_error' } 
     };
   }
 }
@@ -54,7 +54,7 @@ export async function getBuilderProfileBySlug(slug: string): Promise<BuilderProf
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || 'Failed to fetch profile' };
+      return { success: false, error: { message: error.message || 'Failed to fetch profile', code: 'fetch_error' } };
     }
 
     const data = await response.json();
@@ -62,7 +62,7 @@ export async function getBuilderProfileBySlug(slug: string): Promise<BuilderProf
   } catch (error) {
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'An unexpected error occurred' 
+      error: { message: error instanceof Error ? error.message : 'An unexpected error occurred', code: 'unexpected_error' } 
     };
   }
 }
@@ -81,7 +81,7 @@ export async function getBuilderProfileByClerkId(clerkUserId: string): Promise<B
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || 'Failed to fetch profile' };
+      return { success: false, error: { message: error.message || 'Failed to fetch profile', code: 'fetch_error' } };
     }
 
     const data = await response.json();
@@ -89,7 +89,7 @@ export async function getBuilderProfileByClerkId(clerkUserId: string): Promise<B
   } catch (error) {
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'An unexpected error occurred' 
+      error: { message: error instanceof Error ? error.message : 'An unexpected error occurred', code: 'unexpected_error' } 
     };
   }
 }
@@ -104,7 +104,7 @@ export async function getAllBuilderProfiles(
     limit?: number;
     page?: number;
   }
-): Promise<BuilderProfilesResponse> {
+): Promise<StandardApiResponse<BuilderProfileResponseData[]>> {
   try {
     let url = '/api/profile';
     
@@ -129,7 +129,7 @@ export async function getAllBuilderProfiles(
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || 'Failed to fetch profiles' };
+      return { success: false, error: { message: error.message || 'Failed to fetch profiles', code: 'fetch_error' } };
     }
 
     const data = await response.json();
@@ -137,7 +137,7 @@ export async function getAllBuilderProfiles(
   } catch (error) {
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'An unexpected error occurred' 
+      error: { message: error instanceof Error ? error.message : 'An unexpected error occurred', code: 'unexpected_error' } 
     };
   }
 }
@@ -146,7 +146,7 @@ export async function getAllBuilderProfiles(
  * Create a new builder profile
  */
 export async function createBuilderProfile(
-  profileData: CreateProfileRequest
+  profileData: UpdateBuilderProfileData
 ): Promise<BuilderProfileResponse> {
   try {
     const response = await fetch('/api/profile', {
@@ -159,7 +159,7 @@ export async function createBuilderProfile(
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || 'Failed to create profile' };
+      return { success: false, error: { message: error.message || 'Failed to create profile', code: 'create_error' } };
     }
 
     const data = await response.json();
@@ -167,7 +167,7 @@ export async function createBuilderProfile(
   } catch (error) {
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'An unexpected error occurred' 
+      error: { message: error instanceof Error ? error.message : 'An unexpected error occurred', code: 'unexpected_error' } 
     };
   }
 }
@@ -177,7 +177,7 @@ export async function createBuilderProfile(
  */
 export async function updateBuilderProfile(
   id: string,
-  profileData: UpdateProfileRequest
+  profileData: UpdateBuilderProfileData
 ): Promise<BuilderProfileResponse> {
   try {
     const response = await fetch(`/api/profile/${id}`, {
@@ -190,7 +190,7 @@ export async function updateBuilderProfile(
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || 'Failed to update profile' };
+      return { success: false, error: { message: error.message || 'Failed to update profile', code: 'update_error' } };
     }
 
     const data = await response.json();
@@ -198,7 +198,7 @@ export async function updateBuilderProfile(
   } catch (error) {
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'An unexpected error occurred' 
+      error: { message: error instanceof Error ? error.message : 'An unexpected error occurred', code: 'unexpected_error' } 
     };
   }
 }
@@ -206,7 +206,7 @@ export async function updateBuilderProfile(
 /**
  * Delete a builder profile
  */
-export async function deleteBuilderProfile(id: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteBuilderProfile(id: string): Promise<{ success: boolean; error?: { message: string; code: string } }> {
   try {
     const response = await fetch(`/api/profile/${id}`, {
       method: 'DELETE',
@@ -217,14 +217,14 @@ export async function deleteBuilderProfile(id: string): Promise<{ success: boole
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || 'Failed to delete profile' };
+      return { success: false, error: { message: error.message || 'Failed to delete profile', code: 'delete_error' } };
     }
 
     return { success: true };
   } catch (error) {
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'An unexpected error occurred' 
+      error: { message: error instanceof Error ? error.message : 'An unexpected error occurred', code: 'unexpected_error' } 
     };
   }
 }

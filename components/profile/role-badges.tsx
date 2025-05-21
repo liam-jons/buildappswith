@@ -47,6 +47,12 @@ export function RoleBadge({
       label: "Admin",
       color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50",
       description: "Platform administrator with moderation and management capabilities"
+    },
+    SUBSCRIBER: {
+      icon: <Crown className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />,
+      label: "Subscriber",
+      color: "bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-400 border-amber-200 dark:border-amber-800/50",
+      description: "Premium subscriber with access to exclusive features and content"
     }
   };
   

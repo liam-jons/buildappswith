@@ -77,7 +77,10 @@ export function withProfileAccess(
       return handler(req, {
         userId: '',
         clerkId: '',
-        user: null,
+        user: {
+          id: '',
+          roles: []
+        },
         profileId,
         profileType: undefined,
         isOwner: false,
@@ -88,16 +91,16 @@ export function withProfileAccess(
     try {
       // Get user from database
       const user = await db.user.findUnique({
-        where: { clerkId },
+        where: { clerkId: clerkId! },
         select: { 
           id: true, 
           roles: true,
           builderProfile: profileId ? {
             select: { id: true }
-          } : undefined,
+          } : false,
           clientProfile: profileId ? {
             select: { id: true }
-          } : undefined
+          } : false
         }
       });
       
@@ -134,8 +137,8 @@ export function withProfileAccess(
           await logProfileAccess({
             userId: user.id,
             profileId: profileId || 'unknown',
-            profileType: profileTypeValue.toLowerCase(),
-            accessType: accessTypeValue.toLowerCase(),
+            profileType: profileTypeValue.toLowerCase() as 'client' | 'builder',
+            accessType: accessTypeValue.toLowerCase() as 'view' | 'edit' | 'delete',
             allowed: false
           });
           
@@ -187,8 +190,7 @@ export function withProfileAccess(
         // For builder profile access
         if (profileType === ProfileType.BUILDER) {
           // Check if this profile matches the user's builder profile
-          const builderProfile = user.builderProfile;
-          isOwner = builderProfile?.id === profileId;
+          isOwner = user.builderProfile?.id === profileId;
           
           if (!isOwner && !isAdmin && (!allowAdmin || !allowOwner)) {
             logger.warn('Unauthorized builder profile access attempt', {
@@ -206,8 +208,8 @@ export function withProfileAccess(
             await logProfileAccess({
               userId: user.id,
               profileId,
-              profileType: ProfileType.BUILDER.toLowerCase(),
-              accessType: accessTypeValue.toLowerCase(),
+              profileType: ProfileType.BUILDER.toLowerCase() as 'client' | 'builder',
+              accessType: accessTypeValue.toLowerCase() as 'view' | 'edit' | 'delete',
               allowed: false
             });
             
@@ -220,8 +222,7 @@ export function withProfileAccess(
         // For client profile access
         else if (profileType === ProfileType.CLIENT) {
           // Check if this profile matches the user's client profile
-          const clientProfile = user.clientProfile;
-          isOwner = clientProfile?.id === profileId;
+          isOwner = user.clientProfile?.id === profileId;
           
           if (!isOwner && !isAdmin && (!allowAdmin || !allowOwner)) {
             logger.warn('Unauthorized client profile access attempt', {
@@ -239,8 +240,8 @@ export function withProfileAccess(
             await logProfileAccess({
               userId: user.id,
               profileId,
-              profileType: ProfileType.CLIENT.toLowerCase(),
-              accessType: accessTypeValue.toLowerCase(),
+              profileType: ProfileType.CLIENT.toLowerCase() as 'client' | 'builder',
+              accessType: accessTypeValue.toLowerCase() as 'view' | 'edit' | 'delete',
               allowed: false
             });
             
@@ -263,8 +264,8 @@ export function withProfileAccess(
         await logProfileAccess({
           userId: user.id,
           profileId,
-          profileType: profileType?.toLowerCase() || 'unknown',
-          accessType: accessTypeValue.toLowerCase(),
+          profileType: (profileType?.toLowerCase() || 'client') as 'client' | 'builder',
+          accessType: accessTypeValue.toLowerCase() as 'view' | 'edit' | 'delete',
           allowed: true
         });
       }
@@ -272,7 +273,7 @@ export function withProfileAccess(
       // Call handler with context
       return handler(req, { 
         userId: user.id, 
-        clerkId, 
+        clerkId: clerkId!, 
         user, 
         profileId,
         profileType,

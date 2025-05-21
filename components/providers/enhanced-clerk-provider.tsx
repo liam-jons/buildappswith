@@ -5,7 +5,7 @@ import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";
 import { useState, useEffect, ReactNode } from "react";
 import * as Sentry from "@sentry/nextjs";
-import ProgressiveLoadingState from "@/components/auth/progressive-loading-state";
+import { ProgressiveLoadingState } from "@/components/auth/progressive-loading-state";
 import { ExpressAuthProvider } from "@/components/auth/express-auth-provider";
 import { AuthErrorBoundary } from "@/components/auth/auth-error-boundary";
 
@@ -126,8 +126,6 @@ export function EnhancedClerkProvider({ children }: { children: ReactNode }) {
       // Configure routing paths to use route groups
       signInUrl="/(auth)/sign-in"
       signUpUrl="/(auth)/sign-up"
-      // Using the same settings across all environments
-      telemetry={false}
     >
       <ExpressAuthProvider>
         <AuthErrorBoundary>

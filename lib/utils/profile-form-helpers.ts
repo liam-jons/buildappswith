@@ -1,6 +1,6 @@
 // /lib/utils/profile-form-helpers.ts
 
-import { BuilderProfileData } from "@/components/profile/builder-profile";
+import { BuilderProfileData } from "@/lib/profile/types";
 import { PortfolioProject } from "@/components/profile/portfolio-showcase";
 import { z } from "zod";
 
@@ -53,15 +53,13 @@ export type ProjectFormValues = z.infer<typeof projectFormSchema>;
  */
 export function profileToFormValues(profile: BuilderProfileData): ProfileFormValues {
   return {
-    name: profile.name,
-    title: profile.title,
-    bio: profile.bio,
-    skills: profile.skills,
+    name: profile.name || "",
+    title: profile.title || "",
+    bio: profile.bio || "",
+    skills: profile.topSkills || [],
     availability: {
-      status: profile.availability?.status || "available",
-      nextAvailable: profile.availability?.nextAvailable 
-        ? profile.availability.nextAvailable.toISOString().split('T')[0] 
-        : undefined,
+      status: (profile.availability as "available" | "limited" | "unavailable") || "available",
+      nextAvailable: undefined, // This is now handled differently in the updated type
     },
     socialLinks: {
       website: profile.socialLinks?.website || "",
@@ -81,13 +79,8 @@ export function formValuesToProfileUpdates(formValues: ProfileFormValues): Parti
     name: formValues.name,
     title: formValues.title,
     bio: formValues.bio,
-    skills: formValues.skills,
-    availability: {
-      status: formValues.availability.status,
-      nextAvailable: formValues.availability.nextAvailable 
-        ? new Date(formValues.availability.nextAvailable) 
-        : undefined,
-    },
+    topSkills: formValues.skills,
+    availability: formValues.availability.status, // Now a string in the unified type
     socialLinks: {
       website: formValues.socialLinks.website || undefined,
       linkedin: formValues.socialLinks.linkedin || undefined,

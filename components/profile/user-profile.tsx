@@ -65,7 +65,7 @@ export function UserProfile({ profile, isCurrentUser = false }: UserProfileProps
       {/* Profile Header with Avatar and Name */}
       <ProfileHeader
         name={profile.name}
-        imageUrl={profile.imageUrl}
+        avatarUrl={profile.imageUrl}
         title={profile.title}
         isEditing={isEditing}
       />

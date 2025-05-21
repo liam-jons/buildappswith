@@ -11,7 +11,7 @@
 import { useAuth as useClerkAuth, useUser as useClerkUser } from "@clerk/nextjs";
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import React from 'react';
-import { UserRole, AuthContextType, AuthUser } from './types';
+import { UserRole, AuthContextType, AuthUser, AuthStatus, Permission } from './types';
 
 // Create auth context
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -110,6 +110,7 @@ function useAuthInternal(): AuthContextType {
   
   return {
     user,
+    status: !isLoaded ? AuthStatus.LOADING : (user ? AuthStatus.AUTHENTICATED : AuthStatus.UNAUTHENTICATED),
     isLoaded,
     isSignedIn: !!user,
     roles: user?.roles || [],
@@ -206,7 +207,7 @@ export function useIsClient(): boolean {
 /**
  * Check if user has specific permission
  */
-export function usePermission(permission: string) {
+export function usePermission(permission: Permission) {
   const { hasPermission, isLoaded } = useAuth();
   return isLoaded && hasPermission(permission);
 }

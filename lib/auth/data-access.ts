@@ -50,7 +50,7 @@ export const authData = {
         clerkId: data.clerkId,
         name: data.name,
         email: data.email,
-        image: data.image,
+        imageUrl: data.image,
         roles: data.roles || [UserRole.CLIENT],
         verified: data.verified ?? true // Clerk has already verified the email
       }

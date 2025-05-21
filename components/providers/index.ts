@@ -7,7 +7,8 @@
 // Export components with named exports to match actual implementations
 export { Providers as providers } from './providers';
 export { ClerkProvider } from './clerk-provider';
-export { DatadogRumProvider, retrieveTraceContext, storeTraceContext } from './datadog-rum-provider';
+// Datadog temporarily disabled - API version issues
+// export { DatadogRumProvider, retrieveTraceContext, storeTraceContext } from './datadog-rum-provider';
 
 // Re-export Providers with its actual name as well
 export { Providers } from './providers';

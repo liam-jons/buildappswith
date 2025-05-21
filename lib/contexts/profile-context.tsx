@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useCallback } from "react";
-import { BuilderProfileData } from "@/components/profile/builder-profile";
+import { BuilderProfileData } from "@/lib/profile/types";
 import { PortfolioProject } from "@/components/profile/portfolio-showcase";
 import { toast } from "sonner";
 
@@ -41,7 +41,7 @@ export function useProfile() {
 // Provider component to wrap parts of the app that need profile state
 export function ProfileProvider({ children }: { children: ReactNode }) {
   // State
-  const [profile, setProfile] = useState<BuilderProfileData>(mockEstablishedTierProfile);
+  const [profile, setProfile] = useState<BuilderProfileData>(mockEstablishedTierProfile as BuilderProfileData);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   

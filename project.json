@@ -22,10 +22,11 @@
       }
     },
     "dev": {
-      "executor": "@nx/next:dev",
+      "executor": "nx:run-commands",
       "options": {
-        "port": 3000,
-        "buildTarget": "buildappswith:build"
+        "command": "prisma generate && next dev",
+        "cwd": "{projectRoot}",
+        "envFile": ".env"
       }
     },
     "start": {

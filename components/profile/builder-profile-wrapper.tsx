@@ -10,78 +10,107 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useProfileAuth } from './profile-auth-provider';
 import { BuilderProfile } from './builder-profile';
 import { CalendlySessionTypeList } from '@/components/scheduling/calendly';
 import { BookingButton } from '@/components/booking/booking-button';
 import { ValidationTierBadge } from '@/components/trust/ui/validation-tier-badge';
+import { BuilderProfileWrapperProps } from './types';
+import { getUserProfile } from '@/lib/profile/actions';
+import { Skeleton } from '@/components/ui';
+import { BuilderProfileData } from '@/lib/profile/types';
+import { ValidationTier } from '@/lib/marketplace/types';
+import { BuilderProfileResponseData } from '@/lib/profile/types';
+import { validationTierToString } from '@/lib/utils/type-converters';
 
-interface BuilderProfileData {
-  id: string;
-  name: string;
-  bio: string;
-  headline?: string;
-  imageUrl?: string;
-  specializations: string[];
-  validationTier: number;
-  sessionTypes: {
-    id: string;
-    title: string;
-    description: string;
-    duration: number;
-    price: number;
-  }[];
-  // Sensitive fields that should only be visible to authenticated users with proper roles
-  email?: string;
-  phoneNumber?: string;
-  privateNotes?: string;
-  earnings?: number;
-  stripeAccountId?: string;
-}
-
-interface BuilderProfileWrapperProps {
-  builder: BuilderProfileData;
-  className?: string;
-}
 
 /**
  * Wrapper component that handles rendering builder profiles with appropriate
  * data access controls based on authentication state
  */
-export function BuilderProfileWrapper({ builder, className }: BuilderProfileWrapperProps) {
-  const { isOwner, isAdmin, isAuthenticated, permissions } = useProfileAuth();
+export function BuilderProfileWrapper({ 
+  profileId, 
+  isPublicView = false, 
+  profile: providedProfile,
+  userRole,
+  authContext,
+  loading = false,
+  className 
+}: BuilderProfileWrapperProps) {
+  const [profile, setProfile] = useState(providedProfile);
+  const [isLoading, setIsLoading] = useState(loading || !providedProfile);
   
-  // Filter sensitive data for public/unauthorized access
-  const filteredBuilder = {
-    ...builder,
-    // Remove sensitive fields for unauthenticated or unauthorized users
-    email: permissions.canEdit ? builder.email : undefined,
-    phoneNumber: permissions.canEdit ? builder.phoneNumber : undefined,
-    privateNotes: permissions.canEdit ? builder.privateNotes : undefined,
-    earnings: permissions.canEdit ? builder.earnings : undefined,
-    stripeAccountId: isAdmin ? builder.stripeAccountId : undefined,
-  };
+  // Fetch profile data if not provided and profileId is available
+  useEffect(() => {
+    if (!providedProfile && profileId) {
+      setIsLoading(true);
+      getUserProfile(profileId)
+        .then(({ user }) => {
+          if (user) {
+            // Transform user data to BuilderProfileData format
+            const transformedProfile: BuilderProfileData = {
+              id: user.id,
+              name: user.name,
+              bio: user.bio || '',
+              headline: user.title,
+              avatarUrl: user.avatarUrl,
+              validationTier: user.validationTier || ValidationTier.ENTRY,
+              domains: user.specializations || [],
+              badges: [],
+              completedProjects: user.completedProjects || 0,
+              availableForHire: true,
+              adhd_focus: false,
+              expertiseAreas: {},
+              socialLinks: {},
+              portfolioItems: [],
+              featured: false,
+              searchable: true,
+              availability: 'available',
+              topSkills: user.specializations || [],
+              joinDate: user.joinDate,
+              rating: user.rating,
+            };
+            setProfile(transformedProfile);
+          }
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [profileId, providedProfile]);
+  
+  if (isLoading) {
+    return <Skeleton className="w-full h-[600px]" />;
+  }
+  
+  if (!profile) {
+    return (
+      <div className="p-6 bg-muted rounded-lg">
+        <h2 className="text-lg font-semibold mb-2">Profile Not Found</h2>
+        <p>The requested profile could not be loaded.</p>
+      </div>
+    );
+  }
+  
+  const { isOwner, isAdmin, isAuthenticated, permissions } = useProfileAuth();
   
   return (
     <div className={className} data-testid="builder-profile-wrapper">
       {/* Profile header with validation tier */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">{builder.name}</h1>
-        <ValidationTierBadge tier={builder.validationTier} />
+        <h1 className="text-3xl font-bold">{profile.name || profile.displayName}</h1>
+        <ValidationTierBadge tier={validationTierToString(profile.validationTier)} />
       </div>
       
       {/* Main profile content */}
       <BuilderProfile 
-        builder={filteredBuilder} 
-        showContactInfo={permissions.canEdit}
+        profile={profile}
       />
       
       {/* Session types section - Calendly integration */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold mb-4">Available Sessions</h2>
         <CalendlySessionTypeList
-          builderId={builder.id}
+          builderId={profile.id}
           showBookingButtons={!isOwner}
         />
       </div>
@@ -91,12 +120,9 @@ export function BuilderProfileWrapper({ builder, className }: BuilderProfileWrap
         <div className="mt-8 p-4 border border-amber-200 bg-amber-50 rounded-md">
           <h3 className="text-lg font-medium text-amber-800">Admin Information</h3>
           <div className="mt-2 space-y-2 text-sm">
-            {builder.stripeAccountId && (
-              <p><span className="font-medium">Stripe Account:</span> {builder.stripeAccountId}</p>
-            )}
-            {builder.earnings !== undefined && (
-              <p><span className="font-medium">Total Earnings:</span> ${builder.earnings.toFixed(2)}</p>
-            )}
+            <p><span className="font-medium">Profile ID:</span> {profile.id}</p>
+            <p><span className="font-medium">Completed Projects:</span> {profile.completedProjects}</p>
+            <p><span className="font-medium">Rating:</span> {profile.rating || 0}/5</p>
             <div className="mt-4 flex space-x-4">
               <button className="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded text-sm">
                 Edit Profile
@@ -133,9 +159,9 @@ export function BuilderProfileWrapper({ builder, className }: BuilderProfileWrap
       {isAuthenticated && !isOwner && (
         <div className="mt-10 flex justify-center">
           <BookingButton 
-            builderId={builder.id} 
+            builderId={profile.id} 
             size="lg"
-            variant="primary"
+            variant="default"
             label="Book a Session with This Builder"
           />
         </div>

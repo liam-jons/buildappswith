@@ -32,7 +32,7 @@ export async function register() {
 }
 
 // Re-implemented with dynamic import pattern
-export const onRequestError = async (error) => {
+export const onRequestError = async (error: any) => {
   // Only capture errors in production with Sentry DSN configured
   if (typeof window !== 'undefined' || process.env.NODE_ENV !== 'production' || !process.env.SENTRY_DSN) {
     console.error('Request error:', error);

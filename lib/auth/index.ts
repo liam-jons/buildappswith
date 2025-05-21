@@ -97,7 +97,7 @@ export type {
   AuthState,
   AuthContextType,
   AuthProviderProps,
-  AuthError as AuthErrorType,
+  // AuthError as AuthErrorType, // Duplicate - already exported above
   AuthResponse,
   AuthOptions,
   AuthMiddlewareOptions,

@@ -29,7 +29,8 @@ import {
   ChevronRightIcon,
   ArrowTopRightIcon
 } from "@radix-ui/react-icons";
-import { ValidationTier } from "@/lib/trust/types";
+import { ValidationTier } from "@/lib/marketplace/types";
+import { getValidationTierStyle, validationTierToString } from "@/lib/utils/type-converters";
 import { PortfolioProject } from "./portfolio-showcase";
 
 interface PortfolioGalleryProps {
@@ -68,13 +69,8 @@ export function PortfolioGallery({
     : projects;
   
   // Get color based on validation tier
-  const tierColorMap = {
-    entry: "border-blue-400 dark:border-blue-400 from-blue-400/80 to-blue-400/0",
-    established: "border-purple-500 dark:border-purple-400 from-purple-500/80 to-purple-400/0",
-    expert: "border-amber-500 dark:border-amber-400 from-amber-500/80 to-amber-400/0"
-  };
-  
-  const tierColor = tierColorMap[validationTier];
+  const tierStyle = getValidationTierStyle(validationTier);
+  const tierString = validationTierToString(validationTier);
 
   return (
     <div className={cn("w-full space-y-6", className)}>
@@ -223,8 +219,8 @@ export function PortfolioGallery({
                           key={i} 
                           className={cn(
                             "p-4 rounded-lg border bg-gradient-to-br",
-                            tierColor.split(' ').slice(0, 2).join(' '),
-                            "from-opacity-20 to-opacity-0"
+                            tierStyle.borderClass,
+                            tierStyle.bgClass
                           )}
                         >
                           <div className="text-sm font-medium text-muted-foreground mb-1">{outcome.label}</div>
@@ -378,9 +374,8 @@ function ProjectCard({ project, validationTier, onClick, isOwner, onEdit, onDele
           <div 
             className={cn(
               "p-3 rounded-md border mb-4",
-              validationTier === "entry" && "border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30",
-              validationTier === "established" && "border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/30",
-              validationTier === "expert" && "border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30",
+              getValidationTierStyle(validationTier).borderClass,
+              getValidationTierStyle(validationTier).bgClass
             )}
           >
             <div className="text-sm font-medium">{highlightOutcome.label}</div>

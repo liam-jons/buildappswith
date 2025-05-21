@@ -32,7 +32,7 @@ const ProfileAuthContext = createContext<ProfileAuthContextType | null>(null);
 // Props for our provider component
 interface ProfileAuthProviderProps {
   children: ReactNode;
-  profile: BuilderProfile;
+  profile: BuilderProfileData;
   initialPermissions?: Partial<ProfilePermissions>;
 }
 

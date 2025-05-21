@@ -9,23 +9,21 @@
 
 import { auth } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
-import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import { logger } from '../logger'
+import { db } from '../db'
 
 import type { 
-  BuilderProfileResponse, 
+  BuilderProfileResponseData, 
   ExpertiseAreasUpdate,
   SessionTypeWithId,
   UpdateBuilderProfileData
 } from './types'
 
-const prisma = new PrismaClient()
-
 /**
  * Get the current builder profile for the authenticated user
  */
-export async function getCurrentBuilderProfile(): Promise<BuilderProfileResponse | null> {
+export async function getCurrentBuilderProfile(): Promise<BuilderProfileResponseData | null> {
   try {
     const { userId: clerkId } = auth()
     
@@ -35,7 +33,7 @@ export async function getCurrentBuilderProfile(): Promise<BuilderProfileResponse
     }
     
     // Get user from database using clerkId
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { clerkId },
       include: {
         builderProfile: true
@@ -52,29 +50,27 @@ export async function getCurrentBuilderProfile(): Promise<BuilderProfileResponse
       clerkId: user.clerkId || undefined,
       email: user.email,
       name: user.name || undefined,
-      profile: {
-        id: user.builderProfile.id,
-        bio: user.builderProfile.bio || undefined,
-        headline: user.builderProfile.headline || undefined,
-        slug: user.builderProfile.slug || undefined,
-        tagline: user.builderProfile.tagline || undefined,
-        displayName: user.builderProfile.displayName || undefined,
-        validationTier: user.builderProfile.validationTier,
-        domains: user.builderProfile.domains,
-        badges: user.builderProfile.badges,
-        completedProjects: user.builderProfile.completedProjects,
-        responseRate: user.builderProfile.responseRate || undefined,
-        hourlyRate: user.builderProfile.hourlyRate?.toNumber() || undefined,
-        availableForHire: user.builderProfile.availableForHire,
-        adhd_focus: user.builderProfile.adhd_focus || false,
-        expertiseAreas: user.builderProfile.expertiseAreas as Record<string, any> || {},
-        socialLinks: user.builderProfile.socialLinks as Record<string, string> || {},
-        portfolioItems: user.builderProfile.portfolioItems as any[] || [],
-        featured: user.builderProfile.featured,
-        searchable: user.builderProfile.searchable,
-        availability: user.builderProfile.availability,
-        topSkills: user.builderProfile.topSkills
-      }
+      id: user.builderProfile.id,
+      bio: user.builderProfile.bio || undefined,
+      headline: user.builderProfile.headline || undefined,
+      slug: user.builderProfile.slug || undefined,
+      tagline: user.builderProfile.tagline || undefined,
+      displayName: user.builderProfile.displayName || undefined,
+      validationTier: user.builderProfile.validationTier,
+      domains: user.builderProfile.domains,
+      badges: user.builderProfile.badges,
+      completedProjects: user.builderProfile.completedProjects,
+      responseRate: user.builderProfile.responseRate || undefined,
+      hourlyRate: user.builderProfile.hourlyRate?.toNumber() || undefined,
+      availableForHire: user.builderProfile.availableForHire,
+      adhd_focus: user.builderProfile.adhd_focus || false,
+      expertiseAreas: user.builderProfile.expertiseAreas as Record<string, any> || {},
+      socialLinks: user.builderProfile.socialLinks as Record<string, string> || {},
+      portfolioItems: user.builderProfile.portfolioItems as any[] || [],
+      featured: user.builderProfile.featured,
+      searchable: user.builderProfile.searchable,
+      availability: user.builderProfile.availability,
+      topSkills: user.builderProfile.topSkills
     }
   } catch (error) {
     logger.error('Error in getCurrentBuilderProfile', { error })
@@ -85,7 +81,7 @@ export async function getCurrentBuilderProfile(): Promise<BuilderProfileResponse
 /**
  * Get a builder profile by slug
  */
-export async function getBuilderProfileBySlug(slug: string): Promise<BuilderProfileResponse | null> {
+export async function getBuilderProfileBySlug(slug: string): Promise<BuilderProfileResponseData | null> {
   try {
     // Validate slug
     if (!slug || typeof slug !== 'string') {
@@ -94,7 +90,7 @@ export async function getBuilderProfileBySlug(slug: string): Promise<BuilderProf
     }
     
     // Get builder profile from database
-    const builderProfile = await prisma.builderProfile.findUnique({
+    const builderProfile = await db.builderProfile.findUnique({
       where: { slug },
       include: {
         user: true
@@ -111,29 +107,27 @@ export async function getBuilderProfileBySlug(slug: string): Promise<BuilderProf
       clerkId: builderProfile.user.clerkId || undefined,
       email: builderProfile.user.email,
       name: builderProfile.user.name || undefined,
-      profile: {
-        id: builderProfile.id,
-        bio: builderProfile.bio || undefined,
-        headline: builderProfile.headline || undefined,
-        slug: builderProfile.slug || undefined,
-        tagline: builderProfile.tagline || undefined,
-        displayName: builderProfile.displayName || undefined,
-        validationTier: builderProfile.validationTier,
-        domains: builderProfile.domains,
-        badges: builderProfile.badges,
-        completedProjects: builderProfile.completedProjects,
-        responseRate: builderProfile.responseRate || undefined,
-        hourlyRate: builderProfile.hourlyRate?.toNumber() || undefined,
-        availableForHire: builderProfile.availableForHire,
-        adhd_focus: builderProfile.adhd_focus || false,
-        expertiseAreas: builderProfile.expertiseAreas as Record<string, any> || {},
-        socialLinks: builderProfile.socialLinks as Record<string, string> || {},
-        portfolioItems: builderProfile.portfolioItems as any[] || [],
-        featured: builderProfile.featured,
-        searchable: builderProfile.searchable,
-        availability: builderProfile.availability,
-        topSkills: builderProfile.topSkills
-      }
+      id: builderProfile.id,
+      bio: builderProfile.bio || undefined,
+      headline: builderProfile.headline || undefined,
+      slug: builderProfile.slug || undefined,
+      tagline: builderProfile.tagline || undefined,
+      displayName: builderProfile.displayName || undefined,
+      validationTier: builderProfile.validationTier,
+      domains: builderProfile.domains,
+      badges: builderProfile.badges,
+      completedProjects: builderProfile.completedProjects,
+      responseRate: builderProfile.responseRate || undefined,
+      hourlyRate: builderProfile.hourlyRate?.toNumber() || undefined,
+      availableForHire: builderProfile.availableForHire,
+      adhd_focus: builderProfile.adhd_focus || false,
+      expertiseAreas: builderProfile.expertiseAreas as Record<string, any> || {},
+      socialLinks: builderProfile.socialLinks as Record<string, string> || {},
+      portfolioItems: builderProfile.portfolioItems as any[] || [],
+      featured: builderProfile.featured,
+      searchable: builderProfile.searchable,
+      availability: builderProfile.availability,
+      topSkills: builderProfile.topSkills
     }
   } catch (error) {
     logger.error('Error in getBuilderProfileBySlug', { error, slug })
@@ -144,7 +138,7 @@ export async function getBuilderProfileBySlug(slug: string): Promise<BuilderProf
 /**
  * Update the builder profile for the authenticated user
  */
-export async function updateBuilderProfile(data: UpdateBuilderProfileData): Promise<BuilderProfileResponse | null> {
+export async function updateBuilderProfile(data: UpdateBuilderProfileData): Promise<BuilderProfileResponseData | null> {
   try {
     const { userId: clerkId } = auth()
     
@@ -154,7 +148,7 @@ export async function updateBuilderProfile(data: UpdateBuilderProfileData): Prom
     }
     
     // Get user from database using clerkId
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { clerkId },
       include: {
         builderProfile: true
@@ -169,7 +163,7 @@ export async function updateBuilderProfile(data: UpdateBuilderProfileData): Prom
     // Validate slug if provided
     if (data.slug) {
       // Check if slug is already taken by another user
-      const existingProfile = await prisma.builderProfile.findUnique({
+      const existingProfile = await db.builderProfile.findUnique({
         where: { slug: data.slug }
       })
       
@@ -180,7 +174,7 @@ export async function updateBuilderProfile(data: UpdateBuilderProfileData): Prom
     }
     
     // Update builder profile
-    const updatedProfile = await prisma.builderProfile.update({
+    const updatedProfile = await db.builderProfile.update({
       where: { id: user.builderProfile.id },
       data: {
         bio: data.bio !== undefined ? data.bio : user.builderProfile.bio,
@@ -193,8 +187,8 @@ export async function updateBuilderProfile(data: UpdateBuilderProfileData): Prom
         hourlyRate: data.hourlyRate !== undefined ? data.hourlyRate : user.builderProfile.hourlyRate,
         availableForHire: data.availableForHire !== undefined ? data.availableForHire : user.builderProfile.availableForHire,
         adhd_focus: data.adhd_focus !== undefined ? data.adhd_focus : user.builderProfile.adhd_focus,
-        socialLinks: data.socialLinks !== undefined ? data.socialLinks : user.builderProfile.socialLinks,
-        portfolioItems: data.portfolioItems !== undefined ? data.portfolioItems : user.builderProfile.portfolioItems,
+        socialLinks: data.socialLinks !== undefined ? data.socialLinks as any : user.builderProfile.socialLinks,
+        portfolioItems: data.portfolioItems !== undefined ? data.portfolioItems as any : user.builderProfile.portfolioItems,
         searchable: data.searchable !== undefined ? data.searchable : user.builderProfile.searchable,
         availability: data.availability !== undefined ? data.availability : user.builderProfile.availability,
         topSkills: data.topSkills !== undefined ? data.topSkills : user.builderProfile.topSkills
@@ -209,29 +203,27 @@ export async function updateBuilderProfile(data: UpdateBuilderProfileData): Prom
       clerkId: user.clerkId || undefined,
       email: user.email,
       name: user.name || undefined,
-      profile: {
-        id: updatedProfile.id,
-        bio: updatedProfile.bio || undefined,
-        headline: updatedProfile.headline || undefined,
-        slug: updatedProfile.slug || undefined,
-        tagline: updatedProfile.tagline || undefined,
-        displayName: updatedProfile.displayName || undefined,
-        validationTier: updatedProfile.validationTier,
-        domains: updatedProfile.domains,
-        badges: updatedProfile.badges,
-        completedProjects: updatedProfile.completedProjects,
-        responseRate: updatedProfile.responseRate || undefined,
-        hourlyRate: updatedProfile.hourlyRate?.toNumber() || undefined,
-        availableForHire: updatedProfile.availableForHire,
-        adhd_focus: updatedProfile.adhd_focus || false,
-        expertiseAreas: updatedProfile.expertiseAreas as Record<string, any> || {},
-        socialLinks: updatedProfile.socialLinks as Record<string, string> || {},
-        portfolioItems: updatedProfile.portfolioItems as any[] || [],
-        featured: updatedProfile.featured,
-        searchable: updatedProfile.searchable,
-        availability: updatedProfile.availability,
-        topSkills: updatedProfile.topSkills
-      }
+      id: updatedProfile.id,
+      bio: updatedProfile.bio || undefined,
+      headline: updatedProfile.headline || undefined,
+      slug: updatedProfile.slug || undefined,
+      tagline: updatedProfile.tagline || undefined,
+      displayName: updatedProfile.displayName || undefined,
+      validationTier: updatedProfile.validationTier,
+      domains: updatedProfile.domains,
+      badges: updatedProfile.badges,
+      completedProjects: updatedProfile.completedProjects,
+      responseRate: updatedProfile.responseRate || undefined,
+      hourlyRate: updatedProfile.hourlyRate?.toNumber() || undefined,
+      availableForHire: updatedProfile.availableForHire,
+      adhd_focus: updatedProfile.adhd_focus || false,
+      expertiseAreas: updatedProfile.expertiseAreas as Record<string, any> || {},
+      socialLinks: updatedProfile.socialLinks as Record<string, string> || {},
+      portfolioItems: updatedProfile.portfolioItems as any[] || [],
+      featured: updatedProfile.featured,
+      searchable: updatedProfile.searchable,
+      availability: updatedProfile.availability,
+      topSkills: updatedProfile.topSkills
     }
   } catch (error) {
     logger.error('Error in updateBuilderProfile', { error })
@@ -242,7 +234,7 @@ export async function updateBuilderProfile(data: UpdateBuilderProfileData): Prom
 /**
  * Update expertise areas for the authenticated user's profile
  */
-export async function updateExpertiseAreas(data: ExpertiseAreasUpdate): Promise<BuilderProfileResponse | null> {
+export async function updateExpertiseAreas(data: ExpertiseAreasUpdate): Promise<BuilderProfileResponseData | null> {
   try {
     const { userId: clerkId } = auth()
     
@@ -252,7 +244,7 @@ export async function updateExpertiseAreas(data: ExpertiseAreasUpdate): Promise<
     }
     
     // Get user from database using clerkId
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { clerkId },
       include: {
         builderProfile: true
@@ -265,7 +257,7 @@ export async function updateExpertiseAreas(data: ExpertiseAreasUpdate): Promise<
     }
     
     // Update expertise areas
-    const updatedProfile = await prisma.builderProfile.update({
+    const updatedProfile = await db.builderProfile.update({
       where: { id: user.builderProfile.id },
       data: {
         expertiseAreas: data
@@ -280,29 +272,27 @@ export async function updateExpertiseAreas(data: ExpertiseAreasUpdate): Promise<
       clerkId: user.clerkId || undefined,
       email: user.email,
       name: user.name || undefined,
-      profile: {
-        id: updatedProfile.id,
-        bio: updatedProfile.bio || undefined,
-        headline: updatedProfile.headline || undefined,
-        slug: updatedProfile.slug || undefined,
-        tagline: updatedProfile.tagline || undefined,
-        displayName: updatedProfile.displayName || undefined,
-        validationTier: updatedProfile.validationTier,
-        domains: updatedProfile.domains,
-        badges: updatedProfile.badges,
-        completedProjects: updatedProfile.completedProjects,
-        responseRate: updatedProfile.responseRate || undefined,
-        hourlyRate: updatedProfile.hourlyRate?.toNumber() || undefined,
-        availableForHire: updatedProfile.availableForHire,
-        adhd_focus: updatedProfile.adhd_focus || false,
-        expertiseAreas: updatedProfile.expertiseAreas as Record<string, any> || {},
-        socialLinks: updatedProfile.socialLinks as Record<string, string> || {},
-        portfolioItems: updatedProfile.portfolioItems as any[] || [],
-        featured: updatedProfile.featured,
-        searchable: updatedProfile.searchable,
-        availability: updatedProfile.availability,
-        topSkills: updatedProfile.topSkills
-      }
+      id: updatedProfile.id,
+      bio: updatedProfile.bio || undefined,
+      headline: updatedProfile.headline || undefined,
+      slug: updatedProfile.slug || undefined,
+      tagline: updatedProfile.tagline || undefined,
+      displayName: updatedProfile.displayName || undefined,
+      validationTier: updatedProfile.validationTier,
+      domains: updatedProfile.domains,
+      badges: updatedProfile.badges,
+      completedProjects: updatedProfile.completedProjects,
+      responseRate: updatedProfile.responseRate || undefined,
+      hourlyRate: updatedProfile.hourlyRate?.toNumber() || undefined,
+      availableForHire: updatedProfile.availableForHire,
+      adhd_focus: updatedProfile.adhd_focus || false,
+      expertiseAreas: updatedProfile.expertiseAreas as Record<string, any> || {},
+      socialLinks: updatedProfile.socialLinks as Record<string, string> || {},
+      portfolioItems: updatedProfile.portfolioItems as any[] || [],
+      featured: updatedProfile.featured,
+      searchable: updatedProfile.searchable,
+      availability: updatedProfile.availability,
+      topSkills: updatedProfile.topSkills
     }
   } catch (error) {
     logger.error('Error in updateExpertiseAreas', { error })
@@ -329,7 +319,7 @@ export async function getSessionTypes(builderId?: string): Promise<SessionTypeWi
         return []
       }
       
-      const user = await prisma.user.findUnique({
+      const user = await db.user.findUnique({
         where: { clerkId },
         include: {
           builderProfile: true
@@ -345,7 +335,7 @@ export async function getSessionTypes(builderId?: string): Promise<SessionTypeWi
     }
     
     // Get session types
-    const sessionTypes = await prisma.sessionType.findMany({
+    const sessionTypes = await db.sessionType.findMany({
       where: { builderId: profileId },
       orderBy: { durationMinutes: 'asc' }
     })
@@ -382,7 +372,7 @@ export async function updateSessionType(
     }
     
     // Get user from database using clerkId
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { clerkId },
       include: {
         builderProfile: true
@@ -399,7 +389,7 @@ export async function updateSessionType(
     // If ID is provided, update existing session type
     if (data.id) {
       // First verify this session type belongs to the user
-      const existingSessionType = await prisma.sessionType.findUnique({
+      const existingSessionType = await db.sessionType.findUnique({
         where: { id: data.id }
       })
       
@@ -409,7 +399,7 @@ export async function updateSessionType(
       }
       
       // Update session type
-      sessionType = await prisma.sessionType.update({
+      sessionType = await db.sessionType.update({
         where: { id: data.id },
         data: {
           title: data.title,
@@ -424,7 +414,7 @@ export async function updateSessionType(
       })
     } else {
       // Create new session type
-      sessionType = await prisma.sessionType.create({
+      sessionType = await db.sessionType.create({
         data: {
           builderId: user.builderProfile.id,
           title: data.title,
@@ -472,7 +462,7 @@ export async function deleteSessionType(id: string): Promise<boolean> {
     }
 
     // Get user from database using clerkId
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { clerkId },
       include: {
         builderProfile: true
@@ -485,7 +475,7 @@ export async function deleteSessionType(id: string): Promise<boolean> {
     }
 
     // Verify this session type belongs to the user
-    const sessionType = await prisma.sessionType.findUnique({
+    const sessionType = await db.sessionType.findUnique({
       where: { id }
     })
 
@@ -495,7 +485,7 @@ export async function deleteSessionType(id: string): Promise<boolean> {
     }
 
     // Delete session type
-    await prisma.sessionType.delete({
+    await db.sessionType.delete({
       where: { id }
     })
 
@@ -522,7 +512,7 @@ export async function updateProfile(formData: FormData): Promise<{ success?: boo
     }
 
     // Get user from database using clerkId
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { clerkId }
     })
 
@@ -533,25 +523,17 @@ export async function updateProfile(formData: FormData): Promise<{ success?: boo
 
     // Extract form data
     const name = formData.get('name') as string
-    const title = formData.get('title') as string
-    const bio = formData.get('bio') as string
-    const location = formData.get('location') as string
-    const website = formData.get('website') as string
 
     // Validate required fields
     if (!name) {
       return { error: 'Name is required' }
     }
 
-    // Update user record
-    await prisma.user.update({
+    // Update user record (only fields that exist in User model)
+    await db.user.update({
       where: { id: user.id },
       data: {
-        name,
-        title: title || null,
-        bio: bio || null,
-        location: location || null,
-        website: website || null
+        name
       }
     })
 
@@ -579,7 +561,7 @@ export async function getUserProfile(id: string): Promise<any | null> {
     }
 
     // Get user from database
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { id },
       include: {
         builderProfile: true
@@ -597,10 +579,6 @@ export async function getUserProfile(id: string): Promise<any | null> {
       clerkId: user.clerkId,
       name: user.name,
       email: user.email,
-      title: user.title,
-      bio: user.bio,
-      location: user.location,
-      website: user.website,
       imageUrl: user.imageUrl,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -645,7 +623,7 @@ export async function getPublicUserProfile(): Promise<any | null> {
     }
 
     // Get user from database using clerkId
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { clerkId },
       include: {
         builderProfile: true
@@ -661,10 +639,6 @@ export async function getPublicUserProfile(): Promise<any | null> {
     return {
       id: user.id,
       name: user.name,
-      title: user.title,
-      bio: user.bio,
-      location: user.location,
-      website: user.website,
       imageUrl: user.imageUrl,
       builderProfile: user.builderProfile ? {
         displayName: user.builderProfile.displayName,
@@ -698,7 +672,7 @@ export async function getClientProfileData(userId: string): Promise<any | null> 
     }
 
     // Get user data
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { id: userId }
     })
 
@@ -708,7 +682,7 @@ export async function getClientProfileData(userId: string): Promise<any | null> 
     }
 
     // Get booking information
-    const bookings = await prisma.booking.findMany({
+    const bookings = await db.booking.findMany({
       where: { clientId: userId },
       include: {
         builder: true
@@ -741,8 +715,8 @@ export async function getClientProfileData(userId: string): Promise<any | null> 
       day: 'numeric'
     })
 
-    // Placeholder for interests
-    const interests = user.interests || []
+    // Placeholder for interests (not available in User model)
+    const interests: string[] = []
 
     // Mock values for changes (to be implemented with real trending)
     const bookingChange = 5

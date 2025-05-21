@@ -16,6 +16,7 @@ import {
   ExpertiseAreasJson
 } from '../types/prisma-types';
 import { BuilderProfileData } from '../profile/types';
+import { ValidationTier } from '../marketplace/types';
 
 /**
  * Convert Prisma Decimal to number or undefined
@@ -169,4 +170,86 @@ export function snakeToCamel<T extends object>(obj: T): Record<string, any> {
     acc[camelKey] = value;
     return acc;
   }, {} as Record<string, any>);
+}
+
+/**
+ * ValidationTier Conversion Utilities
+ * Following architectural decision to use marketplace enum as source of truth
+ */
+
+export type TrustValidationTier = "basic" | "verified" | "expert";
+
+/**
+ * Convert marketplace ValidationTier enum to trust domain string
+ */
+export function validationTierToString(tier: ValidationTier): TrustValidationTier {
+  switch (tier) {
+    case ValidationTier.ENTRY:
+      return 'basic';
+    case ValidationTier.ESTABLISHED:
+      return 'verified';
+    case ValidationTier.EXPERT:
+      return 'expert';
+    default:
+      return 'basic';
+  }
+}
+
+/**
+ * Convert trust domain string to marketplace ValidationTier enum
+ */
+export function stringToValidationTier(tier: TrustValidationTier): ValidationTier {
+  switch (tier) {
+    case 'basic':
+      return ValidationTier.ENTRY;
+    case 'verified':
+      return ValidationTier.ESTABLISHED;
+    case 'expert':
+      return ValidationTier.EXPERT;
+    default:
+      return ValidationTier.ENTRY;
+  }
+}
+
+/**
+ * Convert ValidationTier to CSS style mapping (for legacy components)
+ */
+export function getValidationTierStyle(tier: ValidationTier): {
+  colorClass: string;
+  borderClass: string;
+  bgClass: string;
+  textClass: string;
+} {
+  const tierString = validationTierToString(tier);
+  
+  switch (tierString) {
+    case 'basic':
+      return {
+        colorClass: 'border-blue-400 dark:border-blue-400 from-blue-400/80 to-blue-400/0',
+        borderClass: 'border-blue-200 dark:border-blue-800',
+        bgClass: 'bg-blue-50 dark:bg-blue-950/30',
+        textClass: 'text-blue-600 dark:text-blue-400'
+      };
+    case 'verified':
+      return {
+        colorClass: 'border-purple-500 dark:border-purple-400 from-purple-500/80 to-purple-400/0',
+        borderClass: 'border-purple-200 dark:border-purple-800',
+        bgClass: 'bg-purple-50 dark:bg-purple-950/30',
+        textClass: 'text-purple-600 dark:text-purple-400'
+      };
+    case 'expert':
+      return {
+        colorClass: 'border-amber-500 dark:border-amber-400 from-amber-500/80 to-amber-400/0',
+        borderClass: 'border-amber-200 dark:border-amber-800',
+        bgClass: 'bg-amber-50 dark:bg-amber-950/30',
+        textClass: 'text-amber-600 dark:text-amber-400'
+      };
+    default:
+      return {
+        colorClass: 'border-gray-400 dark:border-gray-400 from-gray-400/80 to-gray-400/0',
+        borderClass: 'border-gray-200 dark:border-gray-800',
+        bgClass: 'bg-gray-50 dark:bg-gray-950/30',
+        textClass: 'text-gray-600 dark:text-gray-400'
+      };
+  }
 }

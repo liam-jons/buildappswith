@@ -8,7 +8,7 @@
 
 import { getAuth } from "@clerk/nextjs/server"; 
 import { NextRequest, NextResponse } from "next/server";
-import { UserRole, AuthObject } from "./types"; 
+import { UserRole, AuthObject, ClerkSessionClaims } from "./types"; 
 import { logger } from "@/lib/logger";
 import { AuthenticationError, AuthorizationError } from "./adapters/clerk-express/errors"; 
 
@@ -50,7 +50,8 @@ export type OptionalAuthHandler<TContext extends { params?: any } = { params?: a
 
 function extractUserRoles(authResult: ReturnType<typeof getAuth>): UserRole[] {
   if (!authResult || !authResult.sessionClaims) return [];
-  return (authResult.sessionClaims.publicMetadata?.roles as UserRole[]) || [];
+  const sessionClaims = authResult.sessionClaims as ClerkSessionClaims;
+  return (sessionClaims.user_metadata?.roles as UserRole[]) || [];
 }
 
 /**
@@ -80,14 +81,18 @@ export function withAuth<TContext extends { params?: any } = { params?: any }>(
               detail: 'You must be signed in to access this resource.',
             }
           },
-          { status: error.status }
+          { status: error.statusCode }
         );
       }
       
       (req as any).auth = authResult; 
         
       const userRoles = extractUserRoles(authResult);
-      const authObjectToPass: AuthObject = { userId: authResult.userId, roles: userRoles, claims: authResult.sessionClaims };
+      const authObjectToPass: AuthObject = { 
+        userId: authResult.userId, 
+        roles: userRoles, 
+        claims: authResult.sessionClaims as ClerkSessionClaims | null 
+      };
 
       logger.debug('API auth successful', {
         userId: authObjectToPass.userId,
@@ -137,7 +142,11 @@ export function withOptionalAuth<TContext extends { params?: any } = { params?: 
       if (authResult?.userId) {
         (req as any).auth = authResult; 
         const userRoles = extractUserRoles(authResult);
-        const authObjectToPass: AuthObject = { userId: authResult.userId, roles: userRoles, claims: authResult.sessionClaims };
+        const authObjectToPass: AuthObject = { 
+          userId: authResult.userId, 
+          roles: userRoles, 
+          claims: authResult.sessionClaims as ClerkSessionClaims | null 
+        };
         
         logger.debug('Optional API auth: User authenticated', {
           userId: authObjectToPass.userId,
@@ -204,7 +213,7 @@ export function withRole<TContext extends { params?: any } = { params?: any }>(
             detail: error.message,
           }
         },
-        { status: error.status }
+        { status: error.statusCode }
       );
     }
     return handler(req, ctx, auth);
@@ -241,7 +250,7 @@ export function withAnyRole<TContext extends { params?: any } = { params?: any }
             detail: error.message,
           }
         },
-        { status: error.status }
+        { status: error.statusCode }
       );
     }
     return handler(req, ctx, auth);
@@ -278,7 +287,7 @@ export function withAllRoles<TContext extends { params?: any } = { params?: any 
             detail: error.message,
           }
         },
-        { status: error.status }
+        { status: error.statusCode }
       );
     }
     return handler(req, ctx, auth);
@@ -330,7 +339,7 @@ export function withPermission<TContext extends { params?: any } = { params?: an
   handler: AuthHandler<TContext> 
 ) {
   return withAuth<TContext>(async (req, ctx, auth) => {
-    const userPermissions = (auth.claims?.publicMetadata?.permissions as string[]) || [];
+    const userPermissions = (auth.claims?.user_metadata?.permissions as string[]) || [];
     
     if (!userPermissions.includes(permission)) {
       logger.warn('API permission check failed', {
@@ -350,7 +359,7 @@ export function withPermission<TContext extends { params?: any } = { params?: an
             detail: error.message,
           }
         },
-        { status: error.status }
+        { status: error.statusCode }
       );
     }
     return handler(req, ctx, auth);

@@ -18,8 +18,8 @@ import { vi, type MockInstance } from 'vitest';
  * @param mockFn The mock function to configure
  * @param authState Authentication state to mock
  */
-export function configureMockAuth<Args extends any[], Return>(
-  mockFn: MockInstance<Args, Return>,
+export function configureMockAuth<TArgs extends any[] = any[], TReturn = any>(
+  mockFn: MockInstance<TArgs, TReturn>,
   authState: MockAuthState
 ): void {
   mockFn.mockImplementationOnce((options: any) => {

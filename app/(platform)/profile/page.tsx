@@ -45,7 +45,7 @@ export default async function ProfilePage() {
   }
   
   // Fetch user profile data
-  const profile = await getPublicUserProfile(userId);
+  const profile = await getPublicUserProfile();
   
   // If no profile found, create one
   if (!profile) {

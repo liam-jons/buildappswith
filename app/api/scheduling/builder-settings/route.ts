@@ -41,10 +41,11 @@ function hasPermission(userId: string, userRoles: UserRole[], builderId: string)
 /**
  * GET handler for fetching builder scheduling profile
  */
-export const GET = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[]) => { 
+export const GET = withAuth(async (request: NextRequest, context: { params?: any }, auth) => { 
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
+  const { userId, roles: userRoles } = auth;
 
   try {
     // Get query parameters
@@ -117,10 +118,11 @@ export const GET = withAuth(async (request: NextRequest, context: { params?: any
 /**
  * PUT handler for updating builder scheduling settings
  */
-export const PUT = withAuth(async (request: NextRequest, context: { params?: any }, userId: string, userRoles: UserRole[]) => { 
+export const PUT = withAuth(async (request: NextRequest, context: { params?: any }, auth) => { 
   const startTime = performance.now();
   const path = request.nextUrl.pathname;
   const method = request.method;
+  const { userId, roles: userRoles } = auth;
 
   try {
     // Get builder ID from query parameters

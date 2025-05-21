@@ -11,70 +11,21 @@ import { createDomainLogger } from './logger'
 // Create a database-specific logger instance
 const dbLogger = createDomainLogger('database')
 
-// Define Prisma client options based on environment
-const prismaOptions = {
-  log: [
-    {
-      emit: 'event',
-      level: 'query',
-    },
-    {
-      emit: 'event',
-      level: 'error',
-    },
-    {
-      emit: 'event',
-      level: 'info',
-    },
-    {
-      emit: 'event',
-      level: 'warn',
-    },
-  ],
-}
-
 // Define global type for Prisma instance
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-// Create or reuse Prisma instance
-export const db = globalForPrisma.prisma || new PrismaClient(prismaOptions)
+// Create or reuse Prisma instance with simplified logging
+export const db = globalForPrisma.prisma || new PrismaClient({
+  log: ['query', 'error', 'info', 'warn'],
+})
 
-// Setup event listeners for logging in non-production environments
+// Assign to global to prevent multiple instances in development
 if (process.env.NODE_ENV !== 'production') {
-  db.$on('query', (e) => {
-    if (process.env.DEBUG_PRISMA_QUERIES === 'true') {
-      dbLogger.debug('Prisma Query', {
-        query: e.query,
-        params: e.params,
-        duration: e.duration,
-      })
-    }
-  })
-
-  db.$on('error', (e) => {
-    dbLogger.error('Prisma Error', {
-      message: e.message,
-      target: e.target,
-    })
-  })
-
-  db.$on('info', (e) => {
-    dbLogger.info('Prisma Info', {
-      message: e.message,
-      target: e.target,
-    })
-  })
-
-  db.$on('warn', (e) => {
-    dbLogger.warn('Prisma Warning', {
-      message: e.message,
-      target: e.target,
-    })
-  })
-
-  // Assign to global to prevent multiple instances in development
   globalForPrisma.prisma = db
 }
+
+// Note: Advanced Prisma event logging can be added back later if needed
+// For now, basic logging is handled via the log configuration in PrismaClient
 
 // Export prisma alias for backward compatibility
 export const prisma = db

@@ -19,7 +19,8 @@ export default function AvailabilityPage() {
       }
 
       // Check if user has the BUILDER role
-      const isBuilder = user.publicMetadata.roles?.includes(UserRole.BUILDER);
+      const roles = Array.isArray(user.publicMetadata.roles) ? user.publicMetadata.roles : [];
+      const isBuilder = roles.includes(UserRole.BUILDER);
       if (!isBuilder) {
         redirect('/profile-settings');
       }

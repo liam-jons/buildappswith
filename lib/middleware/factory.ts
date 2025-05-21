@@ -168,6 +168,6 @@ export function createMiddleware(config: MiddlewareConfig) {
     },
   });
 
-  // Wrap middleware with request logging
-  return withRequestLogging(middlewareFn);
+  // Return the middleware function directly (already includes logging)
+  return middlewareFn;
 }

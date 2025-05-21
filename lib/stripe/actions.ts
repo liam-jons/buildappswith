@@ -14,7 +14,7 @@ import Stripe from 'stripe';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/db';
 import { getBuilderProfileById } from '@/lib/profile/api';
-import { BuilderProfileResponse as BuilderProfileDataType, BuilderProfileData } from '@/lib/profile/types'; // Renamed to avoid confusion
+import { BuilderProfileResponseData as BuilderProfileDataType, BuilderProfileData } from '@/lib/profile/types'; // Renamed to avoid confusion
 import { getSessionTypeById, getBookingById as getBookingByIdScheduling, updateBookingPayment, updateBookingStatus } from '@/lib/scheduling/real-data/scheduling-service';
 import { authData } from '@/lib/auth/data-access';
 import { stripe as stripeServer, getOrCreateCustomer, createBookingCheckoutSession as aliasedCreateStripeCheckoutSession, handleStripeError, StripeErrorType, getCheckoutSession as getStripeSession, BookingCheckoutParams } from './stripe-server'; // Added BookingCheckoutParams
@@ -102,7 +102,7 @@ export async function createCheckoutSession(
           builderId: builderData.userId, // Use ID from BuilderProfileDataType
           clientId: user.id,
           sessionTypeId: sessionTypeId,
-          title: sessionType.title || `Session with ${builderData.profile.displayName}`,
+          title: sessionType.title || `Session with ${builderData.displayName}`,
           startTime: new Date(), // Placeholder - should come from availability or client input
           endTime: new Date(Date.now() + (sessionType.durationMinutes || 60) * 60000), // Placeholder
           status: PrismaBookingStatus.PENDING,
@@ -139,7 +139,7 @@ export async function createCheckoutSession(
     // Construct BookingCheckoutParams instead of Stripe.Checkout.SessionCreateParams directly
     const bookingCheckoutParams: BookingCheckoutParams = {
       builderId: builderData.userId,
-      builderName: builderData.profile.displayName || builderData.name || 'Builder',
+      builderName: builderData.displayName || builderData.name || 'Builder',
       sessionType: sessionType.title,
       sessionPrice: sessionType.price,
       userEmail: user.email || '', // Corrected from customerEmail
@@ -147,9 +147,12 @@ export async function createCheckoutSession(
       metadata: metadata, // StripeCheckoutMetadata is compatible here
       userId: user.id,
       successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/booking/${finalBookingId}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/book/${builderData.profile.slug || builderData.userId}?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/book/${builderData.slug || builderData.userId}?session_id={CHECKOUT_SESSION_ID}`,
       paymentOption: paymentOption,
       clientName: user.name || 'Client',
+      startTime: new Date(), // TODO: Get from actual booking data
+      endTime: new Date(Date.now() + (sessionType.durationMinutes || 60) * 60000), // TODO: Get from actual booking data  
+      timeZone: clientTimezone || 'UTC', // TODO: Get from client preferences
     };
 
     const stripeSessionResult = await aliasedCreateStripeCheckoutSession(bookingCheckoutParams); // Pass BookingCheckoutParams
