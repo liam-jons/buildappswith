@@ -376,3 +376,93 @@ We'll verify our implementation by:
 **Status**: ✅ Ready for Day 4 implementation focusing on domain-specific type updates.
 
 **Next Focus**: BuilderProfileResponse API alignment, Session type property fixes, ValidationTier enum usage resolution.
+
+---
+
+## Outstanding Work for Future Sessions
+
+### High Priority Component Standardization Remaining
+
+#### 1. Profile Component Fixes (Ready to implement)
+- **File**: `app/(platform)/profile/[id]/page.tsx`
+- **Issue**: BuilderProfileWrapper prop interface mismatch (line 88)
+- **Fix**: Update prop interface to include `profileId` and `isPublicView`
+- **Impact**: 2-3 TypeScript errors
+
+```typescript
+// CURRENT ERROR:
+<BuilderProfileWrapper profileId={params.id} isPublicView={!isOwnProfile} />
+// Property 'profileId' does not exist on type 'BuilderProfileWrapperProps'
+
+// SOLUTION: Update BuilderProfileWrapperProps interface in components/profile/types.ts
+```
+
+#### 2. UI Component Completion (Follow established patterns)
+- **Select Component**: Extend `components/ui/core/select.tsx` with standardized props
+- **Form Components**: Apply `FormFieldProps` interface to form elements  
+- **Dialog/Modal**: Standardize overlay component prop interfaces
+- **Estimated Impact**: 15-20 TypeScript error reductions
+
+#### 3. Marketplace Component Integration (Medium Priority)
+- **Builder Card Components**: Apply standardized component patterns
+- **Search/Filter Components**: Standardize marketplace UI component props
+- **Builder List Components**: Consistent prop interfaces across builder displays
+- **Estimated Impact**: 10-15 TypeScript error reductions
+
+### Implementation Checklist for Follow-up
+
+```markdown
+## Component Standardization Continuation
+
+### Phase 1: Complete Profile Domain
+- [ ] Fix BuilderProfileWrapper prop interface
+- [ ] Update ClientDashboard props interface  
+- [ ] Standardize ProfileHeader usage across profile pages
+- [ ] Apply loading states to remaining profile components
+
+### Phase 2: Core UI Components
+- [ ] Standardize Select component with variants and sizes
+- [ ] Apply FormFieldProps to form-related components
+- [ ] Update Dialog/Modal components with base interfaces
+- [ ] Implement LoadableProps across remaining UI components
+
+### Phase 3: Marketplace Integration  
+- [ ] Apply component patterns to builder card components
+- [ ] Standardize search and filter component interfaces
+- [ ] Update marketplace layout components with base props
+- [ ] Implement consistent loading states in marketplace
+
+### Phase 4: Scheduling/Booking Components
+- [ ] Apply standardized props to calendar components
+- [ ] Update booking flow components with base interfaces
+- [ ] Standardize session type display components
+- [ ] Implement loading states in booking components
+```
+
+### Quick Wins Available Post-API Session
+
+1. **Profile Page Fix** (5 min):
+   ```typescript
+   // In components/profile/types.ts, update:
+   export interface BuilderProfileWrapperProps extends 
+     ProfileComponentProps,
+     LoadableProps {
+     profileId?: string;  // Add this
+     isPublicView?: boolean;  // Add this
+     profile: BuilderProfileData;
+     userRole?: UserRole;
+     authContext?: ProfileAuthContext;
+   }
+   ```
+
+2. **Component Pattern Application** (30 min each):
+   - Follow the Button/Card/Input patterns established
+   - Apply to Select, Dialog, and remaining form components
+
+### Patterns Reference for Future Work
+
+All patterns are documented in:
+- `lib/types/component-types.ts` - Base interfaces
+- `components/ui/core/button.tsx` - UI component pattern
+- `components/profile/ui/profile-header.tsx` - Domain component pattern
+- `current-session/component-prop-interface-standardization.md` - Implementation guide

@@ -5,12 +5,8 @@
  * TypeScript type definitions for profiles
  */
 
-import { ValidationTier as TrustValidationTier } from '@/lib/trust/types';
-
-/**
- * Re-export ValidationTier from trust domain for consistency
- */
-export type ValidationTier = TrustValidationTier;
+import { ValidationTier } from '@/lib/marketplace/types';
+import { StandardApiResponse } from '@/lib/types/api-types';
 
 export enum UserRole {
   CLIENT = "CLIENT",
@@ -112,7 +108,7 @@ export interface SessionTypeWithId {
   price: number;
   currency: string;
   isActive: boolean;
-  color?: string;
+  color?: string | null; // Allow both undefined and null from database
   maxParticipants?: number;
 }
 
@@ -123,6 +119,8 @@ export interface BuilderProfileData {
   slug?: string;
   tagline?: string;
   displayName?: string;
+  name?: string; // Added for component compatibility
+  title?: string; // Added for component compatibility
   validationTier: number;
   domains: string[];
   badges: string[];
@@ -138,15 +136,68 @@ export interface BuilderProfileData {
   searchable: boolean;
   availability: string;
   topSkills: string[];
+  
+  // Additional properties for component compatibility
+  avatarUrl?: string;
+  coverImageUrl?: string;
+  joinDate?: Date;
+  rating?: number;
 }
 
-export interface BuilderProfileResponse {
+/**
+ * BuilderProfileResponse data structure
+ * Flattened for component compatibility 
+ */
+export interface BuilderProfileResponseData {
+  // User info
   userId: string;
   clerkId?: string;
   email: string;
   name?: string;
-  profile: BuilderProfileData;
+  
+  // Profile info (flattened from BuilderProfileData)
+  id: string;
+  bio?: string;
+  headline?: string;
+  slug?: string;
+  tagline?: string;
+  displayName?: string;
+  title?: string; // Added for component compatibility
+  validationTier: number;
+  domains: string[];
+  badges: string[];
+  completedProjects: number;
+  responseRate?: number;
+  hourlyRate?: number;
+  availableForHire: boolean;
+  adhd_focus: boolean;
+  expertiseAreas: Record<string, any>;
+  socialLinks: Record<string, string>;
+  portfolioItems: any[];
+  featured: boolean;
+  searchable: boolean;
+  availability: string;
+  topSkills: string[];
+  
+  // Additional properties for component compatibility
+  avatarUrl?: string;
+  coverImageUrl?: string;
+  joinDate?: Date;
+  rating?: number;
+  
+  // Additional properties expected by components
+  avatar?: { url: string; alt?: string };
+  specializations?: string[];
+  
+  // Related data
+  sessionTypes?: SessionTypeWithId[];
+  permissions?: ProfilePermissions;
 }
+
+/**
+ * Standardized BuilderProfileResponse following marketplace pattern
+ */
+export interface BuilderProfileResponse extends StandardApiResponse<BuilderProfileResponseData> {}
 
 // Type for updating builder profile
 export interface UpdateBuilderProfileData {

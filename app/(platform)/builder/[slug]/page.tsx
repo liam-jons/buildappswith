@@ -3,7 +3,8 @@ import { Metadata, ResolvingMetadata } from "next";
 import { getBuilderProfileBySlug } from "@/lib/profile/api";
 import { BuilderProfileClientWrapper } from "@/components/profile/builder-profile-client-wrapper";
 import { SessionBookingCard } from "@/components/profile/ui";
-import { ValidationTier, UserRole, SpecializationArea } from "@/lib/profile/types";
+import { UserRole, SpecializationArea } from "@/lib/profile/types";
+import { ValidationTier } from "@/lib/marketplace/types";
 
 interface BuilderProfilePageProps {
   params: {
@@ -65,7 +66,7 @@ async function getMockProfileData(slug: string) {
         bio: "Founder of BuildAppsWith, helping individuals and businesses leverage AI to build applications that solve real problems. Specialized in ADHD productivity strategies and creating value through thoughtful AI integration. With over 10 years of experience in software development and AI, I focus on practical implementations that deliver tangible results.",
         avatarUrl: "/images/profile/liam-jons.jpg", // You should add this image to the public folder
         coverImageUrl: "/images/profile/liam-cover.jpg", // You should add this image to the public folder
-        validationTier: ValidationTier.TIER3,
+        validationTier: ValidationTier.EXPERT,
         joinDate: new Date("2023-01-15"),
         completedProjects: 87,
         rating: 4.9,

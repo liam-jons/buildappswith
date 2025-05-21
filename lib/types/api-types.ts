@@ -17,12 +17,25 @@ export interface ApiError {
 }
 
 /**
- * Standard API response structure
+ * Standard API response structure (marketplace-compatible)
  */
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: ApiError;
+  message?: string;
+  pagination?: PaginationInfo;
+}
+
+/**
+ * Standardized API response interface following marketplace pattern
+ * This ensures all APIs follow the same response structure as marketplace
+ */
+export interface StandardApiResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: ApiError;
+  pagination?: PaginationInfo;
   message?: string;
 }
 
@@ -110,4 +123,59 @@ export interface ResourceDeletedResponse {
   success: boolean;
   id: string;
   deleted: boolean;
+}
+
+/**
+ * Utility functions for API response standardization
+ */
+
+/**
+ * Transform data to marketplace-compatible response format
+ */
+export function toStandardResponse<T>(
+  data: T, 
+  options?: { 
+    error?: ApiError; 
+    pagination?: PaginationInfo;
+    message?: string;
+  }
+): StandardApiResponse<T> {
+  return {
+    success: !options?.error,
+    data: options?.error ? undefined : data,
+    error: options?.error,
+    pagination: options?.pagination,
+    message: options?.message,
+  };
+}
+
+/**
+ * Convert legacy responses to marketplace format
+ */
+export function convertToMarketplaceFormat<T>(legacyResponse: any): StandardApiResponse<T> {
+  // Already marketplace format
+  if ('success' in legacyResponse && 'data' in legacyResponse) {
+    return legacyResponse as StandardApiResponse<T>;
+  }
+  
+  // Convert legacy format to marketplace format
+  return { 
+    success: true, 
+    data: legacyResponse as T 
+  };
+}
+
+/**
+ * Transform null values to undefined for consistent API responses
+ */
+export function normalizeNullToUndefined<T extends Record<string, any>>(obj: T): T {
+  const result = { ...obj };
+  for (const key in result) {
+    if (result[key] === null) {
+      result[key] = undefined as any;
+    } else if (typeof result[key] === 'object' && result[key] !== null) {
+      result[key] = normalizeNullToUndefined(result[key]);
+    }
+  }
+  return result;
 }

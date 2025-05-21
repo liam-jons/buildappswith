@@ -14,11 +14,11 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import { useAuth } from "@/lib/auth/hooks";
 import { UserRole } from "@/lib/types/enums";
-import { BuilderProfile, ProfilePermissions } from "@/lib/profile/types";
+import { BuilderProfileData, ProfilePermissions } from "@/lib/profile/types";
 
 // Define the shape of our profile auth context
 interface ProfileAuthContextType {
-  profile: BuilderProfile;
+  profile: BuilderProfileData;
   permissions: ProfilePermissions;
   isOwner: boolean;
   isAdmin: boolean;

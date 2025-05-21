@@ -62,10 +62,10 @@ export interface SessionType {
   price: number;
   currency: string;
   isActive: boolean;
-  color?: string;
+  color?: string | null; // Allow both undefined and null from database
   maxParticipants?: number;
-  calendlyEventTypeId?: string;
-  calendlyEventTypeUri?: string;
+  calendlyEventTypeId?: string | null;
+  calendlyEventTypeUri?: string | null;
   requiresAuth?: boolean;
   eventTypeCategory?: 'free' | 'pathway' | 'specialized' | string;
   isRecurring?: boolean;
