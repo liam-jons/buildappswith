@@ -5,6 +5,8 @@
  * user management, content moderation, and system configuration.
  */
 
+"use client";
+
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/core";
 import { AdminNav } from "./admin-nav";
